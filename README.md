@@ -11,7 +11,7 @@ Canonical Protobuf schemas for TikTok's Webcast WebSocket protocol, plus auto-ge
 ![Issues](https://img.shields.io/github/issues/isaackogan/TikTok-Webcast-Protobuf)
 
 > [!NOTE]
-> This is a **clean-room rewrite** of the Webcast wire format, ~~~~reconstructed from observed client traffic for the purposes of **interoperability and proof-of-concept reverse engineering**. It is **non-commercial** and is not affiliated with, endorsed by, or sourced from TikTok or ByteDance. Fields are added, removed, and renamed by TikTok without notice, so the schemas should be treated as a best-effort snapshot — not a stable contract.
+> This is a **clean-room rewrite** of the Webcast wire format, reconstructed from observed client traffic for the purposes of **interoperability and proof-of-concept reverse engineering**. It is **non-commercial** and is not affiliated with, endorsed by, or sourced from TikTok or ByteDance. Fields are added, removed, and renamed by TikTok without notice, so the schemas should be treated as a best-effort snapshot.
 
 
 ## Table of Contents
