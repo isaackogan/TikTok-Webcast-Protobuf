@@ -1,0 +1,81 @@
+name: "Release (TypeScript): Build & Publish to npm"
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Release must be triggered from the main branch, got ${{ github.ref }}"
+          exit 1
+
+  release:
+    needs: check-branch
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: targets/typescript/tiktok-live-proto
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Verify npm version
+        run: npm --version
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Bump version
+        run: npm version ${{ inputs.bump }} --no-git-tag-version
+
+      - name: Read new version
+        id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Publish to npm
+        run: npm publish --access public
+
+      - name: Commit version bump
+        working-directory: ${{ github.workspace }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add targets/typescript/tiktok-live-proto/package.json targets/typescript/tiktok-live-proto/pnpm-lock.yaml
+          git commit -m "chore: release tiktok-live-proto v${{ steps.version.outputs.version }} [skip ci]"
+          git push
+
+      - name: Create git tag
+        working-directory: ${{ github.workspace }}
+        run: |
+          git tag "typescript/v${{ steps.version.outputs.version }}"
+          git push origin "typescript/v${{ steps.version.outputs.version }}"
+
+      - name: Summary
+        run: echo "### Published tiktok-live-proto@${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY

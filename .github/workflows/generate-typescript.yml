@@ -1,0 +1,66 @@
+name: Generate TypeScript from Proto
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**/*.proto'
+      - 'targets/typescript/tiktok-live-proto/scripts/**'
+      - 'targets/typescript/tiktok-live-proto/package.json'
+      - '.github/workflows/generate-typescript.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: generate-typescript-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: targets/typescript/tiktok-live-proto
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: targets/typescript/tiktok-live-proto/package-lock.json
+
+      - uses: arduino/setup-protoc@v3
+        with:
+          version: '27.x'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Generate TypeScript
+        run: npm run generate
+
+      - name: Check for drift
+        id: diff
+        run: |
+          if git diff --quiet -- src/generated; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: ${{ github.workspace }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add targets/typescript/tiktok-live-proto/src/generated
+          git commit -m "chore(proto): regenerate TypeScript from proto sources
+
+          Source: ${{ github.sha }}"
+          git push

@@ -1,0 +1,50 @@
+{
+  "name": "tiktok-live-proto",
+  "version": "0.1.0",
+  "description": "Clean-room TypeScript bindings for the TikTok Webcast Protobuf schema.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./v1": {
+      "browser": {
+        "types": "./dist/web/v1.d.ts",
+        "default": "./dist/web/v1.js"
+      },
+      "import": {
+        "types": "./dist/node/v1.d.ts",
+        "default": "./dist/node/v1.js"
+      }
+    },
+    "./v2": {
+      "browser": {
+        "types": "./dist/web/v2.d.ts",
+        "default": "./dist/web/v2.js"
+      },
+      "import": {
+        "types": "./dist/node/v2.d.ts",
+        "default": "./dist/node/v2.js"
+      }
+    }
+  },
+  "scripts": {
+    "generate": "tsx scripts/generate.mts",
+    "build": "tsdown",
+    "clean": "rm -rf dist tmp",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-proto": "^2.11.6",
+    "tsdown": "^0.21.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
