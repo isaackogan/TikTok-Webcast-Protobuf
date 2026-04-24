@@ -59,5 +59,5 @@ This project is licensed under the MIT License and is intended for **non-commerc
 ## Contributors
 
 * **Isaac Kogan** — *Creator, Primary Maintainer, and Reverse-Engineering* — [isaackogan](https://github.com/isaackogan)
-~~~~
+
 See also the full list of [contributors](https://github.com/isaackogan/TikTok-Webcast-Protobuf/contributors) who have participated in this project.
