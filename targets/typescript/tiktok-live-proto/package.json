@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-proto",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Clean-room TypeScript bindings for the TikTok Webcast Protobuf schema.",
   "license": "MIT",
   "type": "module",
