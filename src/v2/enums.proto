@@ -198,6 +198,7 @@ enum EnvelopeBusinessType
     BusinessTypePlatformMerch = 5;
     BusinessTypeEoYDiamond = 6;
     BusinessTypeFanClubGtM = 7;
+    BusinessTypeSuperFanBox = 19;
 }
 enum EnvelopeFollowShowStatus {
     ENVELOPE_FOLLOW_SHOW_STATUS_ENVELOPE_FOLLOW_SHOW_UNKNOWN = 0;
