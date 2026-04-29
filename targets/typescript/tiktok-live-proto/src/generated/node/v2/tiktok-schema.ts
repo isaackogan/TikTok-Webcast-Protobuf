@@ -2084,12 +2084,12 @@ export interface ListUser {
   linkmicId: string;
   linkmicIdStr: string;
   linkStatus: LinkmicRoleType;
-  linkType: LinkType;
+  linkType: Buffer;
   userPosition: number;
   silenceStatus: LinkSilenceStatus;
   modifyTime: string;
   linkerId: string;
-  roleType: LinkRoleType;
+  roleType: Buffer;
 }
 
 /** it is just empty */
@@ -13963,12 +13963,12 @@ function createBaseListUser(): ListUser {
     linkmicId: "0",
     linkmicIdStr: "",
     linkStatus: 0,
-    linkType: 0,
+    linkType: Buffer.alloc(0),
     userPosition: 0,
     silenceStatus: 0,
     modifyTime: "0",
     linkerId: "0",
-    roleType: 0,
+    roleType: Buffer.alloc(0),
   };
 }
 
@@ -13986,8 +13986,8 @@ export const ListUser: MessageFns<ListUser> = {
     if (message.linkStatus !== 0) {
       writer.uint32(32).int32(message.linkStatus);
     }
-    if (message.linkType !== 0) {
-      writer.uint32(40).int32(message.linkType);
+    if (message.linkType.length !== 0) {
+      writer.uint32(42).bytes(message.linkType);
     }
     if (message.userPosition !== 0) {
       writer.uint32(48).int32(message.userPosition);
@@ -14001,8 +14001,8 @@ export const ListUser: MessageFns<ListUser> = {
     if (message.linkerId !== "0") {
       writer.uint32(72).int64(message.linkerId);
     }
-    if (message.roleType !== 0) {
-      writer.uint32(80).int32(message.roleType);
+    if (message.roleType.length !== 0) {
+      writer.uint32(82).bytes(message.roleType);
     }
     return writer;
   },
@@ -14047,11 +14047,11 @@ export const ListUser: MessageFns<ListUser> = {
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
             break;
           }
 
-          message.linkType = reader.int32() as any;
+          message.linkType = Buffer.from(reader.bytes());
           continue;
         }
         case 6: {
@@ -14087,11 +14087,11 @@ export const ListUser: MessageFns<ListUser> = {
           continue;
         }
         case 10: {
-          if (tag !== 80) {
+          if (tag !== 82) {
             break;
           }
 
-          message.roleType = reader.int32() as any;
+          message.roleType = Buffer.from(reader.bytes());
           continue;
         }
       }
@@ -17382,7 +17382,7 @@ export const AllListUser: MessageFns<AllListUser> = {
 };
 
 function createBaseLinkLayerListUser(): LinkLayerListUser {
-  return { user: undefined, linkmicId: "0", pos: undefined, linkedTimeNano: "0", appVersion: "", magicNumber1: "0" };
+  return { user: undefined, linkmicId: "", pos: undefined, linkedTimeNano: "0", appVersion: "", magicNumber1: "0" };
 }
 
 export const LinkLayerListUser: MessageFns<LinkLayerListUser> = {
@@ -17390,8 +17390,8 @@ export const LinkLayerListUser: MessageFns<LinkLayerListUser> = {
     if (message.user !== undefined) {
       User.encode(message.user, writer.uint32(10).fork()).join();
     }
-    if (message.linkmicId !== "0") {
-      writer.uint32(16).int64(message.linkmicId);
+    if (message.linkmicId !== "") {
+      writer.uint32(18).string(message.linkmicId);
     }
     if (message.pos !== undefined) {
       Position.encode(message.pos, writer.uint32(26).fork()).join();
@@ -17424,11 +17424,11 @@ export const LinkLayerListUser: MessageFns<LinkLayerListUser> = {
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.linkmicId = reader.int64().toString();
+          message.linkmicId = reader.string();
           continue;
         }
         case 3: {
