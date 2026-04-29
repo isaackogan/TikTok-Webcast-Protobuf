@@ -1160,12 +1160,12 @@ message ListUser {
     int64 linkmicId = 2;
     string linkmicIdStr = 3;
     LinkmicRoleType linkStatus = 4;
-    repeated string linkType = 5;
+    bytes linkType = 5;
     int32 userPosition = 6;
     LinkSilenceStatus silenceStatus = 7;
     int64 modifyTime = 8;
     int64 linkerId = 9;
-    repeated string roleType = 10;
+    bytes roleType = 10;
 }
 
 
