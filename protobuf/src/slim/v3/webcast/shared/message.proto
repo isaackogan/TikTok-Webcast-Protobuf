@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package webcast.shared.message;
+
+import "webcast/model/message/common.proto";
+
+message CommonMessageData {
+  string method = 1;
+  int64 msg_id = 2;
+  int64 room_id = 3;
+  int64 create_time = 4;
+  int32 monitor = 5;
+  bool is_show_msg = 6;
+  string describe = 7;
+  model.message.common.Text display_text = 8;
+  int64 anchor_fold_type = 10;
+  string msg_process_filter_v = 14;
+  string from_idc = 15;
+  string to_idc = 16;
+  LiveMessageID depend_root_id = 19;
+  int64 anchor_priority_score = 21;
+  int64 room_message_heat_level = 22;
+  int64 fold_type_for_web = 23;
+  int64 client_send_time = 25;
+  int32 dispatch_strategy = 26;
+}
+
+message LiveMessageID {
+  string primary_id = 1;
+  string message_scene = 2;
+}
