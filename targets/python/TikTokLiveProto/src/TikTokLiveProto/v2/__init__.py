@@ -7364,8 +7364,8 @@ class LinkLayerListUser(betterproto2.Message):
         1, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    linkmic_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(2, betterproto2.TYPE_INT64)
+    linkmic_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
     )
 
     pos: "Position | None" = betterproto2.field(
