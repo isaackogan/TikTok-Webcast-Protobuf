@@ -1477,7 +1477,7 @@ message AllListUser {
 
 message LinkLayerListUser {
     User user = 1;
-    int64 linkmicId = 2;
+    string linkmicId = 2;
     Position pos = 3;
     int64 linkedTimeNano = 4;
     string appVersion = 5;
