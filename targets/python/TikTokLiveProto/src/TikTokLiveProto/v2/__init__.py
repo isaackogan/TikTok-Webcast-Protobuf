@@ -7466,9 +7466,7 @@ class ListUser(betterproto2.Message):
         4, betterproto2.TYPE_ENUM, default_factory=lambda: LinkmicRoleType(0)
     )
 
-    link_type: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
-        5, betterproto2.TYPE_STRING, repeated=True
-    )
+    link_type: "bytes" = betterproto2.field(5, betterproto2.TYPE_BYTES)
 
     user_position: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(6, betterproto2.TYPE_INT32)
@@ -7486,9 +7484,7 @@ class ListUser(betterproto2.Message):
         betterproto2.field(9, betterproto2.TYPE_INT64)
     )
 
-    role_type: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
-        10, betterproto2.TYPE_STRING, repeated=True
-    )
+    role_type: "bytes" = betterproto2.field(10, betterproto2.TYPE_BYTES)
 
 
 default_message_pool.register_message("", "ListUser", ListUser)
