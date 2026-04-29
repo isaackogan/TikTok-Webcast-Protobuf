@@ -29,22 +29,26 @@ Join the [TikTokLive discord](https://discord.gg/e2XwPNTBBr) for questions, cont
 
 ## Repository Layout
 
-Only `src/**/*.proto` is hand-edited. Everything under `targets/**/src/generated/` is rewritten by CI whenever a `.proto` file changes.
+Only `src/**/*.proto` is hand-edited. Generated bindings live under each target package's `src/` tree and are rewritten by CI whenever a `.proto` file changes.
 
 ## Language Targets
 
 | Target     | Package                                                    | Status    |
 |------------|------------------------------------------------------------|-----------|
 | TypeScript | [`tiktok-live-proto`](https://www.npmjs.com/package/tiktok-live-proto) on npm | ✅ Shipping |
-| Python     | —                                                          | Planned   |
+| Python     | [`TikTokLiveProto`](targets/python/TikTokLiveProto) | ✅ Ready |
 | Go         | —                                                          | Planned   |
 | Rust       | —                                                          | Planned   |
+
+The Python target keeps the generated code versioned under `generated/v1` and
+`generated/v2`, while exposing `TikTokLiveProto.v1` and `TikTokLiveProto.v2`
+from the package root for consumer-friendly imports.
 
 ## Contributing a New Target
 
 Each target lives under `targets/<language>/<package-name>/` with:
 
-1. A build script that reads the canonical `src/v{1,2}/*.proto` files and emits bindings into `src/generated/` (committed).
+1. A build script that reads the canonical `src/v{1,2}/*.proto` files and emits committed bindings under the package's `src/` tree.
 2. A native package manifest (e.g. `package.json`, `pyproject.toml`, `Cargo.toml`).
 3. Two GitHub workflows:
    - `generate-<language>.yml` — regenerates and commits bindings on `.proto` change.

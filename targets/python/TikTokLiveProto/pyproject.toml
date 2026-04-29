@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=80", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "TikTokLiveProto"
+version = "0.0.1"
+description = "Clean-room betterproto Python bindings for the TikTok Webcast Protobuf schema."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "Isaac Kogan" }
+]
+keywords = ["protobuf", "tiktok", "webcast", "livestream"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "betterproto==2.0.0b7",
+]
+
+[project.urls]
+Repository = "https://github.com/isaackogan/TikTok-Webcast-Protobuf"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+TikTokLiveProto = ["py.typed"]

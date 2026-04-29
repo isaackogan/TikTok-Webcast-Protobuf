@@ -1,0 +1,87 @@
+name: "Release (Python): Build & Publish to PyPI"
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Release must be triggered from the main branch, got ${{ github.ref }}"
+          exit 1
+
+  release:
+    needs: check-branch
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: targets/python/TikTokLiveProto
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build backend
+        run: python -m pip install --upgrade build
+
+      - name: Bump version
+        run: python scripts/bump_version.py ${{ inputs.bump }}
+
+      - name: Read new version
+        id: version
+        run: |
+          VERSION=$(python - <<'PY'
+          import pathlib
+          import re
+          content = pathlib.Path("pyproject.toml").read_text(encoding="utf8")
+          match = re.search(r'^version = "([^"]+)"$', content, re.MULTILINE)
+          if match is None:
+              raise SystemExit("version not found")
+          print(match.group(1))
+          PY
+          )
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: targets/python/TikTokLiveProto/dist
+
+      - name: Commit version bump
+        working-directory: ${{ github.workspace }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add targets/python/TikTokLiveProto/pyproject.toml
+          git commit -m "chore: release python TikTokLiveProto v${{ steps.version.outputs.version }} [skip ci]"
+          git push
+
+      - name: Create git tag
+        working-directory: ${{ github.workspace }}
+        run: |
+          git tag "python/v${{ steps.version.outputs.version }}"
+          git push origin "python/v${{ steps.version.outputs.version }}"
+
+      - name: Summary
+        run: echo "### Published TikTokLiveProto@${{ steps.version.outputs.version }} to PyPI" >> $GITHUB_STEP_SUMMARY

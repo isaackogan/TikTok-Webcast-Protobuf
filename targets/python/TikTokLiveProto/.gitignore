@@ -1,0 +1,7 @@
+.DS_Store
+.venv/
+build/
+dist/
+*.iml
+src/*.egg-info/
+src/**/__pycache__/
