@@ -1,17 +1,19 @@
-name: Generate TypeScript from Proto
+name: Generate TypeScript (Full) from Proto
 
 on:
   push:
     branches: [main]
     paths:
-      - 'src/slim/**/*.proto'
-      - 'targets/typescript/tiktok-live-proto/scripts/**'
-      - 'targets/typescript/tiktok-live-proto/package.json'
-      - '.github/workflows/generate-typescript.yml'
+      - 'src/full'
+      - 'targets/typescript/tiktok-live-proto-full/scripts/**'
+      - 'targets/typescript/tiktok-live-proto-full/package.json'
+      - 'targets/typescript/tiktok-live-proto-full-types/scripts/**'
+      - 'targets/typescript/tiktok-live-proto-full-types/package.json'
+      - '.github/workflows/generate-typescript-full.yml'
   workflow_dispatch:
 
 concurrency:
-  group: generate-typescript-${{ github.ref }}
+  group: generate-typescript-full-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -19,13 +21,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    strategy:
+      matrix:
+        package:
+          - tiktok-live-proto-full
+          - tiktok-live-proto-full-types
     defaults:
       run:
-        working-directory: targets/typescript/tiktok-live-proto
+        working-directory: targets/typescript/${{ matrix.package }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          submodules: recursive
+          token: ${{ secrets.EULERSTREAM_PAT }}
 
       - uses: actions/setup-node@v4
         with:
@@ -60,8 +69,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add targets/typescript/tiktok-live-proto/src/generated
-          git commit -m "chore(proto): regenerate TypeScript from proto sources
+          git pull --rebase
+          git add targets/typescript/${{ matrix.package }}/src/generated
+          git commit -m "chore(proto): regenerate ${{ matrix.package }} from proto sources
 
           Source: ${{ github.sha }}"
           git push

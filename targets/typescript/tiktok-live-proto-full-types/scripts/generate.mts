@@ -5,15 +5,12 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = resolve(__dirname, '..');
-const PROTO_ROOT = resolve(PKG_ROOT, '../../../src/slim');
+const PROTO_ROOT = resolve(PKG_ROOT, '../../../src/full');
 const TMP_DIR = resolve(PKG_ROOT, 'tmp');
 const GEN_DIR = resolve(PKG_ROOT, 'src/generated');
+const SRC_DIR = resolve(PKG_ROOT, 'src');
 
 const HEADER = `syntax = "proto3";\npackage TikTok;\n\n`;
-
-/** Map from an output directory name to the ts-proto `env=` value. */
-const TARGETS = { node: 'node', web: 'browser' } as const;
-type Target = keyof typeof TARGETS;
 
 function listProtos(dir: string): string[] {
   const out: string[] = [];
@@ -58,24 +55,20 @@ function resolvePlugin(): string {
 
 function runTsProto(args: {
   version: string;
-  target: Target;
-  env: string;
   protoDir: string;
   protoFile: string;
   pluginPath: string;
 }): void {
-  const { version, target, env, protoDir, protoFile, pluginPath } = args;
-  const outGen = resolve(GEN_DIR, target, version);
+  const { version, protoDir, protoFile, pluginPath } = args;
+  const outGen = resolve(GEN_DIR, version);
   mkdirSync(outGen, { recursive: true });
 
   const cmd = [
     'protoc',
     `--plugin=protoc-gen-ts_proto=${pluginPath}`,
     `--ts_proto_out=${outGen}`,
-    `--ts_proto_opt=env=${env}`,
+    '--ts_proto_opt=onlyTypes=true',
     '--ts_proto_opt=forceLong=string',
-    '--ts_proto_opt=outputPartialMethods=false',
-    '--ts_proto_opt=outputJsonMethods=false',
     '--ts_proto_opt=esModuleInterop=true',
     '--ts_proto_opt=snakeToCamel=true',
     '--ts_proto_opt=importSuffix=.js',
@@ -83,7 +76,7 @@ function runTsProto(args: {
     protoFile,
   ].join(' ');
 
-  console.log(`[${version}/${target}] protoc (env=${env}) ...`);
+  console.log(`[${version}] protoc (onlyTypes) ...`);
   execSync(cmd, { stdio: 'inherit' });
 
   const schemaFile = resolve(outGen, 'tiktok-schema.ts');
@@ -91,16 +84,13 @@ function runTsProto(args: {
 }
 
 function writeEntries(versions: string[]): void {
-  for (const target of Object.keys(TARGETS) as Target[]) {
-    const dir = resolve(PKG_ROOT, 'src', target);
-    mkdirSync(dir, { recursive: true });
-    for (const v of versions) {
-      writeFileSync(
-        resolve(dir, `${v}.ts`),
-        `export * from '../generated/${target}/${v}/tiktok-schema.js';\n`,
-        'utf8',
-      );
-    }
+  mkdirSync(SRC_DIR, { recursive: true });
+  for (const v of versions) {
+    writeFileSync(
+      resolve(SRC_DIR, `${v}.ts`),
+      `export * from './generated/${v}/tiktok-schema.js';\n`,
+      'utf8',
+    );
   }
 }
 
@@ -118,9 +108,7 @@ function main(): void {
 
   for (const version of versions) {
     const { outDir: protoDir, outFile: protoFile } = mergeVersion(version);
-    for (const [target, env] of Object.entries(TARGETS) as [Target, string][]) {
-      runTsProto({ version, target, env, protoDir, protoFile, pluginPath });
-    }
+    runTsProto({ version, protoDir, protoFile, pluginPath });
   }
 
   writeEntries(versions);

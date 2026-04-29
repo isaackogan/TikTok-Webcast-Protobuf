@@ -1,0 +1,41 @@
+{
+  "name": "tiktok-live-proto-full-types",
+  "version": "0.1.0",
+  "description": "Types-only TypeScript declarations for the full TikTok Webcast Protobuf schema (no wire codec, no field numbers).",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isaackogan/TikTok-Webcast-Protobuf.git",
+    "directory": "targets/typescript/tiktok-live-proto-full-types"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./v1": {
+      "types": "./dist/v1.d.ts",
+      "default": "./dist/v1.js"
+    },
+    "./v2": {
+      "types": "./dist/v2.d.ts",
+      "default": "./dist/v2.js"
+    }
+  },
+  "scripts": {
+    "generate": "tsx scripts/generate.mts && tsx scripts/shuffle.mts",
+    "shuffle": "tsx scripts/shuffle.mts",
+    "build": "tsdown",
+    "clean": "rm -rf dist tmp",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-proto": "^2.11.6",
+    "tsdown": "^0.21.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

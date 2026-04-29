@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/**/*.proto'
+      - 'src/slim/**/*.proto'
       - 'targets/python/TikTokLiveProto/scripts/**'
       - 'targets/python/TikTokLiveProto/pyproject.toml'
       - '.github/workflows/generate-python.yml'

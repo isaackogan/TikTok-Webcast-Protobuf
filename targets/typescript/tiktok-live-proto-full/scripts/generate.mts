@@ -5,13 +5,12 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = resolve(__dirname, '..');
-const PROTO_ROOT = resolve(PKG_ROOT, '../../../src/slim');
+const PROTO_ROOT = resolve(PKG_ROOT, '../../../src/full');
 const TMP_DIR = resolve(PKG_ROOT, 'tmp');
 const GEN_DIR = resolve(PKG_ROOT, 'src/generated');
 
 const HEADER = `syntax = "proto3";\npackage TikTok;\n\n`;
 
-/** Map from an output directory name to the ts-proto `env=` value. */
 const TARGETS = { node: 'node', web: 'browser' } as const;
 type Target = keyof typeof TARGETS;
 

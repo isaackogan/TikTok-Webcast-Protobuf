@@ -1,0 +1,5 @@
+# Private
+[submodule "src/full"]
+	path = src/full
+	url = https://github.com/EulerStream/TikTok-Webcast-Protobuf-Full.git
+	branch = main

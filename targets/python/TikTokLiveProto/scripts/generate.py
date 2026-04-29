@@ -9,7 +9,7 @@ from shutil import which
 from site import getuserbase
 
 PKG_ROOT = Path(__file__).resolve().parent.parent
-PROTO_ROOT = PKG_ROOT.parent.parent.parent / "src"
+PROTO_ROOT = PKG_ROOT.parent.parent.parent / "src" / "slim"
 TMP_DIR = PKG_ROOT / "tmp"
 SRC_PKG = PKG_ROOT / "src" / "TikTokLiveProto"
 
