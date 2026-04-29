@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*.ts", "tsdown.config.ts"]
+  "include": ["src/**/*.ts", "tsdown.config.ts", "scripts"]
 }
