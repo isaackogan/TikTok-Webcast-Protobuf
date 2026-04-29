@@ -40,9 +40,9 @@ Only `src/**/*.proto` is hand-edited. Generated bindings live under each target 
 | Go         | —                                                          | Planned   |
 | Rust       | —                                                          | Planned   |
 
-The Python target keeps the generated code versioned under `generated/v1` and
-`generated/v2`, while exposing `TikTokLiveProto.v1` and `TikTokLiveProto.v2`
-from the package root for consumer-friendly imports.
+The Python target uses `betterproto2` with Pydantic-backed generated
+dataclasses, versioned directly under `v1` and `v2`, and imported as
+`TikTokLiveProto.v1` and `TikTokLiveProto.v2`.
 
 ## Contributing a New Target
 

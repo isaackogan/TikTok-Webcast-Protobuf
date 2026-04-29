@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "TikTokLiveProto"
 version = "0.0.2"
-description = "Clean-room betterproto Python bindings for the TikTok Webcast Protobuf schema."
+description = "Clean-room betterproto2/Pydantic Python bindings for the TikTok Webcast Protobuf schema."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -18,7 +18,6 @@ classifiers = [
   "Intended Audience :: Developers",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -27,7 +26,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-  "betterproto==2.0.0b7",
+  "betterproto2[pydantic]>=0.9,<0.10",
 ]
 
 [project.urls]

@@ -4,7 +4,6 @@ import re
 import shutil
 import subprocess
 import sysconfig
-import textwrap
 from pathlib import Path
 from shutil import which
 from site import getuserbase
@@ -13,7 +12,6 @@ PKG_ROOT = Path(__file__).resolve().parent.parent
 PROTO_ROOT = PKG_ROOT.parent.parent.parent / "src"
 TMP_DIR = PKG_ROOT / "tmp"
 SRC_PKG = PKG_ROOT / "src" / "TikTokLiveProto"
-GEN_DIR = SRC_PKG / "generated"
 
 # betterproto generates a flatter, TikTokLive-style module layout when the
 # synthetic merged schema omits the package declaration during codegen.
@@ -21,7 +19,7 @@ HEADER = 'syntax = "proto3";\n\n'
 VERSION_DIR_RE = re.compile(r"^v\d+$")
 HEADER_LINE_RE = re.compile(r"^\s*(syntax|import|package)\b")
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
-MODULE_NAME = "tiktok_proto.py"
+PYDANTIC_FORBID_CONFIG = ', config={"extra": "forbid"}'
 
 
 def list_protos(directory: Path) -> list[Path]:
@@ -40,22 +38,22 @@ def strip_header_lines(content: str) -> str:
 
 
 def resolve_plugin() -> Path:
-    env_path = which("protoc-gen-python_betterproto")
+    env_path = which("protoc-gen-python_betterproto2")
     if env_path:
         return Path(env_path)
 
     candidates = [
-        Path(sysconfig.get_path("scripts") or "") / "protoc-gen-python_betterproto",
-        Path(getuserbase()) / "bin" / "protoc-gen-python_betterproto",
-        PKG_ROOT / ".venv" / "bin" / "protoc-gen-python_betterproto",
+        Path(sysconfig.get_path("scripts") or "") / "protoc-gen-python_betterproto2",
+        Path(getuserbase()) / "bin" / "protoc-gen-python_betterproto2",
+        PKG_ROOT / ".venv" / "bin" / "protoc-gen-python_betterproto2",
     ]
     for candidate in candidates:
         if candidate.exists():
             return candidate
 
     raise FileNotFoundError(
-        "protoc-gen-python_betterproto not found. "
-        "Install it with `pip install \"betterproto[compiler]==2.0.0b7\"`."
+        "protoc-gen-python_betterproto2 not found. "
+        "Install it with `pip install \"betterproto2_compiler>=0.9,<0.10\"`."
     )
 
 
@@ -79,14 +77,24 @@ def merge_version(version: str) -> tuple[Path, Path]:
     return out_dir, out_file
 
 
-def extract_generated_module(tmp_out: Path, out_gen: Path) -> None:
+def extract_generated_package(tmp_out: Path, out_gen: Path) -> None:
     generated_file = tmp_out / "__init__.py"
     if not generated_file.exists():
-        raise RuntimeError(f"Expected betterproto to emit {generated_file}")
+        raise RuntimeError(f"Expected betterproto2 to emit {generated_file}")
 
     shutil.rmtree(out_gen, ignore_errors=True)
     out_gen.mkdir(parents=True, exist_ok=True)
-    shutil.move(str(generated_file), out_gen / MODULE_NAME)
+    for child in tmp_out.iterdir():
+        if child.name == "py.typed":
+            continue
+        shutil.move(str(child), out_gen / child.name)
+
+    init_file = out_gen / "__init__.py"
+    init_text = init_file.read_text(encoding="utf8")
+    init_file.write_text(
+        init_text.replace(PYDANTIC_FORBID_CONFIG, ""),
+        encoding="utf8",
+    )
 
 
 def run_betterproto(
@@ -96,63 +104,40 @@ def run_betterproto(
     plugin_path: Path,
 ) -> None:
     tmp_out = TMP_DIR / "compiled" / version
-    out_gen = GEN_DIR / version
+    out_gen = SRC_PKG / version
     shutil.rmtree(tmp_out, ignore_errors=True)
     tmp_out.mkdir(parents=True, exist_ok=True)
     out_gen.mkdir(parents=True, exist_ok=True)
 
     cmd = [
         "protoc",
-        f"--plugin=protoc-gen-python_betterproto={plugin_path}",
+        f"--plugin=protoc-gen-python_betterproto2={plugin_path}",
         f"-I={proto_dir}",
-        f"--python_betterproto_out={tmp_out}",
+        f"--python_betterproto2_out={tmp_out}",
+        "--python_betterproto2_opt=pydantic_dataclasses,client_generation=none",
         str(proto_file),
     ]
 
-    print(f"[{version}] protoc + betterproto ...")
+    print(f"[{version}] protoc + betterproto2 ...")
     subprocess.run(cmd, check=True)
-    extract_generated_module(tmp_out, out_gen)
+    extract_generated_package(tmp_out, out_gen)
 
 
 def write_package_files(versions: list[str]) -> None:
     SRC_PKG.mkdir(parents=True, exist_ok=True)
-    import_block = "\n".join(
-        f'{version} = _import_module(".generated.{version}", __name__)\n'
-        f'_sys.modules[__name__ + ".{version}"] = {version}'
-        for version in versions
-    )
     (SRC_PKG / "__init__.py").write_text(
-        textwrap.dedent(
-            '''\
-            """Python betterproto bindings for the TikTok Webcast protobuf schema."""
-
-            import sys as _sys
-            from importlib import import_module as _import_module
-
-            '''
-        )
-        + import_block
-        + "\n\n__all__ = [\n"
+        '"""Python betterproto2 bindings for the TikTok Webcast protobuf schema."""\n\n'
+        "__all__ = [\n"
         + "".join(f'    "{version}",\n' for version in versions)
         + "]\n",
         encoding="utf8",
     )
     (SRC_PKG / "py.typed").touch()
 
-    GEN_DIR.mkdir(parents=True, exist_ok=True)
-
-    for version in versions:
-        generated_version_dir = GEN_DIR / version
-        generated_version_dir.mkdir(parents=True, exist_ok=True)
-        (generated_version_dir / "__init__.py").write_text(
-            f"from .tiktok_proto import *  # noqa: F401,F403\n",
-            encoding="utf8",
-        )
-
 
 def clean_previous_outputs() -> None:
     shutil.rmtree(TMP_DIR, ignore_errors=True)
-    shutil.rmtree(GEN_DIR, ignore_errors=True)
+    shutil.rmtree(SRC_PKG / "generated", ignore_errors=True)
     shutil.rmtree(PKG_ROOT / "src" / "tiktok_live_proto", ignore_errors=True)
 
     if not SRC_PKG.exists():
