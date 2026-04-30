@@ -8,7 +8,7 @@
 import type { EcommerceEntrance } from "../../message_proto.js";
 import type { FollowInfo } from "../../shared/anchor_info.js";
 import type { LinkmicStatus } from "../data/messages.js";
-import type { ActivityRewardInfo, AnchorInfo, AnchorLevel, AuthenticationInfo, Author, BorderInfo, LiveEventInfo, UserAttr, UserHonor } from "../messages.js";
+import type { ActivityRewardInfo, AnchorInfo, AnchorLevel, AuthenticationInfo, Author, BorderInfo, FansClubMember, LiveEventInfo, UserAttr, UserHonor } from "../messages.js";
 import type { ImageModel } from "./messages.js";
 import type { BadgeStruct, ComboBadgeInfo, EnigmaInfo, FansClubInfo, OwnRoom, SubscribeInfo } from "./user.js";
 export const protobufPackage = "webcast.model.base.user";
@@ -72,7 +72,7 @@ export interface User {
   enableIchatImg: string;
   enigmaInfo: EnigmaInfo | undefined;
   exp: number;
-  fansClub: Uint8Array;
+  fansClub: FansClubMember | undefined;
   fansClubInfo: FansClubInfo | undefined;
   fanTicketCount: string;
   foldStrangerChat: boolean;

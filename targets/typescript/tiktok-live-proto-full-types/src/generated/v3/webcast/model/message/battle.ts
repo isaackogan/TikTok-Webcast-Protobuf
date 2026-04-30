@@ -5,10 +5,8 @@
 // source: webcast/model/message/battle.proto
 
 /* eslint-disable */
-import type { BattleRewardSettleRewardStatus, BattleTaskSettleResult } from "../../im.js";
 import type { ImageModel } from "../base/messages.js";
-import type { BattleInviteType, BattleResultResult, BattleScene, BattleSettingsBattleStatus, BattleType, IceShowdownSetting, MatchGameplayOption } from "../data/messages.js";
-import type { BattleBonusConfig, BattlePrompt, BattleUserInfo, GiftModeMeta } from "../live/match.js";
+import type { BattleResultResult } from "../data/messages.js";
 import type { Text } from "./common.js";
 export const protobufPackage = "webcast.model.message.battle";
 export interface BattleDisplayConfig {
@@ -50,34 +48,6 @@ export interface BattleResult {
   score: string;
   userId: string;
 }
-export interface BattleRewardSettle {
-  prompt: BattlePrompt | undefined;
-  status: BattleRewardSettleRewardStatus;
-}
-export interface BattleSetting {
-  battleId: string;
-  battleType: BattleType;
-  channelId: string;
-  duration: number;
-  endTimeMs: string;
-  extraDurationSecond: string;
-  gameplayOption: MatchGameplayOption;
-  giftModeMeta: GiftModeMeta | undefined;
-  iceShowdownSetting: IceShowdownSetting;
-  inviteType: BattleInviteType;
-  scene: BattleScene;
-  sourceType: string;
-  startTimeMs: string;
-  status: BattleSettingsBattleStatus;
-}
-export interface BattleTaskSettle {
-  result: BattleTaskSettleResult;
-  rewardStartTime: string;
-  rewardStartTimestamp: string;
-}
-export interface BattleTaskStart {
-  config: BattleBonusConfig | undefined;
-}
 export interface BattleTaskUpdate {
   fromUserId: string;
   logId: string;
@@ -105,6 +75,7 @@ export interface BattleTruthOrDareTriggerGuideV2 {
   anchorContentKey: string;
   audienceContentKey: string;
   guideDurationSecond: number;
+  isFirstTime: boolean;
   lapGuideDurationSecond: number;
   lapGuideKey: string;
   ruleDetailUrl: string;
@@ -130,10 +101,6 @@ export interface BattleUserArmy {
   score: string;
   userId: string;
   userIdStr: string;
-}
-export interface BattleUserInfoWrapper {
-  key: string;
-  value: BattleUserInfo | undefined;
 }
 export interface ExemptStrategy {
   exemptAudienceTop: number;

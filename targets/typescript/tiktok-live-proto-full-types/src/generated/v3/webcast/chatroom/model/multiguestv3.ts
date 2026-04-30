@@ -46,6 +46,7 @@ export interface PermitBizContent {
   expireTimestamp: string;
   isApplyAutoApproved: boolean;
   isFullPositionPreApproved: boolean;
+  isQuickCallAutoApproved: boolean;
   linkTypePermission: string;
   linkUserType: LinkUserType;
   operatorLinkAdminType: LinkMicUserAdminType;

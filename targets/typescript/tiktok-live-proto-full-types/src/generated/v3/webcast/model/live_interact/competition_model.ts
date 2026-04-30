@@ -8,7 +8,7 @@
 import type { AnchorInfo } from "../../shared/messages.js";
 import type { ImageModel } from "../base/messages.js";
 import type { BattleType, BeansRejectReason, BeansStatus, CompetitionEndReason, CompetitionInitiateType, CompetitionReplyType, CompetitionResultsTeamInfoResult, CompetitionRoleType, CompetitionTriggerSource, GroupShowStatus, MemberRankInfoMemberRankState, TakeTheStageOrderInfoSwitchTurnReason, TakeTheStageStatus } from "../data/messages.js";
-import type { BattleTask, MatchPunishExtraInfo } from "../live/match.js";
+import type { BattleComboInfo, BattleEffectInfos, BattleTask, MatchPunishExtraInfo } from "../live/match.js";
 export const protobufPackage = "webcast.model.live_interact.competition.model";
 export interface BeansInfo {
   actualEndTimestamp: string;
@@ -39,15 +39,30 @@ export interface CompetitionFinish {
   reason: CompetitionEndReason;
 }
 export interface CompetitionInfo {
+  abInfos: {
+    [key: string]: CompetitionABInfo;
+  };
   battleTask: BattleTask | undefined;
   beansInfo: BeansInfo | undefined;
   bizCommon: CompetitionCommon | undefined;
+  comboInfoMap: {
+    [key: string]: BattleComboInfo;
+  };
+  effectInfos: BattleEffectInfos | undefined;
   gameplayOption: number;
   groupRankListInfo: GroupRankListInfo | undefined;
   groupShowInfo: GroupShowInfo | undefined;
   mvpUserId: string;
   takeTheStageInfo: TakeTheStageInfo | undefined;
   teamInfos: CompetitionResultsTeamInfo[];
+}
+export interface CompetitionInfo_AbInfosEntry {
+  key: string;
+  value: CompetitionABInfo | undefined;
+}
+export interface CompetitionInfo_ComboInfoMapEntry {
+  key: string;
+  value: BattleComboInfo | undefined;
 }
 export interface CompetitionInitiate {
   giftPermissions: {
@@ -107,6 +122,7 @@ export interface CompetitionReplyTakeTheStageBiz {
 }
 export interface CompetitionResultsTeamInfo {
   contributors: CompetitionContributorInfo[];
+  formattedScore: string;
   members: CompetitionTeamMemberInfo[];
   rank: string;
   result: CompetitionResultsTeamInfoResult;
@@ -116,6 +132,9 @@ export interface CompetitionResultsTeamInfo {
   teamIdStr: string;
 }
 export interface CompetitionSettleEnd {
+  comboInfoMap: {
+    [key: string]: BattleComboInfo;
+  };
   leaveUser: CompetitionUserBase | undefined;
   matchPunishExtraInfo: MatchPunishExtraInfo | undefined;
   mvpUserId: string;
@@ -123,6 +142,10 @@ export interface CompetitionSettleEnd {
   reason: CompetitionEndReason;
   takeTheStageBiz: CompetitionSettleEndTakeTheStageBiz | undefined;
   teamInfos: CompetitionResultsTeamInfo[];
+}
+export interface CompetitionSettleEnd_ComboInfoMapEntry {
+  key: string;
+  value: BattleComboInfo | undefined;
 }
 export interface CompetitionSettleEndTakeTheStageBiz {
   takeTheStageStatus: TakeTheStageStatus;

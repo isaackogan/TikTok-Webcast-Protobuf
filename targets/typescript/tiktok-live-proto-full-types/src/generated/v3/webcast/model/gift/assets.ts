@@ -6,16 +6,19 @@
 
 /* eslint-disable */
 import type { FaceRecognitionMeta } from "./assets_face_recognition_meta.js";
-import type { DistributionStrategy, LokiExtraContent } from "./model.js";
+import type { AssetExtra, DistributionStrategy, LokiExtraContent } from "./model.js";
 export const protobufPackage = "webcast.model.gift.assets";
 export interface AssetsModel {
+  assetExtra: AssetExtra | undefined;
   bytevc1Md5: string;
   describe: string;
   distributionStrategy: DistributionStrategy[];
+  downgradeResourceType: number;
   downloadType: number;
   faceRecognitionArchiveMeta: FaceRecognitionMeta | undefined;
   forceUseImOrRespAsset: boolean;
   id: string;
+  immediateDownload: boolean;
   lokiContent: LokiExtraContent | undefined;
   lynxUrlSettingsKey: string;
   md5: string;
@@ -24,6 +27,7 @@ export interface AssetsModel {
   resourceType: number;
   resourceUri: string;
   resourceUrl: ResourceModel | undefined;
+  size: string;
   stickerAssetVariant: number;
   stickerAssetVariantReason: number;
   videoResourceList: VideoResource[];

@@ -7,6 +7,7 @@
 /* eslint-disable */
 import type { ImageModel } from "../base/messages.js";
 import type { EnigmaInfo } from "../base/user.js";
+import type { User } from "../base/user_2.js";
 import type { MicPositionData } from "../message/linkcore_mic_position_data.js";
 export const protobufPackage = "webcast.model.data.multi_guest_play";
 export enum PlayScene {
@@ -58,9 +59,22 @@ export interface CountdownForAllContent {
   playConfig: CountdownForAllConfig | undefined;
   playId: string;
   playStatus: number;
+  playUsers: CountdownForAllUser[];
   roomId: string;
   startTime: string;
   version: string;
+}
+export interface CountdownForAllUser {
+  avatarThumb: ImageModel | undefined;
+  completionProgressPercent: number;
+  displayId: string;
+  enigmaInfo: EnigmaInfo | undefined;
+  linkmicId: string;
+  nickname: string;
+  rank: number;
+  score: string;
+  user: User | undefined;
+  userId: string;
 }
 export interface CountdownUser {
   completionProgressPercent: number;
@@ -89,12 +103,16 @@ export interface GuestShowdownContent {
   playStatus: number;
   punishmentStartTime: string;
   roomId: string;
+  runningPlayUsers: GuestShowdownUser[];
+  runningStep: number;
+  streamId: string;
   version: string;
 }
 export interface GuestShowdownUser {
   avatarThumb: ImageModel | undefined;
   displayId: string;
   enigmaInfo: EnigmaInfo | undefined;
+  iconName: string;
   linkmicId: string;
   nickname: string;
   rank: number;
@@ -104,6 +122,8 @@ export interface GuestShowdownUser {
 }
 export interface NoticeboardContent {
   channelId: string;
+  endTime: string;
+  lastReviewInfo: NoticeboardReviewInfo | undefined;
   linkmicId: string;
   noticeboardId: string;
   passedMediaNodeId: string;
@@ -112,6 +132,15 @@ export interface NoticeboardContent {
   startTime: string;
   status: number;
   streamId: string;
+  version: string;
+}
+export interface NoticeboardReviewInfo {
+  mediaNodeId: string;
+  reviewStatus: number;
+}
+export interface PlaybookGroup {
+  groupId: string;
+  lastActorUserId: string;
 }
 export interface ShowConfig {
   allowOpenMicFreely: boolean;
@@ -132,6 +161,7 @@ export interface ShowContent {
 }
 export interface ShowListUser {
   avatarThumb: ImageModel | undefined;
+  enigmaInfo: EnigmaInfo | undefined;
   linkmicIdStr: string;
   nickname: string;
   order: number;
@@ -154,6 +184,7 @@ export interface TextHeaderPlayContent {
   startTime: string;
   status: number;
   textHeaderId: string;
+  version: string;
 }
 export interface TextHeaderRecordInfo {
   mediaNodeId: string;
@@ -182,6 +213,7 @@ export interface WallpaperContent {
   channelId: string;
   finishedUserList: WallpaperContext[];
   playUserId: string;
+  playUserList: WallpaperContext[];
   roomId: string;
   sendTimestamp: string;
   status: number;

@@ -5,11 +5,21 @@
 // source: webcast/model/messages.proto
 
 /* eslint-disable */
+import type { EnvelopeEnigmaInfo } from "../envelope.js";
+import type { ToolBarManagement } from "../message_proto.js";
 import type { ImageModel } from "./base/messages.js";
 import type { PrivilegeLogExtra } from "./base/user.js";
-import type { BannerImageBackground, BannerImageContent, EventUserInfo, ExtendImage, GameTagGameTagType, GameTagRatingSystemType, GiftStructSchemeGiftType, HashtagNamespace, LiveEventInfoEventPayMethod, PaidEventPreview, PollVoteLimitType } from "./data/messages.js";
+import type { BannerImageBackground, BannerImageContent, EventUserInfo, ExtendImage, GameTagGameTagType, GameTagRatingSystemType, GiftStructSchemeGiftType, HashtagNamespace, LiveEventInfoEventPayMethod, PaidEventPreview, PollVoteLimitType, RechargeCustomError, UserFansClubFansClubDataUserFansClubStatus } from "./data/messages.js";
 import type { AssetsModel } from "./gift/assets.js";
+import type { AnchorLevelPermission } from "./live/messages.js";
 export const protobufPackage = "webcast.model";
+export interface AccompanimentStruct {
+  accompanimentUrls: string[];
+  id: string;
+  vid: string;
+  volumeAmplitudePeak: number;
+  volumeLoudnessLufs: number;
+}
 export interface ActivityRewardInfo {
   badge: ImageModel | undefined;
   storytag: ImageModel | undefined;
@@ -56,8 +66,14 @@ export interface BaLeadsGenInfo {
   leadsGenModel: string;
   leadsGenPermission: boolean;
 }
+export interface BannerContentDynamic {
+  jsonResource: string;
+}
 export interface BannerInRoom {
   actionType: number;
+  activityId: string;
+  appointmentEndTimestamp: string;
+  appointmentId: string;
   appointmentStartTimestamp: string;
   background: BannerImageBackground | undefined;
   bannerLocation: number;
@@ -66,15 +82,20 @@ export interface BannerInRoom {
   businessType: string;
   displayParam: string;
   displayStyle: number;
+  dynamicBanner: BannerContentDynamic | undefined;
   extendImage: ExtendImage | undefined;
+  extra: string;
+  frameType: string;
   height: number;
   id: string;
   image: ImageModel | undefined;
   imageContent: BannerImageContent | undefined;
   imageType: number;
   openWithNavigationTag: boolean;
+  priority: number;
   roomid: string;
   schemaUrl: string;
+  status: string;
   tabTitle: string;
   text: string;
   title: string;
@@ -93,10 +114,13 @@ export interface Board {
   previewImageList: ImageModel[];
   previewImageUri: string;
   previewImageUriList: string[];
+  recommendBoardInfo: RecommendBoardInfo | undefined;
   reviewId: string;
   smbReviewId: string;
   smbReviewInterceptionReasons: string[];
   status: number;
+  templateId: string;
+  version: number;
   violationId: string;
 }
 export interface BoardItem {
@@ -106,8 +130,12 @@ export interface BoardItem {
   boardItemType: number;
   draggable: boolean;
   fullyCustomizedContent: string;
+  fullyCustomizedSetting: FullyCustomizedSetting | undefined;
   id: string;
+  matting: boolean;
   position: BoardItemPosition | undefined;
+  richTextContent: RichTextContent | undefined;
+  sceneryContent: SceneryContent | undefined;
   style: BoardItemStyle | undefined;
   transform: BoardItemTransform | undefined;
 }
@@ -118,6 +146,7 @@ export interface BoardItemContent {
   contentText2: string;
 }
 export interface BoardItemLayout {
+  collisionResolve: number;
   defaultXSpacing: number;
   defaultYSpacing: number;
   forceLayout: boolean;
@@ -159,12 +188,20 @@ export interface BorderInfo {
   avatarBackgroundBorderColor: string;
   avatarBackgroundColor: string;
   borderPrivilegeLogExtra: PrivilegeLogExtra | undefined;
+  description: string;
   descStarlingKey: string;
   icon: ImageModel | undefined;
   level: string;
+  name: string;
+  nameStarlingKey: string;
   profileDecorationRibbon: ImageModel | undefined;
   profilePrivilegeLogExtra: PrivilegeLogExtra | undefined;
   source: string;
+}
+export interface ColorBackground {
+  color: string;
+  padding: EdgeInsets | undefined;
+  radius: number;
 }
 export interface Creator {
   continueScene: number;
@@ -204,10 +241,52 @@ export interface DonationSticker {
   inputRect: string[];
   kind: string;
   maxLength: string;
+  status: string;
   subType: string;
   textColor: string;
   textSize: number;
   type: number;
+  w: number;
+  x: number;
+  y: number;
+}
+export interface EdgeInsets {
+  bottom: number;
+  left: number;
+  right: number;
+  top: number;
+}
+export interface FansClubData {
+  anchorId: string;
+  availableGiftIds: string[];
+  badge: UserBadge | undefined;
+  clubName: string;
+  level: number;
+  userFansClubStatus: UserFansClubFansClubDataUserFansClubStatus;
+}
+export interface FansClubMember {
+  data: FansClubData | undefined;
+  preferData: {
+    [key: number]: FansClubData;
+  };
+}
+export interface FansClubMember_PreferDataEntry {
+  key: number;
+  value: FansClubData | undefined;
+}
+export interface FlowSpec {
+  direction: number;
+  height: SizeSpec | undefined;
+  interItemSpacing: number;
+  overflow: boolean;
+  rowAlignX: number;
+  rowAlignY: number;
+  rowSpacing: number;
+  width: SizeSpec | undefined;
+}
+export interface FullyCustomizedSetting {
+  fullyCustomizedCharLimit: string;
+  fullyCustomizedLineLimit: string;
 }
 export interface GameAgeRating {
   ar: number;
@@ -300,6 +379,20 @@ export interface Hashtag {
   namespace: HashtagNamespace;
   title: string;
 }
+export interface ImageBackground {
+  alignmentX: number;
+  alignmentY: number;
+  capInsets: EdgeInsets | undefined;
+  image: ImageContent | undefined;
+  repeat: number;
+}
+export interface ImageContent {
+  fillMode: number;
+  image: ImageModel | undefined;
+  imageHeight: SizeSpec | undefined;
+  imageWidth: SizeSpec | undefined;
+  primaryColor: string;
+}
 export interface InteractionQuestionInfo {
   hasLightningStrengthen: boolean;
   hasQuickAnswer: boolean;
@@ -333,9 +426,27 @@ export interface LiveEventInfo {
   ticketAmount: string;
   title: string;
   walletPackage: WalletPackage | undefined;
+  walletPkgDict: {
+    [key: string]: WalletPackage;
+  };
+}
+export interface LiveEventInfo_WalletPkgDictEntry {
+  key: string;
+  value: WalletPackage | undefined;
 }
 export interface LynxCrossScreenEffectInfo {
   effectIds: string[];
+}
+export interface LyricStruct {
+  id: string;
+  klyricUrls: string[];
+  lyricStatus: number;
+  lyricType: number;
+  vid: string;
+}
+export interface MeasureSpec {
+  mode: number;
+  value: number;
 }
 export interface OrganizationModel {
   desc: string;
@@ -344,6 +455,22 @@ export interface OrganizationModel {
   name: string;
   organizationId: string;
   webUrl: string;
+}
+export interface Paragraph {
+  editable: boolean;
+  maxCharLimit: string;
+  paragraphId: string;
+  spans: TextSpan[];
+  styleRef: string;
+}
+export interface ParagraphLayout {
+  contentAlignX: number;
+  height: SizeSpec | undefined;
+  rowAlign: number;
+  shrink: ShrinkSpec | undefined;
+  startNewRow: boolean;
+  width: SizeSpec | undefined;
+  wrapMode: number;
 }
 export interface PollVoteLimit {
   limitType: PollVoteLimitType;
@@ -356,8 +483,11 @@ export interface PortalInfo {
   idc: string;
   portalDiamonds: number;
   sendAtSecond: number;
+  senderAvatar: ImageModel | undefined;
   senderDisplayId: string;
+  senderEnigmaInfo: EnvelopeEnigmaInfo | undefined;
   senderId: string;
+  touchCount: number;
   transCount: number;
 }
 export interface PortalTransTarget {
@@ -387,6 +517,40 @@ export interface RandomGiftPanelBanner {
   shadingImage: ImageModel | undefined;
   targetNum: string;
 }
+export interface RecommendBoardInfo {
+  boardSource: number;
+  businessIntent: string;
+  recommendBoardId: string;
+  recommendReason: RecommendReason | undefined;
+  sourcePb: SourcePB | undefined;
+}
+export interface RecommendReason {
+  subTitle: string;
+  title: string;
+}
+export interface RichTextContent {
+  itemStyleRef: string;
+  paragraphs: Paragraph[];
+  styles: RichTextStyle[];
+}
+export interface RichTextStyle {
+  color: string;
+  colorBackground: ColorBackground | undefined;
+  contentAlignX: number;
+  flowSpec: FlowSpec | undefined;
+  fontFamily: string;
+  fontSize: number;
+  imageBackground: ImageBackground | undefined;
+  inlineBackground: ColorBackground | undefined;
+  lineHeight: number;
+  lineSpacing: number;
+  name: string;
+  padding: EdgeInsets | undefined;
+  paragraphLayout: ParagraphLayout | undefined;
+  stroke: StrokeStyle | undefined;
+  textStyle: number;
+  type: number;
+}
 export interface RoomAuthMessage {
   goldenEnvelopeMessage: RoomAuthMessageGoldenEnvelope | undefined;
   promoteOtherMessage: PromoteOtherMessage | undefined;
@@ -394,25 +558,147 @@ export interface RoomAuthMessage {
 export interface RoomAuthMessageGoldenEnvelope {
   recallEndTime: string;
 }
+export interface RoomAuthOffReasons {
+  gift: string;
+  giftOffReason: number;
+}
+export interface RoomAuthStatus {
+  anchorLevelPermission: AnchorLevelPermission | undefined;
+  banner: number;
+  broadcastmessage: string;
+  chat: boolean;
+  chatl2: boolean;
+  chatsubonly: boolean;
+  commentmention: string;
+  commentTrayStatus: string;
+  communityflagged: boolean;
+  communityflaggedreview: boolean;
+  creditEntranceForAudience: boolean;
+  customErrorForGiftSetting: RechargeCustomError | undefined;
+  customizablegiftpoll: string;
+  customizablepoll: string;
+  danmaku: boolean;
+  deprecated1: boolean;
+  deprecated2: string;
+  deprecated3: string;
+  deprecated4: string;
+  deprecated5: string;
+  deprecated6: string;
+  deprecated7: string;
+  deprecated8: string;
+  deprecated9: string;
+  digg: boolean;
+  donationsticker: number;
+  emotepoll: string;
+  enablefanslevel: boolean;
+  enableshowuseruv: boolean;
+  enigmawhisper: string;
+  eventpromotion: number;
+  explore: boolean;
+  gameGuessPermission: boolean;
+  gamerankingswitch: number;
+  gift: boolean;
+  giftanchormt: number;
+  giftpoll: number;
+  goldenenvelope: number;
+  goldenenvelopeactivity: number;
+  guessEntranceForHost: boolean;
+  interactionquestion: boolean;
+  landscape: number;
+  landscapechat: string;
+  luckmoney: boolean;
+  multienablereserve: boolean;
+  offreason: RoomAuthOffReasons | undefined;
+  pictionary: string;
+  pictionarybubble: string;
+  pictionarypermission: string;
+  poll: number;
+  promote: boolean;
+  promoteother: number;
+  props: boolean;
+  publicscreen: number;
+  quickchat: number;
+  rank: number;
+  rankingchangealterswitch: number;
+  roomcontributor: boolean;
+  secretroom: string;
+  share: boolean;
+  shoppingranking: number;
+  showCreditWidget: boolean;
+  spamcomments: boolean;
+  starCommentPermissionSwitch: StarCommentPermissionSwitch | undefined;
+  toolbarmanagement: ToolBarManagement | undefined;
+  transactionHistory: number;
+  usercard: boolean;
+  usercount: number;
+  useUserPv: boolean;
+  viewers: boolean;
+  viewerwishes: string;
+}
+export interface RoomDecoration {
+  content: string;
+  id: string;
+  image: ImageModel | undefined;
+  inputRect: string[];
+  kind: string;
+  maxLength: string;
+  screenHeight: string;
+  screenWidth: string;
+  status: string;
+  textColor: string;
+  textSize: string;
+  type: string;
+  xPosition: string;
+  yPosition: string;
+}
+export interface RoomStats {
+  commentCount: string;
+  enterCount: number;
+  fanTicket: string;
+  followCount: number;
+  giftUvCount: number;
+  id: string;
+  idStr: string;
+  replayViewers: number;
+  roomFollowCount: string;
+  shareCount: number;
+  totalUser: number;
+  watchUserCount: string;
+  watermelon: number;
+}
 export interface RoomSticker {
   auditInfo: RoomStickerAuditInfo | undefined;
   bottomRightH: number;
   bottomRightW: number;
   content: string;
+  edited: boolean;
   extra: string;
   id: string;
   image: ImageModel | undefined;
   name: string;
   ninePatchImage: ImageModel | undefined;
+  reviewStatus: number;
+  screenHeight: string;
+  screenWidth: string;
+  starlingKey: string;
   textColor: string;
   textSize: string;
+  topLeftH: number;
   topLeftW: number;
   type: string;
+  xPosition: string;
   yPosition: string;
 }
 export interface RoomStickerAuditInfo {
   taskType: string;
   violationId: string;
+}
+export interface SceneryContent {
+  imageContent: ImageContent | undefined;
+  imageTransition: number;
+  scenerySource: string;
+  sceneryType: number;
+  templateImageContent: ImageContent | undefined;
 }
 export interface SchemeInfo {
   schemeDescribe: string;
@@ -421,6 +707,8 @@ export interface SchemeInfo {
   schemeUrl: string;
 }
 export interface ShortTouchItem {
+  activityId: string;
+  animeType: number;
   fcSecond: string;
   height: string;
   iconSkin: string;
@@ -448,6 +736,39 @@ export interface ShortTouchTemplateData {
   sendUserId: string;
   status: number;
 }
+export interface ShrinkSpec {
+  enable: boolean;
+  minFontSize: number;
+}
+export interface SizeSpec {
+  maxSize: MeasureSpec | undefined;
+  minSize: MeasureSpec | undefined;
+  mode: number;
+  value: number;
+}
+export interface SourcePB {
+  aigcModelVersion: string;
+  industryId: string;
+  industryName: string;
+  promptVersion: string;
+  strategyBoardContentType: string;
+  strategyBoardValue: string;
+  strategyLiveType: string;
+}
+export interface StarCommentPermissionSwitch {
+  offreason: string;
+  status: number;
+}
+export interface StrokeStyle {
+  color: string;
+  offsetX: number;
+  offsetY: number;
+  width: number;
+}
+export interface TextSpan {
+  styleRef: string;
+  text: string;
+}
 export interface UGGiftStructInfo {
   isUgGift: boolean;
   ugPointsCost: string;
@@ -459,6 +780,9 @@ export interface UnifyBaseActionData {
   unifyBaseId: number;
 }
 export interface UserAttr {
+  adminPermissions: {
+    [key: number]: number;
+  };
   hasVotingFunction: boolean;
   isAdmin: boolean;
   isChannelAdmin: boolean;
@@ -466,18 +790,39 @@ export interface UserAttr {
   isSuperAdmin: boolean;
   muteDuration: string;
 }
+export interface UserAttr_AdminPermissionsEntry {
+  key: number;
+  value: number;
+}
+export interface UserBadge {
+  icons: {
+    [key: number]: ImageModel;
+  };
+  title: string;
+}
+export interface UserBadge_IconsEntry {
+  key: number;
+  value: ImageModel | undefined;
+}
 export interface UserHonor {
   background: ImageModel | undefined;
+  backgroundBack: ImageModel | undefined;
   deprecated20: string;
+  deprecated23: string;
   deprecated24: string;
+  deprecated25: string;
   diamondIcon: ImageModel | undefined;
   gradeBanner: string;
+  gradeDescribe: string;
   gradeIconList: GradeIcon[];
   icon: ImageModel | undefined;
   imIcon: ImageModel | undefined;
+  imIconWithLevel: ImageModel | undefined;
   level: number;
+  liveIcon: ImageModel | undefined;
   name: string;
   newImIconWithLevel: ImageModel | undefined;
+  newLiveIcon: ImageModel | undefined;
   nextIcon: ImageModel | undefined;
   nextName: string;
   nextPrivileges: string;

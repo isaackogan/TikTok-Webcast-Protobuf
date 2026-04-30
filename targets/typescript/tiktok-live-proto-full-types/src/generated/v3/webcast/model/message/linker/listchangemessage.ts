@@ -14,6 +14,7 @@ export interface LinkListUser {
   fanTicketIconType: number;
   linkmicIdStr: string;
   linkType: number;
+  linkUserType: number;
   modifyTime: string;
   payedMoney: string;
   roleType: number;

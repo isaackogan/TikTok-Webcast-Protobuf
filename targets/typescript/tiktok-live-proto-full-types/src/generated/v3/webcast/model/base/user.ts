@@ -43,14 +43,20 @@ export interface CombineBadgeBackground {
 }
 export interface CombineBadgeStruct {
   arrowConfig: ArrowConfig | undefined;
+  background: CombineBadgeBackground | undefined;
   backgroundAutoMirrored: boolean;
+  backgroundDarkMode: CombineBadgeBackground | undefined;
   displayType: number;
   fontStyle: FontStyle | undefined;
   icon: ImageModel | undefined;
+  iconAutoMirrored: boolean;
+  multiGuestShowStyle: number;
   padding: PaddingInfo | undefined;
+  paddingNewFont: PaddingInfo | undefined;
   personalCardShowStyle: number;
   profileCardPanel: ProfileCardPanel | undefined;
   publicScreenShowStyle: number;
+  ranklistOnlineAudienceShowStyle: number;
   str: string;
   text: BadgeText | undefined;
 }

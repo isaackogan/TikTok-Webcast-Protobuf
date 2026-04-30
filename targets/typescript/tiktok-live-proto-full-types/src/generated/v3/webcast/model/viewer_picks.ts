@@ -7,18 +7,45 @@
 /* eslint-disable */
 import type { ImageModel } from "./base/messages.js";
 export const protobufPackage = "webcast.model.viewer_picks";
+export interface ControlChaosInfo {
+  actionType: number;
+  commandType: number;
+  hotKeys: HotKey[];
+}
 export interface GameTricksShortcut {
   hotKeys: HotKey[];
 }
 export interface GiftPick {
   customizedDesc: string;
   descSource: number;
+  extra: GiftPickExtra | undefined;
   giftIcon: ImageModel | undefined;
   giftId: string;
   giftPickId: string;
   giftPickIdStr: string;
   giftPrice: string;
   isPriorityRequest: boolean;
+}
+export interface GiftPickExtra {
+  gameInteraction: GiftPickExtraGameInteraction | undefined;
+  gameTricks: GiftPickExtraGameTricks | undefined;
+}
+export interface GiftPickExtraGameInteraction {
+  external: GiftPickExtraGameInteractionExternal | undefined;
+  storage: GiftPickExtraGameInteractionStorage | undefined;
+}
+export interface GiftPickExtraGameInteractionExternal {}
+export interface GiftPickExtraGameInteractionStorage {
+  instruction: string;
+}
+export interface GiftPickExtraGameTricks {
+  external: GiftPickExtraGameTricksExternal | undefined;
+  storage: GiftPickExtraGameTricksStorage | undefined;
+}
+export interface GiftPickExtraGameTricksExternal {}
+export interface GiftPickExtraGameTricksStorage {
+  controlChaosInfo: ControlChaosInfo | undefined;
+  gameTricksType: number;
 }
 export interface GiftPickWithScore {
   giftPick: GiftPick | undefined;
@@ -79,6 +106,8 @@ export interface ViewerPicksHeaderImage {
 }
 export interface ViewerPicksInfo {
   anchorParam: ViewerPickAnchorParam | undefined;
+  displayMode: number;
+  enableAutoRestart: boolean;
   endTimeMs: string;
   extra: ProfileExtra | undefined;
   giftPickList: GiftPickWithScore[];
@@ -86,8 +115,11 @@ export interface ViewerPicksInfo {
   hasScore: boolean;
   headerImage: ViewerPicksHeaderImage | undefined;
   roundDurationSec: string;
+  scene: number;
   startedFromAutoRestart: boolean;
+  startedFromAutoStart: boolean;
   startTimeMs: string;
   status: number;
   viewerPicksId: string;
+  viewerPicksIdStr: string;
 }

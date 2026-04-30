@@ -15,8 +15,10 @@ export interface AnchorLinkmicUserSettings {
   allowFriendInvites: boolean;
   allowFriendInvitesWhenOfflive: boolean;
   allowGiftToOtherAnchors: boolean;
+  allowGuestApplyDuringCohost: boolean;
   allowGuestRequestDuringCohost: boolean;
   allowLiveNoticeOfFriends: boolean;
+  allowLiveNoticeOfSuggested: boolean;
   allowMissedInvitationNotice: boolean;
   allowSuggestedInvites: boolean;
   allowUserCohostSuggestions: boolean;

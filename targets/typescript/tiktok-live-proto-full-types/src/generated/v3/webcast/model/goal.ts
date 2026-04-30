@@ -5,8 +5,28 @@
 // source: webcast/model/goal.proto
 
 /* eslint-disable */
-
+import type { ImageModel } from "./base/messages.js";
 export const protobufPackage = "webcast.model.goal";
+export interface AllGiftLitUpInfo {
+  lastLitUpGift: GiftInfo | undefined;
+  lastSponsorship: SponsorshipInfo | undefined;
+}
+export interface GalleryMiddleTouchInfo {
+  allGalleryGiftCount: string;
+  allGiftLitUpInfo: AllGiftLitUpInfo | undefined;
+  galleryLitUpGiftCount: string;
+  galleryPeriod: string;
+  periodEndTime: string;
+  region: string;
+  showGalleryMidTouch: boolean;
+  singleLitUpInfo: SingleGiftLitUpInfo | undefined;
+  sponsorshipChangeInfo: SponsorshipChangeInfo | undefined;
+  timing: number;
+}
+export interface GiftInfo {
+  giftIcon: ImageModel | undefined;
+  giftId: string;
+}
 export interface GoalComparison {
   coinsIncr: string;
   contributorIncr: string;
@@ -29,6 +49,23 @@ export interface GoalStats {
   totalCoins: string;
   totalContributor: string;
   totalNewFans: string;
+}
+export interface SingleGiftLitUpInfo {
+  litUpGift: GiftInfo | undefined;
+  sponsorship: SponsorshipInfo | undefined;
+}
+export interface SponsorshipChangeInfo {
+  currentSponsorship: SponsorshipInfo | undefined;
+  litUpGift: GiftInfo | undefined;
+  previousSponsorship: SponsorshipInfo | undefined;
+}
+export interface SponsorshipInfo {
+  sponsorAvatar: ImageModel | undefined;
+  userId: string;
+}
+export interface SubGoalContribution {
+  contributionCount: string;
+  id: string;
 }
 export interface SubGoalPinInfo {
   pinEndTime: string;

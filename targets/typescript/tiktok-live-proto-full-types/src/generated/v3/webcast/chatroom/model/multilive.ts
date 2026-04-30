@@ -19,9 +19,11 @@ export interface MultiLiveAnchorPanelSettings {
   enableShowMultiGuestLayout: LinkmicUserSettingShowAction;
   fixMicNum: LinkmicUserSettingShowAction;
   layout: LinkmicUserSettingLayout;
+  multiGuestAllowCohostInvitation: number;
   multiGuestAllowCohostInvitationOnce: number;
   multiGuestApplyAutoApprove: LinkmicUserSettingMultiGuestApplyAutoApprove;
   multiGuestShareRevenueInfoVersion: string;
+  saveAsDefaultLayout: number;
   showAvailableSpot: number;
   userId: string;
 }

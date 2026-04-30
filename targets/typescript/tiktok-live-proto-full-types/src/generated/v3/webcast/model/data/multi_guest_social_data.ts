@@ -11,7 +11,9 @@ export interface Avatar {
   avatarId: string;
   createdAt: string;
   failedReason: string;
+  failedTitle: string;
   image: ImageModel | undefined;
+  isSystem: boolean;
   status: number;
   styleId: string;
   updatedAt: string;

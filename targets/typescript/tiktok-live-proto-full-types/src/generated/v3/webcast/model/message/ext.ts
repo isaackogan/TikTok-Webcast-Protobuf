@@ -8,7 +8,7 @@
 import type { CommonMessageData } from "../../shared/message.js";
 import type { ImageModel } from "../base/messages.js";
 import type { OecLiveShoppingMessageV2 } from "../data/oec_msg.js";
-import type { AtmosphereTagInfo, BillboardDisplayResult, DispersionInfo, LivePermissionInfo, PromotionInfo, RefreshLiveBagInfo, Voucher } from "./messages.js";
+import type { AtmosphereTagInfo, BillboardDisplayResult, BillboardInfo, CampaignBannerDisplay, CampaignBannerDisplayResult, DispersionInfo, FlashSaleAtmosphereInfo, LivePermissionInfo, ProductSnapShot, PromotionInfo, RefreshLiveBagInfo, Voucher } from "./messages.js";
 export const protobufPackage = "webcast.model.message.ext";
 export interface EcDrawEntity {
   activityId: string;
@@ -35,7 +35,9 @@ export interface PopProduct {
   platform: number;
   price: string;
   productId: string;
+  productStatus: number;
   productType: string;
+  schema: string;
   source: string;
   sourceFrom: number;
   title: string;
@@ -70,16 +72,23 @@ export interface WebcastEcTaskRegisterMessage {
 }
 export interface WebcastOecLiveShoppingMessage {
   actionType: number;
+  anchorPinCardResetType: number;
   atmosphereTagInfo: AtmosphereTagInfo | undefined;
   billboardDisplayResult: BillboardDisplayResult | undefined;
+  billboardInfo: BillboardInfo | undefined;
+  campaignBannerDisplay: CampaignBannerDisplay | undefined;
+  campaignBannerDisplayResult: CampaignBannerDisplayResult | undefined;
+  cardType: number;
   common: CommonMessageData | undefined;
   dispersionInfo: DispersionInfo[];
+  flashSaleAtmosphereInfo: FlashSaleAtmosphereInfo[];
   hotTags: HotTag[];
   livePermissionInfo: LivePermissionInfo | undefined;
   liveProductNumber: number;
   oecLiveShoppingMessageV2: OecLiveShoppingMessageV2 | undefined;
   pinCardDelayTime: string;
   popProduct: PopProduct | undefined;
+  productSnapShot: ProductSnapShot | undefined;
   promotionInfo: PromotionInfo | undefined;
   refreshLiveBagInfo: RefreshLiveBagInfo | undefined;
   traceInfo: TraceInfo | undefined;

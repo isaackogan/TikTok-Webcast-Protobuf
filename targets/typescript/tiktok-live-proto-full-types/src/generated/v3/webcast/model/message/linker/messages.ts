@@ -47,6 +47,7 @@ export interface LinkerRandomMatchContent {
   innerChannelId: string;
   inviteType: string;
   matchId: string;
+  pairedTime: string;
   playType: LinkmicPlayType;
   roomId: string;
   sourceType: string;

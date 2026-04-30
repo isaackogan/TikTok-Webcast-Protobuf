@@ -8,6 +8,9 @@
 import type { User } from "../../base/user_2.js";
 import type { LinkListStatus, LinkRoleType, LinkSilenceStatus, LinkType } from "../../data/messages.js";
 export const protobufPackage = "webcast.model.message.linker.linked_list_change_message";
+export interface LinkedListChangeContent {
+  linkedUsers: ListUser[];
+}
 export interface ListUser {
   linkerId: string;
   linkmicId: string;

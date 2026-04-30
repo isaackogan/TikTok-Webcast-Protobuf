@@ -119,6 +119,8 @@ export interface SubPinCard {
   desc: Text | undefined;
   extraInfo: SubPinCardExtra | undefined;
   goalPinCard: SubGoalPinCard | undefined;
+  highlightTextNum: string;
+  icons: ImageModel[];
   id: string;
   image: ImageModel | undefined;
   lastPinTimestamp: string;
@@ -144,6 +146,7 @@ export interface SubQueue {
   title: string;
   totalCount: string;
   type: number;
+  waitingCount: string;
 }
 export interface SubTimerSticker {
   anchorSideTitle: string;

@@ -1231,6 +1231,12 @@ export enum UserEcommerceEntranceViewVersion {
   VIEW_VERSION_STAR_SHOP = 1,
   UNRECOGNIZED = -1,
 }
+export enum UserFansClubFansClubDataUserFansClubStatus {
+  NOT_JOINED = 0,
+  ACTIVE = 1,
+  INACTIVE = 2,
+  UNRECOGNIZED = -1,
+}
 export enum UserSubscribeInfoPayStatus {
   USER_SUBSCRIBE_INFO_PAY_STATUS_SUB_STATUS_UNKNOWN = 0,
   USER_SUBSCRIBE_INFO_PAY_STATUS_SUB_STATUS_ONE_TIME = 1,
@@ -1276,12 +1282,14 @@ export interface AILivePreviewHighlightVideoInfo {
   size: string;
   url: string;
   urlKey: string;
+  width: string;
 }
 export interface AILiveSummary {
   aiLiveSummarySwitch: number;
   aiLiveSummaryType: number;
   aiLiveSummaryVersions: string;
   aiSummaryList: string[];
+  audienceSideTitleLanguage: string;
   createTimestamp: string;
   openAiSummary: number;
   resultKey: string;
@@ -1313,6 +1321,13 @@ export interface AnchorGrowLevelImMsgTaskDone {
 export interface AnchorGrowLevelImMsgV2 {
   msgType: number;
   notificationData: AnchorGrowLevelImMsgNotification | undefined;
+}
+export interface AnchorLastLayoutSetting {
+  layoutId: string;
+  scene: string;
+}
+export interface AnchorSettingInfo {
+  lastLayoutSettings: AnchorLastLayoutSetting[];
 }
 export interface BannerImageBackground {
   activeIcon: ImageModel | undefined;
@@ -1359,9 +1374,11 @@ export interface EffectStruct {
   bindIds: string[];
   challenge: string[];
   children: string[];
+  composerParams: string;
   designerEncryptedId: string;
   designerId: string;
   devicePlatform: string;
+  effectId: string;
   effectType: number;
   extra: string;
   fileDiff: DiffInfo | undefined;
@@ -1369,6 +1386,7 @@ export interface EffectStruct {
   fromAppId: string;
   gradeKey: string;
   hint: string;
+  hintFile: UrlDataStruct | undefined;
   hintFileFormat: number;
   hintIcon: UrlDataStruct | undefined;
   iconUrl: UrlDataStruct | undefined;
@@ -1377,6 +1395,7 @@ export interface EffectStruct {
   isPoi: boolean;
   modelNames: string;
   modelNamesSec: string;
+  music: string[];
   name: string;
   originalEffectId: string;
   packageSize: string;
@@ -1389,11 +1408,18 @@ export interface EffectStruct {
   requirements: string[];
   requirementsSec: string[];
   resourceId: string;
+  schema: string;
   sdkExtra: string;
   sdkVersion: string;
+  source: number;
   systemList: string[];
+  tags: string[];
+  tagsUpdatedAt: string;
+  templateEffectExtra: TemplateEffectExtra | undefined;
   templateEffectId: string;
   transFileUrl: UrlDataStruct | undefined;
+  types: string[];
+  typesSec: string[];
   useNumber: string;
 }
 export interface EnlargeSetting {
@@ -1453,6 +1479,20 @@ export interface GiftGoalAutoUpdateSwitch {
 }
 export interface GiftGoalVoiceAlterSwitch {
   value: number;
+}
+export interface GuestApplicationInfo {
+  applicationList: GuestApplicationInfoItem[];
+  originRequestParam: string;
+}
+export interface GuestApplicationInfoItem {
+  anchorId: string;
+  applyTime: string;
+  channelId: string;
+  iconUrl: string;
+  isPermitted: boolean;
+  permitText: string;
+  permitTime: string;
+  roomId: string;
 }
 export interface GuestInvitedInfo {
   invitedList: GuestInvitedInfoItem[];
@@ -1564,6 +1604,16 @@ export interface PreviewCommentItem {
   itemType: number;
   userAvatar: string;
 }
+export interface PromoteCoupon {
+  couponList: PromoteCouponInfo[];
+}
+export interface PromoteCouponInfo {
+  currencyCode: string;
+  expireTime: string;
+  formattedPrice: string;
+  id: string;
+  price: string;
+}
 export interface RandomMatchInfo {
   requestId: string;
   requestSource: string;
@@ -1579,6 +1629,8 @@ export interface RealtimeLiveCenterBaseData {
   liveOnlineWatchCnt: string;
   liveStartTime: string;
   liveWatchCnt: string;
+  newSubscribersCnt: string;
+  shareCnt: string;
   totalScore: string;
 }
 export interface RealtimeLiveCenterLopInfo {
@@ -1597,13 +1649,23 @@ export interface RealtimeLiveCenterShopData {
 export interface RealtimeLiveCenterTips {
   buttonEventTrack: string;
   buttonName: string;
+  eventTrackParams: {
+    [key: string]: string;
+  };
   randomTipKey: string;
   showFeedback: boolean;
   showTips: boolean;
+  suggestionRecordId: string;
   tipsSchema: string;
+  tipsStarlingKey: string;
   tipText: string;
   tipType: string;
+  title: string;
   typeEventTrack: string;
+}
+export interface RealtimeLiveCenterTips_EventTrackParamsEntry {
+  key: string;
+  value: string;
 }
 export interface RealtimeLiveCenterTrafficToolInfoIM {
   count: string;
@@ -1618,6 +1680,37 @@ export interface RealtimeLiveCenterWhiteBoxPreviewIM {
   bigCardText: string;
   viewer: string;
 }
+export interface RechargeCustomError {
+  contentReplace: {
+    [key: string]: RechargePopUpContentReplace;
+  };
+  errCode: number;
+  extra: string;
+  idvDecisionConf: string;
+  linkToJump: string;
+  penaltyWarningSkip: string;
+  popUpContent: string;
+  popUpDismiss: string;
+  popUpDismissAction: number;
+  popUpDismissCtaSchema: string;
+  popUpPrimaryAction: number;
+  popUpPrimaryCta: string;
+  popUpPrimaryCtaSchema: string;
+  popUpStyle: number;
+  popUpTitle: string;
+  promptType: number;
+  questionMarkCtaSchema: string;
+  toastContent: string;
+}
+export interface RechargeCustomError_ContentReplaceEntry {
+  key: string;
+  value: RechargePopUpContentReplace | undefined;
+}
+export interface RechargePopUpContentReplace {
+  replaceType: number;
+  replaceValue: string;
+  valueSchema: string;
+}
 export interface RevenueTipsSetting {
   enable: boolean;
 }
@@ -1630,6 +1723,9 @@ export interface Task {
   key: string;
   targetNum: string;
   title: string;
+}
+export interface TemplateEffectExtra {
+  resourceId: string;
 }
 export interface TrafficDiagnose {
   body: string;

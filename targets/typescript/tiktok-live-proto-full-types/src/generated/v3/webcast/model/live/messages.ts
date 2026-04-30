@@ -5,19 +5,10 @@
 // source: webcast/model/live/messages.proto
 
 /* eslint-disable */
-import type { CohostSettingsInfo, CohostTopic, TopicSessionStatus } from "../../chatroom/model/interact_messages.js";
 import type { VideoMetaInfo } from "../../replay_proto.js";
-import type { DisplayConfig } from "../../shared/messages.js";
 import type { ImageModel } from "../base/messages.js";
 import type { FansClubInfo, OwnRoom, SubscribeInfo } from "../base/user.js";
-import type { User } from "../base/user_2.js";
-import type { RankUser } from "../data/merged.js";
 import type { AILiveSummary, PaidEventPaidType } from "../data/messages.js";
-import type { CompetitionInfo } from "../live_interact/competition_model.js";
-import type { KaraokeSong } from "../merged.js";
-import type { Text } from "../message/common.js";
-import type { PictionaryInfo, Question } from "../message/messages.js";
-import type { BattleInfoResponse } from "./match_battle_info_response.js";
 export const protobufPackage = "webcast.model.live";
 export interface ASRSummary {
   id: string;
@@ -28,9 +19,37 @@ export interface AgeRestricted {
   restricted: boolean;
   source: number;
 }
-export interface AggregationData {
-  audience: User | undefined;
-  successlist: number[];
+export interface AnchorLevelPermission {
+  beauty: number;
+  commentFilter: number;
+  commentSetting: number;
+  customizablePoll: number;
+  donationSticker: number;
+  effects: number;
+  flip: number;
+  fullScreenMode: number;
+  goodyBag: number;
+  hearYourOwnVoice: number;
+  interactionquestion: number;
+  karaoke: number;
+  liveBackground: number;
+  liveCenter: number;
+  liveIntro: number;
+  mirror: number;
+  moderatorSetting: number;
+  pauseLive: number;
+  pictionary: number;
+  pin: number;
+  playTogether: number;
+  poll: number;
+  portal: number;
+  promote: number;
+  share: number;
+  sticker: number;
+  topic: number;
+  treasureBox: number;
+  viewerRankList: number;
+  voiceEffect: number;
 }
 export interface AudienceLinkmicRelation {
   relationMap: {
@@ -68,12 +87,6 @@ export interface ChannelInfo {
   layout: number;
   vendor: number;
 }
-export interface CoStreamer {
-  owner: User | undefined;
-  roomId: string;
-  userCount: string;
-  userId: string;
-}
 export interface CommerceStruct {
   commercePermission: number;
   oecLiveEnterRoomInitData: string;
@@ -89,12 +102,6 @@ export interface CommercialContentToggle {
 export interface ContentSpotlightRankInfo {
   score: string;
   scoreIcon: ImageModel | undefined;
-}
-export interface CurrentInteractionQuestion {
-  favoriteStatus: number;
-  likeCnt: string;
-  question: Question | undefined;
-  selfLikeStatus: number;
 }
 export interface CustomTab {
   id: string;
@@ -144,24 +151,6 @@ export interface EPIFeatureValue_FloatFeatureEntry {
 export interface EPIFeatureValue_StringFeatureEntry {
   key: string;
   value: string;
-}
-export interface EcomRankInfo {
-  anonymous: string;
-  canShowRank: boolean;
-  displayConfig: DisplayConfig | undefined;
-  ranks: EcomRankInfoRank[];
-  rankType: number;
-  ruleUrl: string;
-  selfInfo: EcomRankInfoRank | undefined;
-}
-export interface EcomRankInfoRank {
-  gapDescription: string;
-  rank: string;
-  rankUser: RankUser | undefined;
-  score: string;
-  scoreDisplay: string;
-  user: User | undefined;
-  userRestrictionLevel: string;
 }
 export interface EcommerceRoomHeadTag {
   daInfo: string;
@@ -222,14 +211,6 @@ export interface FYPCommerceStruct {
   previewProductCardInfo: PreviewProductCardInfo | undefined;
   productNum: string;
 }
-export interface FeedRoomLabel {
-  backgroundColor: string;
-  bgImage: ImageModel | undefined;
-  icon: ImageModel | undefined;
-  logExtra: string;
-  position: string;
-  text: Text | undefined;
-}
 export interface FilterMsgRuleParamRandom {
   percentage: number;
 }
@@ -237,9 +218,6 @@ export interface GiftSuspension {
   endTime: string;
   status: number;
   toast: string;
-}
-export interface GroupLiveInfo {
-  groupShow: CompetitionInfo | undefined;
 }
 export interface GroupLiveMember {
   avatar: ImageModel | undefined;
@@ -263,20 +241,14 @@ export interface HighlightToolbarComInfo {
   highlightComTypes: number[];
   priority: string;
 }
-export interface KaraokeInfo {
-  displayKaraoke: boolean;
-  karaokeLyricStatus: boolean;
-  karaokeStatus: boolean;
-  song: KaraokeSong | undefined;
-}
 export interface LikeIconInfo {
   defaultIcons: ImageModel[];
   icons: ImageModel[];
   iconsSelf: ImageModel[];
 }
-export interface LiveChain {
-  coStreamers: CoStreamer[];
-  hasCoStreamers: boolean;
+export interface LiveCoreSDKData {
+  pullData: PullData | undefined;
+  pushData: PushData | undefined;
 }
 export interface LiveFilterMsgRule {
   name: string;
@@ -310,6 +282,7 @@ export interface MsgNotifyComAvoidConfig {
 }
 export interface MsgNotifyComponentAvoidRuleV2 {
   avoidScene: string[];
+  avoidWatchEarlyMs: string;
   canBeInterrupt: boolean;
   componentType: number;
   firstRecoverInfo: MsgNotifyComponentRecoverInfo | undefined;
@@ -317,11 +290,33 @@ export interface MsgNotifyComponentAvoidRuleV2 {
   maxActiveCount: number;
   maxRecoverRemainMs: string;
   priority: string;
+  recoverThresholdMs: string;
   subComponentType: number;
 }
 export interface MsgNotifyComponentRecoverInfo {
   delayMs: string;
   recover: boolean;
+}
+export interface MsgNotifyQuota {
+  componentType: number;
+  defaultCount: string;
+  positionCountMap: {
+    [key: string]: string;
+  };
+}
+export interface MsgNotifyQuota_PositionCountMapEntry {
+  key: string;
+  value: string;
+}
+export interface MsgNotifyWatchContinuousQuota {
+  componentType: number;
+  count: string;
+  coutinuousRoomCnt: string;
+}
+export interface MsgNotifyWatchEarlyQuota {
+  componentType: number;
+  count: string;
+  watchMillSeconds: string;
 }
 export interface MusicInfo {
   coverHdUrl: MusicUrlStruct | undefined;
@@ -360,24 +355,14 @@ export interface NotifyQuota {
   timeGapMs: string;
   timeGapShowCount: string;
 }
-export interface OnlineAudience {
-  anchorShowContribution: boolean;
-  currency: string;
-  deprecated: boolean;
-  displayConfig: DisplayConfig | undefined;
-  previewCount: string;
-  ranks: OnlineAudienceRank[];
-  ruleUrl: string;
-  selfInfo: OnlineAudienceRank | undefined;
-  total: string;
-}
-export interface OnlineAudienceRank {
-  gapDescription: string;
-  rank: string;
-  rankUser: RankUser | undefined;
-  score: string;
-  user: User | undefined;
-  userRestrictionLevel: string;
+export interface Options {
+  defaultPreviewQuality: Quality | undefined;
+  defaultQuality: Quality | undefined;
+  maxDrmLenientSize: string;
+  maxDrmLenientSizeBackup: string;
+  qualities: Quality[];
+  showQualityButton: boolean;
+  supportLowLatency: boolean;
 }
 export interface PaidContentInfo {
   paidContentLiveData: string;
@@ -407,17 +392,8 @@ export interface PartnershipInfo {
   promotingTaskId: string;
   promotingTaskType: number;
   showTaskId: string;
+  showTaskType: number;
   taskIdList: string[];
-}
-export interface PictionaryFullInfo {
-  guessCorrect: boolean;
-  pictionaryInfo: PictionaryInfo | undefined;
-  pictionaryStatistics: PictionaryStatistics | undefined;
-}
-export interface PictionaryStatistics {
-  firstUser: User | undefined;
-  guessCorrectUv: string;
-  guessTotalPv: string;
 }
 export interface PinInfo {
   displayDuration: string;
@@ -459,6 +435,27 @@ export interface PublicCommonDynamicText_ClientStringRefEntry {
   key: string;
   value: string;
 }
+export interface PullData {
+  options: Options | undefined;
+  streamData: string;
+}
+export interface PushData {
+  pushStreamLevel: number;
+  resolutionParams: {
+    [key: string]: ResolutionParams;
+  };
+  streamData: string;
+}
+export interface PushData_ResolutionParamsEntry {
+  key: string;
+  value: ResolutionParams | undefined;
+}
+export interface Quality {
+  iconType: number;
+  level: number;
+  name: string;
+  sdkKey: string;
+}
 export interface QueueInfo {
   currentUserId: string;
   joinStatus: number;
@@ -476,6 +473,7 @@ export interface QuickGift {
   isBroadcastGift: boolean;
   isEffectBefview: boolean;
   name: string;
+  primaryEffectId: string;
   type: string;
 }
 export interface RegionalRestricted {
@@ -487,28 +485,22 @@ export interface RepostInfo {
   repostersToken: string;
   showTag: boolean;
 }
+export interface ResolutionParams {
+  defaultBitrate: string;
+  fps: string;
+  height: string;
+  maxBitrate: string;
+  minBitrate: string;
+  width: string;
+}
+export interface ResourceConfig {
+  data: string;
+  schema: string;
+}
 export interface RoomCreateUserInfo {
   fansClubInfo: FansClubInfo | undefined;
   ownRoom: OwnRoom | undefined;
   subscribeInfo: SubscribeInfo | undefined;
-}
-export interface RoomLinkInfo {
-  audienceIdList: string[];
-  audienceLinkmicRelation: AudienceLinkmicRelation | undefined;
-  battleInfo: BattleInfoResponse | undefined;
-  channelId: string;
-  channelInfo: ChannelInfo | undefined;
-  cohostSettingsInfo: CohostSettingsInfo | undefined;
-  competitionInfo: CompetitionInfo | undefined;
-  followedCount: string;
-  linkerMode: number;
-  linkMicChannel: string;
-  linkmicUnifyChannelId: string;
-  multiGuestEnable: boolean;
-  rivalAnchorId: string;
-  showUserList: User[];
-  topicInfo: CohostTopic | undefined;
-  topicStatus: TopicSessionStatus | undefined;
 }
 export interface SMBIndustryInfo {
   industryId: string;
@@ -520,8 +512,16 @@ export interface SMBInfo {
   allSkuCount: string;
   allSkuTypeList: number[];
   creatorServicePlusSwitch: boolean;
+  creatorSingleSkuSchema: string;
   optInStatus: number;
+  publicRoomParam: {
+    [key: string]: string;
+  };
   smbOptInSource: number;
+}
+export interface SMBInfo_PublicRoomParamEntry {
+  key: string;
+  value: string;
 }
 export interface SMBLivePreview {
   aiSummary: AILiveSummary | undefined;
@@ -543,25 +543,6 @@ export interface SecondaryPageInfo {
   link: string;
   logo: string;
   title: string;
-}
-export interface ShowInfo {
-  anchors: User[];
-  showEndTime: string;
-  showIntroduction: string;
-  showStartTime: string;
-}
-export interface ShowInfoV2 {
-  anchors: User[];
-  bannerInfo: TopFrameBannerInfo | undefined;
-  guestInfoList: GuestInfo[];
-  id: string;
-  maxNotifyNum: string;
-  musicInfoList: MusicInfo[];
-  secondaryPage: SecondaryPageInfo | undefined;
-  showDisplayName: string;
-  showEndTime: string;
-  showIntroduction: string;
-  showStartTime: string;
 }
 export interface Skin {
   account: SkinHostAccount | undefined;
@@ -608,21 +589,58 @@ export interface StreamUrl {
   defaultResolution: string;
   drmType: number;
   extra: StreamUrlExtra | undefined;
+  flvPullUrl: {
+    [key: string]: string;
+  };
+  flvPullUrlParams: {
+    [key: string]: string;
+  };
+  hlsPullUrl: string;
+  hlsPullUrlMap: {
+    [key: string]: string;
+  };
+  hlsPullUrlParams: string;
   id: string;
   idStr: string;
+  liveCoreSdkData: LiveCoreSDKData | undefined;
   provider: number;
   pushResolution: string;
   pushUrls: string[];
+  resolutionName: {
+    [key: string]: string;
+  };
   rtmpPullUrl: string;
+  rtmpPullUrlParams: string;
   rtmpPushUrl: string;
   rtmpPushUrlParams: string;
+  streamAppId: string;
+  streamControlType: number;
   streamDelayMs: string;
   streamSizeHeight: string;
   streamSizeWidth: string;
 }
+export interface StreamUrl_ResolutionNameEntry {
+  key: string;
+  value: string;
+}
+export interface StreamUrl_FlvPullUrlEntry {
+  key: string;
+  value: string;
+}
+export interface StreamUrl_FlvPullUrlParamsEntry {
+  key: string;
+  value: string;
+}
+export interface StreamUrl_HlsPullUrlMapEntry {
+  key: string;
+  value: string;
+}
 export interface StreamUrlExtra {
   anchorInteractProfile: number;
+  audienceInteractProfile: number;
+  bframeEnable: boolean;
   bitrateAdaptStrategy: number;
+  bytevc1Enable: boolean;
   defaultBitrate: number;
   fps: number;
   gopSec: number;
@@ -630,8 +648,10 @@ export interface StreamUrlExtra {
   height: number;
   maxBitrate: number;
   minBitrate: number;
+  roi: boolean;
   superResolution: SrConfig | undefined;
   swRoi: boolean;
+  videoProfile: number;
   width: number;
 }
 export interface SubUpsellInfo {
@@ -657,26 +677,4 @@ export interface TopFrameBannerInfo {
 }
 export interface TopFrameBannerLogo {
   uri: string;
-}
-export interface TopFrameV2Summary {
-  configVersion: string;
-  endTime: string;
-  id: string;
-  schema: string;
-  showList: ShowInfoV2[];
-  startTime: string;
-  timeTravelOffsetSec: string;
-  title: string;
-  type: number;
-}
-export interface WatchReason {
-  bgColorType: number;
-  isShow: boolean;
-  style: number;
-  watchReasons: WatchReasonItem[];
-}
-export interface WatchReasonItem {
-  content: Text | undefined;
-  reasonId: number;
-  tuxIconProtocol: string;
 }

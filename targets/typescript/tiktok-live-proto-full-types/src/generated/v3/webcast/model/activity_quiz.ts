@@ -11,6 +11,16 @@ export interface OptionCountItem {
   count: number;
   optionId: string;
 }
+export interface QuizAnchorInfo {
+  avatar: string;
+  backgroundImage: string;
+  category: string;
+  description: string;
+  extra: string;
+  roomId: string;
+  uid: string;
+  userName: string;
+}
 export interface QuizAnswerInfo {
   correctAnswer: string;
   correctAnswerImage: QuizImage[];
@@ -21,13 +31,19 @@ export interface QuizAnswerInfo {
   extra3: string;
   extra4: string;
   extra5: string;
+  image: QuizImage[];
   messageType: number;
+  nextQuiz: QuizNextQuiz[];
+  options: QuizQuestionOption[];
   participantsCount: string;
   questionCount: number;
   questionId: string;
   questionNo: number;
+  questionType: number;
   quizId: string;
   quizType: number;
+  rewardAmount: string;
+  sponsorCode: string;
   statistics: QuizStatistics | undefined;
   title: string;
 }
@@ -46,6 +62,8 @@ export interface QuizCallUpWebview {
   userDataVersion: number;
 }
 export interface QuizFinalResult {
+  anchorList: QuizAnchorInfo[];
+  displayDurationMs: number;
   extra: string;
   extra1: string;
   extra2: string;
@@ -79,21 +97,47 @@ export interface QuizQuestionInfo {
   extra3: string;
   extra4: string;
   extra5: string;
+  image: QuizImage[];
   messageType: number;
+  nextQuiz: QuizNextQuiz[];
+  options: QuizQuestionOption[];
   participantsCount: number;
   questionCount: number;
   questionDurationMs: number;
   questionId: string;
   questionNo: number;
+  questionType: number;
   quizId: string;
   quizType: number;
   rewardAmount: string;
+  sponsorCode: string;
   title: string;
+}
+export interface QuizQuestionOption {
+  content: string;
+  image: QuizImage[];
+  optionId: string;
 }
 export interface QuizRewardRule {
   rewardList: RewardItem[];
   sendAmount: number;
   settlerCode: string;
+}
+export interface QuizRulesIntroduction {
+  displayDurationMs: number;
+  extra: string;
+  extra1: string;
+  extra2: string;
+  extra3: string;
+  extra4: string;
+  extra5: string;
+  messageType: number;
+  questionCount: number;
+  quizId: string;
+  quizType: number;
+  rewardAmount: string;
+  sponsorCode: string;
+  userCount: number;
 }
 export interface QuizStatistics {
   optionCount: OptionCountItem[];
@@ -102,22 +146,41 @@ export interface QuizUserIdentityInfo {
   availableDoubleBonusBalance: number;
   availableRespawnBalance: number;
   deviceId: string;
+  doubleBonusBalance: number;
   extra: string;
   extra1: string;
   extra2: string;
   extra3: string;
   extra4: string;
   extra5: string;
+  isQuestionEncrypt: boolean;
   isRetainIfWrong: boolean;
   messageType: number;
+  questionEncryptKey: string;
   quizId: string;
   quizType: number;
   respawnBalance: number;
   spectatorType: number;
   userDataVersion: number;
+  userIdentityInfos: QuizUserIdentityInfo[];
+  userLiveEventInfos: UserLiveEventInfo[];
+  userQuestionResult: QuizUserQuestionResult[];
   userStatus: number;
+}
+export interface QuizUserQuestionResult {
+  correctAnswer: string;
+  isUseRespawn: boolean;
+  questionId: string;
+  questionNo: number;
+  simpleUserAnswer: string;
+  userAnswer: string;
 }
 export interface RewardItem {
   rewardAmount: string;
   rewardName: string;
+}
+export interface UserLiveEventInfo {
+  isSubscribed: boolean;
+  liveEventId: string;
+  quizId: string;
 }

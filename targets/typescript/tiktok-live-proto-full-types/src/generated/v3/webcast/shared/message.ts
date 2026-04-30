@@ -17,25 +17,58 @@ export interface BaseProtoMessage {
 }
 export interface CommonMessageData {
   anchorFoldType: string;
+  anchorFoldTypeForWeb: string;
   anchorPriorityScore: string;
   clientSendTime: string;
   createTime: string;
+  dependId: LiveMessageID | undefined;
   dependRootId: LiveMessageID | undefined;
   describe: string;
   dispatchStrategy: number;
   displayText: Text | undefined;
+  filterMsgTags: string[];
+  foldType: string;
   foldTypeForWeb: string;
   fromIdc: string;
   isShowMsg: boolean;
+  logId: string;
   method: string;
   monitor: number;
   msgId: string;
+  msgProcessFilterK: string;
   msgProcessFilterV: string;
+  priorityScore: string;
   roomId: string;
   roomMessageHeatLevel: string;
+  sei: LiveMessageSEI | undefined;
   toIdc: string;
 }
 export interface LiveMessageID {
   messageScene: string;
   primaryId: string;
+}
+export interface LiveMessageSEI {
+  timestamp: string;
+  uniqueId: LiveMessageID | undefined;
+}
+export interface ProtoMessageFetchResult {
+  cursor: string;
+  fetchInterval: string;
+  fetchType: number;
+  heartbeatDuration: string;
+  historyCommentCursor: string;
+  historyNoMore: boolean;
+  internalExt: string;
+  isFirst: boolean;
+  messages: BaseProtoMessage[];
+  needAck: boolean;
+  now: string;
+  pushServer: string;
+  routeParams: {
+    [key: string]: string;
+  };
+}
+export interface ProtoMessageFetchResult_RouteParamsEntry {
+  key: string;
+  value: string;
 }

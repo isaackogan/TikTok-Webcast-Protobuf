@@ -15,6 +15,9 @@ export interface LinkerReplyContent {
   actionId: string;
   anchorMultiLiveEnum: LinkmicMultiLiveEnum;
   anchorSettingInfo: MultiLiveAnchorPanelSettings | undefined;
+  applierMicIdxInfoMap: {
+    [key: string]: string;
+  };
   fromRoomId: string;
   fromUser: User | undefined;
   fromUserId: string;
@@ -24,10 +27,21 @@ export interface LinkerReplyContent {
   linkerSetting: LinkerSetting | undefined;
   linkType: string;
   replyStatus: number;
+  rtcExtInfoMap: {
+    [key: string]: string;
+  };
   sourceType: string;
   toUser: User | undefined;
   toUserId: string;
   toUserLinkmicInfo: LinkmicInfo | undefined;
+}
+export interface LinkerReplyContent_RtcExtInfoMapEntry {
+  key: string;
+  value: string;
+}
+export interface LinkerReplyContent_ApplierMicIdxInfoMapEntry {
+  key: string;
+  value: string;
 }
 export interface LinkerSetting {
   linkType: string;
@@ -46,5 +60,5 @@ export interface LinkmicInfo {
   rtcAppId: string;
   rtcAppSign: string;
   rtcExtInfo: string;
-  vendor: string;
+  vendor: number;
 }

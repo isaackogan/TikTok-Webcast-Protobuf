@@ -25,3 +25,7 @@ export interface EmoteModel {
   rewardCondition: RewardCondition;
   uuid: string;
 }
+export interface EmoteWithIndex {
+  emote: EmoteModel | undefined;
+  index: number;
+}

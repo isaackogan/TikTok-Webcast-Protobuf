@@ -114,3 +114,6 @@ export interface StoreOfficialLabel {
   labelType: UserEcommerceEntranceShopEntranceInfoStoreLabelStoreBrandLabelType;
   labelTypeStr: string;
 }
+export interface ToolBarManagement {
+  mergingmorepriority: number[];
+}

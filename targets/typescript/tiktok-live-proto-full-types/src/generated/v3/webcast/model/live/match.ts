@@ -7,8 +7,12 @@
 /* eslint-disable */
 import type { ImageModel } from "../base/messages.js";
 import type { BattleABTestType, EffectStruct, IceShowdownSetting } from "../data/messages.js";
+import type { BattleUserArmies } from "../message/battle.js";
 import type { Text } from "../message/common.js";
 export const protobufPackage = "webcast.model.live.match";
+export interface AnchorMatchSettings {
+  enableAiCommentary: boolean;
+}
 export interface BattleABTest {
   abTestType: BattleABTestType;
   group: number;
@@ -29,6 +33,9 @@ export interface BattleBaseUserInfo {
   userId: string;
 }
 export interface BattleBonusConfig {
+  giftAmountGuide: {
+    [key: string]: BattleTaskGiftAmountGuide;
+  };
   previewClickActionSchemaUrl: string;
   previewConfig: PreviewPeriod[];
   previewStartTime: string;
@@ -36,11 +43,18 @@ export interface BattleBonusConfig {
   rewardConfig: RewardPeriodConfig | undefined;
   targetConfig: TaskPeriodConfig | undefined;
 }
+export interface BattleBonusConfig_GiftAmountGuideEntry {
+  key: string;
+  value: BattleTaskGiftAmountGuide | undefined;
+}
 export interface BattleBonusStatus {
   bonusPeriod: number;
   enterRoomPrompt: BattlePrompt | undefined;
+  progress: string;
   rewardSettleDuration: string;
+  rewardSettlePrompt: BattlePrompt | undefined;
   rewardSettleStatus: string;
+  userAssisted: boolean;
 }
 export interface BattleComboInfo {
   comboCount: string;
@@ -82,6 +96,16 @@ export interface BattleTask {
   battleBonusStatus: BattleBonusStatus | undefined;
   config: BattleBonusConfig | undefined;
 }
+export interface BattleTaskGiftAmountGuide {
+  disappearDuration: number;
+  giftImage: ImageModel | undefined;
+  guideContent: Text | undefined;
+  guidePrompt: BattlePrompt | undefined;
+  iconImage: ImageModel | undefined;
+  promptType: number;
+  recommendGiftCount: number;
+  recommendGiftId: string;
+}
 export interface BattleTeamResult {
   result: number;
   teamId: string;
@@ -95,6 +119,22 @@ export interface BattleTeamUser {
   score: string;
   userId: string;
   userIdStr: string;
+}
+export interface BattleTeamUserArmies {
+  hostRank: string;
+  hostVisibleRankFromTeamId: {
+    [key: string]: string;
+  };
+  teamId: string;
+  teamTotalEnigmaScore: string;
+  teamTotalEnigmaUv: string;
+  teamTotalScore: string;
+  teamUser: BattleTeamUser[];
+  userArmies: BattleUserArmies | undefined;
+}
+export interface BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+  key: string;
+  value: string;
 }
 export interface BattleTruthOrDare {
   anchorRegion: string;
@@ -140,6 +180,17 @@ export interface CriticalStrikeCardInfo {
   toAnchorId: string;
   toAnchorIdStr: string;
 }
+export interface EffectingCard {
+  criticalStrikeCards: CriticalStrikeCardInfo[];
+  extraTimeCards: ExtraTimeCardInfo[];
+  potionCards: PotionCardInfo[];
+  smokeCards: SmokeCardInfo[];
+  specialEffectCards: SpecialEffectCardInfo[];
+  top2Cards: Top2CardInfo[];
+  top3Cards: Top3CardInfo[];
+  vaultGlovesCards: VaultGloveCardInfo[];
+  waveCards: WaveCardInfo[];
+}
 export interface EnigmaBattleExtraInfo {
   hasStarted: boolean;
   isGiftFromEnigma: boolean;
@@ -176,6 +227,14 @@ export interface IceShowdownInfo {
   promptTimeMs: string;
   settingType: IceShowdownSetting;
   startTimeMs: string;
+}
+export interface LeagueScoreInfo {
+  classOptOut: boolean;
+  contentText: Text | undefined;
+  contentTextOpen: Text | undefined;
+  estimatedScore: string;
+  isActivityPeriod: boolean;
+  isOptOut: boolean;
 }
 export interface MatchPunishEffectInfo {
   effectToEffectStructMap: {
@@ -233,8 +292,11 @@ export interface RecommendedPlaybookInfo_PlaybookBizExtrasEntry {
   value: PlaybookBizExtra | undefined;
 }
 export interface RewardPeriodConfig {
+  clickPrompt: BattlePrompt | undefined;
   duration: string;
+  rewardingPrompt: BattlePrompt | undefined;
   rewardMultiple: number;
+  rewardPreparePrompt: BattlePrompt | undefined;
   rewardStartTime: string;
   rewardStartTimestamp: string;
 }
@@ -271,6 +333,7 @@ export interface TaskPeriodConfig {
   staticPrompt: BattlePrompt | undefined;
   targetStartTime: string;
   targetStartTimestamp: string;
+  targetType: number;
 }
 export interface TeamMatchCampaign {
   bestTeammateRelation: BestTeammateRelation[];
