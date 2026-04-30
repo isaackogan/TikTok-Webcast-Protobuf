@@ -7,7 +7,6 @@ __all__ = (
     "AssetBase",
     "AssetBundle",
     "AssetExtra",
-    "AuditInfo",
     "BefViewRenderSize",
     "DistributionStrategy",
     "DynamicRestriction",
@@ -87,22 +86,6 @@ class AssetExtra(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.gift.model", "AssetExtra", AssetExtra
-)
-
-
-@dataclass(eq=False, repr=False)
-class AuditInfo(betterproto2.Message):
-    violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(1, betterproto2.TYPE_INT64)
-    )
-
-    task_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
-        betterproto2.field(2, betterproto2.TYPE_INT32)
-    )
-
-
-default_message_pool.register_message(
-    "webcast.model.gift.model", "AuditInfo", AuditInfo
 )
 
 
@@ -324,7 +307,7 @@ class LiveStreamGoal(betterproto2.Message):
         betterproto2.field(17, betterproto2.TYPE_INT32)
     )
 
-    audit_info: "AuditInfo | None" = betterproto2.field(
+    audit_info: "___shared__.AuditInfo | None" = betterproto2.field(
         18, betterproto2.TYPE_MESSAGE, optional=True
     )
 
@@ -710,6 +693,7 @@ default_message_pool.register_message(
 )
 
 
+from .... import shared as ___shared__
 from ....shared import message as ___shared__message__
 from ... import base as __base__
 from ... import data as __data__

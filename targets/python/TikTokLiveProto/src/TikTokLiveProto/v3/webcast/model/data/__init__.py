@@ -101,7 +101,6 @@ __all__ = (
     "TemplateEffectExtra",
     "TimerDetailAntidirtStatus",
     "TimerDetailAuditStatus",
-    "TimerDetailAuditTaskType",
     "TimerStatus",
     "TopicActionType",
     "UrlDataStruct",
@@ -1442,12 +1441,6 @@ class TimerDetailAuditStatus(betterproto2.Enum):
     AUDIT_STATUS_REVIEWING = 3
 
     AUDIT_STATUS_FORBIDDEN = 4
-
-
-class TimerDetailAuditTaskType(betterproto2.Enum):
-    AUDIT_TASK_TYPE_DEFAULT = 0
-
-    AUDIT_TASK_TYPE_APPEAL = 1
 
 
 class TimerStatus(betterproto2.Enum):

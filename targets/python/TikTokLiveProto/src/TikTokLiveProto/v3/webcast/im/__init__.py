@@ -1618,20 +1618,20 @@ default_message_pool.register_message(
 
 @dataclass(eq=False, repr=False)
 class WebcastPushFrame(betterproto2.Message):
-    seq_id: "typing.Annotated[int, pydantic.Field(ge=0, le=2**64 - 1)]" = (
-        betterproto2.field(1, betterproto2.TYPE_UINT64)
+    seq_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
     )
 
-    log_id: "typing.Annotated[int, pydantic.Field(ge=0, le=2**64 - 1)]" = (
-        betterproto2.field(2, betterproto2.TYPE_UINT64)
+    log_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
     )
 
-    service: "typing.Annotated[int, pydantic.Field(ge=0, le=2**64 - 1)]" = (
-        betterproto2.field(3, betterproto2.TYPE_UINT64)
+    service: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
     )
 
-    method: "typing.Annotated[int, pydantic.Field(ge=0, le=2**64 - 1)]" = (
-        betterproto2.field(4, betterproto2.TYPE_UINT64)
+    method: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
     )
 
     headers: "list[PushHeader]" = betterproto2.field(

@@ -4,7 +4,7 @@
 # This file has been @generated
 
 __all__ = (
-    "EmoteModelAuditInfo",
+    "AuditInfo",
     "EmoteUploadInfo",
     "SovBriefInfo",
     "SovMaskInfo",
@@ -16,7 +16,6 @@ __all__ = (
     "SubPinCardText",
     "Text",
     "TimerDetail",
-    "TimerDetailAuditInfo",
 )
 
 import typing
@@ -32,7 +31,7 @@ betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
 @dataclass(eq=False, repr=False)
-class EmoteModelAuditInfo(betterproto2.Message):
+class AuditInfo(betterproto2.Message):
     violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
     )
@@ -44,9 +43,7 @@ class EmoteModelAuditInfo(betterproto2.Message):
     )
 
 
-default_message_pool.register_message(
-    "webcast.chatroom.api", "EmoteModel_AuditInfo", EmoteModelAuditInfo
-)
+default_message_pool.register_message("webcast.chatroom.api", "AuditInfo", AuditInfo)
 
 
 @dataclass(eq=False, repr=False)
@@ -401,7 +398,7 @@ class TimerDetail(betterproto2.Message):
         default_factory=lambda: __model__data__.TimerDetailAuditStatus(0),
     )
 
-    audit_info: "TimerDetailAuditInfo | None" = betterproto2.field(
+    audit_info: "__shared__.AuditInfo | None" = betterproto2.field(
         23, betterproto2.TYPE_MESSAGE, optional=True
     )
 
@@ -411,24 +408,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False)
-class TimerDetailAuditInfo(betterproto2.Message):
-    violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(1, betterproto2.TYPE_INT64)
-    )
-
-    task_type: "__model__data__.TimerDetailAuditTaskType" = betterproto2.field(
-        2,
-        betterproto2.TYPE_ENUM,
-        default_factory=lambda: __model__data__.TimerDetailAuditTaskType(0),
-    )
-
-
-default_message_pool.register_message(
-    "webcast.chatroom.api", "TimerDetail_AuditInfo", TimerDetailAuditInfo
-)
-
-
+from ... import shared as __shared__
 from ...model import base as __model__base__
 from ...model import data as __model__data__
 from ...model.base import user as __model__base__user__
