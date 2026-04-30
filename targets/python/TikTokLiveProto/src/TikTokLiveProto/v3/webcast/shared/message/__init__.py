@@ -4,8 +4,10 @@
 # This file has been @generated
 
 __all__ = (
+    "BaseProtoMessage",
     "CommonMessageData",
     "LiveMessageId",
+    "ProtoMessageFetchResult",
 )
 
 import typing
@@ -18,6 +20,34 @@ from ....message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class BaseProtoMessage(betterproto2.Message):
+    method: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    payload: "bytes" = betterproto2.field(2, betterproto2.TYPE_BYTES)
+
+    msg_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    msg_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT32)
+    )
+
+    offset: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(5, betterproto2.TYPE_INT64)
+    )
+
+    is_history: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message(
+    "webcast.shared.message", "BaseProtoMessage", BaseProtoMessage
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
@@ -111,6 +141,46 @@ class LiveMessageId(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.shared.message", "LiveMessageID", LiveMessageId
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class ProtoMessageFetchResult(betterproto2.Message):
+    messages: "list[BaseProtoMessage]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    cursor: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+    fetch_interval: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    now: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+    internal_ext: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    fetch_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(6, betterproto2.TYPE_INT32)
+    )
+
+    heartbeat_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        8, betterproto2.TYPE_INT64
+    )
+
+    push_server: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.shared.message", "ProtoMessageFetchResult", ProtoMessageFetchResult
 )
 
 
