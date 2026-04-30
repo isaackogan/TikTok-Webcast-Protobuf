@@ -58,6 +58,7 @@ message PermitBizContent {
   bool is_apply_auto_approved = 6;
   int64 link_type_permission = 7;
   bool is_full_position_pre_approved = 8;
+  bool is_quick_call_auto_approved = 9;
 }
 
 message ReplyBizContent {

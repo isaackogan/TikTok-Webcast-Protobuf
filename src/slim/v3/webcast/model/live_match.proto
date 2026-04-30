@@ -6,6 +6,10 @@ import "webcast/model/base/messages.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/model/message/common.proto";
 
+message AnchorMatchSettings {
+  bool enable_ai_commentary = 1;
+}
+
 message BattleABTest {
 
   data.BattleABTestType ab_test_type = 1;
@@ -35,6 +39,7 @@ message BattleBonusConfig {
   repeated PreviewPeriod preview_config = 2;
   TaskPeriodConfig target_config = 3;
   RewardPeriodConfig reward_config = 4;
+  map<int64, BattleTaskGiftAmountGuide> gift_amount_guide = 5;
   int64 preview_start_timestamp = 6;
   string preview_click_action_schema_url = 7;
 }
@@ -80,6 +85,17 @@ message BattleRivalTag {
   base.ImageModel bg_image = 1;
   base.ImageModel icon_image = 2;
   string content = 3;
+}
+
+message BattleTaskGiftAmountGuide {
+  BattlePrompt guide_prompt = 1;
+  int32 prompt_type = 2;
+  int32 disappear_duration = 3;
+  base.ImageModel icon_image = 11;
+  base.ImageModel gift_image = 12;
+  int64 recommend_gift_id = 21;
+  int32 recommend_gift_count = 22;
+  .webcast.model.message.common.Text guide_content = 23;
 }
 
 message BattleTeamResult {
@@ -136,6 +152,15 @@ message HighScoreControlCfg {
   repeated int64 origin_display_to_user_list = 3;
 }
 
+message LeagueScoreInfo {
+  int64 estimated_score = 1;
+  bool is_opt_out = 2;
+  bool is_activity_period = 3;
+  .webcast.model.message.common.Text content_text = 4;
+  bool class_opt_out = 5;
+  .webcast.model.message.common.Text content_text_open = 6;
+}
+
 message MatchPunishEffectInfo {
   map<int64, int64> user_to_effect_map = 1;
   map<int64, data.EffectStruct> effect_to_effect_struct_map = 2;
@@ -167,6 +192,9 @@ message RewardPeriodConfig {
   int64 duration = 2;
   int32 reward_multiple = 3;
   int64 reward_start_timestamp = 4;
+  BattlePrompt reward_prepare_prompt = 11;
+  BattlePrompt rewarding_prompt = 12;
+  BattlePrompt click_prompt = 13;
 }
 
 message TaskPeriodConfig {
@@ -178,6 +206,7 @@ message TaskPeriodConfig {
   int32 prompt_type = 21;
   BattlePrompt static_prompt = 22;
   int64 progress_target = 23;
+  int32 target_type = 24;
   base.ImageModel icon_image = 25;
   string click_action_schema_url = 26;
 }

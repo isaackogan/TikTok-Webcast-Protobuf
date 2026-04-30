@@ -66,18 +66,13 @@ message CohostListUser {
 
   .webcast.model.data.CoHostPermissoinType permission_type = 9;
   string display_id = 10;
-
   int64 follow_status = 11;
-
   bool is_low_version = 12;
-
   int64 rival_user_id = 13;
   int64 rival_room_id = 14;
   bool is_initiator = 15;
   string linkmic_id_str = 16;
-
   int64 best_teammate_uid = 17;
-
   bool has_topic_perm = 18;
   int64 inner_channel_id = 19;
 }
@@ -89,7 +84,6 @@ message CohostTopic {
   bool liked = 21;
   int64 total_heat = 22;
   int64 total_rivals = 23;
-
   repeated .webcast.model.base.ImageModel rivals_avatar = 24;
 }
 
@@ -165,9 +159,7 @@ message TagV2 {
   string tag_value = 3;
   string starling_key = 4;
   SecondDegreeRelationContent second_degree_relation_content = 10;
-
   int64 cohost_history_day = 11;
-
   SimilarInterestContent similar_interest_content = 12;
 }
 

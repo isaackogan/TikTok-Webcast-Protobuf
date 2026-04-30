@@ -25,14 +25,10 @@ message AnchorLevel {
   int64 task_start_time = 6;
   int64 task_decrease_experience = 7;
   int64 task_target_experience = 8;
-
   int64 task_end_time = 9;
   base.ImageModel profile_dialog_bg = 10;
-
   base.ImageModel profile_dialog_bg_back = 11;
-
   base.ImageModel stage_level = 12;
-
   base.ImageModel small_icon = 13;
 }
 
@@ -63,13 +59,31 @@ message BorderInfo {
   base.user.PrivilegeLogExtra profile_privilege_log_extra = 6;
   string avatar_background_color = 7;
   string avatar_background_border_color = 8;
+  string name_starling_key = 9;
   string desc_starling_key = 10;
+  string name = 11;
+  string description = 12;
 }
 
 message CrossScreenEffectInfo {
   map<int64, int32> single_action_effect_ids = 1;
   map<int64, int32> action_effect_ids = 2;
   map<int64, int32> reaction_effect_ids = 3;
+}
+
+message FansClubData {
+  string club_name = 1;
+  int32 level = 2;
+
+  data.User_FansClub_FansClubData_UserFansClubStatus user_fans_club_status = 3;
+  UserBadge badge = 4;
+  repeated int64 available_gift_ids = 5;
+  int64 anchor_id = 6;
+}
+
+message FansClubMember {
+  FansClubData data = 1;
+  map<int32, FansClubData> prefer_data = 2;
 }
 
 message GiftBoxInfo {
@@ -173,16 +187,13 @@ message LiveEventInfo {
   int64 ticket_amount = 8;
 
   data.LiveEventInfo_EventPayMethod pay_method = 9;
-
+  map<string, WalletPackage> wallet_pkg_dict = 10;
   repeated data.EventUserInfo event_user_info = 11;
-
   int64 subscribed_count = 12;
-
   data.PaidEventPreview paid_event_preview = 13;
   WalletPackage wallet_package = 14;
   int64 register_type = 15;
   string periodic_settings = 16;
-
   string periodic_shows = 17;
 }
 
@@ -205,7 +216,6 @@ message RandomGiftPanelBanner {
   base.ImageModel left_icon = 6;
   string schema_url = 7;
   repeated string bg_color_values = 8;
-
   int64 round = 9;
   int32 banner_priority = 10;
 }
@@ -228,8 +238,14 @@ message UserAttr {
   bool is_admin = 2;
   bool is_super_admin = 3;
   int64 mute_duration = 4;
+  map<int32, int32> admin_permissions = 5;
   bool has_voting_function = 6;
   bool is_channel_admin = 7;
+}
+
+message UserBadge {
+  map<int32, base.ImageModel> icons = 1;
+  string title = 2;
 }
 
 message UserHonor {
@@ -240,14 +256,21 @@ message UserHonor {
   string next_name = 5;
   int32 level = 6;
   base.ImageModel next_icon = 7;
+  int64 deprecated23 = 9;
   int64 deprecated24 = 10;
+  int64 deprecated25 = 11;
+  string grade_describe = 13;
   repeated GradeIcon grade_icon_list = 14;
   int64 screen_chat_type = 15;
   base.ImageModel im_icon = 16;
+  base.ImageModel im_icon_with_level = 17;
+  base.ImageModel live_icon = 18;
   base.ImageModel new_im_icon_with_level = 19;
+  base.ImageModel new_live_icon = 20;
   int64 upgrade_need_consume = 21;
   string next_privileges = 22;
   base.ImageModel background = 23;
+  base.ImageModel background_back = 24;
   int64 score = 25;
   string grade_banner = 1001;
 }

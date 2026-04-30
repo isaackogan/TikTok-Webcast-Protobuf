@@ -20,14 +20,16 @@ message EmoteModel {
 
   data.EmotePrivateType emote_private_type = 7;
   string package_id = 8;
-
   chatroom.api.EmoteModel_AuditInfo audit_info = 9;
 
   data.RewardCondition reward_condition = 10;
-
   chatroom.api.EmoteUploadInfo emote_upload_info = 11;
-
   int64 create_time = 12;
 
   data.EmoteScene emote_scene = 13;
+}
+
+message EmoteWithIndex {
+  int32 index = 1;
+  EmoteModel emote = 2;
 }

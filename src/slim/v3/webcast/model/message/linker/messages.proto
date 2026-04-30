@@ -59,4 +59,5 @@ message LinkerRandomMatchContent {
   int64 group_channel_id = 7;
 
   data.LinkmicPlayType play_type = 8;
+  int64 paired_time = 9;
 }

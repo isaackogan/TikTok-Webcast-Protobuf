@@ -37,7 +37,6 @@ message TextPiece {
   TextPieceUser user_value = 21;
   TextPieceGift gift_value = 22;
   TextPieceHeart heart_value = 23;
-
   TextPiecePatternRef pattern_ref_value = 24;
   TextPieceImage image_value = 25;
 }

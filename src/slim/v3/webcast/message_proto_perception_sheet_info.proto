@@ -15,11 +15,8 @@ message PerceptionSheetInfo {
   model.message.common.Text not_allowed_title = 6;
   model.message.common.Text not_allowed_text = 7;
   model.message.common.Text default_action_text = 8;
-
   int32 scene = 9;
   int64 target_user_id = 10;
-
   int64 target_room_id = 11;
-
   int64 count_down_time = 12;
 }

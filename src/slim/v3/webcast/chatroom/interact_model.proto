@@ -15,21 +15,18 @@ message AnchorLinkmicUserSettings {
   bool receive_friend_multi_host_invites = 6;
   bool receive_friend_multi_host_application = 7;
   bool block_this_multi_host_invites = 8;
-
   bool block_this_multi_host_application = 9;
   bool receive_not_friend_multi_host_invites = 10;
-
   bool receive_not_friend_multi_host_application = 11;
-
   bool allow_live_notice_of_friends = 12;
-
   bool allow_friend_invites = 13;
   bool allow_suggested_invites = 14;
   bool allow_friend_invites_when_offlive = 15;
   bool allow_user_cohost_suggestions = 16;
-
   bool allow_missed_invitation_notice = 17;
+  bool allow_live_notice_of_suggested = 18;
   bool allow_guest_request_during_cohost = 19;
+  bool allow_guest_apply_during_cohost = 20;
 }
 
 message BattleInfo {
@@ -76,21 +73,17 @@ message RivalExtraInfo {
   .webcast.model.data.LinkmicPlayType show_play_type = 9;
 
   .webcast.chatroom.model.interact.TopHostInfo top_host_info = 10;
-
   Tag tag = 11;
-
   ReserveInfo reserve_info = 12;
 
   .webcast.model.data.DetailBlockReason detail_block_reason = 13;
   .webcast.chatroom.model.interact.OptPairInfo opt_pair_info = 14;
   .webcast.chatroom.model.interact.TagV2 tag_v2 = 15;
   int64 eoy_level = 16;
-
   BattleInfo battle_info = 17;
 
   .webcast.model.data.CohostLayoutMode cohost_layout_mode = 18;
   .webcast.chatroom.model.interact.RivalsGameTag game_tag = 19;
-
   .webcast.chatroom.model.interact.GiftGalleryBadgeInfo gift_gallery_badge_info = 20;
   OffliveInviteInfo offlive_invite_info = 21;
   .webcast.chatroom.model.interact.UserSuggestionInfo user_suggestion_info = 22;

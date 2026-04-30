@@ -21,7 +21,10 @@ message InviterRivalExtra {
   string display_id = 6;
   shared.AuthenticationInfo authentication_info = 7;
   string nickname = 8;
+  int64 follow_status = 9;
   Hashtag hashtag = 10;
+  int64 user_id = 12;
+  bool is_best_teammate = 13;
   chatroom.model.interact.OptPairInfo opt_pair_info = 14;
   int64 follower_count = 15;
 }
@@ -35,21 +38,16 @@ message LinkerInviteContent {
   string sec_from_user_id = 6;
   string to_linkmic_id_str = 7;
   base.user.User from_user = 8;
-
   int64 required_mic_idx = 9;
+  map<int64, string> rtc_ext_info_map = 10;
 
   data.LinkmicMultiLiveEnum anchor_multi_live_enum = 11;
-
   chatroom.model.multilive.MultiLiveAnchorPanelSettings anchor_setting_info = 12;
-
   string inviter_linkmic_id_str = 13;
   InviteTopHostInfo from_top_host_info = 16;
-
   int64 action_id = 17;
-
   repeated LinkmicUserInfo linked_users = 18;
   PerceptionDialogInfo dialog = 19;
-
   PunishEventInfo punish_info = 20;
   int32 from_room_age_restricted = 21;
   chatroom.interact.model.Tag from_tag = 22;
@@ -66,9 +64,7 @@ message LinkerInviteMessageExtra {
   int32 layout = 6;
   string tips = 7;
   InviterRivalExtra extra = 8;
-
   repeated InviterRivalExtra other_users = 9;
   chatroom.model.interact.CohostTopic topic_info = 10;
-
   string algo_request_id = 11;
 }

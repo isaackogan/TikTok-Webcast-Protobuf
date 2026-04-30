@@ -29,6 +29,11 @@ message GoalStats {
   int64 total_new_fans = 4;
 }
 
+message SubGoalContribution {
+  string id = 1;
+  int64 contribution_count = 2;
+}
+
 message SubGoalPinInfo {
   int64 pin_start_time = 1;
   int64 pin_end_time = 2;

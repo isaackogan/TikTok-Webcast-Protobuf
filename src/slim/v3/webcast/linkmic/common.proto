@@ -234,6 +234,24 @@ enum StateType {
   STATE_REQ_BATCH_CHANGE = 100;
 }
 
+message AnchorLayoutSetting {
+
+  LayoutStyle latest_layout_style = 1;
+  repeated AnchorLayoutStyleSetting layout_style_settings = 2;
+  repeated AnchorPanelLayoutTypeSetting panel_layout_type_setting = 3;
+}
+
+message AnchorLayoutStyleSetting {
+
+  LayoutStyle layout_style = 1;
+  int32 max_position = 2;
+}
+
+message AnchorPanelLayoutTypeSetting {
+  int32 panel_layout_type = 1;
+  int32 max_position = 2;
+}
+
 message AvatarState {
   int64 avatar_id = 1;
 }
@@ -260,11 +278,8 @@ message CohostUserInfo {
   CohostStreamConfig stream_config = 6;
   bool in_different_invite_type_control_group = 7;
   CohostMode cohost_mode = 8;
-
   string nickname = 11;
-
   string display_id = 12;
-
   model.base.ImageModel avatar_thumb = 13;
   int64 follow_status = 14;
   string user_id_str = 15;
@@ -318,6 +333,7 @@ message LinkUserState {
 
   NetworkState network_state = 9;
   AvatarState avatar = 10;
+  string linker_session_id = 11;
 }
 
 message LinkerMediaChangeOperator {

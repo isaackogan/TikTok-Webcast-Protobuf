@@ -63,7 +63,6 @@ message InviteContent {
   MicPositionData pos = 6;
   DSLConfig dsl = 7;
   Player invitee = 8;
-
   Player operator = 9;
   string invitee_linker_session_id = 10;
 }
@@ -122,14 +121,10 @@ message PermitApplyContent {
   Player applier = 6;
   Player operator = 7;
   string applier_link_mic_id = 8;
-
   repeated string linked_user_ui_positions = 9;
   string applier_rtc_token = 10;
-
   repeated linkmic.common.PosIdentity ui_pos = 11;
-
   linkmic.common.LayoutState layout = 12;
-
   repeated linkmic.common.SpotInfo spot_list = 13;
   string applier_linker_session_id = 14;
 }
@@ -157,7 +152,6 @@ message RTCExtraInfo {
   ByteRTCExtInfo byte_rtc_ext_info = 6;
   RTCInfoExtra extra = 7;
   string rtc_business_id = 8;
-
   RTCOther rtc_other = 9;
   int32 interact_client_type = 10;
 }
@@ -196,7 +190,6 @@ message ReplyInviteContent {
   repeated string linked_user_ui_positions = 6;
   repeated linkmic.common.PosIdentity ui_pos = 7;
   linkmic.common.LayoutState layout = 8;
-
   repeated linkmic.common.SpotInfo spot_list = 9;
   string invitee_linker_session_id = 10;
 }

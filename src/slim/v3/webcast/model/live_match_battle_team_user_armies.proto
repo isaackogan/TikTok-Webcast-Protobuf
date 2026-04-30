@@ -13,4 +13,5 @@ message BattleTeamUserArmies {
   int64 host_rank = 5;
   int64 team_total_enigma_score = 6;
   int64 team_total_enigma_uv = 7;
+  map<int64, int64> host_visible_rank_from_team_id = 8;
 }

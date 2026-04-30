@@ -23,12 +23,9 @@ message User {
   int64 deprecated4 = 7;
 
   string deprecated5 = 8;
-
   ImageModel avatar_thumb = 9;
   ImageModel avatar_medium = 10;
-
   ImageModel avatar_large = 11;
-
   bool verified = 12;
 
   int32 deprecated6 = 13;
@@ -36,9 +33,7 @@ message User {
   string deprecated7 = 14;
   int32 status = 15;
   int64 create_time = 16;
-
   int64 modify_time = 17;
-
   int32 secret = 18;
   string share_qrcode_uri = 19;
 
@@ -47,8 +42,7 @@ message User {
   repeated ImageModel badge_image_list = 21;
   FollowInfo follow_info = 22;
   UserHonor pay_grade = 23;
-
-  bytes fans_club = 24;
+  FansClubMember fans_club = 24;
   BorderInfo border = 25;
   string special_id = 26;
   ImageModel avatar_border = 27;
@@ -57,12 +51,9 @@ message User {
   repeated ImageModel new_real_time_icons = 30;
   int32 top_vip_no = 31;
   UserAttr user_attr = 32;
-
   OwnRoom own_room = 33;
-
   int64 pay_score = 34;
   int64 ticket_count = 35;
-
   AnchorInfo anchor_info = 36;
 
   data.LinkmicStatus link_mic_stats = 37;
@@ -98,7 +89,6 @@ message User {
   bytes user_vip_info = 59;
   repeated int64 commerce_webcast_config_ids = 60;
   repeated BorderInfo border_list = 61;
-
   ComboBadgeInfo combo_badge_info = 62;
   SubscribeInfo subscribe_info = 63;
   repeated BadgeStruct badge_list = 64;

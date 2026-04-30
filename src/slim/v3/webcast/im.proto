@@ -408,9 +408,9 @@ message JoinGroupBizContent {
 
   model.data.CohostLayoutMode cohost_layout_mode = 7;
   chatroom.model.interact.TagV2 tag = 8;
-
   chatroom.model.interact.RivalsGameTag game_tag = 9;
   string new_user_education = 11;
+  map<int64, chatroom.model.interact.CohostABInfo> ab_infos = 12;
   JoinGroupMessageExtra join_group_msg_extra = 101;
 }
 
@@ -439,6 +439,7 @@ message JoinGroupMessageExtra {
   RivalExtra extra = 2;
   repeated RivalExtra other_users = 3;
   InvitationReorderExtra invitation_reorder_extra = 4;
+  map<int64, RivalGuestExtras> rival_guests_map = 5;
   bool is_from_cohost_over_issue = 6;
 }
 
@@ -527,27 +528,30 @@ message RivalExtra {
   string display_id = 6;
   shared.AuthenticationInfo authentication_info = 7;
   string nickname = 8;
-
   int64 follow_status = 9;
   model.Hashtag hashtag = 10;
-
   chatroom.model.interact.TopHostInfo top_host_info = 11;
-
   int64 user_id = 12;
-
   bool is_best_teammate = 13;
   chatroom.model.interact.OptPairInfo opt_pair_info = 14;
   int64 eoy_level = 15;
 
   model.data.CohostNudgeInfo nudge_info = 16;
-
   int64 reservation_id = 17;
-
   int64 follower_count = 18;
   chatroom.model.interact.RivalsGameTag game_tag = 19;
-
   chatroom.model.interact.GiftGalleryBadgeInfo gift_gallery_badge_info = 20;
   int64 room_id = 21;
+}
+
+message RivalGuestExtra {
+  int64 user_id = 1;
+  model.base.ImageModel avatar_thumb = 2;
+  string nickname = 3;
+}
+
+message RivalGuestExtras {
+  repeated RivalGuestExtra rival_guests = 1;
 }
 
 message SoundWareEffectExtra {
@@ -581,9 +585,7 @@ message WebcastLinkStateMessage {
 
   linkmic.common.StateType state_type = 9;
   linkmic.common.BackGroundImageState background = 10;
-
   string wallpaper_url = 12;
-
   repeated linkmic.common.PosIdentity ui_pos = 13;
   repeated linkmic.common.SpotInfo spot_list = 14;
   repeated int64 audio_muted_remote_channels = 15;

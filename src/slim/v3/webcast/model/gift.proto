@@ -14,11 +14,8 @@ message Gift {
   int64 id = 5;
   bool for_linkmic = 7;
   bool combo = 10;
-
-  int32 gift_type = 11;
-
+  int32 type = 11;
   int32 diamond_count = 12;
-
   bool is_displayed_on_panel = 13;
   int64 primary_effect_id = 14;
   base.ImageModel gift_label_icon = 15;
@@ -28,12 +25,12 @@ message Gift {
   base.ImageModel preview_image = 47;
   GiftPanelBanner gift_panel_banner = 48;
   bool is_broadcast_gift = 49;
-
   bool is_effect_befview = 50;
   bool is_random_gift = 51;
   bool is_box_gift = 52;
   bool can_put_in_gift_box = 53;
   GiftBoxInfo gift_box_info = 54;
+  map<string, string> tracker_params = 100;
   GiftLockInfo lock_info = 101;
   repeated gift.model.GiftColorInfo color_infos = 102;
   string gift_rank_recommend_info = 103;
@@ -54,7 +51,9 @@ message Gift {
   UGGiftStructInfo ug_gift_info = 118;
   CrossScreenEffectInfo cross_screen_effect_info = 119;
   gift.model.GiftPanelBeaconBubble beacon_bubble = 120;
+  map<string, gift.model.GiftResource> gift_resources = 121;
   int64 resource_id = 122;
+  map<int64, string> biz_extra = 123;
   LynxCrossScreenEffectInfo lynx_cross_screen_effect_info = 124;
   string gift_struct_hash = 125;
   SchemeInfo scheme_info = 126;
@@ -70,6 +69,7 @@ message GiftPanelBanner {
   string banner_lynx_url = 6;
   int32 banner_priority = 7;
   string banner_lynx_extra = 8;
+  base.ImageModel bg_image = 9;
 }
 
 message GiftTrayInfo {
@@ -81,13 +81,9 @@ message GiftTrayInfo {
   repeated string tray_small_bg_color = 6;
   .webcast.model.message.common.Text right_tag_text = 7;
   base.ImageModel right_tag_bg_img = 8;
-
   repeated string right_tag_bg_color = 9;
   string tray_name_text_color = 10;
-
   string tray_desc_text_color = 11;
-
   string right_tag_jump_schema = 12;
-
   string gift_tray_jump_schema = 13;
 }

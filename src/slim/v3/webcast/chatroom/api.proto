@@ -60,11 +60,11 @@ message SubPinCard {
   int64 id = 6;
   int64 template_id = 7;
   SubGoalPinCard goal_pin_card = 8;
-
   string action_schema = 9;
   int64 last_pin_timestamp = 10;
-
   SubPinCardExtra extra_info = 11;
+  int64 highlight_text_num = 12;
+  repeated .webcast.model.base.ImageModel icons = 13;
 }
 
 message SubPinCardExtra {
@@ -92,21 +92,15 @@ message TimerDetail {
   string user_side_title = 6;
   int64 time_increase_per_sub_s = 7;
   int64 time_increase_cap_s = 8;
-
   int32 sub_count = 9;
   bool time_increase_reach_cap = 10;
-
   int64 total_pause_time_s = 11;
-
   int64 last_pause_timestamp_s = 12;
-
   int64 total_time_s = 13;
   int64 remaining_time_s = 14;
   int64 timestamp_s = 15;
   int64 sticker_x = 16;
-
   int64 sticker_y = 17;
-
   int64 screen_w = 18;
   int64 screen_h = 19;
 

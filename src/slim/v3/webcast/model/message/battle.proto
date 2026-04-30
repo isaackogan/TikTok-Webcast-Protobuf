@@ -44,12 +44,10 @@ message BattleSetting {
   live.match.GiftModeMeta gift_mode_meta = 7;
 
   data.BattleType battle_type = 8;
-
   int64 extra_duration_second = 9;
   int64 end_time_ms = 10;
 
   data.BattleScene scene = 11;
-
   int64 source_type = 12;
 
   data.IceShowdownSetting ice_showdown_setting = 13;

@@ -900,6 +900,12 @@ enum User_EcommerceEntrance_ViewVersion {
   VIEW_VERSION_STAR_SHOP = 1;
 }
 
+enum User_FansClub_FansClubData_UserFansClubStatus {
+  NOT_JOINED = 0;
+  ACTIVE = 1;
+  INACTIVE = 2;
+}
+
 enum User_SubscribeInfo_PayStatus {
   SUB_STATUS_UNKNOWN = 0;
   SUB_STATUS_ONE_TIME = 1;
@@ -928,11 +934,18 @@ message EffectStruct {
   UrlDataStruct file_url = 6;
   UrlDataStruct icon_url = 7;
   string id = 8;
+  string effect_id = 9;
   string device_platform = 10;
+  repeated string types = 11;
+  repeated string tags = 12;
+  string tags_updated_at = 13;
   string parent = 14;
   repeated string children = 15;
   int32 effect_type = 16;
+  repeated string music = 17;
+  int32 source = 18;
   string designer_id = 19;
+  string schema = 20;
   repeated string requirements = 21;
   string extra = 22;
   bool is_busi = 23;
@@ -943,7 +956,10 @@ message EffectStruct {
   repeated string bind_ids = 30;
   int64 ptime = 31;
   string grade_key = 32;
+  string composer_params = 33;
+  UrlDataStruct hint_file = 34;
   int64 use_number = 35;
+  repeated string types_sec = 36;
   repeated string requirements_sec = 37;
   string panel = 38;
   string model_names = 39;
@@ -957,6 +973,7 @@ message EffectStruct {
   UrlDataStruct trans_file_url = 47;
   string template_effect_id = 48;
   int64 rec_tag = 49;
+  TemplateEffectExtra template_effect_extra = 50;
   DiffInfo file_diff = 51;
   int32 provider = 52;
   int64 package_size = 53;
@@ -982,6 +999,10 @@ message SubSplitStatus {
   bool is_old_sub_creator = 1;
 
   SubSplitPeriod cur_period = 2;
+}
+
+message TemplateEffectExtra {
+  string resource_id = 1;
 }
 
 message UrlDataStruct {

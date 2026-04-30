@@ -22,11 +22,18 @@ message AuctionInfo {
   UserInfo auction_winner = 6;
   PriceItem winner_bid_price = 7;
   PriceItem next_bid_price = 8;
+  string suffix = 9;
   ExtendAuctionCfg extend_auction_cfg = 10;
+  int32 auction_text_type = 11;
+  repeated ScrollElement scroll_element_list = 12;
+  ScrollElement reward_item = 13;
   int32 drawing_state_text_type = 14;
   int64 auction_config_id = 15;
   int32 auction_type = 16;
+  int32 auction_status = 17;
+  bool is_carousel = 18;
   CarouselCfg carousel_cfg = 19;
+  int32 auction_text_type_int = 20;
   int32 drawing_state_text_type_int = 21;
   string version_time_str = 22;
 }
@@ -105,6 +112,10 @@ message PopupWindowInfo {
   AuctionWinnerPopup auction_winner_popup = 1;
 }
 
+message PriceHideInfo {
+  string display_text = 1;
+}
+
 message PriceItem {
   string currency_name = 2;
   string currency_symbol = 3;
@@ -113,10 +124,15 @@ message PriceItem {
   string origin_price_decimal = 6;
   string sale_price_format = 7;
   string origin_price_format = 8;
+  string discount_format = 9;
   string discount_decimal = 10;
+  string price_prefix = 11;
+  string reduce_price_format = 12;
+  string single_product_price_format = 13;
   bool show_currency_space = 14;
   int32 currency_show_mode = 15;
   int32 price_display_mode = 16;
+  PriceHideInfo price_hide_info = 17;
 }
 
 message ProductItem {
@@ -133,6 +149,10 @@ message ProductItem {
 message ReqItem {
   int32 scene = 1;
   DispersionParam dispersion_param = 2;
+}
+
+message ScrollElement {
+  string product_title = 1;
 }
 
 message ShopBrandLogo {

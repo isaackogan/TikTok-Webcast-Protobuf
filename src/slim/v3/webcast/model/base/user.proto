@@ -25,16 +25,12 @@ message BadgeStruct {
 
   data.BadgeExhibitionType exhibition_type = 7;
   string openweburl = 10;
-
   bool display = 11;
-
   PrivilegeLogExtra privilege_log_extra = 12;
-
   ImageBadge image = 20;
   TextBadge text = 21;
   StringBadge str = 22;
   CombineBadgeStruct combine = 23;
-
   bool is_customized = 24;
 }
 
@@ -60,10 +56,16 @@ message CombineBadgeStruct {
   PaddingInfo padding = 5;
   FontStyle font_style = 6;
   ProfileCardPanel profile_card_panel = 7;
+  CombineBadgeBackground background = 11;
+  CombineBadgeBackground background_dark_mode = 12;
+  bool icon_auto_mirrored = 13;
   bool background_auto_mirrored = 14;
   int32 public_screen_show_style = 15;
   int32 personal_card_show_style = 16;
+  int32 ranklist_online_audience_show_style = 17;
+  int32 multi_guest_show_style = 18;
   ArrowConfig arrow_config = 19;
+  PaddingInfo padding_new_font = 20;
 }
 
 message ComboBadgeInfo {
@@ -202,14 +204,11 @@ message SubscribeInfo {
   bool is_in_grace_period = 6;
   bool is_subscribed_to_anchor = 7;
   chatroom.api.TimerDetail timer_detail = 8;
-
   bool user_gift_sub_auth = 9;
   bool anchor_gift_sub_auth = 10;
 
   data.User_SubscribeInfo_PayStatus status = 11;
-
   int64 sub_end_time = 12;
-
   string package_id = 13;
   string sol_room_display_text = 14;
   bool is_sol_eligible = 15;

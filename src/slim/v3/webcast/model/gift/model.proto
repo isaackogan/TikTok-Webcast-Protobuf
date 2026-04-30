@@ -3,6 +3,7 @@ syntax = "proto3";
 package webcast.model.gift.model;
 
 import "webcast/model/base/messages.proto";
+import "webcast/model/base/user.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/model/gift/assets_face_recognition_meta.proto";
 import "webcast/model/goal.proto";
@@ -11,6 +12,15 @@ message AssetBase {
   base.ImageModel url = 2;
   string md5 = 3;
   assets.FaceRecognitionMeta face_meta = 4;
+}
+
+message AssetExtra {
+  string effect_starling_key = 1;
+}
+
+message AuditInfo {
+  int64 violation_id = 1;
+  int32 task_type = 2;
 }
 
 message BEFViewRenderSize {
@@ -52,6 +62,12 @@ message GiftPanelBeaconBubble {
   data.GiftPanelBeaconBubbleType type = 3;
 }
 
+message GiftResource {
+  int64 id = 1;
+  base.ImageModel image = 2;
+  int64 effect_id = 3;
+}
+
 message LiveStreamGoal {
   int64 id = 1;
   int32 type = 2;
@@ -61,13 +77,34 @@ message LiveStreamGoal {
   int32 audit_status = 6;
   int32 cycle_type = 7;
   int64 start_time = 8;
+  int64 expire_time = 9;
   int64 real_finish_time = 10;
+  repeated LiveStreamGoalContributor contributors = 11;
+  int32 contributors_length = 12;
+  string id_str = 13;
   string audit_description = 14;
   goal.GoalStats stats = 15;
   string goal_extra_info = 16;
+  int32 mode = 17;
+  AuditInfo audit_info = 18;
+  string challenge_type = 20;
   bool is_uneditable = 21;
   goal.GoalReward goal_reward = 22;
   int32 create_source = 23;
+}
+
+message LiveStreamGoalContributor {
+  int64 user_id = 1;
+  base.ImageModel avatar = 2;
+  string display_id = 3;
+  int64 score = 4;
+  string user_id_str = 5;
+  bool in_room = 6;
+  bool is_friend = 7;
+  bool follow_by_owner = 9;
+  bool is_fist_contribute = 10;
+  repeated goal.SubGoalContribution sub_goal_contributions = 11;
+  base.user.EnigmaInfo enigma_info = 12;
 }
 
 message LiveStreamGoalIndicator {
@@ -84,6 +121,7 @@ message LiveStreamSubGoal {
   string id_str = 6;
   goal.SubGoalPinInfo pin_info = 7;
   int32 source = 8;
+  string recommended_text = 9;
   string recommended_header = 10;
 }
 
@@ -103,6 +141,7 @@ message LokiExtraContent {
   BEFViewRenderSize bef_view_render_size = 6;
   int32 bef_view_render_fps = 7;
   int32 bef_view_fit_mode = 8;
+  string model_names = 9;
   repeated string requirements = 10;
 }
 

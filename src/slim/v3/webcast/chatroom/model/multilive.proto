@@ -31,5 +31,7 @@ message MultiLiveAnchorPanelSettings {
   .webcast.model.data.LinkmicUserSettingMultiGuestApplyAutoApprove multi_guest_apply_auto_approve = 14;
   int64 multi_guest_share_revenue_info_version = 15;
   int32 show_available_spot = 16;
+  int32 save_as_default_layout = 17;
+  int32 multi_guest_allow_cohost_invitation = 18;
   int32 multi_guest_allow_cohost_invitation_once = 19;
 }

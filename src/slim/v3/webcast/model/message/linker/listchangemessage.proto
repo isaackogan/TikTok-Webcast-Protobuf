@@ -14,6 +14,7 @@ message LinkListUser {
   int64 payed_money = 6;
   int64 fan_ticket = 7;
   int32 fan_ticket_icon_type = 8;
+  int32 link_user_type = 9;
   base.ImageModel blurred_avatar = 10;
 }
 

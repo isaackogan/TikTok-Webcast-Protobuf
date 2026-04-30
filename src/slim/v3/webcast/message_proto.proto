@@ -49,10 +49,8 @@ message ShopEntranceInfo {
   int64 sold_count = 6;
   int32 exp_rate_percentile = 7;
   string exp_rate_top_display = 8;
-
   int32 rate_display_style = 9;
   bool show_rate_not_applicable = 10;
-
   repeated SellingPoint selling_point = 11;
 }
 
@@ -77,7 +75,6 @@ message StoreIdentityLabel {
   string identity_label_bg_color_dark = 6;
   string identity_label_text_color_light = 7;
   string identity_label_text_color_dark = 8;
-
   string shop_explanation_page_schema = 9;
   string shop_identity_label_key = 10;
 }

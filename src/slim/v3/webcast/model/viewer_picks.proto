@@ -4,6 +4,12 @@ package webcast.model.viewer_picks;
 
 import "webcast/model/base/messages.proto";
 
+message ControlChaosInfo {
+  int32 command_type = 1;
+  repeated HotKey hot_keys = 2;
+  int32 action_type = 3;
+}
+
 message GameTricksShortcut {
   repeated HotKey hot_keys = 1;
 }
@@ -17,6 +23,37 @@ message GiftPick {
   string gift_pick_id_str = 6;
   bool is_priority_request = 7;
   int32 desc_source = 8;
+  GiftPickExtra extra = 9;
+}
+
+message GiftPickExtra {
+  GiftPickExtraGameTricks game_tricks = 1;
+  GiftPickExtraGameInteraction game_interaction = 2;
+}
+
+message GiftPickExtraGameInteraction {
+  GiftPickExtraGameInteractionStorage storage = 1;
+  GiftPickExtraGameInteractionExternal external = 2;
+}
+
+message GiftPickExtraGameInteractionExternal {
+}
+
+message GiftPickExtraGameInteractionStorage {
+  string instruction = 1;
+}
+
+message GiftPickExtraGameTricks {
+  GiftPickExtraGameTricksStorage storage = 1;
+  GiftPickExtraGameTricksExternal external = 2;
+}
+
+message GiftPickExtraGameTricksExternal {
+}
+
+message GiftPickExtraGameTricksStorage {
+  int32 game_tricks_type = 1;
+  ControlChaosInfo control_chaos_info = 2;
 }
 
 message GiftPickWithScore {
@@ -98,8 +135,13 @@ message ViewerPicksInfo {
   int64 end_time_ms = 6;
   bool has_duration = 7;
   bool has_score = 8;
+  bool enable_auto_restart = 9;
   bool started_from_auto_restart = 10;
+  string viewer_picks_id_str = 11;
+  int32 display_mode = 12;
+  int32 scene = 13;
   ViewerPicksHeaderImage header_image = 14;
   ViewerPickAnchorParam anchor_param = 15;
   ProfileExtra extra = 16;
+  bool started_from_auto_start = 17;
 }
