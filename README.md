@@ -13,6 +13,25 @@ Canonical Protobuf schemas for TikTok's Webcast WebSocket protocol, plus auto-ge
 > [!NOTE]
 > This is a **clean-room rewrite** of the Webcast wire format, reconstructed from observed client traffic for the purposes of **interoperability and proof-of-concept reverse engineering**. It is **non-commercial** and is not affiliated with, endorsed by, or sourced from TikTok or ByteDance. Fields are added, removed, and renamed by TikTok without notice, so the schemas should be treated as a best-effort snapshot.
 
+## Clean-Room Development & Legal Notice
+
+This repository is an independent, non-commercial interoperability project. Its purpose is to document and provide compatible Protocol Buffer interface definitions for systems that need to communicate with TikTok-related services or data formats.
+
+The Protocol Buffer definitions in this repository were produced through a clean-room reverse-engineering process. They are intended to describe interface behavior and wire-format compatibility, not to copy TikTok’s implementation code, internal systems, proprietary documentation, branding, or other protected expressive materials.
+
+This project is based on the good-faith position that independently reimplemented interface definitions used for interoperability may be permissible under applicable law, including principles reflected in *Google LLC v. Oracle America, Inc.*, 593 U.S. 1 (2021), where the U.S. Supreme Court held that limited reuse of software interface material for a transformative interoperability-related purpose constituted fair use.
+
+Nothing in this repository is intended to:
+- misappropriate trade secrets;
+- reproduce TikTok source code or proprietary implementation logic;
+- imply affiliation with, endorsement by, or sponsorship from TikTok or ByteDance;
+- bypass technical protection measures;
+- facilitate unauthorized access to any system; or
+- enable infringement of TikTok’s intellectual property rights.
+
+All trademarks, service marks, and product names are the property of their respective owners and are used only for identification and interoperability purposes.
+
+If you believe this repository contains material that infringes your rights or otherwise raises a legal concern, please contact `info@isaackogan.com`.
 
 ## Table of Contents
 
