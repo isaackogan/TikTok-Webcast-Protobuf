@@ -32,7 +32,7 @@ subprojects {
             repositories {
                 maven {
                     name = "mavenTarget"
-                    url = uri(System.getenv("MAVEN_REPO_URL")
+                    url = uri(System.getenv("MAVEN_REPO_URL")?.takeIf { it.isNotBlank() }
                         ?: "https://maven.cloudsmith.io/eulerstream/maven/")
                     credentials {
                         username = System.getenv("MAVEN_USERNAME")
