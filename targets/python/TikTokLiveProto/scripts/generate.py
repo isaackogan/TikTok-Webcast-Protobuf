@@ -13,13 +13,17 @@ PROTO_ROOT = PKG_ROOT.parent.parent.parent / "src" / "slim"
 TMP_DIR = PKG_ROOT / "tmp"
 SRC_PKG = PKG_ROOT / "src" / "TikTokLiveProto"
 
-# betterproto generates a flatter, TikTokLive-style module layout when the
-# synthetic merged schema omits the package declaration during codegen.
+# v1 & v2 use the legacy "merge into a single header-less proto" path so that
+# betterproto2 emits a flat module per version. v3+ keeps the original package
+# + directory structure since multi-package schemas can't be merged.
+LEGACY_VERSIONS = {"v1", "v2"}
+
 HEADER = 'syntax = "proto3";\n\n'
 VERSION_DIR_RE = re.compile(r"^v\d+$")
 HEADER_LINE_RE = re.compile(r"^\s*(syntax|import|package)\b")
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
 PYDANTIC_FORBID_CONFIG = ', config={"extra": "forbid"}'
+BETTERPROTO_OPTS = "pydantic_dataclasses,client_generation=none"
 
 
 def list_protos(directory: Path) -> list[Path]:
@@ -59,9 +63,6 @@ def resolve_plugin() -> Path:
 
 def merge_version(version: str) -> tuple[Path, Path]:
     src_dir = PROTO_ROOT / version
-    if not src_dir.exists():
-        raise FileNotFoundError(f"Missing proto source dir: {src_dir}")
-
     protos = list_protos(src_dir)
     if not protos:
         raise FileNotFoundError(f"No .proto files under {src_dir}")
@@ -77,7 +78,7 @@ def merge_version(version: str) -> tuple[Path, Path]:
     return out_dir, out_file
 
 
-def extract_generated_package(tmp_out: Path, out_gen: Path) -> None:
+def extract_legacy_package(tmp_out: Path, out_gen: Path) -> None:
     generated_file = tmp_out / "__init__.py"
     if not generated_file.exists():
         raise RuntimeError(f"Expected betterproto2 to emit {generated_file}")
@@ -97,30 +98,50 @@ def extract_generated_package(tmp_out: Path, out_gen: Path) -> None:
     )
 
 
-def run_betterproto(
-    version: str,
-    proto_dir: Path,
-    proto_file: Path,
-    plugin_path: Path,
-) -> None:
+def generate_legacy(version: str, plugin_path: Path) -> None:
+    """Merge all .proto files into one synthetic schema, emit flat module."""
+    proto_dir, proto_file = merge_version(version)
     tmp_out = TMP_DIR / "compiled" / version
     out_gen = SRC_PKG / version
     shutil.rmtree(tmp_out, ignore_errors=True)
     tmp_out.mkdir(parents=True, exist_ok=True)
-    out_gen.mkdir(parents=True, exist_ok=True)
 
     cmd = [
         "protoc",
         f"--plugin=protoc-gen-python_betterproto2={plugin_path}",
         f"-I={proto_dir}",
         f"--python_betterproto2_out={tmp_out}",
-        "--python_betterproto2_opt=pydantic_dataclasses,client_generation=none",
+        f"--python_betterproto2_opt={BETTERPROTO_OPTS}",
         str(proto_file),
     ]
 
-    print(f"[{version}] protoc + betterproto2 ...")
+    print(f"[{version}] protoc + betterproto2 (legacy) ...")
     subprocess.run(cmd, check=True)
-    extract_generated_package(tmp_out, out_gen)
+    extract_legacy_package(tmp_out, out_gen)
+
+
+def generate_modern(version: str, plugin_path: Path) -> None:
+    """Run betterproto2 against the version dir directly, preserving package + dir layout."""
+    version_dir = PROTO_ROOT / version
+    protos = list_protos(version_dir)
+    if not protos:
+        raise FileNotFoundError(f"No .proto files under {version_dir}")
+
+    out_gen = SRC_PKG / version
+    shutil.rmtree(out_gen, ignore_errors=True)
+    out_gen.mkdir(parents=True, exist_ok=True)
+
+    cmd = [
+        "protoc",
+        f"--plugin=protoc-gen-python_betterproto2={plugin_path}",
+        f"-I={version_dir}",
+        f"--python_betterproto2_out={out_gen}",
+        f"--python_betterproto2_opt={BETTERPROTO_OPTS}",
+        *(str(p) for p in protos),
+    ]
+
+    print(f"[{version}] protoc + betterproto2 (modern, {len(protos)} files) ...")
+    subprocess.run(cmd, check=True)
 
 
 def write_package_files(versions: list[str]) -> None:
@@ -161,8 +182,10 @@ def main() -> None:
         raise FileNotFoundError(f"No version directories found under {PROTO_ROOT}")
 
     for version in versions:
-        proto_dir, proto_file = merge_version(version)
-        run_betterproto(version, proto_dir, proto_file, plugin_path)
+        if version in LEGACY_VERSIONS:
+            generate_legacy(version, plugin_path)
+        else:
+            generate_modern(version, plugin_path)
 
     write_package_files(versions)
     shutil.rmtree(TMP_DIR, ignore_errors=True)

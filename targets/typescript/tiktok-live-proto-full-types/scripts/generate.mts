@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -11,6 +11,15 @@ const GEN_DIR = resolve(PKG_ROOT, 'src/generated');
 const SRC_DIR = resolve(PKG_ROOT, 'src');
 
 const HEADER = `syntax = "proto3";\npackage TikTok;\n\n`;
+const LEGACY_VERSIONS = new Set(['v1', 'v2']);
+
+const TS_PROTO_OPTS = [
+  '--ts_proto_opt=onlyTypes=true',
+  '--ts_proto_opt=forceLong=string',
+  '--ts_proto_opt=esModuleInterop=true',
+  '--ts_proto_opt=snakeToCamel=true',
+  '--ts_proto_opt=importSuffix=.js',
+];
 
 function listProtos(dir: string): string[] {
   const out: string[] = [];
@@ -32,7 +41,6 @@ function stripHeaderLines(content: string): string {
 
 function mergeVersion(version: string): { outDir: string; outFile: string } {
   const srcDir = resolve(PROTO_ROOT, version);
-  if (!existsSync(srcDir)) throw new Error(`Missing proto source dir: ${srcDir}`);
   const protos = listProtos(srcDir);
   if (protos.length === 0) throw new Error(`No .proto files under ${srcDir}`);
   const merged = HEADER + protos.map((p) => stripHeaderLines(readFileSync(p, 'utf8'))).join('\n\n') + '\n';
@@ -53,13 +61,9 @@ function resolvePlugin(): string {
   throw new Error('protoc-gen-ts_proto not found — run `npm install` in the package first.');
 }
 
-function runTsProto(args: {
-  version: string;
-  protoDir: string;
-  protoFile: string;
-  pluginPath: string;
-}): void {
-  const { version, protoDir, protoFile, pluginPath } = args;
+/** Legacy path: merge all .proto files into one synthetic schema (v1, v2). */
+function generateLegacy(version: string, pluginPath: string): void {
+  const { outDir: protoDir, outFile: protoFile } = mergeVersion(version);
   const outGen = resolve(GEN_DIR, version);
   mkdirSync(outGen, { recursive: true });
 
@@ -67,30 +71,73 @@ function runTsProto(args: {
     'protoc',
     `--plugin=protoc-gen-ts_proto=${pluginPath}`,
     `--ts_proto_out=${outGen}`,
-    '--ts_proto_opt=onlyTypes=true',
-    '--ts_proto_opt=forceLong=string',
-    '--ts_proto_opt=esModuleInterop=true',
-    '--ts_proto_opt=snakeToCamel=true',
-    '--ts_proto_opt=importSuffix=.js',
+    ...TS_PROTO_OPTS,
     `-I=${protoDir}`,
     protoFile,
   ].join(' ');
 
-  console.log(`[${version}] protoc (onlyTypes) ...`);
+  console.log(`[${version}] protoc legacy (onlyTypes) ...`);
   execSync(cmd, { stdio: 'inherit' });
 
   const schemaFile = resolve(outGen, 'tiktok-schema.ts');
   if (!existsSync(schemaFile)) throw new Error(`ts-proto did not emit ${schemaFile}`);
 }
 
+/** Modern path: run protoc against the version dir directly, preserving package + dir layout. */
+function generateModern(version: string, pluginPath: string): void {
+  const versionDir = resolve(PROTO_ROOT, version);
+  const protos = listProtos(versionDir);
+  if (protos.length === 0) throw new Error(`No .proto files under ${versionDir}`);
+
+  const outGen = resolve(GEN_DIR, version);
+  mkdirSync(outGen, { recursive: true });
+
+  const cmd = [
+    'protoc',
+    `--plugin=protoc-gen-ts_proto=${pluginPath}`,
+    `--ts_proto_out=${outGen}`,
+    ...TS_PROTO_OPTS,
+    `-I=${versionDir}`,
+    ...protos,
+  ].join(' ');
+
+  console.log(`[${version}] protoc modern (onlyTypes, ${protos.length} files) ...`);
+  execSync(cmd, { stdio: 'inherit' });
+}
+
+function nsName(relPath: string): string {
+  return relPath.replace(/\.ts$/, '').replace(/[^a-zA-Z0-9]+/g, '_');
+}
+
+function listGeneratedTs(dir: string, root = dir): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...listGeneratedTs(full, root));
+    else if (entry.isFile() && entry.name.endsWith('.ts')) out.push(relative(root, full));
+  }
+  return out.sort();
+}
+
 function writeEntries(versions: string[]): void {
   mkdirSync(SRC_DIR, { recursive: true });
   for (const v of versions) {
-    writeFileSync(
-      resolve(SRC_DIR, `${v}.ts`),
-      `export * from './generated/${v}/tiktok-schema.js';\n`,
-      'utf8',
-    );
+    const entryPath = resolve(SRC_DIR, `${v}.ts`);
+    if (LEGACY_VERSIONS.has(v)) {
+      writeFileSync(
+        entryPath,
+        `export * from './generated/${v}/tiktok-schema.js';\n`,
+        'utf8',
+      );
+    } else {
+      const versionGenDir = resolve(GEN_DIR, v);
+      const files = listGeneratedTs(versionGenDir);
+      const lines = files.map((f) => {
+        const importPath = `./generated/${v}/${f.replace(/\\/g, '/').replace(/\.ts$/, '.js')}`;
+        return `export * as ${nsName(f)} from '${importPath}';`;
+      });
+      writeFileSync(entryPath, lines.join('\n') + '\n', 'utf8');
+    }
   }
 }
 
@@ -107,8 +154,11 @@ function main(): void {
   if (versions.length === 0) throw new Error(`No version directories found under ${PROTO_ROOT}`);
 
   for (const version of versions) {
-    const { outDir: protoDir, outFile: protoFile } = mergeVersion(version);
-    runTsProto({ version, protoDir, protoFile, pluginPath });
+    if (LEGACY_VERSIONS.has(version)) {
+      generateLegacy(version, pluginPath);
+    } else {
+      generateModern(version, pluginPath);
+    }
   }
 
   writeEntries(versions);

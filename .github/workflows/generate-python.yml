@@ -45,7 +45,7 @@ jobs:
       - name: Check for drift
         id: diff
         run: |
-          if git diff --quiet -- src/TikTokLiveProto; then
+          if [ -z "$(git status --porcelain -- src/TikTokLiveProto)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"

@@ -57,7 +57,7 @@ jobs:
       - name: Check for drift
         id: diff
         run: |
-          if git diff --quiet -- src/generated; then
+          if [ -z "$(git status --porcelain -- src)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -70,7 +70,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase
-          git add targets/typescript/${{ matrix.package }}/src/generated
+          git add targets/typescript/${{ matrix.package }}/src
           git commit -m "chore(proto): regenerate ${{ matrix.package }} from proto sources
 
           Source: ${{ github.sha }}"
