@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { AuditInfo } from "../../shared/messages.js";
 import { ImageModel } from "../base/messages.js";
 import { EnigmaInfo } from "../base/user.js";
 import { GiftPanelBeaconBubbleType, MatchInfoMultiplierType } from "../data/messages.js";
@@ -22,11 +23,6 @@ export interface AssetBase {
 
 export interface AssetExtra {
   effectStarlingKey: string;
-}
-
-export interface AuditInfo {
-  violationId: string;
-  taskType: number;
 }
 
 export interface BEFViewRenderSize {
@@ -270,54 +266,6 @@ export const AssetExtra: MessageFns<AssetExtra> = {
           }
 
           message.effectStarlingKey = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseAuditInfo(): AuditInfo {
-  return { violationId: "0", taskType: 0 };
-}
-
-export const AuditInfo: MessageFns<AuditInfo> = {
-  encode(message: AuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.violationId !== "0") {
-      writer.uint32(8).int64(message.violationId);
-    }
-    if (message.taskType !== 0) {
-      writer.uint32(16).int32(message.taskType);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): AuditInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuditInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.violationId = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.taskType = reader.int32();
           continue;
         }
       }

@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { EmoteModelAuditInfo } from "../../chatroom/api.js";
+import { AuditInfo } from "../../chatroom/api.js";
 import { EmoteUploadInfo } from "../../chatroom/api_emote_upload_info.js";
 import {
   AuditStatus,
@@ -29,7 +29,7 @@ export interface EmoteModel {
   contentSource: ContentSource;
   emotePrivateType: EmotePrivateType;
   packageId: string;
-  auditInfo: EmoteModelAuditInfo | undefined;
+  auditInfo: AuditInfo | undefined;
   rewardCondition: RewardCondition;
   emoteUploadInfo: EmoteUploadInfo | undefined;
   createTime: string;
@@ -86,7 +86,7 @@ export const EmoteModel: MessageFns<EmoteModel> = {
       writer.uint32(66).string(message.packageId);
     }
     if (message.auditInfo !== undefined) {
-      EmoteModelAuditInfo.encode(message.auditInfo, writer.uint32(74).fork()).join();
+      AuditInfo.encode(message.auditInfo, writer.uint32(74).fork()).join();
     }
     if (message.rewardCondition !== 0) {
       writer.uint32(80).int32(message.rewardCondition);
@@ -179,7 +179,7 @@ export const EmoteModel: MessageFns<EmoteModel> = {
             break;
           }
 
-          message.auditInfo = EmoteModelAuditInfo.decode(reader, reader.uint32());
+          message.auditInfo = AuditInfo.decode(reader, reader.uint32());
           continue;
         }
         case 10: {

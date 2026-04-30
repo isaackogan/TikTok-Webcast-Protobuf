@@ -922,12 +922,6 @@ export enum TimerDetailAuditStatus {
   UNRECOGNIZED = -1,
 }
 
-export enum TimerDetailAuditTaskType {
-  AUDIT_TASK_TYPE_DEFAULT = 0,
-  AUDIT_TASK_TYPE_APPEAL = 1,
-  UNRECOGNIZED = -1,
-}
-
 export enum TimerStatus {
   NOT_STARTED = 0,
   RUNNING = 1,
