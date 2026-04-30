@@ -10,10 +10,10 @@ message HeartBeatMessage {
 }
 
 message WebcastPushFrame {
-  uint64 seq_id = 1;
-  uint64 log_id = 2;
-  uint64 service = 3;
-  uint64 method = 4;
+  int64 seq_id = 1;
+  int64 log_id = 2;
+  int64 service = 3;
+  int64 method = 4;
   repeated PushHeader headers = 5;
   string payload_encoding = 6;
   string payload_type = 7;

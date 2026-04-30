@@ -7,6 +7,7 @@ import "webcast/model/base/user.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/model/gift/assets_face_recognition_meta.proto";
 import "webcast/model/goal.proto";
+import "webcast/shared/messages.proto";
 
 message AssetBase {
   base.ImageModel url = 2;
@@ -16,11 +17,6 @@ message AssetBase {
 
 message AssetExtra {
   string effect_starling_key = 1;
-}
-
-message AuditInfo {
-  int64 violation_id = 1;
-  int32 task_type = 2;
 }
 
 message BEFViewRenderSize {
@@ -86,7 +82,7 @@ message LiveStreamGoal {
   goal.GoalStats stats = 15;
   string goal_extra_info = 16;
   int32 mode = 17;
-  AuditInfo audit_info = 18;
+  shared.AuditInfo audit_info = 18;
   string challenge_type = 20;
   bool is_uneditable = 21;
   goal.GoalReward goal_reward = 22;

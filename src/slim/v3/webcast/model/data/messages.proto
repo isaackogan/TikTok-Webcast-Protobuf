@@ -825,11 +825,6 @@ enum TimerDetail_AuditStatus {
   AUDIT_STATUS_FORBIDDEN = 4;
 }
 
-enum TimerDetail_AuditTaskType {
-  AUDIT_TASK_TYPE_DEFAULT = 0;
-  AUDIT_TASK_TYPE_APPEAL = 1;
-}
-
 enum TimerStatus {
   NOT_STARTED = 0;
   RUNNING = 1;
