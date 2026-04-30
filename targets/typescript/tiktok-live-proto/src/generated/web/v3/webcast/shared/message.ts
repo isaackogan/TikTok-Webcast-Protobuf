@@ -10,6 +10,15 @@ import { Text } from "../model/message/common.js";
 
 export const protobufPackage = "webcast.shared.message";
 
+export interface BaseProtoMessage {
+  method: string;
+  payload: Uint8Array;
+  msgId: string;
+  msgType: number;
+  offset: string;
+  isHistory: boolean;
+}
+
 export interface CommonMessageData {
   method: string;
   msgId: string;
@@ -35,6 +44,109 @@ export interface LiveMessageID {
   primaryId: string;
   messageScene: string;
 }
+
+export interface ProtoMessageFetchResult {
+  messages: BaseProtoMessage[];
+  cursor: string;
+  fetchInterval: string;
+  now: string;
+  internalExt: string;
+  fetchType: number;
+  heartbeatDuration: string;
+  pushServer: string;
+}
+
+function createBaseBaseProtoMessage(): BaseProtoMessage {
+  return { method: "", payload: new Uint8Array(0), msgId: "0", msgType: 0, offset: "0", isHistory: false };
+}
+
+export const BaseProtoMessage: MessageFns<BaseProtoMessage> = {
+  encode(message: BaseProtoMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.method !== "") {
+      writer.uint32(10).string(message.method);
+    }
+    if (message.payload.length !== 0) {
+      writer.uint32(18).bytes(message.payload);
+    }
+    if (message.msgId !== "0") {
+      writer.uint32(24).int64(message.msgId);
+    }
+    if (message.msgType !== 0) {
+      writer.uint32(32).int32(message.msgType);
+    }
+    if (message.offset !== "0") {
+      writer.uint32(40).int64(message.offset);
+    }
+    if (message.isHistory !== false) {
+      writer.uint32(48).bool(message.isHistory);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BaseProtoMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBaseProtoMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.method = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.payload = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.msgId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.msgType = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.offset = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.isHistory = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 function createBaseCommonMessageData(): CommonMessageData {
   return {
@@ -315,6 +427,129 @@ export const LiveMessageID: MessageFns<LiveMessageID> = {
           }
 
           message.messageScene = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseProtoMessageFetchResult(): ProtoMessageFetchResult {
+  return {
+    messages: [],
+    cursor: "",
+    fetchInterval: "0",
+    now: "0",
+    internalExt: "",
+    fetchType: 0,
+    heartbeatDuration: "0",
+    pushServer: "",
+  };
+}
+
+export const ProtoMessageFetchResult: MessageFns<ProtoMessageFetchResult> = {
+  encode(message: ProtoMessageFetchResult, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.messages) {
+      BaseProtoMessage.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.cursor !== "") {
+      writer.uint32(18).string(message.cursor);
+    }
+    if (message.fetchInterval !== "0") {
+      writer.uint32(24).int64(message.fetchInterval);
+    }
+    if (message.now !== "0") {
+      writer.uint32(32).int64(message.now);
+    }
+    if (message.internalExt !== "") {
+      writer.uint32(42).string(message.internalExt);
+    }
+    if (message.fetchType !== 0) {
+      writer.uint32(48).int32(message.fetchType);
+    }
+    if (message.heartbeatDuration !== "0") {
+      writer.uint32(64).int64(message.heartbeatDuration);
+    }
+    if (message.pushServer !== "") {
+      writer.uint32(82).string(message.pushServer);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ProtoMessageFetchResult {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProtoMessageFetchResult();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.messages.push(BaseProtoMessage.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fetchInterval = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.now = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.internalExt = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.fetchType = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.heartbeatDuration = reader.int64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.pushServer = reader.string();
           continue;
         }
       }
