@@ -4,11 +4,6 @@ package webcast.shared;
 
 import "webcast/model/base/messages.proto";
 
-message AuditInfo {
-  int64 violation_id = 1;
-  int32 task_type = 2;
-}
-
 message AuthenticationInfo {
   string custom_verify = 1;
   string enterprise_verify_reason = 2;

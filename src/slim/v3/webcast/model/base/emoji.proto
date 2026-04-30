@@ -20,7 +20,7 @@ message EmoteModel {
 
   data.EmotePrivateType emote_private_type = 7;
   string package_id = 8;
-  chatroom.api.AuditInfo audit_info = 9;
+  chatroom.api.EmoteModel_AuditInfo audit_info = 9;
 
   data.RewardCondition reward_condition = 10;
   chatroom.api.EmoteUploadInfo emote_upload_info = 11;

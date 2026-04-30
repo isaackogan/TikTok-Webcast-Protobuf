@@ -4,9 +4,8 @@ package webcast.chatroom.api;
 
 import "webcast/model/base/messages.proto";
 import "webcast/model/data/messages.proto";
-import "webcast/shared/messages.proto";
 
-message AuditInfo {
+message EmoteModel_AuditInfo {
   int64 violation_id = 1;
 
   .webcast.model.data.AuditTaskType task_type = 2;
@@ -110,5 +109,11 @@ message TimerDetail {
   .webcast.model.data.TimerDetail_AntidirtStatus antidirt_status = 21;
 
   .webcast.model.data.TimerDetail_AuditStatus audit_status = 22;
-  shared.AuditInfo audit_info = 23;
+  TimerDetail_AuditInfo audit_info = 23;
+}
+
+message TimerDetail_AuditInfo {
+  int64 violation_id = 1;
+
+  .webcast.model.data.TimerDetail_AuditTaskType task_type = 2;
 }
