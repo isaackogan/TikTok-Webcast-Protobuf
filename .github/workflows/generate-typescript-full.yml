@@ -23,6 +23,7 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         package:
           - tiktok-live-proto-full
@@ -70,9 +71,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase
           git add targets/typescript/${{ matrix.package }}/src
           git commit -m "chore(proto): regenerate ${{ matrix.package }} from proto sources
 
           Source: ${{ github.sha }}"
-          git push
+          for i in 1 2 3 4 5; do
+            git pull --rebase
+            if git push; then exit 0; fi
+            echo "Push attempt $i failed, retrying..."
+            sleep $((RANDOM % 4 + 1))
+          done
+          exit 1
