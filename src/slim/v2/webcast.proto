@@ -995,7 +995,6 @@ message ProtoMessageFetchResult {
     string historyCommentCursor = 12;
     bool historyNoMore = 13;
 
-    // Server-Message. Binary will deserialize into specific message
 
 }
 

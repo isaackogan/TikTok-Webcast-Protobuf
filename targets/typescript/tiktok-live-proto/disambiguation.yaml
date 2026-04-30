@@ -1,0 +1,39 @@
+# Disambiguates ts-proto exports that share the same TS identifier across
+# different proto packages within a version barrel. Without these renames the
+# entry shim cannot use `export *` (multiple proto packages legitimately have
+# e.g. their own `Tag`, `Text`, `UserInfo` messages).
+#
+# Format:
+#   <version>:
+#     <generated_file_path_relative_to_src/generated/<target>/<version>>:
+#       <OriginalName>: <RenamedName>
+#
+# Files / renames listed here are applied in every TS target that imports this
+# YAML (slim, full, full-types). Files that don't exist in a given target are
+# silently skipped, so this can be the union of all targets' collisions.
+#
+# When the generate script detects an unresolved collision it errors and tells
+# you which entries to add here.
+
+v3:
+  webcast/model/messages.ts:
+    AnchorInfo: ModelAnchorInfo
+    AuthenticationInfo: ModelAuthenticationInfo
+
+  webcast/model/data/oec_msg.ts:
+    Tag: OecMsgTag
+    UserInfo: OecMsgUserInfo
+
+  webcast/model/message/common.ts:
+    Text: MessageCommonText
+
+  webcast/model/message/messages.ts:
+    AnchorInfo: MessageAnchorInfo
+    CompetitionInitiateInfo: MessageCompetitionInitiateInfo
+    FontStyle: MessageFontStyle
+    MatchInfo: MessageMatchInfo
+    OptPairInfo: MessageOptPairInfo
+    ReserveInfo: MessageReserveInfo
+
+  webcast/model/message/linker/linked_list_change_message.ts:
+    ListUser: LinkerListUser

@@ -44,7 +44,9 @@
     "@bufbuild/protobuf": "^2.2.5"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
+    "js-yaml": "^4.1.0",
     "ts-proto": "^2.11.6",
     "tsdown": "^0.21.0",
     "tsx": "^4.19.0",

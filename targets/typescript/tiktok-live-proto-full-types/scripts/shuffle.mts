@@ -2,16 +2,24 @@
  * Reorder interface fields in generated .ts output so that the source order
  * (which mirrors proto field numbers) cannot be inferred. Sort is alphabetical
  * — deterministic across builds, but unrelated to the wire layout.
+ *
+ * Implementation: parse with `@babel/parser` (TypeScript plugin), sort each
+ * `TSInterfaceDeclaration` body by property name, regenerate with
+ * `@babel/generator`. AST-based, so it can't accidentally fracture interface
+ * boundaries the way a regex/line-based pass can.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parse } from '@babel/parser';
+import _generate from '@babel/generator';
+import * as t from '@babel/types';
+
+const generate = ((_generate as unknown) as { default: typeof _generate }).default ?? _generate;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = resolve(__dirname, '..');
 const GEN_DIR = resolve(PKG_ROOT, 'src/generated');
-
-const INTERFACE_RE = /(export interface \w+(?:<[^>]*>)?\s*\{\n)([\s\S]*?)(\n\})/g;
 
 function listTsFiles(dir: string): string[] {
   const out: string[] = [];
@@ -24,60 +32,42 @@ function listTsFiles(dir: string): string[] {
   return out;
 }
 
-/**
- * Group an interface body's lines into "items" — each item is a single field,
- * including any leading JSDoc comment block that belongs to it.
- */
-function groupItems(body: string): string[] {
-  const lines = body.split('\n');
-  const items: string[] = [];
-  let buffer: string[] = [];
-
-  const flush = () => {
-    if (buffer.length === 0) return;
-    items.push(buffer.join('\n'));
-    buffer = [];
-  };
-
-  for (const line of lines) {
-    if (line.trim() === '') {
-      flush();
-      continue;
-    }
-    buffer.push(line);
-    // A field declaration ends with a semicolon at indent level.
-    if (/;\s*$/.test(line)) flush();
+function memberKey(node: t.TSTypeElement): string {
+  if (t.isTSPropertySignature(node) || t.isTSMethodSignature(node)) {
+    if (t.isIdentifier(node.key)) return node.key.name;
+    if (t.isStringLiteral(node.key)) return node.key.value;
+    if (t.isNumericLiteral(node.key)) return String(node.key.value);
   }
-  flush();
-  return items;
+  // Index signatures and call signatures: keep them at the end, stably.
+  return '~';
 }
 
-function fieldName(item: string): string {
-  // Skip leading comment block and pull the first `name:` or `name?:`.
-  for (const line of item.split('\n')) {
-    const m = line.match(/^\s*(\w+)\??\s*:/);
-    if (m) return m[1];
+function shuffleAst(ast: t.File): boolean {
+  let changed = false;
+  for (const stmt of ast.program.body) {
+    const decl = t.isExportNamedDeclaration(stmt) ? stmt.declaration : stmt;
+    if (!decl || !t.isTSInterfaceDeclaration(decl)) continue;
+    const body = decl.body.body;
+    if (body.length <= 1) continue;
+    const before = body.map(memberKey).join('|');
+    body.sort((a, b) => memberKey(a).localeCompare(memberKey(b)));
+    const after = body.map(memberKey).join('|');
+    if (before !== after) changed = true;
   }
-  return item;
-}
-
-function shuffleBody(body: string): string {
-  const items = groupItems(body);
-  if (items.length <= 1) return body;
-  items.sort((a, b) => fieldName(a).localeCompare(fieldName(b)));
-  return items.join('\n');
+  return changed;
 }
 
 function processFile(path: string): boolean {
   const original = readFileSync(path, 'utf8');
-  const updated = original.replace(INTERFACE_RE, (_, head, body, tail) => {
-    return head + shuffleBody(body) + tail;
+  const ast = parse(original, {
+    sourceType: 'module',
+    plugins: ['typescript'],
+    attachComment: true,
   });
-  if (updated !== original) {
-    writeFileSync(path, updated, 'utf8');
-    return true;
-  }
-  return false;
+  if (!shuffleAst(ast)) return false;
+  const { code } = generate(ast, { retainLines: false, jsescOption: { quotes: 'single' } });
+  writeFileSync(path, code.endsWith('\n') ? code : code + '\n', 'utf8');
+  return true;
 }
 
 function main(): void {
