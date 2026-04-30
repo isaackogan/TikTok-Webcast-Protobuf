@@ -27,7 +27,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PatternRef(betterproto2.Message):
     key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -51,7 +51,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class Text(betterproto2.Message):
     key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -73,7 +73,7 @@ class Text(betterproto2.Message):
 default_message_pool.register_message("webcast.model.message.common", "Text", Text)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextFormat(betterproto2.Message):
     color: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -105,7 +105,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextPiece(betterproto2.Message):
     type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -145,7 +145,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextPieceGift(betterproto2.Message):
     gift_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -169,7 +169,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextPieceHeart(betterproto2.Message):
     color: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -181,7 +181,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextPieceImage(betterproto2.Message):
     image: "__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -193,7 +193,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextPiecePatternRef(betterproto2.Message):
     key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -209,7 +209,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextPieceUser(betterproto2.Message):
     user: "__base__user__.User | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

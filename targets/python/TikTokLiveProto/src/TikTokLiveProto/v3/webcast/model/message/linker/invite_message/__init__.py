@@ -21,7 +21,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class InviterRivalExtra(betterproto2.Message):
     texttype: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -85,7 +85,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerInviteContent(betterproto2.Message):
     from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -187,7 +187,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerInviteMessageExtra(betterproto2.Message):
     match_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)

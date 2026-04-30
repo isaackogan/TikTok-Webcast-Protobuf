@@ -46,7 +46,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ArrowConfig(betterproto2.Message):
     icon: "__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -58,7 +58,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BadgeStruct(betterproto2.Message):
     display_type: "__data__.BadgeDisplayType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: __data__.BadgeDisplayType(0)
@@ -124,7 +124,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BadgeText(betterproto2.Message):
     key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -142,7 +142,7 @@ class BadgeText(betterproto2.Message):
 default_message_pool.register_message("webcast.model.base.user", "BadgeText", BadgeText)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CombineBadgeBackground(betterproto2.Message):
     image: "__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -170,7 +170,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CombineBadgeStruct(betterproto2.Message):
     display_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -242,7 +242,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ComboBadgeInfo(betterproto2.Message):
     icon: "__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -258,7 +258,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EnigmaInfo(betterproto2.Message):
     is_enigma_mask_on: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -268,7 +268,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class FansClubInfo(betterproto2.Message):
     is_sleeping: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -298,7 +298,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class FollowInfo(betterproto2.Message):
     following_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -322,7 +322,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class FontStyle(betterproto2.Message):
     font_size: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -344,7 +344,7 @@ class FontStyle(betterproto2.Message):
 default_message_pool.register_message("webcast.model.base.user", "FontStyle", FontStyle)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class IconConfig(betterproto2.Message):
     icon: "__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -360,7 +360,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ImageBadge(betterproto2.Message):
     display_type: "__data__.BadgeDisplayType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: __data__.BadgeDisplayType(0)
@@ -376,7 +376,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LabelConfig(betterproto2.Message):
     label: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -396,7 +396,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class NumberConfig(betterproto2.Message):
     number: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -416,7 +416,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class OwnRoom(betterproto2.Message):
     room_ids: "list[typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64, repeated=True)
@@ -430,7 +430,7 @@ class OwnRoom(betterproto2.Message):
 default_message_pool.register_message("webcast.model.base.user", "OwnRoom", OwnRoom)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PaddingInfo(betterproto2.Message):
     use_specific: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -476,7 +476,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PrivilegeLogExtra(betterproto2.Message):
     data_version: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -512,7 +512,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileCardPanel(betterproto2.Message):
     use_new_profile_card_style: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -538,7 +538,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileContent(betterproto2.Message):
     use_content: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -560,7 +560,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProjectionConfig(betterproto2.Message):
     use_projection: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -574,7 +574,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SeparatorConfig(betterproto2.Message):
     color: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -586,7 +586,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class StretchableBackgroundImage(betterproto2.Message):
     image: "__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -602,7 +602,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class StringBadge(betterproto2.Message):
     display_type: "__data__.BadgeDisplayType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: __data__.BadgeDisplayType(0)
@@ -618,7 +618,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubscribeBadge(betterproto2.Message):
     origin_img: "__base__.ImageModel | None" = betterproto2.field(
         3, betterproto2.TYPE_MESSAGE, optional=True
@@ -636,7 +636,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubscribeInfo(betterproto2.Message):
     qualification: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -694,7 +694,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TextBadge(betterproto2.Message):
     display_type: "__data__.BadgeDisplayType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: __data__.BadgeDisplayType(0)
@@ -716,7 +716,7 @@ class TextBadge(betterproto2.Message):
 default_message_pool.register_message("webcast.model.base.user", "TextBadge", TextBadge)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class User(betterproto2.Message):
     id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)

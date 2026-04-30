@@ -22,7 +22,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ClassInfo(betterproto2.Message):
     class_type: "_data__.ClassType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: _data__.ClassType(0)
@@ -36,7 +36,7 @@ class ClassInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model.rank", "ClassInfo", ClassInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RankTabInfo(betterproto2.Message):
     rank_type: "_data__.ProfitRankType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: _data__.ProfitRankType(0)
@@ -58,7 +58,7 @@ class RankTabInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model.rank", "RankTabInfo", RankTabInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SettleInfo(betterproto2.Message):
     owner_settle_rank: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -80,7 +80,7 @@ class SettleInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model.rank", "SettleInfo", SettleInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TeamRankBonusTime(betterproto2.Message):
     switch: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 

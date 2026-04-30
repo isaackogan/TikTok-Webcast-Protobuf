@@ -25,7 +25,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerAcceptNoticeContent(betterproto2.Message):
     from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -47,7 +47,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerCancelContent(betterproto2.Message):
     from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -71,7 +71,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerEnterContent(betterproto2.Message):
     linked_users: "list[linked_list_change_message.ListUser]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -93,7 +93,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerKickOutContent(betterproto2.Message):
     from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -111,7 +111,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerLeaveContent(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -135,7 +135,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerMuteContent(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -151,7 +151,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerRandomMatchContent(betterproto2.Message):
     user: "__base__user__.User | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

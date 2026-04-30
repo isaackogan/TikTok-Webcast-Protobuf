@@ -78,6 +78,14 @@ def merge_version(version: str) -> tuple[Path, Path]:
     return out_dir, out_file
 
 
+def strip_forbid_extra(directory: Path) -> None:
+    """Remove `, config={"extra": "forbid"}` from every generated .py file in `directory`."""
+    for py_file in directory.rglob("*.py"):
+        text = py_file.read_text(encoding="utf8")
+        if PYDANTIC_FORBID_CONFIG in text:
+            py_file.write_text(text.replace(PYDANTIC_FORBID_CONFIG, ""), encoding="utf8")
+
+
 def extract_legacy_package(tmp_out: Path, out_gen: Path) -> None:
     generated_file = tmp_out / "__init__.py"
     if not generated_file.exists():
@@ -90,12 +98,7 @@ def extract_legacy_package(tmp_out: Path, out_gen: Path) -> None:
             continue
         shutil.move(str(child), out_gen / child.name)
 
-    init_file = out_gen / "__init__.py"
-    init_text = init_file.read_text(encoding="utf8")
-    init_file.write_text(
-        init_text.replace(PYDANTIC_FORBID_CONFIG, ""),
-        encoding="utf8",
-    )
+    strip_forbid_extra(out_gen)
 
 
 def generate_legacy(version: str, plugin_path: Path) -> None:
@@ -142,6 +145,7 @@ def generate_modern(version: str, plugin_path: Path) -> None:
 
     print(f"[{version}] protoc + betterproto2 (modern, {len(protos)} files) ...")
     subprocess.run(cmd, check=True)
+    strip_forbid_extra(out_gen)
 
 
 def write_package_files(versions: list[str]) -> None:

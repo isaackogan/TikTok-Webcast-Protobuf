@@ -31,7 +31,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EmoteModelAuditInfo(betterproto2.Message):
     violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -49,7 +49,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EmoteUploadInfo(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -75,7 +75,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SovBriefInfo(betterproto2.Message):
     cover: "__model__base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -105,7 +105,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SovMaskInfo(betterproto2.Message):
     type: "__model__data__.SovMaskInfoType" = betterproto2.field(
         1,
@@ -123,7 +123,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SovPinCardInfo(betterproto2.Message):
     recently_updated: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -137,7 +137,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubGoalPinCard(betterproto2.Message):
     goal_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -165,7 +165,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubOnlyVideosBriefInfo(betterproto2.Message):
     total_count_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -201,7 +201,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubPinCard(betterproto2.Message):
     time_to_live: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -261,7 +261,7 @@ class SubPinCard(betterproto2.Message):
 default_message_pool.register_message("webcast.chatroom.api", "SubPinCard", SubPinCard)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubPinCardExtra(betterproto2.Message):
     sov_info: "SovPinCardInfo | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -273,7 +273,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubPinCardText(betterproto2.Message):
     type: "__model__data__.SubPinCardTextTextType" = betterproto2.field(
         1,
@@ -291,7 +291,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class Text(betterproto2.Message):
     type: "__model__data__.SubPinCardTextTextType" = betterproto2.field(
         1,
@@ -307,7 +307,7 @@ class Text(betterproto2.Message):
 default_message_pool.register_message("webcast.chatroom.api", "Text", Text)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TimerDetail(betterproto2.Message):
     timer_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -411,7 +411,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TimerDetailAuditInfo(betterproto2.Message):
     violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)

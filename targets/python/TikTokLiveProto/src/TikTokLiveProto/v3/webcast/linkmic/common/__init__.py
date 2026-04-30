@@ -470,7 +470,7 @@ class StateType(betterproto2.Enum):
     STATE_REQ_BATCH_CHANGE = 100
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AnchorLayoutSetting(betterproto2.Message):
     latest_layout_style: "LayoutStyle" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: LayoutStyle(0)
@@ -490,7 +490,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AnchorLayoutStyleSetting(betterproto2.Message):
     layout_style: "LayoutStyle" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: LayoutStyle(0)
@@ -506,7 +506,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AnchorPanelLayoutTypeSetting(betterproto2.Message):
     panel_layout_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -524,7 +524,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AvatarState(betterproto2.Message):
     avatar_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -536,7 +536,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BackGroundImageState(betterproto2.Message):
     sticker_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -548,7 +548,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CohostMode(betterproto2.Message):
     is_take_the_stage_v2_supported: "bool" = betterproto2.field(
         1, betterproto2.TYPE_BOOL
@@ -560,7 +560,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CohostStreamConfig(betterproto2.Message):
     screen_share_stream_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -572,7 +572,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CohostUserInfo(betterproto2.Message):
     permission_type: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -630,7 +630,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ContentPosition(betterproto2.Message):
     content_i_d: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -658,7 +658,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GroupChannelAllUser(betterproto2.Message):
     group_channel_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -678,7 +678,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GroupChannelUser(betterproto2.Message):
     channel_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -718,7 +718,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GroupPlayer(betterproto2.Message):
     channel_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -734,7 +734,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GuestUserInfo(betterproto2.Message):
     user_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -768,7 +768,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LayoutState(betterproto2.Message):
     layout_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -792,7 +792,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerMediaChangeOperator(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -816,7 +816,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkUserState(betterproto2.Message):
     user: "__model__message__linkcore__.Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -868,7 +868,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MigrationDetails(betterproto2.Message):
     is_migrate: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -886,7 +886,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiGuestLayoutExtra(betterproto2.Message):
     origin_layout_style: "LayoutStyle" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: LayoutStyle(0)
@@ -922,7 +922,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiGuestLayoutNonSeiExtra(betterproto2.Message):
     social_game: "SocialGameLayoutNonSeiExtra | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -934,7 +934,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiGuestSpotExtra(betterproto2.Message):
     is_enlarged: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -962,7 +962,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiGuestSpotNonSeiExtra(betterproto2.Message):
     social_game_user: "SocialGameUserSpotNonSeiExtra | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -974,7 +974,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PosIdentity(betterproto2.Message):
     type: "PosIdentityType" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: PosIdentityType(0)
@@ -990,7 +990,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SocialGameLayoutExtra(betterproto2.Message):
     game_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -1030,7 +1030,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SocialGameLayoutNonSeiExtra(betterproto2.Message):
     just_dance_song_title: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1042,7 +1042,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SocialGameUserSpotExtra(betterproto2.Message):
     game_just_dance_user_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -1058,7 +1058,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SocialGameUserSpotNonSeiExtra(betterproto2.Message):
     game_score: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -1072,7 +1072,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SpotInfo(betterproto2.Message):
     spot_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)

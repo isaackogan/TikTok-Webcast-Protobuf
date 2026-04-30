@@ -55,7 +55,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ActivityRewardInfo(betterproto2.Message):
     badge: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -71,7 +71,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AnchorInfo(betterproto2.Message):
     level: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -81,7 +81,7 @@ class AnchorInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "AnchorInfo", AnchorInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AnchorLevel(betterproto2.Message):
     level: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -139,7 +139,7 @@ class AnchorLevel(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "AnchorLevel", AnchorLevel)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AuthenticationInfo(betterproto2.Message):
     custom_verify: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -161,7 +161,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class Author(betterproto2.Message):
     video_total_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -179,7 +179,7 @@ class Author(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "Author", Author)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BatchGiftInfo(betterproto2.Message):
     can_batch_send: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -191,7 +191,7 @@ class BatchGiftInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "BatchGiftInfo", BatchGiftInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BorderInfo(betterproto2.Message):
     icon: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -245,7 +245,7 @@ class BorderInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "BorderInfo", BorderInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CrossScreenEffectInfo(betterproto2.Message):
     single_action_effect_ids: "dict[int, int]" = betterproto2.field(
         1,
@@ -277,7 +277,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class FansClubData(betterproto2.Message):
     club_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -311,7 +311,7 @@ class FansClubData(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "FansClubData", FansClubData)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class FansClubMember(betterproto2.Message):
     data: "FansClubData | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -329,7 +329,7 @@ class FansClubMember(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "FansClubMember", FansClubMember)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class Gift(betterproto2.Message):
     image: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -529,7 +529,7 @@ class Gift(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "Gift", Gift)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftBoxInfo(betterproto2.Message):
     capacity: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -549,7 +549,7 @@ class GiftBoxInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftBoxInfo", GiftBoxInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftInfoInBox(betterproto2.Message):
     gift_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -575,7 +575,7 @@ class GiftInfoInBox(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftInfoInBox", GiftInfoInBox)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftLockInfo(betterproto2.Message):
     lock: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -601,7 +601,7 @@ class GiftLockInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftLockInfo", GiftLockInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPanelBanner(betterproto2.Message):
     display_text: "message_common.Text | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -641,7 +641,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftRandomEffectInfo(betterproto2.Message):
     random_gift_panel_banner: "RandomGiftPanelBanner | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -669,7 +669,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftsBoxInfo(betterproto2.Message):
     gifts_info_in_box: "list[GiftInfoInBox]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -679,7 +679,7 @@ class GiftsBoxInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftsBoxInfo", GiftsBoxInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftSeriesInfo(betterproto2.Message):
     series_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         2, betterproto2.TYPE_STRING
@@ -695,7 +695,7 @@ class GiftSeriesInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftSeriesInfo", GiftSeriesInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftSkin(betterproto2.Message):
     gift_skin_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -717,7 +717,7 @@ class GiftSkin(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftSkin", GiftSkin)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftSkinToGiftTextsInfo(betterproto2.Message):
     gift_skin_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -733,7 +733,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftSponsorInfo(betterproto2.Message):
     sponsor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -759,7 +759,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftText(betterproto2.Message):
     gift_text_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -773,7 +773,7 @@ class GiftText(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftText", GiftText)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftTrayInfo(betterproto2.Message):
     tray_dynamic_img: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -829,7 +829,7 @@ class GiftTrayInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GiftTrayInfo", GiftTrayInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GradeIcon(betterproto2.Message):
     icon: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -851,7 +851,7 @@ class GradeIcon(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "GradeIcon", GradeIcon)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class Hashtag(betterproto2.Message):
     id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -873,7 +873,7 @@ class Hashtag(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "Hashtag", Hashtag)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LikeEffect(betterproto2.Message):
     version: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -895,7 +895,7 @@ class LikeEffect(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "LikeEffect", LikeEffect)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LiveEventInfo(betterproto2.Message):
     event_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -971,7 +971,7 @@ class LiveEventInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "LiveEventInfo", LiveEventInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LynxCrossScreenEffectInfo(betterproto2.Message):
     effect_ids: "list[typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]]" = betterproto2.field(
         4, betterproto2.TYPE_INT64, repeated=True
@@ -983,7 +983,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RandomGiftBubble(betterproto2.Message):
     display_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -999,7 +999,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RandomGiftPanelBanner(betterproto2.Message):
     bg_image: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1047,7 +1047,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SchemeInfo(betterproto2.Message):
     scheme_gift_type: "data.GiftStructSchemeGiftType" = betterproto2.field(
         1,
@@ -1071,7 +1071,7 @@ class SchemeInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "SchemeInfo", SchemeInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class UgGiftStructInfo(betterproto2.Message):
     is_ug_gift: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -1085,7 +1085,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class UserAttr(betterproto2.Message):
     is_muted: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -1113,7 +1113,7 @@ class UserAttr(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "UserAttr", UserAttr)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class UserBadge(betterproto2.Message):
     icons: "dict[int, base.ImageModel]" = betterproto2.field(
         1,
@@ -1131,7 +1131,7 @@ class UserBadge(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "UserBadge", UserBadge)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class UserHonor(betterproto2.Message):
     deprecated20: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1233,7 +1233,7 @@ class UserHonor(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "UserHonor", UserHonor)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class VoteUser(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1255,7 +1255,7 @@ class VoteUser(betterproto2.Message):
 default_message_pool.register_message("webcast.model", "VoteUser", VoteUser)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WalletPackage(betterproto2.Message):
     iap_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING

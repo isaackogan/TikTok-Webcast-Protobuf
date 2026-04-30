@@ -20,7 +20,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkedListChangeContent(betterproto2.Message):
     linked_users: "list[ListUser]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -34,7 +34,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ListUser(betterproto2.Message):
     user: "___base__user__.User | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

@@ -24,7 +24,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GoalComparison(betterproto2.Message):
     coins_incr: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -40,7 +40,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GoalPinInfo(betterproto2.Message):
     pin: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -62,7 +62,7 @@ class GoalPinInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model.goal", "GoalPinInfo", GoalPinInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GoalReward(betterproto2.Message):
     reward_content: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -82,7 +82,7 @@ class GoalReward(betterproto2.Message):
 default_message_pool.register_message("webcast.model.goal", "GoalReward", GoalReward)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GoalStats(betterproto2.Message):
     total_coins: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -104,7 +104,7 @@ class GoalStats(betterproto2.Message):
 default_message_pool.register_message("webcast.model.goal", "GoalStats", GoalStats)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubGoalContribution(betterproto2.Message):
     id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -120,7 +120,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubGoalPinInfo(betterproto2.Message):
     pin_start_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)

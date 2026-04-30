@@ -1598,7 +1598,7 @@ class VerticalPaddingRule(betterproto2.Enum):
     USE_TOP_AND_BOTTOM = 1
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class DiffInfo(betterproto2.Message):
     diff_url: "UrlDataStruct | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1616,7 +1616,7 @@ class DiffInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.model.data", "DiffInfo", DiffInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EffectStruct(betterproto2.Message):
     name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1828,7 +1828,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EventUserInfo(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1844,7 +1844,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MsgFilter(betterproto2.Message):
     is_gifter: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -1854,7 +1854,7 @@ class MsgFilter(betterproto2.Message):
 default_message_pool.register_message("webcast.model.data", "MsgFilter", MsgFilter)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PaidEventPreview(betterproto2.Message):
     allow_preview: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1870,7 +1870,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SubSplitStatus(betterproto2.Message):
     is_old_sub_creator: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -1884,7 +1884,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class TemplateEffectExtra(betterproto2.Message):
     resource_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1896,7 +1896,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class UrlDataStruct(betterproto2.Message):
     uri: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1924,7 +1924,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class UserIdentity(betterproto2.Message):
     is_gift_giver_of_anchor: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 

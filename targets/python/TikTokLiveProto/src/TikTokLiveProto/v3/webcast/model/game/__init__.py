@@ -17,7 +17,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastAccessRecallMessage(betterproto2.Message):
     common: "__shared__message__.CommonMessageData | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

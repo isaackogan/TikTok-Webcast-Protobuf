@@ -30,7 +30,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class DisplayControl(betterproto2.Message):
     priority: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -62,7 +62,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EcommerceEntrance(betterproto2.Message):
     entrance_type: "__model__data__.UserEcommerceEntranceEntranceType" = (
         betterproto2.field(
@@ -108,7 +108,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PerceptionFeedbackOption(betterproto2.Message):
     id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -124,7 +124,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PerceptionSheetInfo(betterproto2.Message):
     icon_type: "__model__data__.PerceptionDialogIconType" = betterproto2.field(
         1,
@@ -182,7 +182,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RankUserEnigmaInfo(betterproto2.Message):
     is_enigma_mask_on: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -192,7 +192,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SellingPoint(betterproto2.Message):
     show_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -212,7 +212,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ShopEntranceInfo(betterproto2.Message):
     shop_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -262,7 +262,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ShowcaseEntranceInfo(betterproto2.Message):
     format_sold_count: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -286,7 +286,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ShowResult(betterproto2.Message):
     banned: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -294,7 +294,7 @@ class ShowResult(betterproto2.Message):
 default_message_pool.register_message("webcast.message.proto", "ShowResult", ShowResult)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class StoreIdentityLabel(betterproto2.Message):
     label_type: "__model__data__.UserEcommerceEntranceShopEntranceInfoStoreLabelShopIdentityLabelType" = betterproto2.field(
         1,
@@ -346,7 +346,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class StoreLabel(betterproto2.Message):
     official_label: "StoreOfficialLabel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -362,7 +362,7 @@ class StoreLabel(betterproto2.Message):
 default_message_pool.register_message("webcast.message.proto", "StoreLabel", StoreLabel)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class StoreOfficialLabel(betterproto2.Message):
     label_image_light: "__shared__.ShopLabelImage | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

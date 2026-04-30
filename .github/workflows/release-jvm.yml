@@ -1,4 +1,4 @@
-name: "Release (Kotlin): Build & Publish to Maven"
+name: "Release (JVM): Build & Publish to Maven"
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: targets/kotlin/tiktok-live-proto
+        working-directory: targets/jvm
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,14 +50,14 @@ jobs:
       - name: Bump version
         id: bump
         run: |
-          CURRENT=$(grep -oE '^version = "[^"]+"' build.gradle.kts | sed -E 's/version = "([^"]+)"/\1/')
+          CURRENT=$(grep -oE '^version=.*' gradle.properties | sed -E 's/version=//')
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
           case "${{ inputs.bump }}" in
             major) NEW="$((MAJOR + 1)).0.0" ;;
             minor) NEW="${MAJOR}.$((MINOR + 1)).0" ;;
             patch) NEW="${MAJOR}.${MINOR}.$((PATCH + 1))" ;;
           esac
-          sed -i -E "s/^version = \"[^\"]+\"/version = \"$NEW\"/" build.gradle.kts
+          sed -i -E "s/^version=.*/version=$NEW/" gradle.properties
           echo "version=$NEW" >> "$GITHUB_OUTPUT"
 
       - name: Build and publish
@@ -72,8 +72,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add targets/kotlin/tiktok-live-proto/build.gradle.kts
-          git commit -m "chore: release kotlin tiktok-live-proto v${{ steps.bump.outputs.version }} [skip ci]"
+          git add targets/jvm/gradle.properties
+          git commit -m "chore: release jvm tiktok-live-proto v${{ steps.bump.outputs.version }} [skip ci]"
           for i in 1 2 3 4 5; do
             git pull --rebase
             if git push; then exit 0; fi
@@ -85,8 +85,10 @@ jobs:
       - name: Create git tag
         working-directory: ${{ github.workspace }}
         run: |
-          git tag "kotlin/v${{ steps.bump.outputs.version }}"
-          git push origin "kotlin/v${{ steps.bump.outputs.version }}"
+          git tag "jvm/v${{ steps.bump.outputs.version }}"
+          git push origin "jvm/v${{ steps.bump.outputs.version }}"
 
       - name: Summary
-        run: echo "### Published io.github.isaackogan.tiktok:tiktok-live-proto:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        run: |
+          echo "### Published com.isaackogan:tiktok-live-proto:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Published com.isaackogan:tiktok-live-proto-kotlin:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY

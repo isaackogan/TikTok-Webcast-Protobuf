@@ -15,7 +15,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class EnvelopeEnigmaInfo(betterproto2.Message):
     is_enigma_mask_on: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 

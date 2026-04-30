@@ -708,7 +708,7 @@ class UnionAnimationInfoType(betterproto2.Enum):
     LOCK = 2
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BizLayoutState(betterproto2.Message):
     multi_guest_biz_layout_extra: "MultiGuestBizLayoutExtra | None" = (
         betterproto2.field(1, betterproto2.TYPE_MESSAGE, optional=True)
@@ -722,7 +722,7 @@ class BizLayoutState(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "BizLayoutState", BizLayoutState)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BizSpotExtra(betterproto2.Message):
     multi_guest_biz_spot_extra: "MultiGuestBizSpotExtra | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -736,7 +736,7 @@ class BizSpotExtra(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "BizSpotExtra", BizSpotExtra)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BizSpotInfo(betterproto2.Message):
     spot_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -754,7 +754,7 @@ class BizSpotInfo(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "BizSpotInfo", BizSpotInfo)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CancelJoinGroupContent(betterproto2.Message):
     leaver: "list[_linkmic__common__.GroupPlayer]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -780,7 +780,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CoHostBizLayoutExtra(betterproto2.Message):
     pass
 
@@ -790,7 +790,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CoHostBizSpotExtra(betterproto2.Message):
     pass
 
@@ -800,7 +800,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CohostContent(betterproto2.Message):
     join_group_biz_content: "JoinGroupBizContent | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -822,7 +822,7 @@ class CohostContent(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "CohostContent", CohostContent)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GroupChangeContent(betterproto2.Message):
     group_user: "_linkmic__common__.GroupChannelAllUser | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -838,7 +838,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class HeartBeatMessage(betterproto2.Message):
     room_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -854,7 +854,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class InvitationReorderExtra(betterproto2.Message):
     strategy_number: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -872,7 +872,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinGroupBizContent(betterproto2.Message):
     from_room_age_restricted: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -936,7 +936,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinGroupContent(betterproto2.Message):
     group_user: "_linkmic__common__.GroupChannelAllUser | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -962,7 +962,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinGroupDirectBizContent(betterproto2.Message):
     gameplay_content: "_chatroom__model__interact__.GamePlayContent | None" = (
         betterproto2.field(1, betterproto2.TYPE_MESSAGE, optional=True)
@@ -978,7 +978,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinGroupDirectContent(betterproto2.Message):
     group_ext_info: "list[_model__message__linkcore__.RtcExtraInfo]" = (
         betterproto2.field(1, betterproto2.TYPE_MESSAGE, repeated=True)
@@ -1002,7 +1002,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinGroupMessageExtra(betterproto2.Message):
     source_type: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1036,7 +1036,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinRoomDirectBizContent(betterproto2.Message):
     link_type_permission: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -1052,7 +1052,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinRoomDirectContent(betterproto2.Message):
     joiner: "_model__message__linkcore__.Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1084,7 +1084,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JustDanceExtra(betterproto2.Message):
     pass
 
@@ -1092,7 +1092,7 @@ class JustDanceExtra(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "JustDanceExtra", JustDanceExtra)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JustDanceLayoutExtra(betterproto2.Message):
     just_dance_song_title: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1104,7 +1104,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class KickOutBizContent(betterproto2.Message):
     operator_user_info: "_model__base__user__.User | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1128,7 +1128,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LeaveJoinGroupContent(betterproto2.Message):
     operator: "_linkmic__common__.GroupPlayer | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1152,7 +1152,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ListChangeBizContent(betterproto2.Message):
     user_infos: "dict[int, _linkmic__common__.CohostUserInfo]" = betterproto2.field(
         1,
@@ -1196,7 +1196,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiGuestBizLayoutExtra(betterproto2.Message):
     just_dance_layout_extra: "JustDanceLayoutExtra | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1208,7 +1208,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiGuestBizSpotExtra(betterproto2.Message):
     sound_ware_effect_extra: "SoundWareEffectExtra | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1224,7 +1224,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class P2PGroupChangeContent(betterproto2.Message):
     group_ext_info: "list[_model__message__linkcore__.RtcExtraInfo]" = (
         betterproto2.field(1, betterproto2.TYPE_MESSAGE, repeated=True)
@@ -1248,7 +1248,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PermitJoinGroupBizContent(betterproto2.Message):
     reply_status: "_linkmic__common__.ReplyStatus" = betterproto2.field(
         1,
@@ -1268,7 +1268,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PermitJoinGroupContent(betterproto2.Message):
     approver: "_linkmic__common__.GroupPlayer | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1312,7 +1312,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PushHeader(betterproto2.Message):
     key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1326,7 +1326,7 @@ class PushHeader(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "PushHeader", PushHeader)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RivalExtra(betterproto2.Message):
     user_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(4, betterproto2.TYPE_INT64)
@@ -1404,7 +1404,7 @@ class RivalExtra(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "RivalExtra", RivalExtra)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RivalGuestExtra(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1422,7 +1422,7 @@ class RivalGuestExtra(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "RivalGuestExtra", RivalGuestExtra)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RivalGuestExtras(betterproto2.Message):
     rival_guests: "list[RivalGuestExtra]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -1434,7 +1434,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SoundWareEffectExtra(betterproto2.Message):
     static_image_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1458,7 +1458,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class SystemMessage(betterproto2.Message):
     description: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         2, betterproto2.TYPE_STRING
@@ -1468,7 +1468,7 @@ class SystemMessage(betterproto2.Message):
 default_message_pool.register_message("webcast.im", "SystemMessage", SystemMessage)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastImEnterRoomMessage(betterproto2.Message):
     room_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1514,7 +1514,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastLinkMicLayoutStateMessage(betterproto2.Message):
     common: "_shared__message__.CommonMessageData | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1546,7 +1546,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastLinkStateMessage(betterproto2.Message):
     common: "_shared__message__.CommonMessageData | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -1616,7 +1616,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastPushFrame(betterproto2.Message):
     seq_id: "typing.Annotated[int, pydantic.Field(ge=0, le=2**64 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_UINT64)
@@ -1654,7 +1654,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastSystemMessage(betterproto2.Message):
     common: "_shared__message__.CommonMessageData | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

@@ -42,7 +42,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ControlChaosInfo(betterproto2.Message):
     command_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -62,7 +62,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GameTricksShortcut(betterproto2.Message):
     hot_keys: "list[HotKey]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -74,7 +74,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPick(betterproto2.Message):
     gift_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -116,7 +116,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtra(betterproto2.Message):
     game_tricks: "GiftPickExtraGameTricks | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -132,7 +132,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtraGameInteraction(betterproto2.Message):
     storage: "GiftPickExtraGameInteractionStorage | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -150,7 +150,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtraGameInteractionExternal(betterproto2.Message):
     pass
 
@@ -162,7 +162,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtraGameInteractionStorage(betterproto2.Message):
     instruction: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -176,7 +176,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtraGameTricks(betterproto2.Message):
     storage: "GiftPickExtraGameTricksStorage | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -192,7 +192,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtraGameTricksExternal(betterproto2.Message):
     pass
 
@@ -204,7 +204,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickExtraGameTricksStorage(betterproto2.Message):
     game_tricks_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -222,7 +222,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class GiftPickWithScore(betterproto2.Message):
     gift_pick: "GiftPick | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -238,7 +238,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class HotKey(betterproto2.Message):
     key_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -256,7 +256,7 @@ class HotKey(betterproto2.Message):
 default_message_pool.register_message("webcast.model.viewer_picks", "HotKey", HotKey)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class KeyBoardHotKey(betterproto2.Message):
     key_code: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -272,7 +272,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MouseHotKey(betterproto2.Message):
     mouse_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -284,7 +284,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtra(betterproto2.Message):
     game_tricks: "ProfileExtraGameTricks | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -300,7 +300,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtraGameInteraction(betterproto2.Message):
     storage: "ProfileExtraGameInteractionStorage | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -318,7 +318,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtraGameInteractionExternal(betterproto2.Message):
     game_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -344,7 +344,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtraGameInteractionStorage(betterproto2.Message):
     game_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -358,7 +358,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtraGameTricks(betterproto2.Message):
     storage: "ProfileExtraGameTricksStorage | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -374,7 +374,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtraGameTricksExternal(betterproto2.Message):
     game_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -396,7 +396,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ProfileExtraGameTricksStorage(betterproto2.Message):
     game_tricks_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -418,7 +418,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ViewerPickAnchorParam(betterproto2.Message):
     viewer_wishes_use_new_setup_process: "bool" = betterproto2.field(
         1, betterproto2.TYPE_BOOL
@@ -440,7 +440,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ViewerPicksHeaderImage(betterproto2.Message):
     image: "_base__.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -456,7 +456,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ViewerPicksInfo(betterproto2.Message):
     viewer_picks_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64

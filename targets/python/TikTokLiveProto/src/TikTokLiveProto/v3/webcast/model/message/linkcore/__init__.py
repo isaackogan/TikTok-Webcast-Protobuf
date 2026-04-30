@@ -46,7 +46,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class AllListUser(betterproto2.Message):
     linked_list: "list[LinkLayerListUser]" = betterproto2.field(
         2, betterproto2.TYPE_MESSAGE, repeated=True
@@ -70,7 +70,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ApplyContent(betterproto2.Message):
     applier: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -90,7 +90,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ByteRtcExtInfo(betterproto2.Message):
     default_signaling_server_first: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -102,7 +102,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CancelApplyContent(betterproto2.Message):
     applier: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -122,7 +122,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CancelInviteContent(betterproto2.Message):
     invitor: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -154,7 +154,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class CreateChannelContent(betterproto2.Message):
     owner: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -174,7 +174,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class DslConfig(betterproto2.Message):
     scene_version: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -190,7 +190,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class FinishChannelContent(betterproto2.Message):
     owner: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -206,7 +206,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class InviteContent(betterproto2.Message):
     invitor: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -252,7 +252,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinDirectContent(betterproto2.Message):
     joiner: "LinkLayerListUser | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -268,7 +268,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class KickOutContent(betterproto2.Message):
     offliner: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -306,7 +306,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LeaveContent(betterproto2.Message):
     leaver: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -342,7 +342,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkLayerListUser(betterproto2.Message):
     user: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -380,7 +380,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkListChangeContent(betterproto2.Message):
     type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -404,7 +404,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkPosition(betterproto2.Message):
     position: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -420,7 +420,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MicPositionData(betterproto2.Message):
     type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -436,7 +436,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PermitApplyContent(betterproto2.Message):
     permiter: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -502,7 +502,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class Player(betterproto2.Message):
     room_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -518,7 +518,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ReplyInviteContent(betterproto2.Message):
     invitee: "Player | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -568,7 +568,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcBitRateMap(betterproto2.Message):
     xx1: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -592,7 +592,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcEngineConfig(betterproto2.Message):
     rtc_app_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -616,7 +616,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcExtraInfo(betterproto2.Message):
     live_rtc_engine_config: "RtcEngineConfig | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -664,7 +664,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcInfoExtra(betterproto2.Message):
     version: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -676,7 +676,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcLiveVideoParam(betterproto2.Message):
     strategy_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -692,7 +692,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcMixBase(betterproto2.Message):
     bitrate: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -704,7 +704,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcOther(betterproto2.Message):
     max_transcoding_cb_interval_second: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -716,7 +716,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class RtcVideoParam(betterproto2.Message):
     width: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -740,7 +740,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class WebcastLinkLayerMessage(betterproto2.Message):
     common: "___shared__message__.CommonMessageData | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True

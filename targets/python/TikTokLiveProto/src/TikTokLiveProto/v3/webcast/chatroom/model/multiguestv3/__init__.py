@@ -25,7 +25,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ApplyBizContent(betterproto2.Message):
     user: "___model__base__user__.User | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -37,7 +37,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class BusinessContent(betterproto2.Message):
     over_length: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -57,7 +57,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class InviteBizContent(betterproto2.Message):
     anchor_setting_info: "_multilive__.MultiLiveAnchorPanelSettings | None" = (
         betterproto2.field(1, betterproto2.TYPE_MESSAGE, optional=True)
@@ -99,7 +99,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class JoinDirectBizContent(betterproto2.Message):
     reply_im_msg_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -125,7 +125,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class MultiLiveContent(betterproto2.Message):
     apply_biz_content: "ApplyBizContent | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -161,7 +161,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class PermitBizContent(betterproto2.Message):
     anchor_setting_info: "_multilive__.MultiLiveAnchorPanelSettings | None" = (
         betterproto2.field(1, betterproto2.TYPE_MESSAGE, optional=True)
@@ -207,7 +207,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class ReplyBizContent(betterproto2.Message):
     link_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)

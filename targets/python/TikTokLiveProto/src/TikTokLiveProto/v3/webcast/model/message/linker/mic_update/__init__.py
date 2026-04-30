@@ -20,7 +20,7 @@ _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerMicIdxUpdateContent(betterproto2.Message):
     mic_idx_update_info: "LinkerMicIdxUpdateInfo | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -34,7 +34,7 @@ default_message_pool.register_message(
 )
 
 
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+@dataclass(eq=False, repr=False)
 class LinkerMicIdxUpdateInfo(betterproto2.Message):
     op: "____im__.MicIdxOperation" = betterproto2.field(
         1, betterproto2.TYPE_ENUM, default_factory=lambda: ____im__.MicIdxOperation(0)
