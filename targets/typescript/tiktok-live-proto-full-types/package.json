@@ -22,6 +22,10 @@
     "./v2": {
       "types": "./dist/v2.d.ts",
       "default": "./dist/v2.js"
+    },
+    "./v3": {
+      "types": "./dist/v3.d.ts",
+      "default": "./dist/v3.js"
     }
   },
   "scripts": {

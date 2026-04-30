@@ -32,6 +32,16 @@
         "types": "./dist/node/v2.d.ts",
         "default": "./dist/node/v2.js"
       }
+    },
+    "./v3": {
+      "browser": {
+        "types": "./dist/web/v3.d.ts",
+        "default": "./dist/web/v3.js"
+      },
+      "import": {
+        "types": "./dist/node/v3.d.ts",
+        "default": "./dist/node/v3.js"
+      }
     }
   },
   "scripts": {

@@ -18,6 +18,9 @@ import { WebcastResponse, WebcastChatMessage } from 'tiktok-live-proto/v1';
 
 // v2 schema
 import { WebcastResponse } from 'tiktok-live-proto/v2';
+
+// v3 schema (multi-package; collisions disambiguated via disambiguation.yaml)
+import { EnvelopeEnigmaInfo, AnchorSubWaveChallengeSettings } from 'tiktok-live-proto/v3';
 ```
 
 The correct runtime build (Node vs. browser) is selected automatically by the

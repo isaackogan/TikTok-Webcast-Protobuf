@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown';
 const outExtensions = () => ({ js: '.js', dts: '.d.ts' });
 
 export default defineConfig({
-  entry: ['src/v1.ts', 'src/v2.ts'],
+  entry: ['src/v1.ts', 'src/v2.ts', 'src/v3.ts'],
   outDir: 'dist',
   platform: 'neutral',
   format: ['esm'],

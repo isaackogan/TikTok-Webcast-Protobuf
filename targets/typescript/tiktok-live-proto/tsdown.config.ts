@@ -4,7 +4,7 @@ const outExtensions = () => ({ js: '.js', dts: '.d.ts' });
 
 export default defineConfig([
   {
-    entry: ['src/node/v1.ts', 'src/node/v2.ts'],
+    entry: ['src/node/v1.ts', 'src/node/v2.ts', 'src/node/v3.ts'],
     outDir: 'dist/node',
     platform: 'node',
     format: ['esm'],
@@ -13,7 +13,7 @@ export default defineConfig([
     outExtensions,
   },
   {
-    entry: ['src/web/v1.ts', 'src/web/v2.ts'],
+    entry: ['src/web/v1.ts', 'src/web/v2.ts', 'src/web/v3.ts'],
     outDir: 'dist/web',
     platform: 'browser',
     format: ['esm'],
