@@ -63,8 +63,24 @@ class LinkerReplyContent(betterproto2.Message):
         10, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    rtc_ext_info_map: "dict[int, str]" = betterproto2.field(
+        11,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_STRING
+        ),
+    )
+
     invitee_mic_idx_update_info: "_mic_update__.LinkerMicIdxUpdateInfo | None" = (
         betterproto2.field(12, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    applier_mic_idx_info_map: "dict[int, int]" = betterproto2.field(
+        13,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_INT64
+        ),
     )
 
     anchor_multi_live_enum: "___data__.LinkmicMultiLiveEnum" = betterproto2.field(
@@ -161,8 +177,8 @@ class LinkmicInfo(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
-    vendor: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(9, betterproto2.TYPE_INT64)
+    vendor: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT32)
     )
 
 

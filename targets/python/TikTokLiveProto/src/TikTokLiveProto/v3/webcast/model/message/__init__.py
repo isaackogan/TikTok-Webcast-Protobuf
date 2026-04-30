@@ -6,6 +6,7 @@
 __all__ = (
     "AccessControlCaptcha",
     "ActionButton",
+    "AddToCartButton",
     "AffiliatedInfo",
     "AnimationData",
     "AtmosphereTagInfo",
@@ -18,13 +19,21 @@ __all__ = (
     "BarrageTypeUserGradeParam",
     "BattleInviteeGiftPermission",
     "BillboardDisplayResult",
+    "BillboardInfo",
     "BoostCard",
+    "CampaignBannerDisplay",
+    "CampaignBannerDisplayResult",
     "CapsuleBizParams",
     "CapsuleBizParamsAnchorPinPerk",
     "CapsuleBizParamsCohost",
     "CapsuleBizParamsCommentFlaggedPrompt",
     "CapsuleBizParamsCommentFlaggedPromptForNewUser",
+    "CapsuleBizParamsCommentMuteRulePrompt",
+    "CapsuleBizParamsEcom",
+    "CapsuleBizParamsEcomEventTracking",
     "CapsuleBizParamsGamingModeratorsCommentGuide",
+    "CapsuleBizParamsModeratorGuide",
+    "CapsuleBizParamsMultiGuestApplyGuide",
     "CapsuleBizParamsMultiGuestInviteGuide",
     "CapsuleBizParamsNewAnchorEffect",
     "CapsuleBizParamsRandomGift",
@@ -38,16 +47,20 @@ __all__ = (
     "Detail",
     "DispersionInfo",
     "EffectConfigBean",
-    "EmoteWithIndex",
-    "EventTracking",
     "Extra",
     "FanTicketRoomNoticeContent",
+    "FlashSaleAtmosphere",
+    "FlashSaleAtmosphereInfo",
+    "FlashSaleStock",
     "FrequencyControl",
     "GalleryData",
     "GameAction",
     "GiftImPriority",
+    "GiftInfo",
     "GiftMonitorInfo",
+    "GoalData",
     "HourlyRankRewardInfo",
+    "Img",
     "InteractiveGiftInfo",
     "InviteTopHostInfo",
     "LinkMicAudienceInviteGuide",
@@ -59,6 +72,7 @@ __all__ = (
     "LinkerSysKickOutContent",
     "LinkerUpdateUserContent",
     "LinkerWaitingListChangeContent",
+    "LinkmicAudienceApplyGuide",
     "LinkmicAudienceInviteGroupChatMemberGuide",
     "LinkmicUserInfo",
     "LinkmicUserToastContent",
@@ -68,6 +82,8 @@ __all__ = (
     "NotifyHighlightContent",
     "NotifyHighlightInfo",
     "OfflineGameInfo",
+    "OperationInfo",
+    "OperationState",
     "PerceptionDialogInfo",
     "PollBasicInfo",
     "PollEndContent",
@@ -77,6 +93,8 @@ __all__ = (
     "PortraitInfo",
     "PortraitTag",
     "ProductAtmosphereTag",
+    "ProductSnapShot",
+    "Progress",
     "PromotionInfo",
     "PublicAreaCommon",
     "PublicAreaMessageCommon",
@@ -88,6 +106,9 @@ __all__ = (
     "RecommendComment",
     "RefreshLiveBagInfo",
     "RightLabel",
+    "RoomBasedGiftData",
+    "RoomBasedGifts",
+    "RoomNotifyMessageEventTracking",
     "RoomNotifyMessageExtra",
     "SpecifiedDisplayText",
     "SponsorshipInfo",
@@ -223,6 +244,22 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AddToCartButton(betterproto2.Message):
+    status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    click_hint_starling: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "AddToCartButton", AddToCartButton
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class AffiliatedInfo(betterproto2.Message):
     text_content: "common.Text | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -260,6 +297,14 @@ class AffiliatedInfo(betterproto2.Message):
 
     sticker_gap_desc: "common.Text | None" = betterproto2.field(
         9, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    sticker_track_param: "dict[str, str]" = betterproto2.field(
+        10,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
     )
 
 
@@ -511,6 +556,42 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class BillboardInfo(betterproto2.Message):
+    billboard_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    billboard_ids: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING, repeated=True
+    )
+
+    source_from: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT32)
+    )
+
+    born_time_ms: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    billboard_version: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT32
+    )
+
+    da_info: "dict[str, str]" = betterproto2.field(
+        6,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "BillboardInfo", BillboardInfo
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class BoostCard(betterproto2.Message):
     m_card_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -526,6 +607,52 @@ class BoostCard(betterproto2.Message):
 
 
 default_message_pool.register_message("webcast.model.message", "BoostCard", BoostCard)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CampaignBannerDisplay(betterproto2.Message):
+    image_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    campaign_banner_is_display: "bool" = betterproto2.field(2, betterproto2.TYPE_BOOL)
+
+    source_from: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT32)
+    )
+
+    born_time_ms: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    billboard_version: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT32
+    )
+
+    da_info: "dict[str, str]" = betterproto2.field(
+        6,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "CampaignBannerDisplay", CampaignBannerDisplay
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CampaignBannerDisplayResult(betterproto2.Message):
+    campaign_banner_display_result: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "CampaignBannerDisplayResult", CampaignBannerDisplayResult
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
@@ -558,8 +685,24 @@ class CapsuleBizParams(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    comment_mute_rule_prompt: "CapsuleBizParamsCommentMuteRulePrompt | None" = (
+        betterproto2.field(9, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
     comment_flagged_prompt_for_new_user: "CapsuleBizParamsCommentFlaggedPromptForNewUser | None" = betterproto2.field(
         10, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    moderator_guide_info: "CapsuleBizParamsModeratorGuide | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    multi_guest_apply_guide: "CapsuleBizParamsMultiGuestApplyGuide | None" = (
+        betterproto2.field(12, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    ecom: "CapsuleBizParamsEcom | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -622,8 +765,14 @@ class CapsuleBizParamsCohost(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    is_friend: "bool" = betterproto2.field(9, betterproto2.TYPE_BOOL)
+
     sub_type: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         10, betterproto2.TYPE_STRING
+    )
+
+    rival_vote_count: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
     )
 
 
@@ -665,6 +814,54 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CapsuleBizParamsCommentMuteRulePrompt(betterproto2.Message):
+    content: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    user_cnt: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "CapsuleBizParamsCommentMuteRulePrompt",
+    CapsuleBizParamsCommentMuteRulePrompt,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CapsuleBizParamsEcom(betterproto2.Message):
+    event_tracking: "CapsuleBizParamsEcomEventTracking | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "CapsuleBizParamsEcom", CapsuleBizParamsEcom
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CapsuleBizParamsEcomEventTracking(betterproto2.Message):
+    ecom_recomm_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    ecom_recomm_trigger: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "CapsuleBizParamsEcom_EventTracking",
+    CapsuleBizParamsEcomEventTracking,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class CapsuleBizParamsGamingModeratorsCommentGuide(betterproto2.Message):
     user: "_base__user__.User | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -691,6 +888,64 @@ default_message_pool.register_message(
     "webcast.model.message",
     "CapsuleBizParamsGamingModeratorsCommentGuide",
     CapsuleBizParamsGamingModeratorsCommentGuide,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CapsuleBizParamsModeratorGuide(betterproto2.Message):
+    is_gift_moderator: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
+
+    is_interactive_moderator: "bool" = betterproto2.field(2, betterproto2.TYPE_BOOL)
+
+    is_tool_moderator: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
+
+    hv_user: "_base__user__.User | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    welcome_msg: "common.Text | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    recommend_sensitive_words: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "CapsuleBizParamsModeratorGuide",
+    CapsuleBizParamsModeratorGuide,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class CapsuleBizParamsMultiGuestApplyGuide(betterproto2.Message):
+    apply_user: "_base__user__.User | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    display_strategy: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT32
+    )
+
+    linkmic_audience_apply_notice_reason: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+    notice_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT32)
+    )
+
+    apply_notice_guide: "LinkmicAudienceApplyGuide | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "CapsuleBizParamsMultiGuestApplyGuide",
+    CapsuleBizParamsMultiGuestApplyGuide,
 )
 
 
@@ -1013,46 +1268,6 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
-class EmoteWithIndex(betterproto2.Message):
-    index: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(1, betterproto2.TYPE_INT64)
-    )
-
-    emote: "_base__emoji__.EmoteModel | None" = betterproto2.field(
-        2, betterproto2.TYPE_MESSAGE, optional=True
-    )
-
-
-default_message_pool.register_message(
-    "webcast.model.message", "EmoteWithIndex", EmoteWithIndex
-)
-
-
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
-class EventTracking(betterproto2.Message):
-    gift_sub_sender_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
-        1, betterproto2.TYPE_INT64
-    )
-
-    gift_sub_receiver_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
-        2, betterproto2.TYPE_INT64
-    )
-
-    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(3, betterproto2.TYPE_INT64)
-    )
-
-    gift_sub_order_create_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
-        4, betterproto2.TYPE_INT64
-    )
-
-
-default_message_pool.register_message(
-    "webcast.model.message", "EventTracking", EventTracking
-)
-
-
-@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class Extra(betterproto2.Message):
     ban_info_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -1133,6 +1348,82 @@ class FanTicketRoomNoticeContent(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "FanTicketRoomNoticeContent", FanTicketRoomNoticeContent
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class FlashSaleAtmosphere(betterproto2.Message):
+    status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    start_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    end_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    preheat_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "FlashSaleAtmosphere", FlashSaleAtmosphere
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class FlashSaleAtmosphereInfo(betterproto2.Message):
+    product_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    activity_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    flash_sale_atmosphere: "FlashSaleAtmosphere | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    flash_sale_stock: "FlashSaleStock | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    pinned_product: "bool" = betterproto2.field(5, betterproto2.TYPE_BOOL)
+
+    live_only_channel: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
+
+    creator_limit_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT32
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "FlashSaleAtmosphereInfo", FlashSaleAtmosphereInfo
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class FlashSaleStock(betterproto2.Message):
+    activity_stock_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+    activity_stock: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    activity_stock_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "FlashSaleStock", FlashSaleStock
 )
 
 
@@ -1227,6 +1518,20 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftInfo(betterproto2.Message):
+    id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    price: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message("webcast.model.message", "GiftInfo", GiftInfo)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class GiftMonitorInfo(betterproto2.Message):
     anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1279,6 +1584,24 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GoalData(betterproto2.Message):
+    status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    goal_progress: "dict[int, Progress]" = betterproto2.field(
+        2,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+
+default_message_pool.register_message("webcast.model.message", "GoalData", GoalData)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class HourlyRankRewardInfo(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -1300,6 +1623,28 @@ class HourlyRankRewardInfo(betterproto2.Message):
 default_message_pool.register_message(
     "webcast.model.message", "HourlyRankRewardInfo", HourlyRankRewardInfo
 )
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class Img(betterproto2.Message):
+    key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    width: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    height: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT32)
+    )
+
+    url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message("webcast.model.message", "Img", Img)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
@@ -1467,6 +1812,50 @@ default_message_pool.register_message(
     "webcast.model.message",
     "LinkerWaitingListChangeContent",
     LinkerWaitingListChangeContent,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class LinkmicAudienceApplyGuide(betterproto2.Message):
+    content: "LinkMicAudienceNoticeText | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    button_content: "LinkMicAudienceNoticeText | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    user: "_base__user__.User | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    display_strategy: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT32
+    )
+
+    linkmic_audience_apply_notice_reason: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    display_position: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        6, betterproto2.TYPE_INT64
+    )
+
+    trigger_type: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
+    )
+
+    request_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        8, betterproto2.TYPE_STRING
+    )
+
+    linkmic_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "LinkmicAudienceApplyGuide", LinkmicAudienceApplyGuide
 )
 
 
@@ -1715,6 +2104,58 @@ class OfflineGameInfo(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "OfflineGameInfo", OfflineGameInfo
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class OperationInfo(betterproto2.Message):
+    initial_state: "OperationState | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    success_state: "OperationState | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    failure_state: "OperationState | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "OperationInfo", OperationInfo
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class OperationState(betterproto2.Message):
+    scene: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    icon: "_base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    text: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    schema: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    animation_style: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(6, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "OperationState", OperationState
 )
 
 
@@ -1989,6 +2430,56 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class ProductSnapShot(betterproto2.Message):
+    product_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    title: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+    cover: "Img | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    stock_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT32)
+    )
+
+    timestamp: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(5, betterproto2.TYPE_INT64)
+    )
+
+    add_to_cart_button: "AddToCartButton | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "ProductSnapShot", ProductSnapShot
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class Progress(betterproto2.Message):
+    current_progress: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    target: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    expired_timestamp_in_ms: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message("webcast.model.message", "Progress", Progress)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class PromotionInfo(betterproto2.Message):
     promotion_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -2063,6 +2554,14 @@ class PublicAreaMessageCommon(betterproto2.Message):
     )
 
     hide_above_scroll_area: "bool" = betterproto2.field(11, betterproto2.TYPE_BOOL)
+
+    operation_info: "OperationInfo | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    dynamic_display_text: "common.Text | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
+    )
 
 
 default_message_pool.register_message(
@@ -2315,6 +2814,60 @@ default_message_pool.register_message("webcast.model.message", "RightLabel", Rig
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class RoomBasedGiftData(betterproto2.Message):
+    room_based_gifts: "dict[int, RoomBasedGifts]" = betterproto2.field(
+        2,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "RoomBasedGiftData", RoomBasedGiftData
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class RoomBasedGifts(betterproto2.Message):
+    gift_info: "list[GiftInfo]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "RoomBasedGifts", RoomBasedGifts
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class RoomNotifyMessageEventTracking(betterproto2.Message):
+    gift_sub_sender_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    gift_sub_receiver_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT64
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    gift_sub_order_create_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "RoomNotifyMessage_EventTracking",
+    RoomNotifyMessageEventTracking,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class RoomNotifyMessageExtra(betterproto2.Message):
     duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -2524,6 +3077,14 @@ class Topic(betterproto2.Message):
         ),
     )
 
+    event_tracking_fields: "dict[str, str]" = betterproto2.field(
+        8,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
 
 default_message_pool.register_message("webcast.model.message", "Topic", Topic)
 
@@ -2632,6 +3193,14 @@ class UserFanTicket(betterproto2.Message):
 
     completion_progress_percent: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         10, betterproto2.TYPE_INT32
+    )
+
+    top_guest_rank: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(11, betterproto2.TYPE_INT32)
+    )
+
+    ticket_ui_style_v2: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        12, betterproto2.TYPE_STRING
     )
 
 
@@ -3066,9 +3635,21 @@ class WebcastCapsuleMessage(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    sub_scene: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     style: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(10, betterproto2.TYPE_INT32)
     )
+
+    skip_fc: "bool" = betterproto2.field(11, betterproto2.TYPE_BOOL)
+
+    public_area_message_common: "PublicAreaMessageCommon | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    report_action: "bool" = betterproto2.field(13, betterproto2.TYPE_BOOL)
 
 
 default_message_pool.register_message(
@@ -3154,7 +3735,7 @@ class WebcastChatMessage(betterproto2.Message):
         12, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    emotes: "list[EmoteWithIndex]" = betterproto2.field(
+    emotes: "list[_base__emoji__.EmoteWithIndex]" = betterproto2.field(
         13, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
@@ -3598,6 +4179,14 @@ class WebcastGiftPanelUpdateMessage(betterproto2.Message):
         10, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    goal_data: "GoalData | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    room_based_gift_data: "RoomBasedGiftData | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     strategy_context: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         100, betterproto2.TYPE_STRING
     )
@@ -3842,8 +4431,8 @@ class WebcastLinkMessage(betterproto2.Message):
         12, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    linked_list_change_content: "bytes" = betterproto2.field(
-        13, betterproto2.TYPE_BYTES
+    linked_list_change_content: "linker_linked_list_change_message.LinkedListChangeContent | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     update_user_content: "LinkerUpdateUserContent | None" = betterproto2.field(
@@ -3862,8 +4451,8 @@ class WebcastLinkMessage(betterproto2.Message):
         17, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    update_user_setting_content: "bytes" = betterproto2.field(
-        18, betterproto2.TYPE_BYTES
+    update_user_setting_content: "_linksetting__.MultiLiveUpdateUserSettingContent | None" = betterproto2.field(
+        18, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     mic_idx_update_content: "linker_mic_update.LinkerMicIdxUpdateContent | None" = (
@@ -3926,7 +4515,7 @@ class WebcastLinkMicArmies(betterproto2.Message):
         betterproto2.field(2, betterproto2.TYPE_INT64)
     )
 
-    battle_items: "dict[int, battle.BattleUserArmies]" = betterproto2.field(
+    armies: "dict[int, battle.BattleUserArmies]" = betterproto2.field(
         3,
         betterproto2.TYPE_MAP,
         map_meta=betterproto2.map_meta(
@@ -3968,12 +4557,12 @@ class WebcastLinkMicArmies(betterproto2.Message):
         11, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    total_diamond_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
-        12, betterproto2.TYPE_INT64
+    total_diamond_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        12, betterproto2.TYPE_INT32
     )
 
-    repeat_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(13, betterproto2.TYPE_INT64)
+    repeat_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(13, betterproto2.TYPE_INT32)
     )
 
     team_armies: "list[_live__match__.BattleTeamUserArmies]" = betterproto2.field(
@@ -4062,7 +4651,7 @@ class WebcastLinkMicBattle(betterproto2.Message):
         12, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
-    battle_combos: "dict[int, _live__match__.BattleComboInfo]" = betterproto2.field(
+    battle_combo_v2: "dict[int, _live__match__.BattleComboInfo]" = betterproto2.field(
         13,
         betterproto2.TYPE_MAP,
         map_meta=betterproto2.map_meta(
@@ -4102,12 +4691,42 @@ class WebcastLinkMicBattle(betterproto2.Message):
         betterproto2.field(21, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    league_info_map: "dict[int, __chatroom__model__interact__.GiftGalleryBadgeInfo]" = (
+        betterproto2.field(
+            22,
+            betterproto2.TYPE_MAP,
+            map_meta=betterproto2.map_meta(
+                betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+            ),
+        )
+    )
+
+    league_score_info_map: "dict[int, _live__match__.LeagueScoreInfo]" = (
+        betterproto2.field(
+            23,
+            betterproto2.TYPE_MAP,
+            map_meta=betterproto2.map_meta(
+                betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+            ),
+        )
+    )
+
     match_punish_extra_info: "_live__match__.MatchPunishExtraInfo | None" = (
         betterproto2.field(24, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
     enigma_battle_setting: "_live__match__.EnigmaBattleSetting | None" = (
         betterproto2.field(25, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    anchor_match_settings: "dict[int, _live__match__.AnchorMatchSettings]" = (
+        betterproto2.field(
+            26,
+            betterproto2.TYPE_MAP,
+            map_meta=betterproto2.map_meta(
+                betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+            ),
+        )
     )
 
     battle_feature_flags: "_live__match__.BattleFeatureFlags | None" = (
@@ -4252,16 +4871,16 @@ class WebcastLinkMicMethod(betterproto2.Message):
         betterproto2.field(8, betterproto2.TYPE_INT64)
     )
 
-    layout: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(9, betterproto2.TYPE_INT64)
+    layout: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT32)
     )
 
     vendor: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(10, betterproto2.TYPE_INT32)
     )
 
-    dimension: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(11, betterproto2.TYPE_INT64)
+    dimension: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(11, betterproto2.TYPE_INT32)
     )
 
     theme: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
@@ -4288,8 +4907,8 @@ class WebcastLinkMicMethod(betterproto2.Message):
         17, betterproto2.TYPE_BYTES, repeated=True
     )
 
-    match_type: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(18, betterproto2.TYPE_INT64)
+    match_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(18, betterproto2.TYPE_INT32)
     )
 
     win: "bool" = betterproto2.field(19, betterproto2.TYPE_BOOL)
@@ -4532,8 +5151,8 @@ class WebcastMemberMessage(betterproto2.Message):
         betterproto2.field(8, betterproto2.TYPE_INT32)
     )
 
-    enter_type: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(9, betterproto2.TYPE_INT64)
+    enter_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT32)
     )
 
     action: "__im__.MemberMessageAction" = betterproto2.field(
@@ -5110,8 +5729,24 @@ class WebcastRoomNotifyMessage(betterproto2.Message):
         8, betterproto2.TYPE_INT64, repeated=True
     )
 
+    source: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(10, betterproto2.TYPE_INT64)
+    )
+
+    privilege_log_extra: "_base__user__.PrivilegeLogExtra | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT64)
+    )
+
+    event_tracking: "RoomNotifyMessageEventTracking | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -5298,6 +5933,10 @@ class WebcastSocialMessage(betterproto2.Message):
         12, betterproto2.TYPE_INT64
     )
 
+    follow_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(13, betterproto2.TYPE_INT32)
+    )
+
     target_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(14, betterproto2.TYPE_INT64)
     )
@@ -5380,7 +6019,7 @@ class WebcastSubNotifyMessage(betterproto2.Message):
         14, betterproto2.TYPE_STRING
     )
 
-    event_tracking: "EventTracking | None" = betterproto2.field(
+    event_tracking: "RoomNotifyMessageEventTracking | None" = betterproto2.field(
         15, betterproto2.TYPE_MESSAGE, optional=True
     )
 
@@ -5506,6 +6145,7 @@ from ...message import proto as __message__proto__
 from ...shared import message as __shared__message__
 from .. import base as _base__
 from .. import data as _data__
+from .. import linksetting as _linksetting__
 from .. import rank as _rank__
 from .. import viewer_picks as _viewer_picks__
 from ..base import emoji as _base__emoji__
@@ -5516,6 +6156,7 @@ from ..gift import model as _gift__model__
 from ..live import match as _live__match__
 from . import battle, common, linker
 from .linker import invite_message as linker_invite_message
+from .linker import linked_list_change_message as linker_linked_list_change_message
 from .linker import listchangemessage as linker_listchangemessage
 from .linker import mic_update as linker_mic_update
 from .linker import reply_message as linker_reply_message

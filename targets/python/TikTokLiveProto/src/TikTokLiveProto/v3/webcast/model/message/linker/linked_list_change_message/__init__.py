@@ -3,7 +3,10 @@
 # plugin: python-betterproto2
 # This file has been @generated
 
-__all__ = ("ListUser",)
+__all__ = (
+    "LinkedListChangeContent",
+    "ListUser",
+)
 
 import typing
 
@@ -15,6 +18,20 @@ from ......message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class LinkedListChangeContent(betterproto2.Message):
+    linked_users: "list[ListUser]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message.linker.linked_list_change_message",
+    "LinkedListChangeContent",
+    LinkedListChangeContent,
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})

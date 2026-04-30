@@ -70,6 +70,8 @@ __all__ = (
     "PushHeader",
     "RankTextMessageRankTestMessageScene",
     "RivalExtra",
+    "RivalGuestExtra",
+    "RivalGuestExtras",
     "ScoreType",
     "ShowType",
     "SoundWareEffectExtra",
@@ -914,6 +916,16 @@ class JoinGroupBizContent(betterproto2.Message):
         11, betterproto2.TYPE_STRING
     )
 
+    ab_infos: "dict[int, _chatroom__model__interact__.CohostAbInfo]" = (
+        betterproto2.field(
+            12,
+            betterproto2.TYPE_MAP,
+            map_meta=betterproto2.map_meta(
+                betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+            ),
+        )
+    )
+
     join_group_msg_extra: "JoinGroupMessageExtra | None" = betterproto2.field(
         101, betterproto2.TYPE_MESSAGE, optional=True
     )
@@ -1006,6 +1018,14 @@ class JoinGroupMessageExtra(betterproto2.Message):
 
     invitation_reorder_extra: "InvitationReorderExtra | None" = betterproto2.field(
         4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    rival_guests_map: "dict[int, RivalGuestExtras]" = betterproto2.field(
+        5,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+        ),
     )
 
     is_from_cohost_over_issue: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
@@ -1382,6 +1402,36 @@ class RivalExtra(betterproto2.Message):
 
 
 default_message_pool.register_message("webcast.im", "RivalExtra", RivalExtra)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class RivalGuestExtra(betterproto2.Message):
+    user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    avatar_thumb: "_model__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    nickname: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message("webcast.im", "RivalGuestExtra", RivalGuestExtra)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class RivalGuestExtras(betterproto2.Message):
+    rival_guests: "list[RivalGuestExtra]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.im", "RivalGuestExtras", RivalGuestExtras
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})

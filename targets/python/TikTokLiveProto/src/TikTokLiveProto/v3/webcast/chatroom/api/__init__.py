@@ -249,6 +249,14 @@ class SubPinCard(betterproto2.Message):
         11, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    highlight_text_num: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        12, betterproto2.TYPE_INT64
+    )
+
+    icons: "list[__model__base__.ImageModel]" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
 
 default_message_pool.register_message("webcast.chatroom.api", "SubPinCard", SubPinCard)
 

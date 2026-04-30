@@ -7,6 +7,7 @@ __all__ = (
     "BaseProtoMessage",
     "CommonMessageData",
     "LiveMessageId",
+    "LiveMessageSei",
     "ProtoMessageFetchResult",
 )
 
@@ -82,8 +83,24 @@ class CommonMessageData(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    fold_type: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
     anchor_fold_type: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         10, betterproto2.TYPE_INT64
+    )
+
+    priority_score: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(11, betterproto2.TYPE_INT64)
+    )
+
+    log_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        12, betterproto2.TYPE_STRING
+    )
+
+    msg_process_filter_k: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
     )
 
     msg_process_filter_v: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
@@ -98,8 +115,20 @@ class CommonMessageData(betterproto2.Message):
         16, betterproto2.TYPE_STRING
     )
 
+    filter_msg_tags: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        17, betterproto2.TYPE_STRING, repeated=True
+    )
+
+    sei: "LiveMessageSei | None" = betterproto2.field(
+        18, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     depend_root_id: "LiveMessageId | None" = betterproto2.field(
         19, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    depend_id: "LiveMessageId | None" = betterproto2.field(
+        20, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     anchor_priority_score: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
@@ -112,6 +141,10 @@ class CommonMessageData(betterproto2.Message):
 
     fold_type_for_web: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         23, betterproto2.TYPE_INT64
+    )
+
+    anchor_fold_type_for_web: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        24, betterproto2.TYPE_INT64
     )
 
     client_send_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
@@ -145,6 +178,22 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class LiveMessageSei(betterproto2.Message):
+    unique_id: "LiveMessageId | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    timestamp: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.shared.message", "LiveMessageSEI", LiveMessageSei
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class ProtoMessageFetchResult(betterproto2.Message):
     messages: "list[BaseProtoMessage]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -170,13 +219,31 @@ class ProtoMessageFetchResult(betterproto2.Message):
         betterproto2.field(6, betterproto2.TYPE_INT32)
     )
 
+    route_params: "dict[str, str]" = betterproto2.field(
+        7,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
     heartbeat_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         8, betterproto2.TYPE_INT64
     )
 
+    need_ack: "bool" = betterproto2.field(9, betterproto2.TYPE_BOOL)
+
     push_server: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         10, betterproto2.TYPE_STRING
     )
+
+    is_first: "bool" = betterproto2.field(11, betterproto2.TYPE_BOOL)
+
+    history_comment_cursor: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        12, betterproto2.TYPE_STRING
+    )
+
+    history_no_more: "bool" = betterproto2.field(13, betterproto2.TYPE_BOOL)
 
 
 default_message_pool.register_message(

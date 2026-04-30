@@ -12,6 +12,8 @@ __all__ = (
     "BatchGiftInfo",
     "BorderInfo",
     "CrossScreenEffectInfo",
+    "FansClubData",
+    "FansClubMember",
     "Gift",
     "GiftBoxInfo",
     "GiftInfoInBox",
@@ -35,6 +37,7 @@ __all__ = (
     "SchemeInfo",
     "UgGiftStructInfo",
     "UserAttr",
+    "UserBadge",
     "UserHonor",
     "VoteUser",
     "WalletPackage",
@@ -222,8 +225,20 @@ class BorderInfo(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
+    name_starling_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     desc_starling_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         10, betterproto2.TYPE_STRING
+    )
+
+    name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
+    )
+
+    description: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        12, betterproto2.TYPE_STRING
     )
 
 
@@ -263,6 +278,58 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class FansClubData(betterproto2.Message):
+    club_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    level: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    user_fans_club_status: "data.UserFansClubFansClubDataUserFansClubStatus" = (
+        betterproto2.field(
+            3,
+            betterproto2.TYPE_ENUM,
+            default_factory=lambda: data.UserFansClubFansClubDataUserFansClubStatus(0),
+        )
+    )
+
+    badge: "UserBadge | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    available_gift_ids: "list[typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64, repeated=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(6, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message("webcast.model", "FansClubData", FansClubData)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class FansClubMember(betterproto2.Message):
+    data: "FansClubData | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    prefer_data: "dict[int, FansClubData]" = betterproto2.field(
+        2,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT32, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+
+default_message_pool.register_message("webcast.model", "FansClubMember", FansClubMember)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class Gift(betterproto2.Message):
     image: "base.ImageModel | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -284,7 +351,7 @@ class Gift(betterproto2.Message):
 
     combo: "bool" = betterproto2.field(10, betterproto2.TYPE_BOOL)
 
-    gift_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+    type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(11, betterproto2.TYPE_INT32)
     )
 
@@ -334,6 +401,14 @@ class Gift(betterproto2.Message):
 
     gift_box_info: "GiftBoxInfo | None" = betterproto2.field(
         54, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    tracker_params: "dict[str, str]" = betterproto2.field(
+        100,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
     )
 
     lock_info: "GiftLockInfo | None" = betterproto2.field(
@@ -410,8 +485,24 @@ class Gift(betterproto2.Message):
         120, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    gift_resources: "dict[str, gift_model.GiftResource]" = betterproto2.field(
+        121,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
     resource_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(122, betterproto2.TYPE_INT64)
+    )
+
+    biz_extra: "dict[int, str]" = betterproto2.field(
+        123,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_STRING
+        ),
     )
 
     lynx_cross_screen_effect_info: "LynxCrossScreenEffectInfo | None" = (
@@ -538,6 +629,10 @@ class GiftPanelBanner(betterproto2.Message):
 
     banner_lynx_extra: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         8, betterproto2.TYPE_STRING
+    )
+
+    bg_image: "base.ImageModel | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -836,6 +931,14 @@ class LiveEventInfo(betterproto2.Message):
         default_factory=lambda: data.LiveEventInfoEventPayMethod(0),
     )
 
+    wallet_pkg_dict: "dict[str, WalletPackage]" = betterproto2.field(
+        10,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
     event_user_info: "list[data.EventUserInfo]" = betterproto2.field(
         11, betterproto2.TYPE_MESSAGE, repeated=True
     )
@@ -994,12 +1097,38 @@ class UserAttr(betterproto2.Message):
         betterproto2.field(4, betterproto2.TYPE_INT64)
     )
 
+    admin_permissions: "dict[int, int]" = betterproto2.field(
+        5,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT32, betterproto2.TYPE_INT32
+        ),
+    )
+
     has_voting_function: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
 
     is_channel_admin: "bool" = betterproto2.field(7, betterproto2.TYPE_BOOL)
 
 
 default_message_pool.register_message("webcast.model", "UserAttr", UserAttr)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class UserBadge(betterproto2.Message):
+    icons: "dict[int, base.ImageModel]" = betterproto2.field(
+        1,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT32, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+    title: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message("webcast.model", "UserBadge", UserBadge)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
@@ -1032,8 +1161,20 @@ class UserHonor(betterproto2.Message):
         7, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    deprecated23: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
     deprecated24: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(10, betterproto2.TYPE_INT64)
+    )
+
+    deprecated25: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(11, betterproto2.TYPE_INT64)
+    )
+
+    grade_describe: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
     )
 
     grade_icon_list: "list[GradeIcon]" = betterproto2.field(
@@ -1048,8 +1189,20 @@ class UserHonor(betterproto2.Message):
         16, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    im_icon_with_level: "base.ImageModel | None" = betterproto2.field(
+        17, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    live_icon: "base.ImageModel | None" = betterproto2.field(
+        18, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     new_im_icon_with_level: "base.ImageModel | None" = betterproto2.field(
         19, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    new_live_icon: "base.ImageModel | None" = betterproto2.field(
+        20, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     upgrade_need_consume: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
@@ -1062,6 +1215,10 @@ class UserHonor(betterproto2.Message):
 
     background: "base.ImageModel | None" = betterproto2.field(
         23, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    background_back: "base.ImageModel | None" = betterproto2.field(
+        24, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     score: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (

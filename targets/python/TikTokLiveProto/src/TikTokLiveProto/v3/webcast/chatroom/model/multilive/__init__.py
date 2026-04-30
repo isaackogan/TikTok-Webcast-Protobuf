@@ -117,6 +117,14 @@ class MultiLiveAnchorPanelSettings(betterproto2.Message):
         16, betterproto2.TYPE_INT32
     )
 
+    save_as_default_layout: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        17, betterproto2.TYPE_INT32
+    )
+
+    multi_guest_allow_cohost_invitation: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        18, betterproto2.TYPE_INT32
+    )
+
     multi_guest_allow_cohost_invitation_once: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         19, betterproto2.TYPE_INT32
     )

@@ -6,13 +6,17 @@
 __all__ = (
     "AssetBase",
     "AssetBundle",
+    "AssetExtra",
+    "AuditInfo",
     "BefViewRenderSize",
     "DistributionStrategy",
     "DynamicRestriction",
     "FlyingMicResources",
     "GiftColorInfo",
     "GiftPanelBeaconBubble",
+    "GiftResource",
     "LiveStreamGoal",
+    "LiveStreamGoalContributor",
     "LiveStreamGoalIndicator",
     "LiveStreamSubGoal",
     "LiveStreamSubGoalGift",
@@ -71,6 +75,34 @@ class AssetBundle(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.gift.model", "AssetBundle", AssetBundle
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AssetExtra(betterproto2.Message):
+    effect_starling_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.gift.model", "AssetExtra", AssetExtra
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AuditInfo(betterproto2.Message):
+    violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    task_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.gift.model", "AuditInfo", AuditInfo
 )
 
 
@@ -203,6 +235,26 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftResource(betterproto2.Message):
+    id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.gift.model", "GiftResource", GiftResource
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class LiveStreamGoal(betterproto2.Message):
     id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -236,8 +288,24 @@ class LiveStreamGoal(betterproto2.Message):
         betterproto2.field(8, betterproto2.TYPE_INT64)
     )
 
+    expire_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
     real_finish_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         10, betterproto2.TYPE_INT64
+    )
+
+    contributors: "list[LiveStreamGoalContributor]" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    contributors_length: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        12, betterproto2.TYPE_INT32
+    )
+
+    id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
     )
 
     audit_description: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
@@ -250,6 +318,18 @@ class LiveStreamGoal(betterproto2.Message):
 
     goal_extra_info: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         16, betterproto2.TYPE_STRING
+    )
+
+    mode: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(17, betterproto2.TYPE_INT32)
+    )
+
+    audit_info: "AuditInfo | None" = betterproto2.field(
+        18, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    challenge_type: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        20, betterproto2.TYPE_STRING
     )
 
     is_uneditable: "bool" = betterproto2.field(21, betterproto2.TYPE_BOOL)
@@ -265,6 +345,50 @@ class LiveStreamGoal(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.gift.model", "LiveStreamGoal", LiveStreamGoal
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class LiveStreamGoalContributor(betterproto2.Message):
+    user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    avatar: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    display_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+    score: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+    user_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    in_room: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
+
+    is_friend: "bool" = betterproto2.field(7, betterproto2.TYPE_BOOL)
+
+    follow_by_owner: "bool" = betterproto2.field(9, betterproto2.TYPE_BOOL)
+
+    is_fist_contribute: "bool" = betterproto2.field(10, betterproto2.TYPE_BOOL)
+
+    sub_goal_contributions: "list[__goal__.SubGoalContribution]" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    enigma_info: "__base__user__.EnigmaInfo | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.gift.model", "LiveStreamGoalContributor", LiveStreamGoalContributor
 )
 
 
@@ -316,6 +440,10 @@ class LiveStreamSubGoal(betterproto2.Message):
 
     source: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(8, betterproto2.TYPE_INT32)
+    )
+
+    recommended_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
     )
 
     recommended_header: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
@@ -380,6 +508,10 @@ class LokiExtraContent(betterproto2.Message):
 
     bef_view_fit_mode: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         8, betterproto2.TYPE_INT32
+    )
+
+    model_names: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
     )
 
     requirements: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
@@ -582,4 +714,5 @@ from ....shared import message as ___shared__message__
 from ... import base as __base__
 from ... import data as __data__
 from ... import goal as __goal__
+from ...base import user as __base__user__
 from .. import assets as _assets__

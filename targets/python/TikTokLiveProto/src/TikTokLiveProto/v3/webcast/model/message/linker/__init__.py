@@ -185,6 +185,10 @@ class LinkerRandomMatchContent(betterproto2.Message):
         8, betterproto2.TYPE_ENUM, default_factory=lambda: __data__.LinkmicPlayType(0)
     )
 
+    paired_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message.linker", "LinkerRandomMatchContent", LinkerRandomMatchContent

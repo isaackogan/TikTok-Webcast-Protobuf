@@ -55,9 +55,19 @@ class InviterRivalExtra(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
+    follow_status: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
     hashtag: "____model__.Hashtag | None" = betterproto2.field(
         10, betterproto2.TYPE_MESSAGE, optional=True
     )
+
+    user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT64)
+    )
+
+    is_best_teammate: "bool" = betterproto2.field(13, betterproto2.TYPE_BOOL)
 
     opt_pair_info: "____chatroom__model__interact__.OptPairInfo | None" = (
         betterproto2.field(14, betterproto2.TYPE_MESSAGE, optional=True)
@@ -109,6 +119,14 @@ class LinkerInviteContent(betterproto2.Message):
 
     required_mic_idx: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         9, betterproto2.TYPE_INT64
+    )
+
+    rtc_ext_info_map: "dict[int, str]" = betterproto2.field(
+        10,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_STRING
+        ),
     )
 
     anchor_multi_live_enum: "___data__.LinkmicMultiLiveEnum" = betterproto2.field(

@@ -4,6 +4,7 @@
 # This file has been @generated
 
 __all__ = (
+    "AnchorMatchSettings",
     "BattleAbTest",
     "BattleAbTestList",
     "BattleAbTestSetting",
@@ -16,6 +17,7 @@ __all__ = (
     "BattlePrompt",
     "BattlePromptElem",
     "BattleRivalTag",
+    "BattleTaskGiftAmountGuide",
     "BattleTeamResult",
     "BattleTeamUser",
     "BattleTeamUserArmies",
@@ -26,6 +28,7 @@ __all__ = (
     "EnigmaBattleSetting",
     "GiftModeMeta",
     "HighScoreControlCfg",
+    "LeagueScoreInfo",
     "MatchPunishEffectInfo",
     "MatchPunishExtraInfo",
     "PlaybookBizExtra",
@@ -46,6 +49,16 @@ from .....message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AnchorMatchSettings(betterproto2.Message):
+    enable_ai_commentary: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "AnchorMatchSettings", AnchorMatchSettings
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
@@ -140,6 +153,14 @@ class BattleBonusConfig(betterproto2.Message):
 
     reward_config: "RewardPeriodConfig | None" = betterproto2.field(
         4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    gift_amount_guide: "dict[int, BattleTaskGiftAmountGuide]" = betterproto2.field(
+        5,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+        ),
     )
 
     preview_start_timestamp: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
@@ -299,6 +320,46 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class BattleTaskGiftAmountGuide(betterproto2.Message):
+    guide_prompt: "BattlePrompt | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    prompt_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    disappear_duration: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT32
+    )
+
+    icon_image: "__base__.ImageModel | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    gift_image: "__base__.ImageModel | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    recommend_gift_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        21, betterproto2.TYPE_INT64
+    )
+
+    recommend_gift_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        22, betterproto2.TYPE_INT32
+    )
+
+    guide_content: "__message__common__.Text | None" = betterproto2.field(
+        23, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "BattleTaskGiftAmountGuide", BattleTaskGiftAmountGuide
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class BattleTeamResult(betterproto2.Message):
     team_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -382,6 +443,14 @@ class BattleTeamUserArmies(betterproto2.Message):
 
     team_total_enigma_uv: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         7, betterproto2.TYPE_INT64
+    )
+
+    host_visible_rank_from_team_id: "dict[int, int]" = betterproto2.field(
+        8,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_INT64
+        ),
     )
 
 
@@ -507,6 +576,32 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class LeagueScoreInfo(betterproto2.Message):
+    estimated_score: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    is_opt_out: "bool" = betterproto2.field(2, betterproto2.TYPE_BOOL)
+
+    is_activity_period: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
+
+    content_text: "__message__common__.Text | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    class_opt_out: "bool" = betterproto2.field(5, betterproto2.TYPE_BOOL)
+
+    content_text_open: "__message__common__.Text | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "LeagueScoreInfo", LeagueScoreInfo
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class MatchPunishEffectInfo(betterproto2.Message):
     user_to_effect_map: "dict[int, int]" = betterproto2.field(
         1,
@@ -626,6 +721,18 @@ class RewardPeriodConfig(betterproto2.Message):
         4, betterproto2.TYPE_INT64
     )
 
+    reward_prepare_prompt: "BattlePrompt | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    rewarding_prompt: "BattlePrompt | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    click_prompt: "BattlePrompt | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.live.match", "RewardPeriodConfig", RewardPeriodConfig
@@ -664,6 +771,10 @@ class TaskPeriodConfig(betterproto2.Message):
 
     progress_target: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         23, betterproto2.TYPE_INT64
+    )
+
+    target_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(24, betterproto2.TYPE_INT32)
     )
 
     icon_image: "__base__.ImageModel | None" = betterproto2.field(

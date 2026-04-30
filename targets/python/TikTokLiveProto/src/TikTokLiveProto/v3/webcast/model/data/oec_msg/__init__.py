@@ -19,9 +19,11 @@ __all__ = (
     "OecLiveShoppingMessageV2",
     "PopCardInfo",
     "PopupWindowInfo",
+    "PriceHideInfo",
     "PriceItem",
     "ProductItem",
     "ReqItem",
+    "ScrollElement",
     "ShopBrandLogo",
     "Tag",
     "Title",
@@ -101,8 +103,24 @@ class AuctionInfo(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    suffix: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     extend_auction_cfg: "ExtendAuctionCfg | None" = betterproto2.field(
         10, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    auction_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        11, betterproto2.TYPE_INT32
+    )
+
+    scroll_element_list: "list[ScrollElement]" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    reward_item: "ScrollElement | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     drawing_state_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
@@ -117,8 +135,18 @@ class AuctionInfo(betterproto2.Message):
         betterproto2.field(16, betterproto2.TYPE_INT32)
     )
 
+    auction_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(17, betterproto2.TYPE_INT32)
+    )
+
+    is_carousel: "bool" = betterproto2.field(18, betterproto2.TYPE_BOOL)
+
     carousel_cfg: "CarouselCfg | None" = betterproto2.field(
         19, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    auction_text_type_int: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        20, betterproto2.TYPE_INT32
     )
 
     drawing_state_text_type_int: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
@@ -390,6 +418,18 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class PriceHideInfo(betterproto2.Message):
+    display_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.data.oec_msg", "PriceHideInfo", PriceHideInfo
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class PriceItem(betterproto2.Message):
     currency_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         2, betterproto2.TYPE_STRING
@@ -419,8 +459,24 @@ class PriceItem(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
+    discount_format: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     discount_decimal: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         10, betterproto2.TYPE_STRING
+    )
+
+    price_prefix: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
+    )
+
+    reduce_price_format: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        12, betterproto2.TYPE_STRING
+    )
+
+    single_product_price_format: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
     )
 
     show_currency_space: "bool" = betterproto2.field(14, betterproto2.TYPE_BOOL)
@@ -431,6 +487,10 @@ class PriceItem(betterproto2.Message):
 
     price_display_mode: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         16, betterproto2.TYPE_INT32
+    )
+
+    price_hide_info: "PriceHideInfo | None" = betterproto2.field(
+        17, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -491,6 +551,18 @@ class ReqItem(betterproto2.Message):
 
 
 default_message_pool.register_message("webcast.model.data.oec_msg", "ReqItem", ReqItem)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class ScrollElement(betterproto2.Message):
+    product_title: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.data.oec_msg", "ScrollElement", ScrollElement
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})

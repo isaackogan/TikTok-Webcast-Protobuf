@@ -5,6 +5,9 @@
 
 __all__ = (
     "AgreeStatus",
+    "AnchorLayoutSetting",
+    "AnchorLayoutStyleSetting",
+    "AnchorPanelLayoutTypeSetting",
     "AvatarState",
     "BackGroundImageState",
     "CohostMode",
@@ -468,6 +471,60 @@ class StateType(betterproto2.Enum):
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AnchorLayoutSetting(betterproto2.Message):
+    latest_layout_style: "LayoutStyle" = betterproto2.field(
+        1, betterproto2.TYPE_ENUM, default_factory=lambda: LayoutStyle(0)
+    )
+
+    layout_style_settings: "list[AnchorLayoutStyleSetting]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    panel_layout_type_setting: "list[AnchorPanelLayoutTypeSetting]" = (
+        betterproto2.field(3, betterproto2.TYPE_MESSAGE, repeated=True)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "AnchorLayoutSetting", AnchorLayoutSetting
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AnchorLayoutStyleSetting(betterproto2.Message):
+    layout_style: "LayoutStyle" = betterproto2.field(
+        1, betterproto2.TYPE_ENUM, default_factory=lambda: LayoutStyle(0)
+    )
+
+    max_position: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "AnchorLayoutStyleSetting", AnchorLayoutStyleSetting
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class AnchorPanelLayoutTypeSetting(betterproto2.Message):
+    panel_layout_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+    max_position: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common",
+    "AnchorPanelLayoutTypeSetting",
+    AnchorPanelLayoutTypeSetting,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
 class AvatarState(betterproto2.Message):
     avatar_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -799,6 +856,10 @@ class LinkUserState(betterproto2.Message):
 
     avatar: "AvatarState | None" = betterproto2.field(
         10, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    linker_session_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
     )
 
 

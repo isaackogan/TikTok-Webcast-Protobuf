@@ -73,6 +73,10 @@ class LinkListUser(betterproto2.Message):
         8, betterproto2.TYPE_INT32
     )
 
+    link_user_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT32)
+    )
+
     blurred_avatar: "___base__.ImageModel | None" = betterproto2.field(
         10, betterproto2.TYPE_MESSAGE, optional=True
     )

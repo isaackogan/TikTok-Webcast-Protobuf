@@ -3,7 +3,10 @@
 # plugin: python-betterproto2
 # This file has been @generated
 
-__all__ = ("EmoteModel",)
+__all__ = (
+    "EmoteModel",
+    "EmoteWithIndex",
+)
 
 import typing
 
@@ -74,6 +77,22 @@ class EmoteModel(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.base.emoji", "EmoteModel", EmoteModel
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class EmoteWithIndex(betterproto2.Message):
+    index: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    emote: "EmoteModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.base.emoji", "EmoteWithIndex", EmoteWithIndex
 )
 
 

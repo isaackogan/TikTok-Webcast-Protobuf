@@ -83,8 +83,16 @@ class AnchorLinkmicUserSettings(betterproto2.Message):
         17, betterproto2.TYPE_BOOL
     )
 
+    allow_live_notice_of_suggested: "bool" = betterproto2.field(
+        18, betterproto2.TYPE_BOOL
+    )
+
     allow_guest_request_during_cohost: "bool" = betterproto2.field(
         19, betterproto2.TYPE_BOOL
+    )
+
+    allow_guest_apply_during_cohost: "bool" = betterproto2.field(
+        20, betterproto2.TYPE_BOOL
     )
 
 

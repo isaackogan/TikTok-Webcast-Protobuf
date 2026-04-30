@@ -70,8 +70,16 @@ class PopProduct(betterproto2.Message):
         betterproto2.field(8, betterproto2.TYPE_INT32)
     )
 
+    schema: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     platform: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(10, betterproto2.TYPE_INT32)
+    )
+
+    product_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(11, betterproto2.TYPE_INT32)
     )
 
 
@@ -134,8 +142,24 @@ class WebcastOecLiveShoppingMessage(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    product_snap_shot: "__message__.ProductSnapShot | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     pin_card_delay_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         10, betterproto2.TYPE_INT64
+    )
+
+    flash_sale_atmosphere_info: "list[__message__.FlashSaleAtmosphereInfo]" = (
+        betterproto2.field(11, betterproto2.TYPE_MESSAGE, repeated=True)
+    )
+
+    card_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT32)
+    )
+
+    billboard_info: "__message__.BillboardInfo | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     billboard_display_result: "__message__.BillboardDisplayResult | None" = (
@@ -150,8 +174,20 @@ class WebcastOecLiveShoppingMessage(betterproto2.Message):
         16, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    campaign_banner_display_result: "__message__.CampaignBannerDisplayResult | None" = (
+        betterproto2.field(17, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    campaign_banner_display: "__message__.CampaignBannerDisplay | None" = (
+        betterproto2.field(18, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
     refresh_live_bag_info: "__message__.RefreshLiveBagInfo | None" = betterproto2.field(
         19, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_pin_card_reset_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        20, betterproto2.TYPE_INT32
     )
 
     voucher: "__message__.Voucher | None" = betterproto2.field(

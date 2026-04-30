@@ -199,6 +199,8 @@ class PermitBizContent(betterproto2.Message):
         8, betterproto2.TYPE_BOOL
     )
 
+    is_quick_call_auto_approved: "bool" = betterproto2.field(9, betterproto2.TYPE_BOOL)
+
 
 default_message_pool.register_message(
     "webcast.chatroom.model.multiguestv3", "PermitBizContent", PermitBizContent

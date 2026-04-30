@@ -52,6 +52,10 @@ class AssetsModel(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
+    size: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
     loki_content: "_model__.LokiExtraContent | None" = betterproto2.field(
         10, betterproto2.TYPE_MESSAGE, optional=True
     )
@@ -80,9 +84,19 @@ class AssetsModel(betterproto2.Message):
         32, betterproto2.TYPE_STRING
     )
 
+    downgrade_resource_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        33, betterproto2.TYPE_INT32
+    )
+
+    asset_extra: "_model__.AssetExtra | None" = betterproto2.field(
+        34, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     sticker_asset_variant: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         35, betterproto2.TYPE_INT32
     )
+
+    immediate_download: "bool" = betterproto2.field(36, betterproto2.TYPE_BOOL)
 
     sticker_asset_variant_reason: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         37, betterproto2.TYPE_INT32

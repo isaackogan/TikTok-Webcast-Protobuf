@@ -200,6 +200,16 @@ class CombineBadgeStruct(betterproto2.Message):
         7, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    background: "CombineBadgeBackground | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    background_dark_mode: "CombineBadgeBackground | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    icon_auto_mirrored: "bool" = betterproto2.field(13, betterproto2.TYPE_BOOL)
+
     background_auto_mirrored: "bool" = betterproto2.field(14, betterproto2.TYPE_BOOL)
 
     public_screen_show_style: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
@@ -210,8 +220,20 @@ class CombineBadgeStruct(betterproto2.Message):
         16, betterproto2.TYPE_INT32
     )
 
+    ranklist_online_audience_show_style: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        17, betterproto2.TYPE_INT32
+    )
+
+    multi_guest_show_style: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        18, betterproto2.TYPE_INT32
+    )
+
     arrow_config: "ArrowConfig | None" = betterproto2.field(
         19, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    padding_new_font: "PaddingInfo | None" = betterproto2.field(
+        20, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -786,7 +808,9 @@ class User(betterproto2.Message):
         23, betterproto2.TYPE_MESSAGE, optional=True
     )
 
-    fans_club: "bytes" = betterproto2.field(24, betterproto2.TYPE_BYTES)
+    fans_club: "___model__.FansClubMember | None" = betterproto2.field(
+        24, betterproto2.TYPE_MESSAGE, optional=True
+    )
 
     border: "___model__.BorderInfo | None" = betterproto2.field(
         25, betterproto2.TYPE_MESSAGE, optional=True

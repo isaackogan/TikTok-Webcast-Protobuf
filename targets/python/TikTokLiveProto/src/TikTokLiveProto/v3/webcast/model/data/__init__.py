@@ -98,6 +98,7 @@ __all__ = (
     "SubSplitStatus",
     "TagType",
     "TagV2TagClassification",
+    "TemplateEffectExtra",
     "TimerDetailAntidirtStatus",
     "TimerDetailAuditStatus",
     "TimerDetailAuditTaskType",
@@ -111,6 +112,7 @@ __all__ = (
     "UserEcommerceEntranceShopEntranceInfoStoreLabelStoreBrandLabelType",
     "UserEcommerceEntranceViewVersion",
     "UserEmoteUploadSource",
+    "UserFansClubFansClubDataUserFansClubStatus",
     "UserIdentity",
     "UserSubscribeInfoPayStatus",
     "VerticalPaddingRule",
@@ -1560,6 +1562,14 @@ class UserEcommerceEntranceViewVersion(betterproto2.Enum):
     VIEW_VERSION_STAR_SHOP = 1
 
 
+class UserFansClubFansClubDataUserFansClubStatus(betterproto2.Enum):
+    NOT_JOINED = 0
+
+    ACTIVE = 1
+
+    INACTIVE = 2
+
+
 class UserSubscribeInfoPayStatus(betterproto2.Enum):
     SUB_STATUS_UNKNOWN = 0
 
@@ -1640,8 +1650,24 @@ class EffectStruct(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
+    effect_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
     device_platform: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         10, betterproto2.TYPE_STRING
+    )
+
+    types: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING, repeated=True
+    )
+
+    tags: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        12, betterproto2.TYPE_STRING, repeated=True
+    )
+
+    tags_updated_at: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
     )
 
     parent: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
@@ -1656,8 +1682,20 @@ class EffectStruct(betterproto2.Message):
         betterproto2.field(16, betterproto2.TYPE_INT32)
     )
 
+    music: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        17, betterproto2.TYPE_STRING, repeated=True
+    )
+
+    source: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(18, betterproto2.TYPE_INT32)
+    )
+
     designer_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         19, betterproto2.TYPE_STRING
+    )
+
+    schema: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        20, betterproto2.TYPE_STRING
     )
 
     requirements: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
@@ -1698,8 +1736,20 @@ class EffectStruct(betterproto2.Message):
         32, betterproto2.TYPE_STRING
     )
 
+    composer_params: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        33, betterproto2.TYPE_STRING
+    )
+
+    hint_file: "UrlDataStruct | None" = betterproto2.field(
+        34, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     use_number: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(35, betterproto2.TYPE_INT64)
+    )
+
+    types_sec: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        36, betterproto2.TYPE_STRING, repeated=True
     )
 
     requirements_sec: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
@@ -1750,6 +1800,10 @@ class EffectStruct(betterproto2.Message):
 
     rec_tag: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(49, betterproto2.TYPE_INT64)
+    )
+
+    template_effect_extra: "TemplateEffectExtra | None" = betterproto2.field(
+        50, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     file_diff: "DiffInfo | None" = betterproto2.field(
@@ -1827,6 +1881,18 @@ class SubSplitStatus(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.data", "SubSplitStatus", SubSplitStatus
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class TemplateEffectExtra(betterproto2.Message):
+    resource_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.data", "TemplateEffectExtra", TemplateEffectExtra
 )
 
 

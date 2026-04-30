@@ -8,6 +8,7 @@ __all__ = (
     "GoalPinInfo",
     "GoalReward",
     "GoalStats",
+    "SubGoalContribution",
     "SubGoalPinInfo",
 )
 
@@ -101,6 +102,22 @@ class GoalStats(betterproto2.Message):
 
 
 default_message_pool.register_message("webcast.model.goal", "GoalStats", GoalStats)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class SubGoalContribution(betterproto2.Message):
+    id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    contribution_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.goal", "SubGoalContribution", SubGoalContribution
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})

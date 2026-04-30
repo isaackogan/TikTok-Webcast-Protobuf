@@ -4,8 +4,16 @@
 # This file has been @generated
 
 __all__ = (
+    "ControlChaosInfo",
     "GameTricksShortcut",
     "GiftPick",
+    "GiftPickExtra",
+    "GiftPickExtraGameInteraction",
+    "GiftPickExtraGameInteractionExternal",
+    "GiftPickExtraGameInteractionStorage",
+    "GiftPickExtraGameTricks",
+    "GiftPickExtraGameTricksExternal",
+    "GiftPickExtraGameTricksStorage",
     "GiftPickWithScore",
     "HotKey",
     "KeyBoardHotKey",
@@ -32,6 +40,26 @@ from ....message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class ControlChaosInfo(betterproto2.Message):
+    command_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    hot_keys: "list[HotKey]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    action_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks", "ControlChaosInfo", ControlChaosInfo
+)
 
 
 @dataclass(eq=False, repr=False, config={"extra": "forbid"})
@@ -78,9 +106,119 @@ class GiftPick(betterproto2.Message):
         betterproto2.field(8, betterproto2.TYPE_INT32)
     )
 
+    extra: "GiftPickExtra | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.viewer_picks", "GiftPick", GiftPick
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtra(betterproto2.Message):
+    game_tricks: "GiftPickExtraGameTricks | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    game_interaction: "GiftPickExtraGameInteraction | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks", "GiftPickExtra", GiftPickExtra
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtraGameInteraction(betterproto2.Message):
+    storage: "GiftPickExtraGameInteractionStorage | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    external: "GiftPickExtraGameInteractionExternal | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks",
+    "GiftPickExtraGameInteraction",
+    GiftPickExtraGameInteraction,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtraGameInteractionExternal(betterproto2.Message):
+    pass
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks",
+    "GiftPickExtraGameInteractionExternal",
+    GiftPickExtraGameInteractionExternal,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtraGameInteractionStorage(betterproto2.Message):
+    instruction: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks",
+    "GiftPickExtraGameInteractionStorage",
+    GiftPickExtraGameInteractionStorage,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtraGameTricks(betterproto2.Message):
+    storage: "GiftPickExtraGameTricksStorage | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    external: "GiftPickExtraGameTricksExternal | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks", "GiftPickExtraGameTricks", GiftPickExtraGameTricks
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtraGameTricksExternal(betterproto2.Message):
+    pass
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks",
+    "GiftPickExtraGameTricksExternal",
+    GiftPickExtraGameTricksExternal,
+)
+
+
+@dataclass(eq=False, repr=False, config={"extra": "forbid"})
+class GiftPickExtraGameTricksStorage(betterproto2.Message):
+    game_tricks_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+    control_chaos_info: "ControlChaosInfo | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks",
+    "GiftPickExtraGameTricksStorage",
+    GiftPickExtraGameTricksStorage,
 )
 
 
@@ -348,7 +486,21 @@ class ViewerPicksInfo(betterproto2.Message):
 
     has_score: "bool" = betterproto2.field(8, betterproto2.TYPE_BOOL)
 
+    enable_auto_restart: "bool" = betterproto2.field(9, betterproto2.TYPE_BOOL)
+
     started_from_auto_restart: "bool" = betterproto2.field(10, betterproto2.TYPE_BOOL)
+
+    viewer_picks_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
+    )
+
+    display_mode: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT32)
+    )
+
+    scene: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(13, betterproto2.TYPE_INT32)
+    )
 
     header_image: "ViewerPicksHeaderImage | None" = betterproto2.field(
         14, betterproto2.TYPE_MESSAGE, optional=True
@@ -361,6 +513,8 @@ class ViewerPicksInfo(betterproto2.Message):
     extra: "ProfileExtra | None" = betterproto2.field(
         16, betterproto2.TYPE_MESSAGE, optional=True
     )
+
+    started_from_auto_start: "bool" = betterproto2.field(17, betterproto2.TYPE_BOOL)
 
 
 default_message_pool.register_message(
