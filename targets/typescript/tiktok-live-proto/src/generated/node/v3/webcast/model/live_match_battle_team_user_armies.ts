@@ -19,6 +19,12 @@ export interface BattleTeamUserArmies {
   hostRank: string;
   teamTotalEnigmaScore: string;
   teamTotalEnigmaUv: string;
+  hostVisibleRankFromTeamId: { [key: string]: string };
+}
+
+export interface BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+  key: string;
+  value: string;
 }
 
 function createBaseBattleTeamUserArmies(): BattleTeamUserArmies {
@@ -30,6 +36,7 @@ function createBaseBattleTeamUserArmies(): BattleTeamUserArmies {
     hostRank: "0",
     teamTotalEnigmaScore: "0",
     teamTotalEnigmaUv: "0",
+    hostVisibleRankFromTeamId: {},
   };
 }
 
@@ -56,6 +63,10 @@ export const BattleTeamUserArmies: MessageFns<BattleTeamUserArmies> = {
     if (message.teamTotalEnigmaUv !== "0") {
       writer.uint32(56).int64(message.teamTotalEnigmaUv);
     }
+    globalThis.Object.entries(message.hostVisibleRankFromTeamId).forEach(([key, value]: [string, string]) => {
+      BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry.encode({ key: key as any, value }, writer.uint32(66).fork())
+        .join();
+    });
     return writer;
   },
 
@@ -120,6 +131,70 @@ export const BattleTeamUserArmies: MessageFns<BattleTeamUserArmies> = {
           }
 
           message.teamTotalEnigmaUv = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          const entry8 = BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry.decode(reader, reader.uint32());
+          if (entry8.value !== undefined) {
+            message.hostVisibleRankFromTeamId[entry8.key] = entry8.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleTeamUserArmies_HostVisibleRankFromTeamIdEntry(): BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+  return { key: "0", value: "0" };
+}
+
+export const BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry: MessageFns<
+  BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry
+> = {
+  encode(
+    message: BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== "0") {
+      writer.uint32(16).int64(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleTeamUserArmies_HostVisibleRankFromTeamIdEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int64().toString();
           continue;
         }
       }

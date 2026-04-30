@@ -36,6 +36,11 @@ export interface GoalStats {
   totalNewFans: string;
 }
 
+export interface SubGoalContribution {
+  id: string;
+  contributionCount: string;
+}
+
 export interface SubGoalPinInfo {
   pinStartTime: string;
   pinEndTime: string;
@@ -299,6 +304,54 @@ export const GoalStats: MessageFns<GoalStats> = {
           }
 
           message.totalNewFans = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSubGoalContribution(): SubGoalContribution {
+  return { id: "", contributionCount: "0" };
+}
+
+export const SubGoalContribution: MessageFns<SubGoalContribution> = {
+  encode(message: SubGoalContribution, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.contributionCount !== "0") {
+      writer.uint32(16).int64(message.contributionCount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SubGoalContribution {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSubGoalContribution();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.contributionCount = reader.int64().toString();
           continue;
         }
       }

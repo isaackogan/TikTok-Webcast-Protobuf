@@ -68,10 +68,16 @@ export interface CombineBadgeStruct {
   padding: PaddingInfo | undefined;
   fontStyle: FontStyle | undefined;
   profileCardPanel: ProfileCardPanel | undefined;
+  background: CombineBadgeBackground | undefined;
+  backgroundDarkMode: CombineBadgeBackground | undefined;
+  iconAutoMirrored: boolean;
   backgroundAutoMirrored: boolean;
   publicScreenShowStyle: number;
   personalCardShowStyle: number;
+  ranklistOnlineAudienceShowStyle: number;
+  multiGuestShowStyle: number;
   arrowConfig: ArrowConfig | undefined;
+  paddingNewFont: PaddingInfo | undefined;
 }
 
 export interface ComboBadgeInfo {
@@ -620,10 +626,16 @@ function createBaseCombineBadgeStruct(): CombineBadgeStruct {
     padding: undefined,
     fontStyle: undefined,
     profileCardPanel: undefined,
+    background: undefined,
+    backgroundDarkMode: undefined,
+    iconAutoMirrored: false,
     backgroundAutoMirrored: false,
     publicScreenShowStyle: 0,
     personalCardShowStyle: 0,
+    ranklistOnlineAudienceShowStyle: 0,
+    multiGuestShowStyle: 0,
     arrowConfig: undefined,
+    paddingNewFont: undefined,
   };
 }
 
@@ -650,6 +662,15 @@ export const CombineBadgeStruct: MessageFns<CombineBadgeStruct> = {
     if (message.profileCardPanel !== undefined) {
       ProfileCardPanel.encode(message.profileCardPanel, writer.uint32(58).fork()).join();
     }
+    if (message.background !== undefined) {
+      CombineBadgeBackground.encode(message.background, writer.uint32(90).fork()).join();
+    }
+    if (message.backgroundDarkMode !== undefined) {
+      CombineBadgeBackground.encode(message.backgroundDarkMode, writer.uint32(98).fork()).join();
+    }
+    if (message.iconAutoMirrored !== false) {
+      writer.uint32(104).bool(message.iconAutoMirrored);
+    }
     if (message.backgroundAutoMirrored !== false) {
       writer.uint32(112).bool(message.backgroundAutoMirrored);
     }
@@ -659,8 +680,17 @@ export const CombineBadgeStruct: MessageFns<CombineBadgeStruct> = {
     if (message.personalCardShowStyle !== 0) {
       writer.uint32(128).int32(message.personalCardShowStyle);
     }
+    if (message.ranklistOnlineAudienceShowStyle !== 0) {
+      writer.uint32(136).int32(message.ranklistOnlineAudienceShowStyle);
+    }
+    if (message.multiGuestShowStyle !== 0) {
+      writer.uint32(144).int32(message.multiGuestShowStyle);
+    }
     if (message.arrowConfig !== undefined) {
       ArrowConfig.encode(message.arrowConfig, writer.uint32(154).fork()).join();
+    }
+    if (message.paddingNewFont !== undefined) {
+      PaddingInfo.encode(message.paddingNewFont, writer.uint32(162).fork()).join();
     }
     return writer;
   },
@@ -728,6 +758,30 @@ export const CombineBadgeStruct: MessageFns<CombineBadgeStruct> = {
           message.profileCardPanel = ProfileCardPanel.decode(reader, reader.uint32());
           continue;
         }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.background = CombineBadgeBackground.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.backgroundDarkMode = CombineBadgeBackground.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.iconAutoMirrored = reader.bool();
+          continue;
+        }
         case 14: {
           if (tag !== 112) {
             break;
@@ -752,12 +806,36 @@ export const CombineBadgeStruct: MessageFns<CombineBadgeStruct> = {
           message.personalCardShowStyle = reader.int32();
           continue;
         }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.ranklistOnlineAudienceShowStyle = reader.int32();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.multiGuestShowStyle = reader.int32();
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.arrowConfig = ArrowConfig.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.paddingNewFont = PaddingInfo.decode(reader, reader.uint32());
           continue;
         }
       }

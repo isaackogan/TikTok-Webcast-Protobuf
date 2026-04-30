@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { ImageModel } from "./base/messages.js";
-import { GiftColorInfo, GiftPanelBeaconBubble } from "./gift/model.js";
+import { GiftColorInfo, GiftPanelBeaconBubble, GiftResource } from "./gift/model.js";
 import { Text } from "./message/common.js";
 import {
   BatchGiftInfo,
@@ -34,7 +34,7 @@ export interface Gift {
   id: string;
   forLinkmic: boolean;
   combo: boolean;
-  giftType: number;
+  type: number;
   diamondCount: number;
   isDisplayedOnPanel: boolean;
   primaryEffectId: string;
@@ -50,6 +50,7 @@ export interface Gift {
   isBoxGift: boolean;
   canPutInGiftBox: boolean;
   giftBoxInfo: GiftBoxInfo | undefined;
+  trackerParams: { [key: string]: string };
   lockInfo: GiftLockInfo | undefined;
   colorInfos: GiftColorInfo[];
   giftRankRecommendInfo: string;
@@ -70,12 +71,29 @@ export interface Gift {
   ugGiftInfo: UGGiftStructInfo | undefined;
   crossScreenEffectInfo: CrossScreenEffectInfo | undefined;
   beaconBubble: GiftPanelBeaconBubble | undefined;
+  giftResources: { [key: string]: GiftResource };
   resourceId: string;
+  bizExtra: { [key: string]: string };
   lynxCrossScreenEffectInfo: LynxCrossScreenEffectInfo | undefined;
   giftStructHash: string;
   schemeInfo: SchemeInfo | undefined;
   seriesInfo: GiftSeriesInfo | undefined;
   strategyEvent: string;
+}
+
+export interface Gift_TrackerParamsEntry {
+  key: string;
+  value: string;
+}
+
+export interface Gift_GiftResourcesEntry {
+  key: string;
+  value: GiftResource | undefined;
+}
+
+export interface Gift_BizExtraEntry {
+  key: string;
+  value: string;
 }
 
 export interface GiftPanelBanner {
@@ -86,6 +104,7 @@ export interface GiftPanelBanner {
   bannerLynxUrl: string;
   bannerPriority: number;
   bannerLynxExtra: string;
+  bgImage: ImageModel | undefined;
 }
 
 export interface GiftTrayInfo {
@@ -112,7 +131,7 @@ function createBaseGift(): Gift {
     id: "0",
     forLinkmic: false,
     combo: false,
-    giftType: 0,
+    type: 0,
     diamondCount: 0,
     isDisplayedOnPanel: false,
     primaryEffectId: "0",
@@ -128,6 +147,7 @@ function createBaseGift(): Gift {
     isBoxGift: false,
     canPutInGiftBox: false,
     giftBoxInfo: undefined,
+    trackerParams: {},
     lockInfo: undefined,
     colorInfos: [],
     giftRankRecommendInfo: "",
@@ -148,7 +168,9 @@ function createBaseGift(): Gift {
     ugGiftInfo: undefined,
     crossScreenEffectInfo: undefined,
     beaconBubble: undefined,
+    giftResources: {},
     resourceId: "0",
+    bizExtra: {},
     lynxCrossScreenEffectInfo: undefined,
     giftStructHash: "",
     schemeInfo: undefined,
@@ -177,8 +199,8 @@ export const Gift: MessageFns<Gift> = {
     if (message.combo !== false) {
       writer.uint32(80).bool(message.combo);
     }
-    if (message.giftType !== 0) {
-      writer.uint32(88).int32(message.giftType);
+    if (message.type !== 0) {
+      writer.uint32(88).int32(message.type);
     }
     if (message.diamondCount !== 0) {
       writer.uint32(96).int32(message.diamondCount);
@@ -225,6 +247,9 @@ export const Gift: MessageFns<Gift> = {
     if (message.giftBoxInfo !== undefined) {
       GiftBoxInfo.encode(message.giftBoxInfo, writer.uint32(434).fork()).join();
     }
+    globalThis.Object.entries(message.trackerParams).forEach(([key, value]: [string, string]) => {
+      Gift_TrackerParamsEntry.encode({ key: key as any, value }, writer.uint32(802).fork()).join();
+    });
     if (message.lockInfo !== undefined) {
       GiftLockInfo.encode(message.lockInfo, writer.uint32(810).fork()).join();
     }
@@ -287,9 +312,15 @@ export const Gift: MessageFns<Gift> = {
     if (message.beaconBubble !== undefined) {
       GiftPanelBeaconBubble.encode(message.beaconBubble, writer.uint32(962).fork()).join();
     }
+    globalThis.Object.entries(message.giftResources).forEach(([key, value]: [string, GiftResource]) => {
+      Gift_GiftResourcesEntry.encode({ key: key as any, value }, writer.uint32(970).fork()).join();
+    });
     if (message.resourceId !== "0") {
       writer.uint32(976).int64(message.resourceId);
     }
+    globalThis.Object.entries(message.bizExtra).forEach(([key, value]: [string, string]) => {
+      Gift_BizExtraEntry.encode({ key: key as any, value }, writer.uint32(986).fork()).join();
+    });
     if (message.lynxCrossScreenEffectInfo !== undefined) {
       LynxCrossScreenEffectInfo.encode(message.lynxCrossScreenEffectInfo, writer.uint32(994).fork()).join();
     }
@@ -368,7 +399,7 @@ export const Gift: MessageFns<Gift> = {
             break;
           }
 
-          message.giftType = reader.int32();
+          message.type = reader.int32();
           continue;
         }
         case 12: {
@@ -489,6 +520,17 @@ export const Gift: MessageFns<Gift> = {
           }
 
           message.giftBoxInfo = GiftBoxInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 100: {
+          if (tag !== 802) {
+            break;
+          }
+
+          const entry100 = Gift_TrackerParamsEntry.decode(reader, reader.uint32());
+          if (entry100.value !== undefined) {
+            message.trackerParams[entry100.key] = entry100.value;
+          }
           continue;
         }
         case 101: {
@@ -661,12 +703,34 @@ export const Gift: MessageFns<Gift> = {
           message.beaconBubble = GiftPanelBeaconBubble.decode(reader, reader.uint32());
           continue;
         }
+        case 121: {
+          if (tag !== 970) {
+            break;
+          }
+
+          const entry121 = Gift_GiftResourcesEntry.decode(reader, reader.uint32());
+          if (entry121.value !== undefined) {
+            message.giftResources[entry121.key] = entry121.value;
+          }
+          continue;
+        }
         case 122: {
           if (tag !== 976) {
             break;
           }
 
           message.resourceId = reader.int64().toString();
+          continue;
+        }
+        case 123: {
+          if (tag !== 986) {
+            break;
+          }
+
+          const entry123 = Gift_BizExtraEntry.decode(reader, reader.uint32());
+          if (entry123.value !== undefined) {
+            message.bizExtra[entry123.key] = entry123.value;
+          }
           continue;
         }
         case 124: {
@@ -719,6 +783,150 @@ export const Gift: MessageFns<Gift> = {
   },
 };
 
+function createBaseGift_TrackerParamsEntry(): Gift_TrackerParamsEntry {
+  return { key: "", value: "" };
+}
+
+export const Gift_TrackerParamsEntry: MessageFns<Gift_TrackerParamsEntry> = {
+  encode(message: Gift_TrackerParamsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Gift_TrackerParamsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGift_TrackerParamsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGift_GiftResourcesEntry(): Gift_GiftResourcesEntry {
+  return { key: "", value: undefined };
+}
+
+export const Gift_GiftResourcesEntry: MessageFns<Gift_GiftResourcesEntry> = {
+  encode(message: Gift_GiftResourcesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      GiftResource.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Gift_GiftResourcesEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGift_GiftResourcesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = GiftResource.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGift_BizExtraEntry(): Gift_BizExtraEntry {
+  return { key: "0", value: "" };
+}
+
+export const Gift_BizExtraEntry: MessageFns<Gift_BizExtraEntry> = {
+  encode(message: Gift_BizExtraEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Gift_BizExtraEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGift_BizExtraEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGiftPanelBanner(): GiftPanelBanner {
   return {
     displayText: undefined,
@@ -728,6 +936,7 @@ function createBaseGiftPanelBanner(): GiftPanelBanner {
     bannerLynxUrl: "",
     bannerPriority: 0,
     bannerLynxExtra: "",
+    bgImage: undefined,
   };
 }
 
@@ -753,6 +962,9 @@ export const GiftPanelBanner: MessageFns<GiftPanelBanner> = {
     }
     if (message.bannerLynxExtra !== "") {
       writer.uint32(66).string(message.bannerLynxExtra);
+    }
+    if (message.bgImage !== undefined) {
+      ImageModel.encode(message.bgImage, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -818,6 +1030,14 @@ export const GiftPanelBanner: MessageFns<GiftPanelBanner> = {
           }
 
           message.bannerLynxExtra = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.bgImage = ImageModel.decode(reader, reader.uint32());
           continue;
         }
       }

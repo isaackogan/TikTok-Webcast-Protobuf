@@ -75,6 +75,8 @@ export interface SubPinCard {
   actionSchema: string;
   lastPinTimestamp: string;
   extraInfo: SubPinCardExtra | undefined;
+  highlightTextNum: string;
+  icons: ImageModel[];
 }
 
 export interface SubPinCardExtra {
@@ -552,6 +554,8 @@ function createBaseSubPinCard(): SubPinCard {
     actionSchema: "",
     lastPinTimestamp: "0",
     extraInfo: undefined,
+    highlightTextNum: "0",
+    icons: [],
   };
 }
 
@@ -589,6 +593,12 @@ export const SubPinCard: MessageFns<SubPinCard> = {
     }
     if (message.extraInfo !== undefined) {
       SubPinCardExtra.encode(message.extraInfo, writer.uint32(90).fork()).join();
+    }
+    if (message.highlightTextNum !== "0") {
+      writer.uint32(96).int64(message.highlightTextNum);
+    }
+    for (const v of message.icons) {
+      ImageModel.encode(v!, writer.uint32(106).fork()).join();
     }
     return writer;
   },
@@ -686,6 +696,22 @@ export const SubPinCard: MessageFns<SubPinCard> = {
           }
 
           message.extraInfo = SubPinCardExtra.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.highlightTextNum = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.icons.push(ImageModel.decode(reader, reader.uint32()));
           continue;
         }
       }

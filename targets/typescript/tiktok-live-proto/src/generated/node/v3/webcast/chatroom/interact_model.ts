@@ -47,7 +47,9 @@ export interface AnchorLinkmicUserSettings {
   allowFriendInvitesWhenOfflive: boolean;
   allowUserCohostSuggestions: boolean;
   allowMissedInvitationNotice: boolean;
+  allowLiveNoticeOfSuggested: boolean;
   allowGuestRequestDuringCohost: boolean;
+  allowGuestApplyDuringCohost: boolean;
 }
 
 export interface BattleInfo {
@@ -125,7 +127,9 @@ function createBaseAnchorLinkmicUserSettings(): AnchorLinkmicUserSettings {
     allowFriendInvitesWhenOfflive: false,
     allowUserCohostSuggestions: false,
     allowMissedInvitationNotice: false,
+    allowLiveNoticeOfSuggested: false,
     allowGuestRequestDuringCohost: false,
+    allowGuestApplyDuringCohost: false,
   };
 }
 
@@ -182,8 +186,14 @@ export const AnchorLinkmicUserSettings: MessageFns<AnchorLinkmicUserSettings> = 
     if (message.allowMissedInvitationNotice !== false) {
       writer.uint32(136).bool(message.allowMissedInvitationNotice);
     }
+    if (message.allowLiveNoticeOfSuggested !== false) {
+      writer.uint32(144).bool(message.allowLiveNoticeOfSuggested);
+    }
     if (message.allowGuestRequestDuringCohost !== false) {
       writer.uint32(152).bool(message.allowGuestRequestDuringCohost);
+    }
+    if (message.allowGuestApplyDuringCohost !== false) {
+      writer.uint32(160).bool(message.allowGuestApplyDuringCohost);
     }
     return writer;
   },
@@ -331,12 +341,28 @@ export const AnchorLinkmicUserSettings: MessageFns<AnchorLinkmicUserSettings> = 
           message.allowMissedInvitationNotice = reader.bool();
           continue;
         }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.allowLiveNoticeOfSuggested = reader.bool();
+          continue;
+        }
         case 19: {
           if (tag !== 152) {
             break;
           }
 
           message.allowGuestRequestDuringCohost = reader.bool();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.allowGuestApplyDuringCohost = reader.bool();
           continue;
         }
       }

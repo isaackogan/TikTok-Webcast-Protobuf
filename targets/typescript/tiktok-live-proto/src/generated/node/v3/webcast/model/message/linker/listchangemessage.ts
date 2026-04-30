@@ -20,6 +20,7 @@ export interface LinkListUser {
   payedMoney: string;
   fanTicket: string;
   fanTicketIconType: number;
+  linkUserType: number;
   blurredAvatar: ImageModel | undefined;
 }
 
@@ -39,6 +40,7 @@ function createBaseLinkListUser(): LinkListUser {
     payedMoney: "0",
     fanTicket: "0",
     fanTicketIconType: 0,
+    linkUserType: 0,
     blurredAvatar: undefined,
   };
 }
@@ -68,6 +70,9 @@ export const LinkListUser: MessageFns<LinkListUser> = {
     }
     if (message.fanTicketIconType !== 0) {
       writer.uint32(64).int32(message.fanTicketIconType);
+    }
+    if (message.linkUserType !== 0) {
+      writer.uint32(72).int32(message.linkUserType);
     }
     if (message.blurredAvatar !== undefined) {
       ImageModel.encode(message.blurredAvatar, writer.uint32(82).fork()).join();
@@ -144,6 +149,14 @@ export const LinkListUser: MessageFns<LinkListUser> = {
           }
 
           message.fanTicketIconType = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.linkUserType = reader.int32();
           continue;
         }
         case 10: {

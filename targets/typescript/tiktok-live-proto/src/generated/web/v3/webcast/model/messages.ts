@@ -14,6 +14,7 @@ import {
   HashtagNamespace,
   LiveEventInfoEventPayMethod,
   PaidEventPreview,
+  UserFansClubFansClubDataUserFansClubStatus,
 } from "./data/messages.js";
 import { AssetsModel } from "./gift/assets.js";
 
@@ -71,7 +72,10 @@ export interface BorderInfo {
   profilePrivilegeLogExtra: PrivilegeLogExtra | undefined;
   avatarBackgroundColor: string;
   avatarBackgroundBorderColor: string;
+  nameStarlingKey: string;
   descStarlingKey: string;
+  name: string;
+  description: string;
 }
 
 export interface CrossScreenEffectInfo {
@@ -93,6 +97,25 @@ export interface CrossScreenEffectInfo_ActionEffectIdsEntry {
 export interface CrossScreenEffectInfo_ReactionEffectIdsEntry {
   key: string;
   value: number;
+}
+
+export interface FansClubData {
+  clubName: string;
+  level: number;
+  userFansClubStatus: UserFansClubFansClubDataUserFansClubStatus;
+  badge: UserBadge | undefined;
+  availableGiftIds: string[];
+  anchorId: string;
+}
+
+export interface FansClubMember {
+  data: FansClubData | undefined;
+  preferData: { [key: number]: FansClubData };
+}
+
+export interface FansClubMember_PreferDataEntry {
+  key: number;
+  value: FansClubData | undefined;
 }
 
 export interface GiftBoxInfo {
@@ -193,6 +216,7 @@ export interface LiveEventInfo {
   isPaidEvent: boolean;
   ticketAmount: string;
   payMethod: LiveEventInfoEventPayMethod;
+  walletPkgDict: { [key: string]: WalletPackage };
   eventUserInfo: EventUserInfo[];
   subscribedCount: string;
   paidEventPreview: PaidEventPreview | undefined;
@@ -200,6 +224,11 @@ export interface LiveEventInfo {
   registerType: string;
   periodicSettings: string;
   periodicShows: string;
+}
+
+export interface LiveEventInfo_WalletPkgDictEntry {
+  key: string;
+  value: WalletPackage | undefined;
 }
 
 export interface LynxCrossScreenEffectInfo {
@@ -241,8 +270,24 @@ export interface UserAttr {
   isAdmin: boolean;
   isSuperAdmin: boolean;
   muteDuration: string;
+  adminPermissions: { [key: number]: number };
   hasVotingFunction: boolean;
   isChannelAdmin: boolean;
+}
+
+export interface UserAttr_AdminPermissionsEntry {
+  key: number;
+  value: number;
+}
+
+export interface UserBadge {
+  icons: { [key: number]: ImageModel };
+  title: string;
+}
+
+export interface UserBadge_IconsEntry {
+  key: number;
+  value: ImageModel | undefined;
 }
 
 export interface UserHonor {
@@ -253,14 +298,21 @@ export interface UserHonor {
   nextName: string;
   level: number;
   nextIcon: ImageModel | undefined;
+  deprecated23: string;
   deprecated24: string;
+  deprecated25: string;
+  gradeDescribe: string;
   gradeIconList: GradeIcon[];
   screenChatType: string;
   imIcon: ImageModel | undefined;
+  imIconWithLevel: ImageModel | undefined;
+  liveIcon: ImageModel | undefined;
   newImIconWithLevel: ImageModel | undefined;
+  newLiveIcon: ImageModel | undefined;
   upgradeNeedConsume: string;
   nextPrivileges: string;
   background: ImageModel | undefined;
+  backgroundBack: ImageModel | undefined;
   score: string;
   gradeBanner: string;
 }
@@ -744,7 +796,10 @@ function createBaseBorderInfo(): BorderInfo {
     profilePrivilegeLogExtra: undefined,
     avatarBackgroundColor: "",
     avatarBackgroundBorderColor: "",
+    nameStarlingKey: "",
     descStarlingKey: "",
+    name: "",
+    description: "",
   };
 }
 
@@ -774,8 +829,17 @@ export const BorderInfo: MessageFns<BorderInfo> = {
     if (message.avatarBackgroundBorderColor !== "") {
       writer.uint32(66).string(message.avatarBackgroundBorderColor);
     }
+    if (message.nameStarlingKey !== "") {
+      writer.uint32(74).string(message.nameStarlingKey);
+    }
     if (message.descStarlingKey !== "") {
       writer.uint32(82).string(message.descStarlingKey);
+    }
+    if (message.name !== "") {
+      writer.uint32(90).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(98).string(message.description);
     }
     return writer;
   },
@@ -851,12 +915,36 @@ export const BorderInfo: MessageFns<BorderInfo> = {
           message.avatarBackgroundBorderColor = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.nameStarlingKey = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.descStarlingKey = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.description = reader.string();
           continue;
         }
       }
@@ -1078,6 +1166,209 @@ export const CrossScreenEffectInfo_ReactionEffectIdsEntry: MessageFns<CrossScree
           }
 
           message.value = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFansClubData(): FansClubData {
+  return { clubName: "", level: 0, userFansClubStatus: 0, badge: undefined, availableGiftIds: [], anchorId: "0" };
+}
+
+export const FansClubData: MessageFns<FansClubData> = {
+  encode(message: FansClubData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.clubName !== "") {
+      writer.uint32(10).string(message.clubName);
+    }
+    if (message.level !== 0) {
+      writer.uint32(16).int32(message.level);
+    }
+    if (message.userFansClubStatus !== 0) {
+      writer.uint32(24).int32(message.userFansClubStatus);
+    }
+    if (message.badge !== undefined) {
+      UserBadge.encode(message.badge, writer.uint32(34).fork()).join();
+    }
+    writer.uint32(42).fork();
+    for (const v of message.availableGiftIds) {
+      writer.int64(v);
+    }
+    writer.join();
+    if (message.anchorId !== "0") {
+      writer.uint32(48).int64(message.anchorId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansClubData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansClubData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.clubName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.level = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.userFansClubStatus = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.badge = UserBadge.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag === 40) {
+            message.availableGiftIds.push(reader.int64().toString());
+
+            continue;
+          }
+
+          if (tag === 42) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.availableGiftIds.push(reader.int64().toString());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFansClubMember(): FansClubMember {
+  return { data: undefined, preferData: {} };
+}
+
+export const FansClubMember: MessageFns<FansClubMember> = {
+  encode(message: FansClubMember, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined) {
+      FansClubData.encode(message.data, writer.uint32(10).fork()).join();
+    }
+    globalThis.Object.entries(message.preferData).forEach(([key, value]: [string, FansClubData]) => {
+      FansClubMember_PreferDataEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansClubMember {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansClubMember();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.data = FansClubData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = FansClubMember_PreferDataEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.preferData[entry2.key] = entry2.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFansClubMember_PreferDataEntry(): FansClubMember_PreferDataEntry {
+  return { key: 0, value: undefined };
+}
+
+export const FansClubMember_PreferDataEntry: MessageFns<FansClubMember_PreferDataEntry> = {
+  encode(message: FansClubMember_PreferDataEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== undefined) {
+      FansClubData.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansClubMember_PreferDataEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansClubMember_PreferDataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = FansClubData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -2014,6 +2305,7 @@ function createBaseLiveEventInfo(): LiveEventInfo {
     isPaidEvent: false,
     ticketAmount: "0",
     payMethod: 0,
+    walletPkgDict: {},
     eventUserInfo: [],
     subscribedCount: "0",
     paidEventPreview: undefined,
@@ -2053,6 +2345,9 @@ export const LiveEventInfo: MessageFns<LiveEventInfo> = {
     if (message.payMethod !== 0) {
       writer.uint32(72).int32(message.payMethod);
     }
+    globalThis.Object.entries(message.walletPkgDict).forEach(([key, value]: [string, WalletPackage]) => {
+      LiveEventInfo_WalletPkgDictEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+    });
     for (const v of message.eventUserInfo) {
       EventUserInfo.encode(v!, writer.uint32(90).fork()).join();
     }
@@ -2156,6 +2451,17 @@ export const LiveEventInfo: MessageFns<LiveEventInfo> = {
           message.payMethod = reader.int32() as any;
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          const entry10 = LiveEventInfo_WalletPkgDictEntry.decode(reader, reader.uint32());
+          if (entry10.value !== undefined) {
+            message.walletPkgDict[entry10.key] = entry10.value;
+          }
+          continue;
+        }
         case 11: {
           if (tag !== 90) {
             break;
@@ -2210,6 +2516,54 @@ export const LiveEventInfo: MessageFns<LiveEventInfo> = {
           }
 
           message.periodicShows = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLiveEventInfo_WalletPkgDictEntry(): LiveEventInfo_WalletPkgDictEntry {
+  return { key: "", value: undefined };
+}
+
+export const LiveEventInfo_WalletPkgDictEntry: MessageFns<LiveEventInfo_WalletPkgDictEntry> = {
+  encode(message: LiveEventInfo_WalletPkgDictEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      WalletPackage.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LiveEventInfo_WalletPkgDictEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLiveEventInfo_WalletPkgDictEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = WalletPackage.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -2590,6 +2944,7 @@ function createBaseUserAttr(): UserAttr {
     isAdmin: false,
     isSuperAdmin: false,
     muteDuration: "0",
+    adminPermissions: {},
     hasVotingFunction: false,
     isChannelAdmin: false,
   };
@@ -2609,6 +2964,9 @@ export const UserAttr: MessageFns<UserAttr> = {
     if (message.muteDuration !== "0") {
       writer.uint32(32).int64(message.muteDuration);
     }
+    globalThis.Object.entries(message.adminPermissions).forEach(([key, value]: [string, number]) => {
+      UserAttr_AdminPermissionsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     if (message.hasVotingFunction !== false) {
       writer.uint32(48).bool(message.hasVotingFunction);
     }
@@ -2657,6 +3015,17 @@ export const UserAttr: MessageFns<UserAttr> = {
           message.muteDuration = reader.int64().toString();
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = UserAttr_AdminPermissionsEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.adminPermissions[entry5.key] = entry5.value;
+          }
+          continue;
+        }
         case 6: {
           if (tag !== 48) {
             break;
@@ -2683,6 +3052,153 @@ export const UserAttr: MessageFns<UserAttr> = {
   },
 };
 
+function createBaseUserAttr_AdminPermissionsEntry(): UserAttr_AdminPermissionsEntry {
+  return { key: 0, value: 0 };
+}
+
+export const UserAttr_AdminPermissionsEntry: MessageFns<UserAttr_AdminPermissionsEntry> = {
+  encode(message: UserAttr_AdminPermissionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== 0) {
+      writer.uint32(16).int32(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserAttr_AdminPermissionsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserAttr_AdminPermissionsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadge(): UserBadge {
+  return { icons: {}, title: "" };
+}
+
+export const UserBadge: MessageFns<UserBadge> = {
+  encode(message: UserBadge, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.icons).forEach(([key, value]: [string, ImageModel]) => {
+      UserBadge_IconsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+    });
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadge {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadge();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = UserBadge_IconsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.icons[entry1.key] = entry1.value;
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadge_IconsEntry(): UserBadge_IconsEntry {
+  return { key: 0, value: undefined };
+}
+
+export const UserBadge_IconsEntry: MessageFns<UserBadge_IconsEntry> = {
+  encode(message: UserBadge_IconsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== undefined) {
+      ImageModel.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadge_IconsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadge_IconsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUserHonor(): UserHonor {
   return {
     deprecated20: "0",
@@ -2692,14 +3208,21 @@ function createBaseUserHonor(): UserHonor {
     nextName: "",
     level: 0,
     nextIcon: undefined,
+    deprecated23: "0",
     deprecated24: "0",
+    deprecated25: "0",
+    gradeDescribe: "",
     gradeIconList: [],
     screenChatType: "0",
     imIcon: undefined,
+    imIconWithLevel: undefined,
+    liveIcon: undefined,
     newImIconWithLevel: undefined,
+    newLiveIcon: undefined,
     upgradeNeedConsume: "0",
     nextPrivileges: "",
     background: undefined,
+    backgroundBack: undefined,
     score: "0",
     gradeBanner: "",
   };
@@ -2728,8 +3251,17 @@ export const UserHonor: MessageFns<UserHonor> = {
     if (message.nextIcon !== undefined) {
       ImageModel.encode(message.nextIcon, writer.uint32(58).fork()).join();
     }
+    if (message.deprecated23 !== "0") {
+      writer.uint32(72).int64(message.deprecated23);
+    }
     if (message.deprecated24 !== "0") {
       writer.uint32(80).int64(message.deprecated24);
+    }
+    if (message.deprecated25 !== "0") {
+      writer.uint32(88).int64(message.deprecated25);
+    }
+    if (message.gradeDescribe !== "") {
+      writer.uint32(106).string(message.gradeDescribe);
     }
     for (const v of message.gradeIconList) {
       GradeIcon.encode(v!, writer.uint32(114).fork()).join();
@@ -2740,8 +3272,17 @@ export const UserHonor: MessageFns<UserHonor> = {
     if (message.imIcon !== undefined) {
       ImageModel.encode(message.imIcon, writer.uint32(130).fork()).join();
     }
+    if (message.imIconWithLevel !== undefined) {
+      ImageModel.encode(message.imIconWithLevel, writer.uint32(138).fork()).join();
+    }
+    if (message.liveIcon !== undefined) {
+      ImageModel.encode(message.liveIcon, writer.uint32(146).fork()).join();
+    }
     if (message.newImIconWithLevel !== undefined) {
       ImageModel.encode(message.newImIconWithLevel, writer.uint32(154).fork()).join();
+    }
+    if (message.newLiveIcon !== undefined) {
+      ImageModel.encode(message.newLiveIcon, writer.uint32(162).fork()).join();
     }
     if (message.upgradeNeedConsume !== "0") {
       writer.uint32(168).int64(message.upgradeNeedConsume);
@@ -2751,6 +3292,9 @@ export const UserHonor: MessageFns<UserHonor> = {
     }
     if (message.background !== undefined) {
       ImageModel.encode(message.background, writer.uint32(186).fork()).join();
+    }
+    if (message.backgroundBack !== undefined) {
+      ImageModel.encode(message.backgroundBack, writer.uint32(194).fork()).join();
     }
     if (message.score !== "0") {
       writer.uint32(200).int64(message.score);
@@ -2824,12 +3368,36 @@ export const UserHonor: MessageFns<UserHonor> = {
           message.nextIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.deprecated23 = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.deprecated24 = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.deprecated25 = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.gradeDescribe = reader.string();
           continue;
         }
         case 14: {
@@ -2856,12 +3424,36 @@ export const UserHonor: MessageFns<UserHonor> = {
           message.imIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.imIconWithLevel = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.liveIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.newImIconWithLevel = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.newLiveIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
         case 21: {
@@ -2886,6 +3478,14 @@ export const UserHonor: MessageFns<UserHonor> = {
           }
 
           message.background = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 24: {
+          if (tag !== 194) {
+            break;
+          }
+
+          message.backgroundBack = ImageModel.decode(reader, reader.uint32());
           continue;
         }
         case 25: {

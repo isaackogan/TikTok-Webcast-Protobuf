@@ -1007,6 +1007,13 @@ export enum UserEcommerceEntranceViewVersion {
   UNRECOGNIZED = -1,
 }
 
+export enum UserFansClubFansClubDataUserFansClubStatus {
+  NOT_JOINED = 0,
+  ACTIVE = 1,
+  INACTIVE = 2,
+  UNRECOGNIZED = -1,
+}
+
 export enum UserSubscribeInfoPayStatus {
   SUB_STATUS_UNKNOWN = 0,
   SUB_STATUS_ONE_TIME = 1,
@@ -1037,11 +1044,18 @@ export interface EffectStruct {
   fileUrl: UrlDataStruct | undefined;
   iconUrl: UrlDataStruct | undefined;
   id: string;
+  effectId: string;
   devicePlatform: string;
+  types: string[];
+  tags: string[];
+  tagsUpdatedAt: string;
   parent: string;
   children: string[];
   effectType: number;
+  music: string[];
+  source: number;
   designerId: string;
+  schema: string;
   requirements: string[];
   extra: string;
   isBusi: boolean;
@@ -1052,7 +1066,10 @@ export interface EffectStruct {
   bindIds: string[];
   ptime: string;
   gradeKey: string;
+  composerParams: string;
+  hintFile: UrlDataStruct | undefined;
   useNumber: string;
+  typesSec: string[];
   requirementsSec: string[];
   panel: string;
   modelNames: string;
@@ -1066,6 +1083,7 @@ export interface EffectStruct {
   transFileUrl: UrlDataStruct | undefined;
   templateEffectId: string;
   recTag: string;
+  templateEffectExtra: TemplateEffectExtra | undefined;
   fileDiff: DiffInfo | undefined;
   provider: number;
   packageSize: string;
@@ -1090,6 +1108,10 @@ export interface PaidEventPreview {
 export interface SubSplitStatus {
   isOldSubCreator: boolean;
   curPeriod: SubSplitPeriod;
+}
+
+export interface TemplateEffectExtra {
+  resourceId: string;
 }
 
 export interface UrlDataStruct {
@@ -1178,11 +1200,18 @@ function createBaseEffectStruct(): EffectStruct {
     fileUrl: undefined,
     iconUrl: undefined,
     id: "",
+    effectId: "",
     devicePlatform: "",
+    types: [],
+    tags: [],
+    tagsUpdatedAt: "",
     parent: "",
     children: [],
     effectType: 0,
+    music: [],
+    source: 0,
     designerId: "",
+    schema: "",
     requirements: [],
     extra: "",
     isBusi: false,
@@ -1193,7 +1222,10 @@ function createBaseEffectStruct(): EffectStruct {
     bindIds: [],
     ptime: "0",
     gradeKey: "",
+    composerParams: "",
+    hintFile: undefined,
     useNumber: "0",
+    typesSec: [],
     requirementsSec: [],
     panel: "",
     modelNames: "",
@@ -1207,6 +1239,7 @@ function createBaseEffectStruct(): EffectStruct {
     transFileUrl: undefined,
     templateEffectId: "",
     recTag: "0",
+    templateEffectExtra: undefined,
     fileDiff: undefined,
     provider: 0,
     packageSize: "0",
@@ -1240,8 +1273,20 @@ export const EffectStruct: MessageFns<EffectStruct> = {
     if (message.id !== "") {
       writer.uint32(66).string(message.id);
     }
+    if (message.effectId !== "") {
+      writer.uint32(74).string(message.effectId);
+    }
     if (message.devicePlatform !== "") {
       writer.uint32(82).string(message.devicePlatform);
+    }
+    for (const v of message.types) {
+      writer.uint32(90).string(v!);
+    }
+    for (const v of message.tags) {
+      writer.uint32(98).string(v!);
+    }
+    if (message.tagsUpdatedAt !== "") {
+      writer.uint32(106).string(message.tagsUpdatedAt);
     }
     if (message.parent !== "") {
       writer.uint32(114).string(message.parent);
@@ -1252,8 +1297,17 @@ export const EffectStruct: MessageFns<EffectStruct> = {
     if (message.effectType !== 0) {
       writer.uint32(128).int32(message.effectType);
     }
+    for (const v of message.music) {
+      writer.uint32(138).string(v!);
+    }
+    if (message.source !== 0) {
+      writer.uint32(144).int32(message.source);
+    }
     if (message.designerId !== "") {
       writer.uint32(154).string(message.designerId);
+    }
+    if (message.schema !== "") {
+      writer.uint32(162).string(message.schema);
     }
     for (const v of message.requirements) {
       writer.uint32(170).string(v!);
@@ -1285,8 +1339,17 @@ export const EffectStruct: MessageFns<EffectStruct> = {
     if (message.gradeKey !== "") {
       writer.uint32(258).string(message.gradeKey);
     }
+    if (message.composerParams !== "") {
+      writer.uint32(266).string(message.composerParams);
+    }
+    if (message.hintFile !== undefined) {
+      UrlDataStruct.encode(message.hintFile, writer.uint32(274).fork()).join();
+    }
     if (message.useNumber !== "0") {
       writer.uint32(280).int64(message.useNumber);
+    }
+    for (const v of message.typesSec) {
+      writer.uint32(290).string(v!);
     }
     for (const v of message.requirementsSec) {
       writer.uint32(298).string(v!);
@@ -1326,6 +1389,9 @@ export const EffectStruct: MessageFns<EffectStruct> = {
     }
     if (message.recTag !== "0") {
       writer.uint32(392).int64(message.recTag);
+    }
+    if (message.templateEffectExtra !== undefined) {
+      TemplateEffectExtra.encode(message.templateEffectExtra, writer.uint32(402).fork()).join();
     }
     if (message.fileDiff !== undefined) {
       DiffInfo.encode(message.fileDiff, writer.uint32(410).fork()).join();
@@ -1413,12 +1479,44 @@ export const EffectStruct: MessageFns<EffectStruct> = {
           message.id = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.effectId = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.devicePlatform = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.types.push(reader.string());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.tagsUpdatedAt = reader.string();
           continue;
         }
         case 14: {
@@ -1445,12 +1543,36 @@ export const EffectStruct: MessageFns<EffectStruct> = {
           message.effectType = reader.int32();
           continue;
         }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.music.push(reader.string());
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.source = reader.int32();
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.designerId = reader.string();
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.schema = reader.string();
           continue;
         }
         case 21: {
@@ -1533,12 +1655,36 @@ export const EffectStruct: MessageFns<EffectStruct> = {
           message.gradeKey = reader.string();
           continue;
         }
+        case 33: {
+          if (tag !== 266) {
+            break;
+          }
+
+          message.composerParams = reader.string();
+          continue;
+        }
+        case 34: {
+          if (tag !== 274) {
+            break;
+          }
+
+          message.hintFile = UrlDataStruct.decode(reader, reader.uint32());
+          continue;
+        }
         case 35: {
           if (tag !== 280) {
             break;
           }
 
           message.useNumber = reader.int64().toString();
+          continue;
+        }
+        case 36: {
+          if (tag !== 290) {
+            break;
+          }
+
+          message.typesSec.push(reader.string());
           continue;
         }
         case 37: {
@@ -1643,6 +1789,14 @@ export const EffectStruct: MessageFns<EffectStruct> = {
           }
 
           message.recTag = reader.int64().toString();
+          continue;
+        }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.templateEffectExtra = TemplateEffectExtra.decode(reader, reader.uint32());
           continue;
         }
         case 51: {
@@ -1867,6 +2021,43 @@ export const SubSplitStatus: MessageFns<SubSplitStatus> = {
           }
 
           message.curPeriod = reader.int32() as any;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTemplateEffectExtra(): TemplateEffectExtra {
+  return { resourceId: "" };
+}
+
+export const TemplateEffectExtra: MessageFns<TemplateEffectExtra> = {
+  encode(message: TemplateEffectExtra, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.resourceId !== "") {
+      writer.uint32(10).string(message.resourceId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TemplateEffectExtra {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTemplateEffectExtra();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.resourceId = reader.string();
           continue;
         }
       }

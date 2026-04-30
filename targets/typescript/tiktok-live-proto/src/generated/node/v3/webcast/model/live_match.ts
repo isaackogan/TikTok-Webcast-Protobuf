@@ -12,6 +12,10 @@ import { Text } from "./message/common.js";
 
 export const protobufPackage = "webcast.model.live.match";
 
+export interface AnchorMatchSettings {
+  enableAiCommentary: boolean;
+}
+
 export interface BattleABTest {
   abTestType: BattleABTestType;
   group: number;
@@ -40,8 +44,14 @@ export interface BattleBonusConfig {
   previewConfig: PreviewPeriod[];
   targetConfig: TaskPeriodConfig | undefined;
   rewardConfig: RewardPeriodConfig | undefined;
+  giftAmountGuide: { [key: string]: BattleTaskGiftAmountGuide };
   previewStartTimestamp: string;
   previewClickActionSchemaUrl: string;
+}
+
+export interface BattleBonusConfig_GiftAmountGuideEntry {
+  key: string;
+  value: BattleTaskGiftAmountGuide | undefined;
 }
 
 export interface BattleComboInfo {
@@ -85,6 +95,17 @@ export interface BattleRivalTag {
   bgImage: ImageModel | undefined;
   iconImage: ImageModel | undefined;
   content: string;
+}
+
+export interface BattleTaskGiftAmountGuide {
+  guidePrompt: BattlePrompt | undefined;
+  promptType: number;
+  disappearDuration: number;
+  iconImage: ImageModel | undefined;
+  giftImage: ImageModel | undefined;
+  recommendGiftId: string;
+  recommendGiftCount: number;
+  guideContent: Text | undefined;
 }
 
 export interface BattleTeamResult {
@@ -141,6 +162,15 @@ export interface HighScoreControlCfg {
   originDisplayToUserList: string[];
 }
 
+export interface LeagueScoreInfo {
+  estimatedScore: string;
+  isOptOut: boolean;
+  isActivityPeriod: boolean;
+  contentText: Text | undefined;
+  classOptOut: boolean;
+  contentTextOpen: Text | undefined;
+}
+
 export interface MatchPunishEffectInfo {
   userToEffectMap: { [key: string]: string };
   effectToEffectStructMap: { [key: string]: EffectStruct };
@@ -192,6 +222,9 @@ export interface RewardPeriodConfig {
   duration: string;
   rewardMultiple: number;
   rewardStartTimestamp: string;
+  rewardPreparePrompt: BattlePrompt | undefined;
+  rewardingPrompt: BattlePrompt | undefined;
+  clickPrompt: BattlePrompt | undefined;
 }
 
 export interface TaskPeriodConfig {
@@ -203,6 +236,7 @@ export interface TaskPeriodConfig {
   promptType: number;
   staticPrompt: BattlePrompt | undefined;
   progressTarget: string;
+  targetType: number;
   iconImage: ImageModel | undefined;
   clickActionSchemaUrl: string;
 }
@@ -212,6 +246,43 @@ export interface TeamMatchCampaign {
   startSfxTeamId: string[];
   hasTeamMatchMvpSfx: boolean;
 }
+
+function createBaseAnchorMatchSettings(): AnchorMatchSettings {
+  return { enableAiCommentary: false };
+}
+
+export const AnchorMatchSettings: MessageFns<AnchorMatchSettings> = {
+  encode(message: AnchorMatchSettings, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.enableAiCommentary !== false) {
+      writer.uint32(8).bool(message.enableAiCommentary);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorMatchSettings {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorMatchSettings();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.enableAiCommentary = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 function createBaseBattleABTest(): BattleABTest {
   return { abTestType: 0, group: 0 };
@@ -444,6 +515,7 @@ function createBaseBattleBonusConfig(): BattleBonusConfig {
     previewConfig: [],
     targetConfig: undefined,
     rewardConfig: undefined,
+    giftAmountGuide: {},
     previewStartTimestamp: "0",
     previewClickActionSchemaUrl: "",
   };
@@ -463,6 +535,9 @@ export const BattleBonusConfig: MessageFns<BattleBonusConfig> = {
     if (message.rewardConfig !== undefined) {
       RewardPeriodConfig.encode(message.rewardConfig, writer.uint32(34).fork()).join();
     }
+    globalThis.Object.entries(message.giftAmountGuide).forEach(([key, value]: [string, BattleTaskGiftAmountGuide]) => {
+      BattleBonusConfig_GiftAmountGuideEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     if (message.previewStartTimestamp !== "0") {
       writer.uint32(48).int64(message.previewStartTimestamp);
     }
@@ -511,6 +586,17 @@ export const BattleBonusConfig: MessageFns<BattleBonusConfig> = {
           message.rewardConfig = RewardPeriodConfig.decode(reader, reader.uint32());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = BattleBonusConfig_GiftAmountGuideEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.giftAmountGuide[entry5.key] = entry5.value;
+          }
+          continue;
+        }
         case 6: {
           if (tag !== 48) {
             break;
@@ -525,6 +611,54 @@ export const BattleBonusConfig: MessageFns<BattleBonusConfig> = {
           }
 
           message.previewClickActionSchemaUrl = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleBonusConfig_GiftAmountGuideEntry(): BattleBonusConfig_GiftAmountGuideEntry {
+  return { key: "0", value: undefined };
+}
+
+export const BattleBonusConfig_GiftAmountGuideEntry: MessageFns<BattleBonusConfig_GiftAmountGuideEntry> = {
+  encode(message: BattleBonusConfig_GiftAmountGuideEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      BattleTaskGiftAmountGuide.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleBonusConfig_GiftAmountGuideEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleBonusConfig_GiftAmountGuideEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = BattleTaskGiftAmountGuide.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -958,6 +1092,129 @@ export const BattleRivalTag: MessageFns<BattleRivalTag> = {
           }
 
           message.content = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleTaskGiftAmountGuide(): BattleTaskGiftAmountGuide {
+  return {
+    guidePrompt: undefined,
+    promptType: 0,
+    disappearDuration: 0,
+    iconImage: undefined,
+    giftImage: undefined,
+    recommendGiftId: "0",
+    recommendGiftCount: 0,
+    guideContent: undefined,
+  };
+}
+
+export const BattleTaskGiftAmountGuide: MessageFns<BattleTaskGiftAmountGuide> = {
+  encode(message: BattleTaskGiftAmountGuide, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.guidePrompt !== undefined) {
+      BattlePrompt.encode(message.guidePrompt, writer.uint32(10).fork()).join();
+    }
+    if (message.promptType !== 0) {
+      writer.uint32(16).int32(message.promptType);
+    }
+    if (message.disappearDuration !== 0) {
+      writer.uint32(24).int32(message.disappearDuration);
+    }
+    if (message.iconImage !== undefined) {
+      ImageModel.encode(message.iconImage, writer.uint32(90).fork()).join();
+    }
+    if (message.giftImage !== undefined) {
+      ImageModel.encode(message.giftImage, writer.uint32(98).fork()).join();
+    }
+    if (message.recommendGiftId !== "0") {
+      writer.uint32(168).int64(message.recommendGiftId);
+    }
+    if (message.recommendGiftCount !== 0) {
+      writer.uint32(176).int32(message.recommendGiftCount);
+    }
+    if (message.guideContent !== undefined) {
+      Text.encode(message.guideContent, writer.uint32(186).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleTaskGiftAmountGuide {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleTaskGiftAmountGuide();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.guidePrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.promptType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.disappearDuration = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.iconImage = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.giftImage = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 21: {
+          if (tag !== 168) {
+            break;
+          }
+
+          message.recommendGiftId = reader.int64().toString();
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.recommendGiftCount = reader.int32();
+          continue;
+        }
+        case 23: {
+          if (tag !== 186) {
+            break;
+          }
+
+          message.guideContent = Text.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1513,6 +1770,105 @@ export const HighScoreControlCfg: MessageFns<HighScoreControlCfg> = {
   },
 };
 
+function createBaseLeagueScoreInfo(): LeagueScoreInfo {
+  return {
+    estimatedScore: "0",
+    isOptOut: false,
+    isActivityPeriod: false,
+    contentText: undefined,
+    classOptOut: false,
+    contentTextOpen: undefined,
+  };
+}
+
+export const LeagueScoreInfo: MessageFns<LeagueScoreInfo> = {
+  encode(message: LeagueScoreInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.estimatedScore !== "0") {
+      writer.uint32(8).int64(message.estimatedScore);
+    }
+    if (message.isOptOut !== false) {
+      writer.uint32(16).bool(message.isOptOut);
+    }
+    if (message.isActivityPeriod !== false) {
+      writer.uint32(24).bool(message.isActivityPeriod);
+    }
+    if (message.contentText !== undefined) {
+      Text.encode(message.contentText, writer.uint32(34).fork()).join();
+    }
+    if (message.classOptOut !== false) {
+      writer.uint32(40).bool(message.classOptOut);
+    }
+    if (message.contentTextOpen !== undefined) {
+      Text.encode(message.contentTextOpen, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LeagueScoreInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLeagueScoreInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.estimatedScore = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.isOptOut = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isActivityPeriod = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.contentText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.classOptOut = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.contentTextOpen = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseMatchPunishEffectInfo(): MatchPunishEffectInfo {
   return { userToEffectMap: {}, effectToEffectStructMap: {} };
 }
@@ -1999,7 +2355,15 @@ export const RecommendedPlaybookInfo_PlaybookBizExtrasEntry: MessageFns<
 };
 
 function createBaseRewardPeriodConfig(): RewardPeriodConfig {
-  return { rewardStartTime: "0", duration: "0", rewardMultiple: 0, rewardStartTimestamp: "0" };
+  return {
+    rewardStartTime: "0",
+    duration: "0",
+    rewardMultiple: 0,
+    rewardStartTimestamp: "0",
+    rewardPreparePrompt: undefined,
+    rewardingPrompt: undefined,
+    clickPrompt: undefined,
+  };
 }
 
 export const RewardPeriodConfig: MessageFns<RewardPeriodConfig> = {
@@ -2015,6 +2379,15 @@ export const RewardPeriodConfig: MessageFns<RewardPeriodConfig> = {
     }
     if (message.rewardStartTimestamp !== "0") {
       writer.uint32(32).int64(message.rewardStartTimestamp);
+    }
+    if (message.rewardPreparePrompt !== undefined) {
+      BattlePrompt.encode(message.rewardPreparePrompt, writer.uint32(90).fork()).join();
+    }
+    if (message.rewardingPrompt !== undefined) {
+      BattlePrompt.encode(message.rewardingPrompt, writer.uint32(98).fork()).join();
+    }
+    if (message.clickPrompt !== undefined) {
+      BattlePrompt.encode(message.clickPrompt, writer.uint32(106).fork()).join();
     }
     return writer;
   },
@@ -2058,6 +2431,30 @@ export const RewardPeriodConfig: MessageFns<RewardPeriodConfig> = {
           message.rewardStartTimestamp = reader.int64().toString();
           continue;
         }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.rewardPreparePrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.rewardingPrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.clickPrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2078,6 +2475,7 @@ function createBaseTaskPeriodConfig(): TaskPeriodConfig {
     promptType: 0,
     staticPrompt: undefined,
     progressTarget: "0",
+    targetType: 0,
     iconImage: undefined,
     clickActionSchemaUrl: "",
   };
@@ -2108,6 +2506,9 @@ export const TaskPeriodConfig: MessageFns<TaskPeriodConfig> = {
     }
     if (message.progressTarget !== "0") {
       writer.uint32(184).int64(message.progressTarget);
+    }
+    if (message.targetType !== 0) {
+      writer.uint32(192).int32(message.targetType);
     }
     if (message.iconImage !== undefined) {
       ImageModel.encode(message.iconImage, writer.uint32(202).fork()).join();
@@ -2187,6 +2588,14 @@ export const TaskPeriodConfig: MessageFns<TaskPeriodConfig> = {
           }
 
           message.progressTarget = reader.int64().toString();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.targetType = reader.int32();
           continue;
         }
         case 25: {

@@ -483,7 +483,13 @@ export interface JoinGroupBizContent {
   tag: TagV2 | undefined;
   gameTag: RivalsGameTag | undefined;
   newUserEducation: string;
+  abInfos: { [key: string]: CohostABInfo };
   joinGroupMsgExtra: JoinGroupMessageExtra | undefined;
+}
+
+export interface JoinGroupBizContent_AbInfosEntry {
+  key: string;
+  value: CohostABInfo | undefined;
 }
 
 export interface JoinGroupContent {
@@ -510,7 +516,13 @@ export interface JoinGroupMessageExtra {
   extra: RivalExtra | undefined;
   otherUsers: RivalExtra[];
   invitationReorderExtra: InvitationReorderExtra | undefined;
+  rivalGuestsMap: { [key: string]: RivalGuestExtras };
   isFromCohostOverIssue: boolean;
+}
+
+export interface JoinGroupMessageExtra_RivalGuestsMapEntry {
+  key: string;
+  value: RivalGuestExtras | undefined;
 }
 
 export interface JoinRoomDirectBizContent {
@@ -621,6 +633,16 @@ export interface RivalExtra {
   gameTag: RivalsGameTag | undefined;
   giftGalleryBadgeInfo: GiftGalleryBadgeInfo | undefined;
   roomId: string;
+}
+
+export interface RivalGuestExtra {
+  userId: string;
+  avatarThumb: ImageModel | undefined;
+  nickname: string;
+}
+
+export interface RivalGuestExtras {
+  rivalGuests: RivalGuestExtra[];
 }
 
 export interface SoundWareEffectExtra {
@@ -1128,6 +1150,7 @@ function createBaseJoinGroupBizContent(): JoinGroupBizContent {
     tag: undefined,
     gameTag: undefined,
     newUserEducation: "",
+    abInfos: {},
     joinGroupMsgExtra: undefined,
   };
 }
@@ -1164,6 +1187,9 @@ export const JoinGroupBizContent: MessageFns<JoinGroupBizContent> = {
     if (message.newUserEducation !== "") {
       writer.uint32(90).string(message.newUserEducation);
     }
+    globalThis.Object.entries(message.abInfos).forEach(([key, value]: [string, CohostABInfo]) => {
+      JoinGroupBizContent_AbInfosEntry.encode({ key: key as any, value }, writer.uint32(98).fork()).join();
+    });
     if (message.joinGroupMsgExtra !== undefined) {
       JoinGroupMessageExtra.encode(message.joinGroupMsgExtra, writer.uint32(810).fork()).join();
     }
@@ -1257,12 +1283,71 @@ export const JoinGroupBizContent: MessageFns<JoinGroupBizContent> = {
           message.newUserEducation = reader.string();
           continue;
         }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          const entry12 = JoinGroupBizContent_AbInfosEntry.decode(reader, reader.uint32());
+          if (entry12.value !== undefined) {
+            message.abInfos[entry12.key] = entry12.value;
+          }
+          continue;
+        }
         case 101: {
           if (tag !== 810) {
             break;
           }
 
           message.joinGroupMsgExtra = JoinGroupMessageExtra.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseJoinGroupBizContent_AbInfosEntry(): JoinGroupBizContent_AbInfosEntry {
+  return { key: "0", value: undefined };
+}
+
+export const JoinGroupBizContent_AbInfosEntry: MessageFns<JoinGroupBizContent_AbInfosEntry> = {
+  encode(message: JoinGroupBizContent_AbInfosEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      CohostABInfo.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JoinGroupBizContent_AbInfosEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJoinGroupBizContent_AbInfosEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = CohostABInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1469,6 +1554,7 @@ function createBaseJoinGroupMessageExtra(): JoinGroupMessageExtra {
     extra: undefined,
     otherUsers: [],
     invitationReorderExtra: undefined,
+    rivalGuestsMap: {},
     isFromCohostOverIssue: false,
   };
 }
@@ -1487,6 +1573,9 @@ export const JoinGroupMessageExtra: MessageFns<JoinGroupMessageExtra> = {
     if (message.invitationReorderExtra !== undefined) {
       InvitationReorderExtra.encode(message.invitationReorderExtra, writer.uint32(34).fork()).join();
     }
+    globalThis.Object.entries(message.rivalGuestsMap).forEach(([key, value]: [string, RivalGuestExtras]) => {
+      JoinGroupMessageExtra_RivalGuestsMapEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     if (message.isFromCohostOverIssue !== false) {
       writer.uint32(48).bool(message.isFromCohostOverIssue);
     }
@@ -1532,12 +1621,71 @@ export const JoinGroupMessageExtra: MessageFns<JoinGroupMessageExtra> = {
           message.invitationReorderExtra = InvitationReorderExtra.decode(reader, reader.uint32());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = JoinGroupMessageExtra_RivalGuestsMapEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.rivalGuestsMap[entry5.key] = entry5.value;
+          }
+          continue;
+        }
         case 6: {
           if (tag !== 48) {
             break;
           }
 
           message.isFromCohostOverIssue = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseJoinGroupMessageExtra_RivalGuestsMapEntry(): JoinGroupMessageExtra_RivalGuestsMapEntry {
+  return { key: "0", value: undefined };
+}
+
+export const JoinGroupMessageExtra_RivalGuestsMapEntry: MessageFns<JoinGroupMessageExtra_RivalGuestsMapEntry> = {
+  encode(message: JoinGroupMessageExtra_RivalGuestsMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      RivalGuestExtras.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JoinGroupMessageExtra_RivalGuestsMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJoinGroupMessageExtra_RivalGuestsMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = RivalGuestExtras.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -2680,6 +2828,102 @@ export const RivalExtra: MessageFns<RivalExtra> = {
           }
 
           message.roomId = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRivalGuestExtra(): RivalGuestExtra {
+  return { userId: "0", avatarThumb: undefined, nickname: "" };
+}
+
+export const RivalGuestExtra: MessageFns<RivalGuestExtra> = {
+  encode(message: RivalGuestExtra, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "0") {
+      writer.uint32(8).int64(message.userId);
+    }
+    if (message.avatarThumb !== undefined) {
+      ImageModel.encode(message.avatarThumb, writer.uint32(18).fork()).join();
+    }
+    if (message.nickname !== "") {
+      writer.uint32(26).string(message.nickname);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RivalGuestExtra {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRivalGuestExtra();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.avatarThumb = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.nickname = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRivalGuestExtras(): RivalGuestExtras {
+  return { rivalGuests: [] };
+}
+
+export const RivalGuestExtras: MessageFns<RivalGuestExtras> = {
+  encode(message: RivalGuestExtras, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.rivalGuests) {
+      RivalGuestExtra.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RivalGuestExtras {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRivalGuestExtras();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rivalGuests.push(RivalGuestExtra.decode(reader, reader.uint32()));
           continue;
         }
       }
