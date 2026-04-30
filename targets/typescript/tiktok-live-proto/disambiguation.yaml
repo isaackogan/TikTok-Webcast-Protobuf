@@ -27,6 +27,9 @@ v3:
   webcast/model/message/common.ts:
     Text: MessageCommonText
 
+  webcast/chatroom/api.ts:
+    AuditInfo: ChatroomAuditInfo
+
   webcast/model/message/messages.ts:
     AnchorInfo: MessageAnchorInfo
     CompetitionInitiateInfo: MessageCompetitionInitiateInfo
@@ -34,6 +37,10 @@ v3:
     MatchInfo: MessageMatchInfo
     OptPairInfo: MessageOptPairInfo
     ReserveInfo: MessageReserveInfo
+    SponsorshipInfo: MessageSponsorshipInfo
+
+  webcast/model/base/emoji.ts:
+    EmoteWithIndex: EmojiEmoteWithIndex
 
   webcast/model/message/linker/linked_list_change_message.ts:
     ListUser: LinkerListUser
