@@ -60,6 +60,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase
           git add targets/typescript/tiktok-live-proto/src
           git commit -m "chore(proto): regenerate TypeScript from proto sources
 
