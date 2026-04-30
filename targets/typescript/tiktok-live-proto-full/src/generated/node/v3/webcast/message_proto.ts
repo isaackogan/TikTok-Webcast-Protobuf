@@ -142,6 +142,10 @@ export interface StoreOfficialLabel {
   labelTypeStr: string;
 }
 
+export interface ToolBarManagement {
+  mergingmorepriority: number[];
+}
+
 function createBaseAnchorActivityTaskProgress(): AnchorActivityTaskProgress {
   return { taskIconUrl: "", taskProgress: "" };
 }
@@ -1380,6 +1384,55 @@ export const StoreOfficialLabel: MessageFns<StoreOfficialLabel> = {
 
           message.labelTypeStr = reader.string();
           continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseToolBarManagement(): ToolBarManagement {
+  return { mergingmorepriority: [] };
+}
+
+export const ToolBarManagement: MessageFns<ToolBarManagement> = {
+  encode(message: ToolBarManagement, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    writer.uint32(10).fork();
+    for (const v of message.mergingmorepriority) {
+      writer.int32(v);
+    }
+    writer.join();
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ToolBarManagement {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseToolBarManagement();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag === 8) {
+            message.mergingmorepriority.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 10) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.mergingmorepriority.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {

@@ -28,14 +28,22 @@ export interface CommonMessageData {
   isShowMsg: boolean;
   describe: string;
   displayText: Text | undefined;
+  foldType: string;
   anchorFoldType: string;
+  priorityScore: string;
+  logId: string;
+  msgProcessFilterK: string;
   msgProcessFilterV: string;
   fromIdc: string;
   toIdc: string;
+  filterMsgTags: string[];
+  sei: LiveMessageSEI | undefined;
   dependRootId: LiveMessageID | undefined;
+  dependId: LiveMessageID | undefined;
   anchorPriorityScore: string;
   roomMessageHeatLevel: string;
   foldTypeForWeb: string;
+  anchorFoldTypeForWeb: string;
   clientSendTime: string;
   dispatchStrategy: number;
 }
@@ -43,6 +51,32 @@ export interface CommonMessageData {
 export interface LiveMessageID {
   primaryId: string;
   messageScene: string;
+}
+
+export interface LiveMessageSEI {
+  uniqueId: LiveMessageID | undefined;
+  timestamp: string;
+}
+
+export interface ProtoMessageFetchResult {
+  messages: BaseProtoMessage[];
+  cursor: string;
+  fetchInterval: string;
+  now: string;
+  internalExt: string;
+  fetchType: number;
+  routeParams: { [key: string]: string };
+  heartbeatDuration: string;
+  needAck: boolean;
+  pushServer: string;
+  isFirst: boolean;
+  historyCommentCursor: string;
+  historyNoMore: boolean;
+}
+
+export interface ProtoMessageFetchResult_RouteParamsEntry {
+  key: string;
+  value: string;
 }
 
 function createBaseBaseProtoMessage(): BaseProtoMessage {
@@ -147,14 +181,22 @@ function createBaseCommonMessageData(): CommonMessageData {
     isShowMsg: false,
     describe: "",
     displayText: undefined,
+    foldType: "0",
     anchorFoldType: "0",
+    priorityScore: "0",
+    logId: "",
+    msgProcessFilterK: "",
     msgProcessFilterV: "",
     fromIdc: "",
     toIdc: "",
+    filterMsgTags: [],
+    sei: undefined,
     dependRootId: undefined,
+    dependId: undefined,
     anchorPriorityScore: "0",
     roomMessageHeatLevel: "0",
     foldTypeForWeb: "0",
+    anchorFoldTypeForWeb: "0",
     clientSendTime: "0",
     dispatchStrategy: 0,
   };
@@ -186,8 +228,20 @@ export const CommonMessageData: MessageFns<CommonMessageData> = {
     if (message.displayText !== undefined) {
       Text.encode(message.displayText, writer.uint32(66).fork()).join();
     }
+    if (message.foldType !== "0") {
+      writer.uint32(72).int64(message.foldType);
+    }
     if (message.anchorFoldType !== "0") {
       writer.uint32(80).int64(message.anchorFoldType);
+    }
+    if (message.priorityScore !== "0") {
+      writer.uint32(88).int64(message.priorityScore);
+    }
+    if (message.logId !== "") {
+      writer.uint32(98).string(message.logId);
+    }
+    if (message.msgProcessFilterK !== "") {
+      writer.uint32(106).string(message.msgProcessFilterK);
     }
     if (message.msgProcessFilterV !== "") {
       writer.uint32(114).string(message.msgProcessFilterV);
@@ -198,8 +252,17 @@ export const CommonMessageData: MessageFns<CommonMessageData> = {
     if (message.toIdc !== "") {
       writer.uint32(130).string(message.toIdc);
     }
+    for (const v of message.filterMsgTags) {
+      writer.uint32(138).string(v!);
+    }
+    if (message.sei !== undefined) {
+      LiveMessageSEI.encode(message.sei, writer.uint32(146).fork()).join();
+    }
     if (message.dependRootId !== undefined) {
       LiveMessageID.encode(message.dependRootId, writer.uint32(154).fork()).join();
+    }
+    if (message.dependId !== undefined) {
+      LiveMessageID.encode(message.dependId, writer.uint32(162).fork()).join();
     }
     if (message.anchorPriorityScore !== "0") {
       writer.uint32(168).int64(message.anchorPriorityScore);
@@ -209,6 +272,9 @@ export const CommonMessageData: MessageFns<CommonMessageData> = {
     }
     if (message.foldTypeForWeb !== "0") {
       writer.uint32(184).int64(message.foldTypeForWeb);
+    }
+    if (message.anchorFoldTypeForWeb !== "0") {
+      writer.uint32(192).int64(message.anchorFoldTypeForWeb);
     }
     if (message.clientSendTime !== "0") {
       writer.uint32(200).int64(message.clientSendTime);
@@ -290,12 +356,44 @@ export const CommonMessageData: MessageFns<CommonMessageData> = {
           message.displayText = Text.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.foldType = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.anchorFoldType = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.priorityScore = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.logId = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.msgProcessFilterK = reader.string();
           continue;
         }
         case 14: {
@@ -322,12 +420,36 @@ export const CommonMessageData: MessageFns<CommonMessageData> = {
           message.toIdc = reader.string();
           continue;
         }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.filterMsgTags.push(reader.string());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.sei = LiveMessageSEI.decode(reader, reader.uint32());
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.dependRootId = LiveMessageID.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.dependId = LiveMessageID.decode(reader, reader.uint32());
           continue;
         }
         case 21: {
@@ -352,6 +474,14 @@ export const CommonMessageData: MessageFns<CommonMessageData> = {
           }
 
           message.foldTypeForWeb = reader.int64().toString();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.anchorFoldTypeForWeb = reader.int64().toString();
           continue;
         }
         case 25: {
@@ -416,6 +546,288 @@ export const LiveMessageID: MessageFns<LiveMessageID> = {
           }
 
           message.messageScene = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLiveMessageSEI(): LiveMessageSEI {
+  return { uniqueId: undefined, timestamp: "0" };
+}
+
+export const LiveMessageSEI: MessageFns<LiveMessageSEI> = {
+  encode(message: LiveMessageSEI, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uniqueId !== undefined) {
+      LiveMessageID.encode(message.uniqueId, writer.uint32(10).fork()).join();
+    }
+    if (message.timestamp !== "0") {
+      writer.uint32(16).int64(message.timestamp);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LiveMessageSEI {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLiveMessageSEI();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uniqueId = LiveMessageID.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.timestamp = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseProtoMessageFetchResult(): ProtoMessageFetchResult {
+  return {
+    messages: [],
+    cursor: "",
+    fetchInterval: "0",
+    now: "0",
+    internalExt: "",
+    fetchType: 0,
+    routeParams: {},
+    heartbeatDuration: "0",
+    needAck: false,
+    pushServer: "",
+    isFirst: false,
+    historyCommentCursor: "",
+    historyNoMore: false,
+  };
+}
+
+export const ProtoMessageFetchResult: MessageFns<ProtoMessageFetchResult> = {
+  encode(message: ProtoMessageFetchResult, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.messages) {
+      BaseProtoMessage.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.cursor !== "") {
+      writer.uint32(18).string(message.cursor);
+    }
+    if (message.fetchInterval !== "0") {
+      writer.uint32(24).int64(message.fetchInterval);
+    }
+    if (message.now !== "0") {
+      writer.uint32(32).int64(message.now);
+    }
+    if (message.internalExt !== "") {
+      writer.uint32(42).string(message.internalExt);
+    }
+    if (message.fetchType !== 0) {
+      writer.uint32(48).int32(message.fetchType);
+    }
+    globalThis.Object.entries(message.routeParams).forEach(([key, value]: [string, string]) => {
+      ProtoMessageFetchResult_RouteParamsEntry.encode({ key: key as any, value }, writer.uint32(58).fork()).join();
+    });
+    if (message.heartbeatDuration !== "0") {
+      writer.uint32(64).int64(message.heartbeatDuration);
+    }
+    if (message.needAck !== false) {
+      writer.uint32(72).bool(message.needAck);
+    }
+    if (message.pushServer !== "") {
+      writer.uint32(82).string(message.pushServer);
+    }
+    if (message.isFirst !== false) {
+      writer.uint32(88).bool(message.isFirst);
+    }
+    if (message.historyCommentCursor !== "") {
+      writer.uint32(98).string(message.historyCommentCursor);
+    }
+    if (message.historyNoMore !== false) {
+      writer.uint32(104).bool(message.historyNoMore);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ProtoMessageFetchResult {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProtoMessageFetchResult();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.messages.push(BaseProtoMessage.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fetchInterval = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.now = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.internalExt = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.fetchType = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          const entry7 = ProtoMessageFetchResult_RouteParamsEntry.decode(reader, reader.uint32());
+          if (entry7.value !== undefined) {
+            message.routeParams[entry7.key] = entry7.value;
+          }
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.heartbeatDuration = reader.int64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.needAck = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.pushServer = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.isFirst = reader.bool();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.historyCommentCursor = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.historyNoMore = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseProtoMessageFetchResult_RouteParamsEntry(): ProtoMessageFetchResult_RouteParamsEntry {
+  return { key: "", value: "" };
+}
+
+export const ProtoMessageFetchResult_RouteParamsEntry: MessageFns<ProtoMessageFetchResult_RouteParamsEntry> = {
+  encode(message: ProtoMessageFetchResult_RouteParamsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ProtoMessageFetchResult_RouteParamsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProtoMessageFetchResult_RouteParamsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }

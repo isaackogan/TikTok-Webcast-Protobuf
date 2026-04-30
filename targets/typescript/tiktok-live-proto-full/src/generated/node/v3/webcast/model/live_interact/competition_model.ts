@@ -23,7 +23,7 @@ import {
   TakeTheStageOrderInfoSwitchTurnReason,
   TakeTheStageStatus,
 } from "../data/messages.js";
-import { BattleTask, MatchPunishExtraInfo } from "../live/match.js";
+import { BattleComboInfo, BattleEffectInfos, BattleTask, MatchPunishExtraInfo } from "../live/match.js";
 
 export const protobufPackage = "webcast.model.live_interact.competition.model";
 
@@ -63,13 +63,26 @@ export interface CompetitionFinish {
 export interface CompetitionInfo {
   bizCommon: CompetitionCommon | undefined;
   teamInfos: CompetitionResultsTeamInfo[];
+  abInfos: { [key: string]: CompetitionABInfo };
   battleTask: BattleTask | undefined;
   mvpUserId: string;
+  effectInfos: BattleEffectInfos | undefined;
   gameplayOption: number;
+  comboInfoMap: { [key: string]: BattleComboInfo };
   takeTheStageInfo: TakeTheStageInfo | undefined;
   groupShowInfo: GroupShowInfo | undefined;
   beansInfo: BeansInfo | undefined;
   groupRankListInfo: GroupRankListInfo | undefined;
+}
+
+export interface CompetitionInfo_AbInfosEntry {
+  key: string;
+  value: CompetitionABInfo | undefined;
+}
+
+export interface CompetitionInfo_ComboInfoMapEntry {
+  key: string;
+  value: BattleComboInfo | undefined;
 }
 
 export interface CompetitionInitiate {
@@ -141,6 +154,7 @@ export interface CompetitionResultsTeamInfo {
   members: CompetitionTeamMemberInfo[];
   teamIdStr: string;
   selfContributor: CompetitionContributorInfo | undefined;
+  formattedScore: string;
 }
 
 export interface CompetitionSettleEnd {
@@ -150,7 +164,13 @@ export interface CompetitionSettleEnd {
   reason: CompetitionEndReason;
   matchPunishExtraInfo: MatchPunishExtraInfo | undefined;
   mvpUserId: string;
+  comboInfoMap: { [key: string]: BattleComboInfo };
   takeTheStageBiz: CompetitionSettleEndTakeTheStageBiz | undefined;
+}
+
+export interface CompetitionSettleEnd_ComboInfoMapEntry {
+  key: string;
+  value: BattleComboInfo | undefined;
 }
 
 export interface CompetitionSettleEndTakeTheStageBiz {
@@ -588,9 +608,12 @@ function createBaseCompetitionInfo(): CompetitionInfo {
   return {
     bizCommon: undefined,
     teamInfos: [],
+    abInfos: {},
     battleTask: undefined,
     mvpUserId: "",
+    effectInfos: undefined,
     gameplayOption: 0,
+    comboInfoMap: {},
     takeTheStageInfo: undefined,
     groupShowInfo: undefined,
     beansInfo: undefined,
@@ -606,15 +629,24 @@ export const CompetitionInfo: MessageFns<CompetitionInfo> = {
     for (const v of message.teamInfos) {
       CompetitionResultsTeamInfo.encode(v!, writer.uint32(18).fork()).join();
     }
+    globalThis.Object.entries(message.abInfos).forEach(([key, value]: [string, CompetitionABInfo]) => {
+      CompetitionInfo_AbInfosEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+    });
     if (message.battleTask !== undefined) {
       BattleTask.encode(message.battleTask, writer.uint32(42).fork()).join();
     }
     if (message.mvpUserId !== "") {
       writer.uint32(50).string(message.mvpUserId);
     }
+    if (message.effectInfos !== undefined) {
+      BattleEffectInfos.encode(message.effectInfos, writer.uint32(402).fork()).join();
+    }
     if (message.gameplayOption !== 0) {
       writer.uint32(408).int32(message.gameplayOption);
     }
+    globalThis.Object.entries(message.comboInfoMap).forEach(([key, value]: [string, BattleComboInfo]) => {
+      CompetitionInfo_ComboInfoMapEntry.encode({ key: key as any, value }, writer.uint32(418).fork()).join();
+    });
     if (message.takeTheStageInfo !== undefined) {
       TakeTheStageInfo.encode(message.takeTheStageInfo, writer.uint32(802).fork()).join();
     }
@@ -653,6 +685,17 @@ export const CompetitionInfo: MessageFns<CompetitionInfo> = {
           message.teamInfos.push(CompetitionResultsTeamInfo.decode(reader, reader.uint32()));
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = CompetitionInfo_AbInfosEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.abInfos[entry4.key] = entry4.value;
+          }
+          continue;
+        }
         case 5: {
           if (tag !== 42) {
             break;
@@ -669,12 +712,31 @@ export const CompetitionInfo: MessageFns<CompetitionInfo> = {
           message.mvpUserId = reader.string();
           continue;
         }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.effectInfos = BattleEffectInfos.decode(reader, reader.uint32());
+          continue;
+        }
         case 51: {
           if (tag !== 408) {
             break;
           }
 
           message.gameplayOption = reader.int32();
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          const entry52 = CompetitionInfo_ComboInfoMapEntry.decode(reader, reader.uint32());
+          if (entry52.value !== undefined) {
+            message.comboInfoMap[entry52.key] = entry52.value;
+          }
           continue;
         }
         case 100: {
@@ -707,6 +769,102 @@ export const CompetitionInfo: MessageFns<CompetitionInfo> = {
           }
 
           message.groupRankListInfo = GroupRankListInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCompetitionInfo_AbInfosEntry(): CompetitionInfo_AbInfosEntry {
+  return { key: "0", value: undefined };
+}
+
+export const CompetitionInfo_AbInfosEntry: MessageFns<CompetitionInfo_AbInfosEntry> = {
+  encode(message: CompetitionInfo_AbInfosEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      CompetitionABInfo.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CompetitionInfo_AbInfosEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCompetitionInfo_AbInfosEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = CompetitionABInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCompetitionInfo_ComboInfoMapEntry(): CompetitionInfo_ComboInfoMapEntry {
+  return { key: "", value: undefined };
+}
+
+export const CompetitionInfo_ComboInfoMapEntry: MessageFns<CompetitionInfo_ComboInfoMapEntry> = {
+  encode(message: CompetitionInfo_ComboInfoMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      BattleComboInfo.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CompetitionInfo_ComboInfoMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCompetitionInfo_ComboInfoMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = BattleComboInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1343,6 +1501,7 @@ function createBaseCompetitionResultsTeamInfo(): CompetitionResultsTeamInfo {
     members: [],
     teamIdStr: "",
     selfContributor: undefined,
+    formattedScore: "",
   };
 }
 
@@ -1371,6 +1530,9 @@ export const CompetitionResultsTeamInfo: MessageFns<CompetitionResultsTeamInfo> 
     }
     if (message.selfContributor !== undefined) {
       CompetitionContributorInfo.encode(message.selfContributor, writer.uint32(66).fork()).join();
+    }
+    if (message.formattedScore !== "") {
+      writer.uint32(74).string(message.formattedScore);
     }
     return writer;
   },
@@ -1446,6 +1608,14 @@ export const CompetitionResultsTeamInfo: MessageFns<CompetitionResultsTeamInfo> 
           message.selfContributor = CompetitionContributorInfo.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.formattedScore = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1464,6 +1634,7 @@ function createBaseCompetitionSettleEnd(): CompetitionSettleEnd {
     reason: 0,
     matchPunishExtraInfo: undefined,
     mvpUserId: "",
+    comboInfoMap: {},
     takeTheStageBiz: undefined,
   };
 }
@@ -1488,6 +1659,9 @@ export const CompetitionSettleEnd: MessageFns<CompetitionSettleEnd> = {
     if (message.mvpUserId !== "") {
       writer.uint32(50).string(message.mvpUserId);
     }
+    globalThis.Object.entries(message.comboInfoMap).forEach(([key, value]: [string, BattleComboInfo]) => {
+      CompetitionSettleEnd_ComboInfoMapEntry.encode({ key: key as any, value }, writer.uint32(418).fork()).join();
+    });
     if (message.takeTheStageBiz !== undefined) {
       CompetitionSettleEndTakeTheStageBiz.encode(message.takeTheStageBiz, writer.uint32(802).fork()).join();
     }
@@ -1549,12 +1723,71 @@ export const CompetitionSettleEnd: MessageFns<CompetitionSettleEnd> = {
           message.mvpUserId = reader.string();
           continue;
         }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          const entry52 = CompetitionSettleEnd_ComboInfoMapEntry.decode(reader, reader.uint32());
+          if (entry52.value !== undefined) {
+            message.comboInfoMap[entry52.key] = entry52.value;
+          }
+          continue;
+        }
         case 100: {
           if (tag !== 802) {
             break;
           }
 
           message.takeTheStageBiz = CompetitionSettleEndTakeTheStageBiz.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCompetitionSettleEnd_ComboInfoMapEntry(): CompetitionSettleEnd_ComboInfoMapEntry {
+  return { key: "", value: undefined };
+}
+
+export const CompetitionSettleEnd_ComboInfoMapEntry: MessageFns<CompetitionSettleEnd_ComboInfoMapEntry> = {
+  encode(message: CompetitionSettleEnd_ComboInfoMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      BattleComboInfo.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CompetitionSettleEnd_ComboInfoMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCompetitionSettleEnd_ComboInfoMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = BattleComboInfo.decode(reader, reader.uint32());
           continue;
         }
       }

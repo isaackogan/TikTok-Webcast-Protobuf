@@ -16,6 +16,7 @@ import {
   AuthenticationInfo,
   Author,
   BorderInfo,
+  FansClubMember,
   LiveEventInfo,
   UserAttr,
   UserHonor,
@@ -49,7 +50,7 @@ export interface User {
   badgeImageList: ImageModel[];
   followInfo: FollowInfo | undefined;
   payGrade: UserHonor | undefined;
-  fansClub: Buffer;
+  fansClub: FansClubMember | undefined;
   border: BorderInfo | undefined;
   specialId: string;
   avatarBorder: ImageModel | undefined;
@@ -170,7 +171,7 @@ function createBaseUser(): User {
     badgeImageList: [],
     followInfo: undefined,
     payGrade: undefined,
-    fansClub: Buffer.alloc(0),
+    fansClub: undefined,
     border: undefined,
     specialId: "",
     avatarBorder: undefined,
@@ -338,8 +339,8 @@ export const User: MessageFns<User> = {
     if (message.payGrade !== undefined) {
       UserHonor.encode(message.payGrade, writer.uint32(186).fork()).join();
     }
-    if (message.fansClub.length !== 0) {
-      writer.uint32(194).bytes(message.fansClub);
+    if (message.fansClub !== undefined) {
+      FansClubMember.encode(message.fansClub, writer.uint32(194).fork()).join();
     }
     if (message.border !== undefined) {
       BorderInfo.encode(message.border, writer.uint32(202).fork()).join();
@@ -823,7 +824,7 @@ export const User: MessageFns<User> = {
             break;
           }
 
-          message.fansClub = Buffer.from(reader.bytes());
+          message.fansClub = FansClubMember.decode(reader, reader.uint32());
           continue;
         }
         case 25: {

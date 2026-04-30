@@ -6,6 +6,8 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { EnvelopeEnigmaInfo } from "../envelope.js";
+import { ToolBarManagement } from "../message_proto.js";
 import { ImageModel } from "./base/messages.js";
 import { PrivilegeLogExtra } from "./base/user.js";
 import {
@@ -20,10 +22,21 @@ import {
   LiveEventInfoEventPayMethod,
   PaidEventPreview,
   PollVoteLimitType,
+  RechargeCustomError,
+  UserFansClubFansClubDataUserFansClubStatus,
 } from "./data/messages.js";
 import { AssetsModel } from "./gift/assets.js";
+import { AnchorLevelPermission } from "./live/messages.js";
 
 export const protobufPackage = "webcast.model";
+
+export interface AccompanimentStruct {
+  vid: string;
+  accompanimentUrls: string[];
+  id: string;
+  volumeLoudnessLufs: number;
+  volumeAmplitudePeak: number;
+}
 
 export interface ActivityRewardInfo {
   badge: ImageModel | undefined;
@@ -78,6 +91,10 @@ export interface BaLeadsGenInfo {
   leadsGenModel: string;
 }
 
+export interface BannerContentDynamic {
+  jsonResource: string;
+}
+
 export interface BannerInRoom {
   id: string;
   title: string;
@@ -87,14 +104,22 @@ export interface BannerInRoom {
   schemaUrl: string;
   actionType: number;
   bannerType: string;
+  priority: number;
   text: string;
+  frameType: string;
+  extra: string;
+  status: string;
   uid: string;
   roomid: string;
   appointmentStartTimestamp: string;
+  appointmentEndTimestamp: string;
+  appointmentId: string;
   businessType: string;
+  dynamicBanner: BannerContentDynamic | undefined;
   bannerLocation: number;
   openWithNavigationTag: boolean;
   businessSource: string;
+  activityId: string;
   imageType: number;
   extendImage: ExtendImage | undefined;
   background: BannerImageBackground | undefined;
@@ -118,7 +143,10 @@ export interface Board {
   reviewId: string;
   previewImageUriList: string[];
   previewImageList: ImageModel[];
+  version: number;
   violationId: string;
+  templateId: string;
+  recommendBoardInfo: RecommendBoardInfo | undefined;
   smbReviewId: string;
   smbReviewInterceptionReasons: string[];
   previewBgColor: string;
@@ -132,7 +160,11 @@ export interface BoardItem {
   position: BoardItemPosition | undefined;
   style: BoardItemStyle | undefined;
   fullyCustomizedContent: string;
+  fullyCustomizedSetting: FullyCustomizedSetting | undefined;
   transform: BoardItemTransform | undefined;
+  richTextContent: RichTextContent | undefined;
+  sceneryContent: SceneryContent | undefined;
+  matting: boolean;
   draggable: boolean;
   boardItemLayout: BoardItemLayout | undefined;
 }
@@ -153,6 +185,7 @@ export interface BoardItemLayout {
   offsetY: number;
   defaultXSpacing: number;
   defaultYSpacing: number;
+  collisionResolve: number;
   isValid: boolean;
 }
 
@@ -196,7 +229,16 @@ export interface BorderInfo {
   profilePrivilegeLogExtra: PrivilegeLogExtra | undefined;
   avatarBackgroundColor: string;
   avatarBackgroundBorderColor: string;
+  nameStarlingKey: string;
   descStarlingKey: string;
+  name: string;
+  description: string;
+}
+
+export interface ColorBackground {
+  color: string;
+  radius: number;
+  padding: EdgeInsets | undefined;
 }
 
 export interface Creator {
@@ -237,9 +279,55 @@ export interface DonationSticker {
   textColor: string;
   content: OrganizationModel | undefined;
   maxLength: string;
+  status: string;
   h: number;
+  x: number;
+  w: number;
+  y: number;
   kind: string;
   subType: string;
+}
+
+export interface EdgeInsets {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface FansClubData {
+  clubName: string;
+  level: number;
+  userFansClubStatus: UserFansClubFansClubDataUserFansClubStatus;
+  badge: UserBadge | undefined;
+  availableGiftIds: string[];
+  anchorId: string;
+}
+
+export interface FansClubMember {
+  data: FansClubData | undefined;
+  preferData: { [key: number]: FansClubData };
+}
+
+export interface FansClubMember_PreferDataEntry {
+  key: number;
+  value: FansClubData | undefined;
+}
+
+export interface FlowSpec {
+  rowAlignX: number;
+  direction: number;
+  rowAlignY: number;
+  interItemSpacing: number;
+  rowSpacing: number;
+  overflow: boolean;
+  width: SizeSpec | undefined;
+  height: SizeSpec | undefined;
+}
+
+export interface FullyCustomizedSetting {
+  fullyCustomizedCharLimit: string;
+  fullyCustomizedLineLimit: string;
 }
 
 export interface GameAgeRating {
@@ -348,6 +436,22 @@ export interface Hashtag {
   namespace: HashtagNamespace;
 }
 
+export interface ImageBackground {
+  image: ImageContent | undefined;
+  capInsets: EdgeInsets | undefined;
+  alignmentX: number;
+  alignmentY: number;
+  repeat: number;
+}
+
+export interface ImageContent {
+  imageWidth: SizeSpec | undefined;
+  imageHeight: SizeSpec | undefined;
+  fillMode: number;
+  image: ImageModel | undefined;
+  primaryColor: string;
+}
+
 export interface InteractionQuestionInfo {
   hasRecommend: boolean;
   hasQuickAnswer: boolean;
@@ -377,6 +481,7 @@ export interface LiveEventInfo {
   isPaidEvent: boolean;
   ticketAmount: string;
   payMethod: LiveEventInfoEventPayMethod;
+  walletPkgDict: { [key: string]: WalletPackage };
   eventUserInfo: EventUserInfo[];
   subscribedCount: string;
   paidEventPreview: PaidEventPreview | undefined;
@@ -386,8 +491,26 @@ export interface LiveEventInfo {
   periodicShows: string;
 }
 
+export interface LiveEventInfo_WalletPkgDictEntry {
+  key: string;
+  value: WalletPackage | undefined;
+}
+
 export interface LynxCrossScreenEffectInfo {
   effectIds: string[];
+}
+
+export interface LyricStruct {
+  id: string;
+  lyricType: number;
+  vid: string;
+  klyricUrls: string[];
+  lyricStatus: number;
+}
+
+export interface MeasureSpec {
+  mode: number;
+  value: number;
 }
 
 export interface OrganizationModel {
@@ -397,6 +520,24 @@ export interface OrganizationModel {
   donationLink: string;
   icon: ImageModel | undefined;
   organizationId: string;
+}
+
+export interface Paragraph {
+  paragraphId: string;
+  spans: TextSpan[];
+  maxCharLimit: string;
+  styleRef: string;
+  editable: boolean;
+}
+
+export interface ParagraphLayout {
+  wrapMode: number;
+  width: SizeSpec | undefined;
+  height: SizeSpec | undefined;
+  startNewRow: boolean;
+  rowAlign: number;
+  contentAlignX: number;
+  shrink: ShrinkSpec | undefined;
 }
 
 export interface PollVoteLimit {
@@ -413,7 +554,10 @@ export interface PortalInfo {
   portalDiamonds: number;
   senderDisplayId: string;
   senderId: string;
+  senderAvatar: ImageModel | undefined;
   transCount: number;
+  touchCount: number;
+  senderEnigmaInfo: EnvelopeEnigmaInfo | undefined;
 }
 
 export interface PortalTransTarget {
@@ -447,6 +591,44 @@ export interface RandomGiftPanelBanner {
   bannerPriority: number;
 }
 
+export interface RecommendBoardInfo {
+  recommendBoardId: string;
+  boardSource: number;
+  recommendReason: RecommendReason | undefined;
+  sourcePb: SourcePB | undefined;
+  businessIntent: string;
+}
+
+export interface RecommendReason {
+  title: string;
+  subTitle: string;
+}
+
+export interface RichTextContent {
+  styles: RichTextStyle[];
+  paragraphs: Paragraph[];
+  itemStyleRef: string;
+}
+
+export interface RichTextStyle {
+  name: string;
+  type: number;
+  textStyle: number;
+  fontSize: number;
+  fontFamily: string;
+  color: string;
+  stroke: StrokeStyle | undefined;
+  lineHeight: number;
+  padding: EdgeInsets | undefined;
+  paragraphLayout: ParagraphLayout | undefined;
+  flowSpec: FlowSpec | undefined;
+  contentAlignX: number;
+  colorBackground: ColorBackground | undefined;
+  imageBackground: ImageBackground | undefined;
+  lineSpacing: number;
+  inlineBackground: ColorBackground | undefined;
+}
+
 export interface RoomAuthMessage {
   goldenEnvelopeMessage: RoomAuthMessageGoldenEnvelope | undefined;
   promoteOtherMessage: PromoteOtherMessage | undefined;
@@ -454,6 +636,118 @@ export interface RoomAuthMessage {
 
 export interface RoomAuthMessageGoldenEnvelope {
   recallEndTime: string;
+}
+
+export interface RoomAuthOffReasons {
+  gift: string;
+  giftOffReason: number;
+}
+
+export interface RoomAuthStatus {
+  chat: boolean;
+  danmaku: boolean;
+  gift: boolean;
+  luckmoney: boolean;
+  digg: boolean;
+  roomcontributor: boolean;
+  props: boolean;
+  usercard: boolean;
+  deprecated1: boolean;
+  deprecated2: string;
+  banner: number;
+  deprecated3: string;
+  deprecated4: string;
+  landscape: number;
+  landscapechat: string;
+  publicscreen: number;
+  giftanchormt: number;
+  deprecated5: string;
+  donationsticker: number;
+  deprecated6: string;
+  deprecated7: string;
+  deprecated8: string;
+  deprecated9: string;
+  interactionquestion: boolean;
+  chatl2: boolean;
+  viewers: boolean;
+  share: boolean;
+  transactionHistory: number;
+  promote: boolean;
+  usercount: number;
+  rank: number;
+  broadcastmessage: string;
+  chatsubonly: boolean;
+  goldenenvelope: number;
+  quickchat: number;
+  poll: number;
+  giftpoll: number;
+  pictionary: string;
+  goldenenvelopeactivity: number;
+  customizablepoll: string;
+  offreason: RoomAuthOffReasons | undefined;
+  useUserPv: boolean;
+  promoteother: number;
+  shoppingranking: number;
+  eventpromotion: number;
+  communityflagged: boolean;
+  communityflaggedreview: boolean;
+  explore: boolean;
+  pictionarypermission: string;
+  pictionarybubble: string;
+  anchorLevelPermission: AnchorLevelPermission | undefined;
+  gamerankingswitch: number;
+  toolbarmanagement: ToolBarManagement | undefined;
+  multienablereserve: boolean;
+  enablefanslevel: boolean;
+  secretroom: string;
+  spamcomments: boolean;
+  customErrorForGiftSetting: RechargeCustomError | undefined;
+  guessEntranceForHost: boolean;
+  creditEntranceForAudience: boolean;
+  gameGuessPermission: boolean;
+  customizablegiftpoll: string;
+  commentTrayStatus: string;
+  rankingchangealterswitch: number;
+  showCreditWidget: boolean;
+  starCommentPermissionSwitch: StarCommentPermissionSwitch | undefined;
+  emotepoll: string;
+  enableshowuseruv: boolean;
+  viewerwishes: string;
+  commentmention: string;
+  enigmawhisper: string;
+}
+
+export interface RoomDecoration {
+  id: string;
+  image: ImageModel | undefined;
+  type: string;
+  inputRect: string[];
+  textSize: string;
+  textColor: string;
+  content: string;
+  maxLength: string;
+  status: string;
+  screenHeight: string;
+  xPosition: string;
+  screenWidth: string;
+  yPosition: string;
+  kind: string;
+}
+
+export interface RoomStats {
+  id: string;
+  idStr: string;
+  fanTicket: string;
+  totalUser: number;
+  giftUvCount: number;
+  followCount: number;
+  watermelon: number;
+  enterCount: number;
+  replayViewers: number;
+  shareCount: number;
+  commentCount: string;
+  watchUserCount: string;
+  roomFollowCount: string;
 }
 
 export interface RoomSticker {
@@ -465,17 +759,32 @@ export interface RoomSticker {
   textColor: string;
   image: ImageModel | undefined;
   ninePatchImage: ImageModel | undefined;
+  xPosition: string;
   yPosition: string;
+  screenWidth: string;
+  screenHeight: string;
+  topLeftH: number;
   topLeftW: number;
   bottomRightH: number;
   bottomRightW: number;
+  reviewStatus: number;
+  edited: boolean;
   auditInfo: RoomStickerAuditInfo | undefined;
+  starlingKey: string;
   extra: string;
 }
 
 export interface RoomStickerAuditInfo {
   violationId: string;
   taskType: string;
+}
+
+export interface SceneryContent {
+  sceneryType: number;
+  imageContent: ImageContent | undefined;
+  templateImageContent: ImageContent | undefined;
+  imageTransition: number;
+  scenerySource: string;
 }
 
 export interface SchemeInfo {
@@ -494,7 +803,9 @@ export interface ShortTouchItem {
   fcSecond: string;
   name: string;
   previewSetting: ShortTouchPreviewSetting | undefined;
+  animeType: number;
   iconSkin: string;
+  activityId: string;
 }
 
 export interface ShortTouchPreviewSetting {
@@ -516,6 +827,45 @@ export interface ShortTouchTemplateData {
   logParams: string;
 }
 
+export interface ShrinkSpec {
+  enable: boolean;
+  minFontSize: number;
+}
+
+export interface SizeSpec {
+  mode: number;
+  value: number;
+  minSize: MeasureSpec | undefined;
+  maxSize: MeasureSpec | undefined;
+}
+
+export interface SourcePB {
+  strategyBoardValue: string;
+  strategyLiveType: string;
+  strategyBoardContentType: string;
+  industryId: string;
+  industryName: string;
+  promptVersion: string;
+  aigcModelVersion: string;
+}
+
+export interface StarCommentPermissionSwitch {
+  status: number;
+  offreason: string;
+}
+
+export interface StrokeStyle {
+  color: string;
+  width: number;
+  offsetX: number;
+  offsetY: number;
+}
+
+export interface TextSpan {
+  text: string;
+  styleRef: string;
+}
+
 export interface UGGiftStructInfo {
   isUgGift: boolean;
   ugPointsCost: string;
@@ -533,8 +883,24 @@ export interface UserAttr {
   isAdmin: boolean;
   isSuperAdmin: boolean;
   muteDuration: string;
+  adminPermissions: { [key: number]: number };
   hasVotingFunction: boolean;
   isChannelAdmin: boolean;
+}
+
+export interface UserAttr_AdminPermissionsEntry {
+  key: number;
+  value: number;
+}
+
+export interface UserBadge {
+  icons: { [key: number]: ImageModel };
+  title: string;
+}
+
+export interface UserBadge_IconsEntry {
+  key: number;
+  value: ImageModel | undefined;
 }
 
 export interface UserHonor {
@@ -545,14 +911,21 @@ export interface UserHonor {
   nextName: string;
   level: number;
   nextIcon: ImageModel | undefined;
+  deprecated23: string;
   deprecated24: string;
+  deprecated25: string;
+  gradeDescribe: string;
   gradeIconList: GradeIcon[];
   screenChatType: string;
   imIcon: ImageModel | undefined;
+  imIconWithLevel: ImageModel | undefined;
+  liveIcon: ImageModel | undefined;
   newImIconWithLevel: ImageModel | undefined;
+  newLiveIcon: ImageModel | undefined;
   upgradeNeedConsume: string;
   nextPrivileges: string;
   background: ImageModel | undefined;
+  backgroundBack: ImageModel | undefined;
   score: string;
   gradeBanner: string;
 }
@@ -579,6 +952,87 @@ export interface WalletPackage {
   iapId: string;
   usdPriceShow: string;
 }
+
+function createBaseAccompanimentStruct(): AccompanimentStruct {
+  return { vid: "", accompanimentUrls: [], id: "0", volumeLoudnessLufs: 0, volumeAmplitudePeak: 0 };
+}
+
+export const AccompanimentStruct: MessageFns<AccompanimentStruct> = {
+  encode(message: AccompanimentStruct, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.vid !== "") {
+      writer.uint32(10).string(message.vid);
+    }
+    for (const v of message.accompanimentUrls) {
+      writer.uint32(18).string(v!);
+    }
+    if (message.id !== "0") {
+      writer.uint32(24).int64(message.id);
+    }
+    if (message.volumeLoudnessLufs !== 0) {
+      writer.uint32(33).double(message.volumeLoudnessLufs);
+    }
+    if (message.volumeAmplitudePeak !== 0) {
+      writer.uint32(41).double(message.volumeAmplitudePeak);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AccompanimentStruct {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAccompanimentStruct();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.vid = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.accompanimentUrls.push(reader.string());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.id = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 33) {
+            break;
+          }
+
+          message.volumeLoudnessLufs = reader.double();
+          continue;
+        }
+        case 5: {
+          if (tag !== 41) {
+            break;
+          }
+
+          message.volumeAmplitudePeak = reader.double();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 function createBaseActivityRewardInfo(): ActivityRewardInfo {
   return { badge: undefined, storytag: undefined };
@@ -1136,6 +1590,43 @@ export const BaLeadsGenInfo: MessageFns<BaLeadsGenInfo> = {
   },
 };
 
+function createBaseBannerContentDynamic(): BannerContentDynamic {
+  return { jsonResource: "" };
+}
+
+export const BannerContentDynamic: MessageFns<BannerContentDynamic> = {
+  encode(message: BannerContentDynamic, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.jsonResource !== "") {
+      writer.uint32(10).string(message.jsonResource);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BannerContentDynamic {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBannerContentDynamic();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.jsonResource = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseBannerInRoom(): BannerInRoom {
   return {
     id: "0",
@@ -1146,14 +1637,22 @@ function createBaseBannerInRoom(): BannerInRoom {
     schemaUrl: "",
     actionType: 0,
     bannerType: "0",
+    priority: 0,
     text: "",
+    frameType: "0",
+    extra: "",
+    status: "0",
     uid: "0",
     roomid: "0",
     appointmentStartTimestamp: "0",
+    appointmentEndTimestamp: "0",
+    appointmentId: "0",
     businessType: "0",
+    dynamicBanner: undefined,
     bannerLocation: 0,
     openWithNavigationTag: false,
     businessSource: "",
+    activityId: "",
     imageType: 0,
     extendImage: undefined,
     background: undefined,
@@ -1190,8 +1689,20 @@ export const BannerInRoom: MessageFns<BannerInRoom> = {
     if (message.bannerType !== "0") {
       writer.uint32(64).int64(message.bannerType);
     }
+    if (message.priority !== 0) {
+      writer.uint32(72).int32(message.priority);
+    }
     if (message.text !== "") {
       writer.uint32(82).string(message.text);
+    }
+    if (message.frameType !== "0") {
+      writer.uint32(88).int64(message.frameType);
+    }
+    if (message.extra !== "") {
+      writer.uint32(98).string(message.extra);
+    }
+    if (message.status !== "0") {
+      writer.uint32(104).int64(message.status);
     }
     if (message.uid !== "0") {
       writer.uint32(112).int64(message.uid);
@@ -1202,8 +1713,17 @@ export const BannerInRoom: MessageFns<BannerInRoom> = {
     if (message.appointmentStartTimestamp !== "0") {
       writer.uint32(128).int64(message.appointmentStartTimestamp);
     }
+    if (message.appointmentEndTimestamp !== "0") {
+      writer.uint32(136).int64(message.appointmentEndTimestamp);
+    }
+    if (message.appointmentId !== "0") {
+      writer.uint32(144).int64(message.appointmentId);
+    }
     if (message.businessType !== "0") {
       writer.uint32(152).int64(message.businessType);
+    }
+    if (message.dynamicBanner !== undefined) {
+      BannerContentDynamic.encode(message.dynamicBanner, writer.uint32(162).fork()).join();
     }
     if (message.bannerLocation !== 0) {
       writer.uint32(168).int32(message.bannerLocation);
@@ -1213,6 +1733,9 @@ export const BannerInRoom: MessageFns<BannerInRoom> = {
     }
     if (message.businessSource !== "") {
       writer.uint32(186).string(message.businessSource);
+    }
+    if (message.activityId !== "") {
+      writer.uint32(194).string(message.activityId);
     }
     if (message.imageType !== 0) {
       writer.uint32(208).int32(message.imageType);
@@ -1309,12 +1832,44 @@ export const BannerInRoom: MessageFns<BannerInRoom> = {
           message.bannerType = reader.int64().toString();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.priority = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.text = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.frameType = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.extra = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.status = reader.int64().toString();
           continue;
         }
         case 14: {
@@ -1341,12 +1896,36 @@ export const BannerInRoom: MessageFns<BannerInRoom> = {
           message.appointmentStartTimestamp = reader.int64().toString();
           continue;
         }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.appointmentEndTimestamp = reader.int64().toString();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.appointmentId = reader.int64().toString();
+          continue;
+        }
         case 19: {
           if (tag !== 152) {
             break;
           }
 
           message.businessType = reader.int64().toString();
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.dynamicBanner = BannerContentDynamic.decode(reader, reader.uint32());
           continue;
         }
         case 21: {
@@ -1371,6 +1950,14 @@ export const BannerInRoom: MessageFns<BannerInRoom> = {
           }
 
           message.businessSource = reader.string();
+          continue;
+        }
+        case 24: {
+          if (tag !== 194) {
+            break;
+          }
+
+          message.activityId = reader.string();
           continue;
         }
         case 26: {
@@ -1509,7 +2096,10 @@ function createBaseBoard(): Board {
     reviewId: "",
     previewImageUriList: [],
     previewImageList: [],
+    version: 0,
     violationId: "0",
+    templateId: "",
+    recommendBoardInfo: undefined,
     smbReviewId: "0",
     smbReviewInterceptionReasons: [],
     previewBgColor: "",
@@ -1542,8 +2132,17 @@ export const Board: MessageFns<Board> = {
     for (const v of message.previewImageList) {
       ImageModel.encode(v!, writer.uint32(66).fork()).join();
     }
+    if (message.version !== 0) {
+      writer.uint32(72).int32(message.version);
+    }
     if (message.violationId !== "0") {
       writer.uint32(80).int64(message.violationId);
+    }
+    if (message.templateId !== "") {
+      writer.uint32(98).string(message.templateId);
+    }
+    if (message.recommendBoardInfo !== undefined) {
+      RecommendBoardInfo.encode(message.recommendBoardInfo, writer.uint32(106).fork()).join();
     }
     if (message.smbReviewId !== "0") {
       writer.uint32(112).int64(message.smbReviewId);
@@ -1628,12 +2227,36 @@ export const Board: MessageFns<Board> = {
           message.previewImageList.push(ImageModel.decode(reader, reader.uint32()));
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.version = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.violationId = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.templateId = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.recommendBoardInfo = RecommendBoardInfo.decode(reader, reader.uint32());
           continue;
         }
         case 14: {
@@ -1679,7 +2302,11 @@ function createBaseBoardItem(): BoardItem {
     position: undefined,
     style: undefined,
     fullyCustomizedContent: "",
+    fullyCustomizedSetting: undefined,
     transform: undefined,
+    richTextContent: undefined,
+    sceneryContent: undefined,
+    matting: false,
     draggable: false,
     boardItemLayout: undefined,
   };
@@ -1708,8 +2335,20 @@ export const BoardItem: MessageFns<BoardItem> = {
     if (message.fullyCustomizedContent !== "") {
       writer.uint32(66).string(message.fullyCustomizedContent);
     }
+    if (message.fullyCustomizedSetting !== undefined) {
+      FullyCustomizedSetting.encode(message.fullyCustomizedSetting, writer.uint32(74).fork()).join();
+    }
     if (message.transform !== undefined) {
       BoardItemTransform.encode(message.transform, writer.uint32(82).fork()).join();
+    }
+    if (message.richTextContent !== undefined) {
+      RichTextContent.encode(message.richTextContent, writer.uint32(90).fork()).join();
+    }
+    if (message.sceneryContent !== undefined) {
+      SceneryContent.encode(message.sceneryContent, writer.uint32(98).fork()).join();
+    }
+    if (message.matting !== false) {
+      writer.uint32(104).bool(message.matting);
     }
     if (message.draggable !== false) {
       writer.uint32(112).bool(message.draggable);
@@ -1783,12 +2422,44 @@ export const BoardItem: MessageFns<BoardItem> = {
           message.fullyCustomizedContent = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.fullyCustomizedSetting = FullyCustomizedSetting.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.transform = BoardItemTransform.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.richTextContent = RichTextContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.sceneryContent = SceneryContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.matting = reader.bool();
           continue;
         }
         case 14: {
@@ -1897,6 +2568,7 @@ function createBaseBoardItemLayout(): BoardItemLayout {
     offsetY: 0,
     defaultXSpacing: 0,
     defaultYSpacing: 0,
+    collisionResolve: 0,
     isValid: false,
   };
 }
@@ -1926,6 +2598,9 @@ export const BoardItemLayout: MessageFns<BoardItemLayout> = {
     }
     if (message.defaultYSpacing !== 0) {
       writer.uint32(69).float(message.defaultYSpacing);
+    }
+    if (message.collisionResolve !== 0) {
+      writer.uint32(72).int32(message.collisionResolve);
     }
     if (message.isValid !== false) {
       writer.uint32(80).bool(message.isValid);
@@ -2002,6 +2677,14 @@ export const BoardItemLayout: MessageFns<BoardItemLayout> = {
           }
 
           message.defaultYSpacing = reader.float();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.collisionResolve = reader.int32();
           continue;
         }
         case 10: {
@@ -2353,7 +3036,10 @@ function createBaseBorderInfo(): BorderInfo {
     profilePrivilegeLogExtra: undefined,
     avatarBackgroundColor: "",
     avatarBackgroundBorderColor: "",
+    nameStarlingKey: "",
     descStarlingKey: "",
+    name: "",
+    description: "",
   };
 }
 
@@ -2383,8 +3069,17 @@ export const BorderInfo: MessageFns<BorderInfo> = {
     if (message.avatarBackgroundBorderColor !== "") {
       writer.uint32(66).string(message.avatarBackgroundBorderColor);
     }
+    if (message.nameStarlingKey !== "") {
+      writer.uint32(74).string(message.nameStarlingKey);
+    }
     if (message.descStarlingKey !== "") {
       writer.uint32(82).string(message.descStarlingKey);
+    }
+    if (message.name !== "") {
+      writer.uint32(90).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(98).string(message.description);
     }
     return writer;
   },
@@ -2460,12 +3155,95 @@ export const BorderInfo: MessageFns<BorderInfo> = {
           message.avatarBackgroundBorderColor = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.nameStarlingKey = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.descStarlingKey = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseColorBackground(): ColorBackground {
+  return { color: "", radius: 0, padding: undefined };
+}
+
+export const ColorBackground: MessageFns<ColorBackground> = {
+  encode(message: ColorBackground, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.color !== "") {
+      writer.uint32(10).string(message.color);
+    }
+    if (message.radius !== 0) {
+      writer.uint32(21).float(message.radius);
+    }
+    if (message.padding !== undefined) {
+      EdgeInsets.encode(message.padding, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ColorBackground {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseColorBackground();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 21) {
+            break;
+          }
+
+          message.radius = reader.float();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.padding = EdgeInsets.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -2796,7 +3574,11 @@ function createBaseDonationSticker(): DonationSticker {
     textColor: "",
     content: undefined,
     maxLength: "0",
+    status: "0",
     h: 0,
+    x: 0,
+    w: 0,
+    y: 0,
     kind: "0",
     subType: "0",
   };
@@ -2830,8 +3612,20 @@ export const DonationSticker: MessageFns<DonationSticker> = {
     if (message.maxLength !== "0") {
       writer.uint32(64).int64(message.maxLength);
     }
+    if (message.status !== "0") {
+      writer.uint32(72).int64(message.status);
+    }
     if (message.h !== 0) {
       writer.uint32(80).int32(message.h);
+    }
+    if (message.x !== 0) {
+      writer.uint32(88).int32(message.x);
+    }
+    if (message.w !== 0) {
+      writer.uint32(96).int32(message.w);
+    }
+    if (message.y !== 0) {
+      writer.uint32(104).int32(message.y);
     }
     if (message.kind !== "0") {
       writer.uint32(112).int64(message.kind);
@@ -2923,12 +3717,44 @@ export const DonationSticker: MessageFns<DonationSticker> = {
           message.maxLength = reader.int64().toString();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.status = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.h = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.x = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.w = reader.int32();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.y = reader.int32();
           continue;
         }
         case 14: {
@@ -2945,6 +3771,450 @@ export const DonationSticker: MessageFns<DonationSticker> = {
           }
 
           message.subType = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEdgeInsets(): EdgeInsets {
+  return { top: 0, right: 0, bottom: 0, left: 0 };
+}
+
+export const EdgeInsets: MessageFns<EdgeInsets> = {
+  encode(message: EdgeInsets, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.top !== 0) {
+      writer.uint32(13).float(message.top);
+    }
+    if (message.right !== 0) {
+      writer.uint32(21).float(message.right);
+    }
+    if (message.bottom !== 0) {
+      writer.uint32(29).float(message.bottom);
+    }
+    if (message.left !== 0) {
+      writer.uint32(37).float(message.left);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EdgeInsets {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEdgeInsets();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 13) {
+            break;
+          }
+
+          message.top = reader.float();
+          continue;
+        }
+        case 2: {
+          if (tag !== 21) {
+            break;
+          }
+
+          message.right = reader.float();
+          continue;
+        }
+        case 3: {
+          if (tag !== 29) {
+            break;
+          }
+
+          message.bottom = reader.float();
+          continue;
+        }
+        case 4: {
+          if (tag !== 37) {
+            break;
+          }
+
+          message.left = reader.float();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFansClubData(): FansClubData {
+  return { clubName: "", level: 0, userFansClubStatus: 0, badge: undefined, availableGiftIds: [], anchorId: "0" };
+}
+
+export const FansClubData: MessageFns<FansClubData> = {
+  encode(message: FansClubData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.clubName !== "") {
+      writer.uint32(10).string(message.clubName);
+    }
+    if (message.level !== 0) {
+      writer.uint32(16).int32(message.level);
+    }
+    if (message.userFansClubStatus !== 0) {
+      writer.uint32(24).int32(message.userFansClubStatus);
+    }
+    if (message.badge !== undefined) {
+      UserBadge.encode(message.badge, writer.uint32(34).fork()).join();
+    }
+    writer.uint32(42).fork();
+    for (const v of message.availableGiftIds) {
+      writer.int64(v);
+    }
+    writer.join();
+    if (message.anchorId !== "0") {
+      writer.uint32(48).int64(message.anchorId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansClubData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansClubData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.clubName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.level = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.userFansClubStatus = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.badge = UserBadge.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag === 40) {
+            message.availableGiftIds.push(reader.int64().toString());
+
+            continue;
+          }
+
+          if (tag === 42) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.availableGiftIds.push(reader.int64().toString());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFansClubMember(): FansClubMember {
+  return { data: undefined, preferData: {} };
+}
+
+export const FansClubMember: MessageFns<FansClubMember> = {
+  encode(message: FansClubMember, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined) {
+      FansClubData.encode(message.data, writer.uint32(10).fork()).join();
+    }
+    globalThis.Object.entries(message.preferData).forEach(([key, value]: [string, FansClubData]) => {
+      FansClubMember_PreferDataEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansClubMember {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansClubMember();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.data = FansClubData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = FansClubMember_PreferDataEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.preferData[entry2.key] = entry2.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFansClubMember_PreferDataEntry(): FansClubMember_PreferDataEntry {
+  return { key: 0, value: undefined };
+}
+
+export const FansClubMember_PreferDataEntry: MessageFns<FansClubMember_PreferDataEntry> = {
+  encode(message: FansClubMember_PreferDataEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== undefined) {
+      FansClubData.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansClubMember_PreferDataEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansClubMember_PreferDataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = FansClubData.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFlowSpec(): FlowSpec {
+  return {
+    rowAlignX: 0,
+    direction: 0,
+    rowAlignY: 0,
+    interItemSpacing: 0,
+    rowSpacing: 0,
+    overflow: false,
+    width: undefined,
+    height: undefined,
+  };
+}
+
+export const FlowSpec: MessageFns<FlowSpec> = {
+  encode(message: FlowSpec, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rowAlignX !== 0) {
+      writer.uint32(8).int32(message.rowAlignX);
+    }
+    if (message.direction !== 0) {
+      writer.uint32(16).int32(message.direction);
+    }
+    if (message.rowAlignY !== 0) {
+      writer.uint32(24).int32(message.rowAlignY);
+    }
+    if (message.interItemSpacing !== 0) {
+      writer.uint32(37).float(message.interItemSpacing);
+    }
+    if (message.rowSpacing !== 0) {
+      writer.uint32(45).float(message.rowSpacing);
+    }
+    if (message.overflow !== false) {
+      writer.uint32(48).bool(message.overflow);
+    }
+    if (message.width !== undefined) {
+      SizeSpec.encode(message.width, writer.uint32(58).fork()).join();
+    }
+    if (message.height !== undefined) {
+      SizeSpec.encode(message.height, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlowSpec {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlowSpec();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.rowAlignX = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.direction = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.rowAlignY = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 37) {
+            break;
+          }
+
+          message.interItemSpacing = reader.float();
+          continue;
+        }
+        case 5: {
+          if (tag !== 45) {
+            break;
+          }
+
+          message.rowSpacing = reader.float();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.overflow = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.width = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.height = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFullyCustomizedSetting(): FullyCustomizedSetting {
+  return { fullyCustomizedCharLimit: "0", fullyCustomizedLineLimit: "0" };
+}
+
+export const FullyCustomizedSetting: MessageFns<FullyCustomizedSetting> = {
+  encode(message: FullyCustomizedSetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.fullyCustomizedCharLimit !== "0") {
+      writer.uint32(8).int64(message.fullyCustomizedCharLimit);
+    }
+    if (message.fullyCustomizedLineLimit !== "0") {
+      writer.uint32(16).int64(message.fullyCustomizedLineLimit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FullyCustomizedSetting {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFullyCustomizedSetting();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.fullyCustomizedCharLimit = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.fullyCustomizedLineLimit = reader.int64().toString();
           continue;
         }
       }
@@ -4067,6 +5337,168 @@ export const Hashtag: MessageFns<Hashtag> = {
   },
 };
 
+function createBaseImageBackground(): ImageBackground {
+  return { image: undefined, capInsets: undefined, alignmentX: 0, alignmentY: 0, repeat: 0 };
+}
+
+export const ImageBackground: MessageFns<ImageBackground> = {
+  encode(message: ImageBackground, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.image !== undefined) {
+      ImageContent.encode(message.image, writer.uint32(10).fork()).join();
+    }
+    if (message.capInsets !== undefined) {
+      EdgeInsets.encode(message.capInsets, writer.uint32(18).fork()).join();
+    }
+    if (message.alignmentX !== 0) {
+      writer.uint32(24).int32(message.alignmentX);
+    }
+    if (message.alignmentY !== 0) {
+      writer.uint32(32).int32(message.alignmentY);
+    }
+    if (message.repeat !== 0) {
+      writer.uint32(40).int32(message.repeat);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ImageBackground {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseImageBackground();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.image = ImageContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.capInsets = EdgeInsets.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.alignmentX = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.alignmentY = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.repeat = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseImageContent(): ImageContent {
+  return { imageWidth: undefined, imageHeight: undefined, fillMode: 0, image: undefined, primaryColor: "" };
+}
+
+export const ImageContent: MessageFns<ImageContent> = {
+  encode(message: ImageContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.imageWidth !== undefined) {
+      SizeSpec.encode(message.imageWidth, writer.uint32(10).fork()).join();
+    }
+    if (message.imageHeight !== undefined) {
+      SizeSpec.encode(message.imageHeight, writer.uint32(18).fork()).join();
+    }
+    if (message.fillMode !== 0) {
+      writer.uint32(24).int32(message.fillMode);
+    }
+    if (message.image !== undefined) {
+      ImageModel.encode(message.image, writer.uint32(34).fork()).join();
+    }
+    if (message.primaryColor !== "") {
+      writer.uint32(42).string(message.primaryColor);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ImageContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseImageContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.imageWidth = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.imageHeight = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fillMode = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.image = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.primaryColor = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseInteractionQuestionInfo(): InteractionQuestionInfo {
   return { hasRecommend: false, hasQuickAnswer: false, questionAndAnswerEntry: 0, hasLightningStrengthen: false };
 }
@@ -4266,6 +5698,7 @@ function createBaseLiveEventInfo(): LiveEventInfo {
     isPaidEvent: false,
     ticketAmount: "0",
     payMethod: 0,
+    walletPkgDict: {},
     eventUserInfo: [],
     subscribedCount: "0",
     paidEventPreview: undefined,
@@ -4305,6 +5738,9 @@ export const LiveEventInfo: MessageFns<LiveEventInfo> = {
     if (message.payMethod !== 0) {
       writer.uint32(72).int32(message.payMethod);
     }
+    globalThis.Object.entries(message.walletPkgDict).forEach(([key, value]: [string, WalletPackage]) => {
+      LiveEventInfo_WalletPkgDictEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+    });
     for (const v of message.eventUserInfo) {
       EventUserInfo.encode(v!, writer.uint32(90).fork()).join();
     }
@@ -4408,6 +5844,17 @@ export const LiveEventInfo: MessageFns<LiveEventInfo> = {
           message.payMethod = reader.int32() as any;
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          const entry10 = LiveEventInfo_WalletPkgDictEntry.decode(reader, reader.uint32());
+          if (entry10.value !== undefined) {
+            message.walletPkgDict[entry10.key] = entry10.value;
+          }
+          continue;
+        }
         case 11: {
           if (tag !== 90) {
             break;
@@ -4474,6 +5921,54 @@ export const LiveEventInfo: MessageFns<LiveEventInfo> = {
   },
 };
 
+function createBaseLiveEventInfo_WalletPkgDictEntry(): LiveEventInfo_WalletPkgDictEntry {
+  return { key: "", value: undefined };
+}
+
+export const LiveEventInfo_WalletPkgDictEntry: MessageFns<LiveEventInfo_WalletPkgDictEntry> = {
+  encode(message: LiveEventInfo_WalletPkgDictEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      WalletPackage.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LiveEventInfo_WalletPkgDictEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLiveEventInfo_WalletPkgDictEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = WalletPackage.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseLynxCrossScreenEffectInfo(): LynxCrossScreenEffectInfo {
   return { effectIds: [] };
 }
@@ -4512,6 +6007,135 @@ export const LynxCrossScreenEffectInfo: MessageFns<LynxCrossScreenEffectInfo> = 
           }
 
           break;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLyricStruct(): LyricStruct {
+  return { id: "0", lyricType: 0, vid: "", klyricUrls: [], lyricStatus: 0 };
+}
+
+export const LyricStruct: MessageFns<LyricStruct> = {
+  encode(message: LyricStruct, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "0") {
+      writer.uint32(8).int64(message.id);
+    }
+    if (message.lyricType !== 0) {
+      writer.uint32(16).int32(message.lyricType);
+    }
+    if (message.vid !== "") {
+      writer.uint32(26).string(message.vid);
+    }
+    for (const v of message.klyricUrls) {
+      writer.uint32(34).string(v!);
+    }
+    if (message.lyricStatus !== 0) {
+      writer.uint32(40).int32(message.lyricStatus);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LyricStruct {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLyricStruct();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.lyricType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.vid = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.klyricUrls.push(reader.string());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.lyricStatus = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMeasureSpec(): MeasureSpec {
+  return { mode: 0, value: 0 };
+}
+
+export const MeasureSpec: MessageFns<MeasureSpec> = {
+  encode(message: MeasureSpec, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.mode !== 0) {
+      writer.uint32(8).int32(message.mode);
+    }
+    if (message.value !== 0) {
+      writer.uint32(21).float(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MeasureSpec {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMeasureSpec();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.mode = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 21) {
+            break;
+          }
+
+          message.value = reader.float();
+          continue;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4615,6 +6239,198 @@ export const OrganizationModel: MessageFns<OrganizationModel> = {
   },
 };
 
+function createBaseParagraph(): Paragraph {
+  return { paragraphId: "0", spans: [], maxCharLimit: "0", styleRef: "", editable: false };
+}
+
+export const Paragraph: MessageFns<Paragraph> = {
+  encode(message: Paragraph, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.paragraphId !== "0") {
+      writer.uint32(8).int64(message.paragraphId);
+    }
+    for (const v of message.spans) {
+      TextSpan.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.maxCharLimit !== "0") {
+      writer.uint32(24).int64(message.maxCharLimit);
+    }
+    if (message.styleRef !== "") {
+      writer.uint32(34).string(message.styleRef);
+    }
+    if (message.editable !== false) {
+      writer.uint32(40).bool(message.editable);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Paragraph {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseParagraph();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.paragraphId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.spans.push(TextSpan.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.maxCharLimit = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.styleRef = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.editable = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseParagraphLayout(): ParagraphLayout {
+  return {
+    wrapMode: 0,
+    width: undefined,
+    height: undefined,
+    startNewRow: false,
+    rowAlign: 0,
+    contentAlignX: 0,
+    shrink: undefined,
+  };
+}
+
+export const ParagraphLayout: MessageFns<ParagraphLayout> = {
+  encode(message: ParagraphLayout, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.wrapMode !== 0) {
+      writer.uint32(8).int32(message.wrapMode);
+    }
+    if (message.width !== undefined) {
+      SizeSpec.encode(message.width, writer.uint32(18).fork()).join();
+    }
+    if (message.height !== undefined) {
+      SizeSpec.encode(message.height, writer.uint32(26).fork()).join();
+    }
+    if (message.startNewRow !== false) {
+      writer.uint32(32).bool(message.startNewRow);
+    }
+    if (message.rowAlign !== 0) {
+      writer.uint32(40).int32(message.rowAlign);
+    }
+    if (message.contentAlignX !== 0) {
+      writer.uint32(48).int32(message.contentAlignX);
+    }
+    if (message.shrink !== undefined) {
+      ShrinkSpec.encode(message.shrink, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ParagraphLayout {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseParagraphLayout();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.wrapMode = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.width = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.height = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.startNewRow = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.rowAlign = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.contentAlignX = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.shrink = ShrinkSpec.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBasePollVoteLimit(): PollVoteLimit {
   return { limitType: 0, voteCountLimit: "0" };
 }
@@ -4673,7 +6489,10 @@ function createBasePortalInfo(): PortalInfo {
     portalDiamonds: 0,
     senderDisplayId: "",
     senderId: "",
+    senderAvatar: undefined,
     transCount: 0,
+    touchCount: 0,
+    senderEnigmaInfo: undefined,
   };
 }
 
@@ -4703,8 +6522,17 @@ export const PortalInfo: MessageFns<PortalInfo> = {
     if (message.senderId !== "") {
       writer.uint32(66).string(message.senderId);
     }
+    if (message.senderAvatar !== undefined) {
+      ImageModel.encode(message.senderAvatar, writer.uint32(74).fork()).join();
+    }
     if (message.transCount !== 0) {
       writer.uint32(80).int32(message.transCount);
+    }
+    if (message.touchCount !== 0) {
+      writer.uint32(88).int32(message.touchCount);
+    }
+    if (message.senderEnigmaInfo !== undefined) {
+      EnvelopeEnigmaInfo.encode(message.senderEnigmaInfo, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -4780,12 +6608,36 @@ export const PortalInfo: MessageFns<PortalInfo> = {
           message.senderId = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.senderAvatar = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.transCount = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.touchCount = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.senderEnigmaInfo = EnvelopeEnigmaInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -5129,6 +6981,419 @@ export const RandomGiftPanelBanner: MessageFns<RandomGiftPanelBanner> = {
   },
 };
 
+function createBaseRecommendBoardInfo(): RecommendBoardInfo {
+  return {
+    recommendBoardId: "0",
+    boardSource: 0,
+    recommendReason: undefined,
+    sourcePb: undefined,
+    businessIntent: "0",
+  };
+}
+
+export const RecommendBoardInfo: MessageFns<RecommendBoardInfo> = {
+  encode(message: RecommendBoardInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.recommendBoardId !== "0") {
+      writer.uint32(8).int64(message.recommendBoardId);
+    }
+    if (message.boardSource !== 0) {
+      writer.uint32(16).int32(message.boardSource);
+    }
+    if (message.recommendReason !== undefined) {
+      RecommendReason.encode(message.recommendReason, writer.uint32(26).fork()).join();
+    }
+    if (message.sourcePb !== undefined) {
+      SourcePB.encode(message.sourcePb, writer.uint32(34).fork()).join();
+    }
+    if (message.businessIntent !== "0") {
+      writer.uint32(40).int64(message.businessIntent);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecommendBoardInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecommendBoardInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.recommendBoardId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.boardSource = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.recommendReason = RecommendReason.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.sourcePb = SourcePB.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.businessIntent = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRecommendReason(): RecommendReason {
+  return { title: "", subTitle: "" };
+}
+
+export const RecommendReason: MessageFns<RecommendReason> = {
+  encode(message: RecommendReason, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.subTitle !== "") {
+      writer.uint32(18).string(message.subTitle);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecommendReason {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecommendReason();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.subTitle = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRichTextContent(): RichTextContent {
+  return { styles: [], paragraphs: [], itemStyleRef: "" };
+}
+
+export const RichTextContent: MessageFns<RichTextContent> = {
+  encode(message: RichTextContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.styles) {
+      RichTextStyle.encode(v!, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.paragraphs) {
+      Paragraph.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.itemStyleRef !== "") {
+      writer.uint32(26).string(message.itemStyleRef);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RichTextContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRichTextContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.styles.push(RichTextStyle.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.paragraphs.push(Paragraph.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.itemStyleRef = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRichTextStyle(): RichTextStyle {
+  return {
+    name: "",
+    type: 0,
+    textStyle: 0,
+    fontSize: 0,
+    fontFamily: "",
+    color: "",
+    stroke: undefined,
+    lineHeight: 0,
+    padding: undefined,
+    paragraphLayout: undefined,
+    flowSpec: undefined,
+    contentAlignX: 0,
+    colorBackground: undefined,
+    imageBackground: undefined,
+    lineSpacing: 0,
+    inlineBackground: undefined,
+  };
+}
+
+export const RichTextStyle: MessageFns<RichTextStyle> = {
+  encode(message: RichTextStyle, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.type !== 0) {
+      writer.uint32(16).int32(message.type);
+    }
+    if (message.textStyle !== 0) {
+      writer.uint32(24).int32(message.textStyle);
+    }
+    if (message.fontSize !== 0) {
+      writer.uint32(32).int32(message.fontSize);
+    }
+    if (message.fontFamily !== "") {
+      writer.uint32(42).string(message.fontFamily);
+    }
+    if (message.color !== "") {
+      writer.uint32(50).string(message.color);
+    }
+    if (message.stroke !== undefined) {
+      StrokeStyle.encode(message.stroke, writer.uint32(58).fork()).join();
+    }
+    if (message.lineHeight !== 0) {
+      writer.uint32(69).float(message.lineHeight);
+    }
+    if (message.padding !== undefined) {
+      EdgeInsets.encode(message.padding, writer.uint32(74).fork()).join();
+    }
+    if (message.paragraphLayout !== undefined) {
+      ParagraphLayout.encode(message.paragraphLayout, writer.uint32(82).fork()).join();
+    }
+    if (message.flowSpec !== undefined) {
+      FlowSpec.encode(message.flowSpec, writer.uint32(90).fork()).join();
+    }
+    if (message.contentAlignX !== 0) {
+      writer.uint32(96).int32(message.contentAlignX);
+    }
+    if (message.colorBackground !== undefined) {
+      ColorBackground.encode(message.colorBackground, writer.uint32(106).fork()).join();
+    }
+    if (message.imageBackground !== undefined) {
+      ImageBackground.encode(message.imageBackground, writer.uint32(114).fork()).join();
+    }
+    if (message.lineSpacing !== 0) {
+      writer.uint32(125).float(message.lineSpacing);
+    }
+    if (message.inlineBackground !== undefined) {
+      ColorBackground.encode(message.inlineBackground, writer.uint32(130).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RichTextStyle {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRichTextStyle();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.textStyle = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.fontSize = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fontFamily = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.stroke = StrokeStyle.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 69) {
+            break;
+          }
+
+          message.lineHeight = reader.float();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.padding = EdgeInsets.decode(reader, reader.uint32());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.paragraphLayout = ParagraphLayout.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.flowSpec = FlowSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.contentAlignX = reader.int32();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.colorBackground = ColorBackground.decode(reader, reader.uint32());
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          message.imageBackground = ImageBackground.decode(reader, reader.uint32());
+          continue;
+        }
+        case 15: {
+          if (tag !== 125) {
+            break;
+          }
+
+          message.lineSpacing = reader.float();
+          continue;
+        }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+
+          message.inlineBackground = ColorBackground.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseRoomAuthMessage(): RoomAuthMessage {
   return { goldenEnvelopeMessage: undefined, promoteOtherMessage: undefined };
 }
@@ -5214,6 +7479,1323 @@ export const RoomAuthMessageGoldenEnvelope: MessageFns<RoomAuthMessageGoldenEnve
   },
 };
 
+function createBaseRoomAuthOffReasons(): RoomAuthOffReasons {
+  return { gift: "", giftOffReason: 0 };
+}
+
+export const RoomAuthOffReasons: MessageFns<RoomAuthOffReasons> = {
+  encode(message: RoomAuthOffReasons, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.gift !== "") {
+      writer.uint32(10).string(message.gift);
+    }
+    if (message.giftOffReason !== 0) {
+      writer.uint32(16).int32(message.giftOffReason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomAuthOffReasons {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomAuthOffReasons();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.gift = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.giftOffReason = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomAuthStatus(): RoomAuthStatus {
+  return {
+    chat: false,
+    danmaku: false,
+    gift: false,
+    luckmoney: false,
+    digg: false,
+    roomcontributor: false,
+    props: false,
+    usercard: false,
+    deprecated1: false,
+    deprecated2: "0",
+    banner: 0,
+    deprecated3: "0",
+    deprecated4: "0",
+    landscape: 0,
+    landscapechat: "0",
+    publicscreen: 0,
+    giftanchormt: 0,
+    deprecated5: "0",
+    donationsticker: 0,
+    deprecated6: "0",
+    deprecated7: "0",
+    deprecated8: "0",
+    deprecated9: "0",
+    interactionquestion: false,
+    chatl2: false,
+    viewers: false,
+    share: false,
+    transactionHistory: 0,
+    promote: false,
+    usercount: 0,
+    rank: 0,
+    broadcastmessage: "0",
+    chatsubonly: false,
+    goldenenvelope: 0,
+    quickchat: 0,
+    poll: 0,
+    giftpoll: 0,
+    pictionary: "0",
+    goldenenvelopeactivity: 0,
+    customizablepoll: "0",
+    offreason: undefined,
+    useUserPv: false,
+    promoteother: 0,
+    shoppingranking: 0,
+    eventpromotion: 0,
+    communityflagged: false,
+    communityflaggedreview: false,
+    explore: false,
+    pictionarypermission: "0",
+    pictionarybubble: "0",
+    anchorLevelPermission: undefined,
+    gamerankingswitch: 0,
+    toolbarmanagement: undefined,
+    multienablereserve: false,
+    enablefanslevel: false,
+    secretroom: "0",
+    spamcomments: false,
+    customErrorForGiftSetting: undefined,
+    guessEntranceForHost: false,
+    creditEntranceForAudience: false,
+    gameGuessPermission: false,
+    customizablegiftpoll: "0",
+    commentTrayStatus: "0",
+    rankingchangealterswitch: 0,
+    showCreditWidget: false,
+    starCommentPermissionSwitch: undefined,
+    emotepoll: "0",
+    enableshowuseruv: false,
+    viewerwishes: "0",
+    commentmention: "0",
+    enigmawhisper: "0",
+  };
+}
+
+export const RoomAuthStatus: MessageFns<RoomAuthStatus> = {
+  encode(message: RoomAuthStatus, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.chat !== false) {
+      writer.uint32(8).bool(message.chat);
+    }
+    if (message.danmaku !== false) {
+      writer.uint32(16).bool(message.danmaku);
+    }
+    if (message.gift !== false) {
+      writer.uint32(24).bool(message.gift);
+    }
+    if (message.luckmoney !== false) {
+      writer.uint32(32).bool(message.luckmoney);
+    }
+    if (message.digg !== false) {
+      writer.uint32(40).bool(message.digg);
+    }
+    if (message.roomcontributor !== false) {
+      writer.uint32(56).bool(message.roomcontributor);
+    }
+    if (message.props !== false) {
+      writer.uint32(64).bool(message.props);
+    }
+    if (message.usercard !== false) {
+      writer.uint32(72).bool(message.usercard);
+    }
+    if (message.deprecated1 !== false) {
+      writer.uint32(80).bool(message.deprecated1);
+    }
+    if (message.deprecated2 !== "0") {
+      writer.uint32(88).int64(message.deprecated2);
+    }
+    if (message.banner !== 0) {
+      writer.uint32(96).int32(message.banner);
+    }
+    if (message.deprecated3 !== "0") {
+      writer.uint32(104).int64(message.deprecated3);
+    }
+    if (message.deprecated4 !== "0") {
+      writer.uint32(112).int64(message.deprecated4);
+    }
+    if (message.landscape !== 0) {
+      writer.uint32(120).int32(message.landscape);
+    }
+    if (message.landscapechat !== "0") {
+      writer.uint32(128).int64(message.landscapechat);
+    }
+    if (message.publicscreen !== 0) {
+      writer.uint32(136).int32(message.publicscreen);
+    }
+    if (message.giftanchormt !== 0) {
+      writer.uint32(144).int32(message.giftanchormt);
+    }
+    if (message.deprecated5 !== "0") {
+      writer.uint32(152).int64(message.deprecated5);
+    }
+    if (message.donationsticker !== 0) {
+      writer.uint32(160).int32(message.donationsticker);
+    }
+    if (message.deprecated6 !== "0") {
+      writer.uint32(168).int64(message.deprecated6);
+    }
+    if (message.deprecated7 !== "0") {
+      writer.uint32(176).int64(message.deprecated7);
+    }
+    if (message.deprecated8 !== "0") {
+      writer.uint32(184).int64(message.deprecated8);
+    }
+    if (message.deprecated9 !== "0") {
+      writer.uint32(192).int64(message.deprecated9);
+    }
+    if (message.interactionquestion !== false) {
+      writer.uint32(200).bool(message.interactionquestion);
+    }
+    if (message.chatl2 !== false) {
+      writer.uint32(208).bool(message.chatl2);
+    }
+    if (message.viewers !== false) {
+      writer.uint32(216).bool(message.viewers);
+    }
+    if (message.share !== false) {
+      writer.uint32(224).bool(message.share);
+    }
+    if (message.transactionHistory !== 0) {
+      writer.uint32(232).int32(message.transactionHistory);
+    }
+    if (message.promote !== false) {
+      writer.uint32(240).bool(message.promote);
+    }
+    if (message.usercount !== 0) {
+      writer.uint32(248).int32(message.usercount);
+    }
+    if (message.rank !== 0) {
+      writer.uint32(256).int32(message.rank);
+    }
+    if (message.broadcastmessage !== "0") {
+      writer.uint32(264).int64(message.broadcastmessage);
+    }
+    if (message.chatsubonly !== false) {
+      writer.uint32(272).bool(message.chatsubonly);
+    }
+    if (message.goldenenvelope !== 0) {
+      writer.uint32(280).int32(message.goldenenvelope);
+    }
+    if (message.quickchat !== 0) {
+      writer.uint32(288).int32(message.quickchat);
+    }
+    if (message.poll !== 0) {
+      writer.uint32(296).int32(message.poll);
+    }
+    if (message.giftpoll !== 0) {
+      writer.uint32(304).int32(message.giftpoll);
+    }
+    if (message.pictionary !== "0") {
+      writer.uint32(320).int64(message.pictionary);
+    }
+    if (message.goldenenvelopeactivity !== 0) {
+      writer.uint32(328).int32(message.goldenenvelopeactivity);
+    }
+    if (message.customizablepoll !== "0") {
+      writer.uint32(336).int64(message.customizablepoll);
+    }
+    if (message.offreason !== undefined) {
+      RoomAuthOffReasons.encode(message.offreason, writer.uint32(802).fork()).join();
+    }
+    if (message.useUserPv !== false) {
+      writer.uint32(808).bool(message.useUserPv);
+    }
+    if (message.promoteother !== 0) {
+      writer.uint32(816).int32(message.promoteother);
+    }
+    if (message.shoppingranking !== 0) {
+      writer.uint32(824).int32(message.shoppingranking);
+    }
+    if (message.eventpromotion !== 0) {
+      writer.uint32(840).int32(message.eventpromotion);
+    }
+    if (message.communityflagged !== false) {
+      writer.uint32(848).bool(message.communityflagged);
+    }
+    if (message.communityflaggedreview !== false) {
+      writer.uint32(856).bool(message.communityflaggedreview);
+    }
+    if (message.explore !== false) {
+      writer.uint32(864).bool(message.explore);
+    }
+    if (message.pictionarypermission !== "0") {
+      writer.uint32(872).int64(message.pictionarypermission);
+    }
+    if (message.pictionarybubble !== "0") {
+      writer.uint32(880).int64(message.pictionarybubble);
+    }
+    if (message.anchorLevelPermission !== undefined) {
+      AnchorLevelPermission.encode(message.anchorLevelPermission, writer.uint32(890).fork()).join();
+    }
+    if (message.gamerankingswitch !== 0) {
+      writer.uint32(896).int32(message.gamerankingswitch);
+    }
+    if (message.toolbarmanagement !== undefined) {
+      ToolBarManagement.encode(message.toolbarmanagement, writer.uint32(906).fork()).join();
+    }
+    if (message.multienablereserve !== false) {
+      writer.uint32(912).bool(message.multienablereserve);
+    }
+    if (message.enablefanslevel !== false) {
+      writer.uint32(920).bool(message.enablefanslevel);
+    }
+    if (message.secretroom !== "0") {
+      writer.uint32(928).int64(message.secretroom);
+    }
+    if (message.spamcomments !== false) {
+      writer.uint32(936).bool(message.spamcomments);
+    }
+    if (message.customErrorForGiftSetting !== undefined) {
+      RechargeCustomError.encode(message.customErrorForGiftSetting, writer.uint32(962).fork()).join();
+    }
+    if (message.guessEntranceForHost !== false) {
+      writer.uint32(968).bool(message.guessEntranceForHost);
+    }
+    if (message.creditEntranceForAudience !== false) {
+      writer.uint32(976).bool(message.creditEntranceForAudience);
+    }
+    if (message.gameGuessPermission !== false) {
+      writer.uint32(984).bool(message.gameGuessPermission);
+    }
+    if (message.customizablegiftpoll !== "0") {
+      writer.uint32(992).int64(message.customizablegiftpoll);
+    }
+    if (message.commentTrayStatus !== "0") {
+      writer.uint32(1000).int64(message.commentTrayStatus);
+    }
+    if (message.rankingchangealterswitch !== 0) {
+      writer.uint32(1008).int32(message.rankingchangealterswitch);
+    }
+    if (message.showCreditWidget !== false) {
+      writer.uint32(1016).bool(message.showCreditWidget);
+    }
+    if (message.starCommentPermissionSwitch !== undefined) {
+      StarCommentPermissionSwitch.encode(message.starCommentPermissionSwitch, writer.uint32(1026).fork()).join();
+    }
+    if (message.emotepoll !== "0") {
+      writer.uint32(1032).int64(message.emotepoll);
+    }
+    if (message.enableshowuseruv !== false) {
+      writer.uint32(1040).bool(message.enableshowuseruv);
+    }
+    if (message.viewerwishes !== "0") {
+      writer.uint32(1048).int64(message.viewerwishes);
+    }
+    if (message.commentmention !== "0") {
+      writer.uint32(1056).int64(message.commentmention);
+    }
+    if (message.enigmawhisper !== "0") {
+      writer.uint32(1064).int64(message.enigmawhisper);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomAuthStatus {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomAuthStatus();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.chat = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.danmaku = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.gift = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.luckmoney = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.digg = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.roomcontributor = reader.bool();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.props = reader.bool();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.usercard = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.deprecated1 = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.deprecated2 = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.banner = reader.int32();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.deprecated3 = reader.int64().toString();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.deprecated4 = reader.int64().toString();
+          continue;
+        }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.landscape = reader.int32();
+          continue;
+        }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.landscapechat = reader.int64().toString();
+          continue;
+        }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.publicscreen = reader.int32();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.giftanchormt = reader.int32();
+          continue;
+        }
+        case 19: {
+          if (tag !== 152) {
+            break;
+          }
+
+          message.deprecated5 = reader.int64().toString();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.donationsticker = reader.int32();
+          continue;
+        }
+        case 21: {
+          if (tag !== 168) {
+            break;
+          }
+
+          message.deprecated6 = reader.int64().toString();
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.deprecated7 = reader.int64().toString();
+          continue;
+        }
+        case 23: {
+          if (tag !== 184) {
+            break;
+          }
+
+          message.deprecated8 = reader.int64().toString();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.deprecated9 = reader.int64().toString();
+          continue;
+        }
+        case 25: {
+          if (tag !== 200) {
+            break;
+          }
+
+          message.interactionquestion = reader.bool();
+          continue;
+        }
+        case 26: {
+          if (tag !== 208) {
+            break;
+          }
+
+          message.chatl2 = reader.bool();
+          continue;
+        }
+        case 27: {
+          if (tag !== 216) {
+            break;
+          }
+
+          message.viewers = reader.bool();
+          continue;
+        }
+        case 28: {
+          if (tag !== 224) {
+            break;
+          }
+
+          message.share = reader.bool();
+          continue;
+        }
+        case 29: {
+          if (tag !== 232) {
+            break;
+          }
+
+          message.transactionHistory = reader.int32();
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.promote = reader.bool();
+          continue;
+        }
+        case 31: {
+          if (tag !== 248) {
+            break;
+          }
+
+          message.usercount = reader.int32();
+          continue;
+        }
+        case 32: {
+          if (tag !== 256) {
+            break;
+          }
+
+          message.rank = reader.int32();
+          continue;
+        }
+        case 33: {
+          if (tag !== 264) {
+            break;
+          }
+
+          message.broadcastmessage = reader.int64().toString();
+          continue;
+        }
+        case 34: {
+          if (tag !== 272) {
+            break;
+          }
+
+          message.chatsubonly = reader.bool();
+          continue;
+        }
+        case 35: {
+          if (tag !== 280) {
+            break;
+          }
+
+          message.goldenenvelope = reader.int32();
+          continue;
+        }
+        case 36: {
+          if (tag !== 288) {
+            break;
+          }
+
+          message.quickchat = reader.int32();
+          continue;
+        }
+        case 37: {
+          if (tag !== 296) {
+            break;
+          }
+
+          message.poll = reader.int32();
+          continue;
+        }
+        case 38: {
+          if (tag !== 304) {
+            break;
+          }
+
+          message.giftpoll = reader.int32();
+          continue;
+        }
+        case 40: {
+          if (tag !== 320) {
+            break;
+          }
+
+          message.pictionary = reader.int64().toString();
+          continue;
+        }
+        case 41: {
+          if (tag !== 328) {
+            break;
+          }
+
+          message.goldenenvelopeactivity = reader.int32();
+          continue;
+        }
+        case 42: {
+          if (tag !== 336) {
+            break;
+          }
+
+          message.customizablepoll = reader.int64().toString();
+          continue;
+        }
+        case 100: {
+          if (tag !== 802) {
+            break;
+          }
+
+          message.offreason = RoomAuthOffReasons.decode(reader, reader.uint32());
+          continue;
+        }
+        case 101: {
+          if (tag !== 808) {
+            break;
+          }
+
+          message.useUserPv = reader.bool();
+          continue;
+        }
+        case 102: {
+          if (tag !== 816) {
+            break;
+          }
+
+          message.promoteother = reader.int32();
+          continue;
+        }
+        case 103: {
+          if (tag !== 824) {
+            break;
+          }
+
+          message.shoppingranking = reader.int32();
+          continue;
+        }
+        case 105: {
+          if (tag !== 840) {
+            break;
+          }
+
+          message.eventpromotion = reader.int32();
+          continue;
+        }
+        case 106: {
+          if (tag !== 848) {
+            break;
+          }
+
+          message.communityflagged = reader.bool();
+          continue;
+        }
+        case 107: {
+          if (tag !== 856) {
+            break;
+          }
+
+          message.communityflaggedreview = reader.bool();
+          continue;
+        }
+        case 108: {
+          if (tag !== 864) {
+            break;
+          }
+
+          message.explore = reader.bool();
+          continue;
+        }
+        case 109: {
+          if (tag !== 872) {
+            break;
+          }
+
+          message.pictionarypermission = reader.int64().toString();
+          continue;
+        }
+        case 110: {
+          if (tag !== 880) {
+            break;
+          }
+
+          message.pictionarybubble = reader.int64().toString();
+          continue;
+        }
+        case 111: {
+          if (tag !== 890) {
+            break;
+          }
+
+          message.anchorLevelPermission = AnchorLevelPermission.decode(reader, reader.uint32());
+          continue;
+        }
+        case 112: {
+          if (tag !== 896) {
+            break;
+          }
+
+          message.gamerankingswitch = reader.int32();
+          continue;
+        }
+        case 113: {
+          if (tag !== 906) {
+            break;
+          }
+
+          message.toolbarmanagement = ToolBarManagement.decode(reader, reader.uint32());
+          continue;
+        }
+        case 114: {
+          if (tag !== 912) {
+            break;
+          }
+
+          message.multienablereserve = reader.bool();
+          continue;
+        }
+        case 115: {
+          if (tag !== 920) {
+            break;
+          }
+
+          message.enablefanslevel = reader.bool();
+          continue;
+        }
+        case 116: {
+          if (tag !== 928) {
+            break;
+          }
+
+          message.secretroom = reader.int64().toString();
+          continue;
+        }
+        case 117: {
+          if (tag !== 936) {
+            break;
+          }
+
+          message.spamcomments = reader.bool();
+          continue;
+        }
+        case 120: {
+          if (tag !== 962) {
+            break;
+          }
+
+          message.customErrorForGiftSetting = RechargeCustomError.decode(reader, reader.uint32());
+          continue;
+        }
+        case 121: {
+          if (tag !== 968) {
+            break;
+          }
+
+          message.guessEntranceForHost = reader.bool();
+          continue;
+        }
+        case 122: {
+          if (tag !== 976) {
+            break;
+          }
+
+          message.creditEntranceForAudience = reader.bool();
+          continue;
+        }
+        case 123: {
+          if (tag !== 984) {
+            break;
+          }
+
+          message.gameGuessPermission = reader.bool();
+          continue;
+        }
+        case 124: {
+          if (tag !== 992) {
+            break;
+          }
+
+          message.customizablegiftpoll = reader.int64().toString();
+          continue;
+        }
+        case 125: {
+          if (tag !== 1000) {
+            break;
+          }
+
+          message.commentTrayStatus = reader.int64().toString();
+          continue;
+        }
+        case 126: {
+          if (tag !== 1008) {
+            break;
+          }
+
+          message.rankingchangealterswitch = reader.int32();
+          continue;
+        }
+        case 127: {
+          if (tag !== 1016) {
+            break;
+          }
+
+          message.showCreditWidget = reader.bool();
+          continue;
+        }
+        case 128: {
+          if (tag !== 1026) {
+            break;
+          }
+
+          message.starCommentPermissionSwitch = StarCommentPermissionSwitch.decode(reader, reader.uint32());
+          continue;
+        }
+        case 129: {
+          if (tag !== 1032) {
+            break;
+          }
+
+          message.emotepoll = reader.int64().toString();
+          continue;
+        }
+        case 130: {
+          if (tag !== 1040) {
+            break;
+          }
+
+          message.enableshowuseruv = reader.bool();
+          continue;
+        }
+        case 131: {
+          if (tag !== 1048) {
+            break;
+          }
+
+          message.viewerwishes = reader.int64().toString();
+          continue;
+        }
+        case 132: {
+          if (tag !== 1056) {
+            break;
+          }
+
+          message.commentmention = reader.int64().toString();
+          continue;
+        }
+        case 133: {
+          if (tag !== 1064) {
+            break;
+          }
+
+          message.enigmawhisper = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomDecoration(): RoomDecoration {
+  return {
+    id: "0",
+    image: undefined,
+    type: "0",
+    inputRect: [],
+    textSize: "0",
+    textColor: "",
+    content: "",
+    maxLength: "0",
+    status: "0",
+    screenHeight: "0",
+    xPosition: "0",
+    screenWidth: "0",
+    yPosition: "0",
+    kind: "0",
+  };
+}
+
+export const RoomDecoration: MessageFns<RoomDecoration> = {
+  encode(message: RoomDecoration, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "0") {
+      writer.uint32(8).int64(message.id);
+    }
+    if (message.image !== undefined) {
+      ImageModel.encode(message.image, writer.uint32(18).fork()).join();
+    }
+    if (message.type !== "0") {
+      writer.uint32(24).int64(message.type);
+    }
+    writer.uint32(34).fork();
+    for (const v of message.inputRect) {
+      writer.int64(v);
+    }
+    writer.join();
+    if (message.textSize !== "0") {
+      writer.uint32(40).int64(message.textSize);
+    }
+    if (message.textColor !== "") {
+      writer.uint32(50).string(message.textColor);
+    }
+    if (message.content !== "") {
+      writer.uint32(58).string(message.content);
+    }
+    if (message.maxLength !== "0") {
+      writer.uint32(64).int64(message.maxLength);
+    }
+    if (message.status !== "0") {
+      writer.uint32(72).int64(message.status);
+    }
+    if (message.screenHeight !== "0") {
+      writer.uint32(80).int64(message.screenHeight);
+    }
+    if (message.xPosition !== "0") {
+      writer.uint32(88).int64(message.xPosition);
+    }
+    if (message.screenWidth !== "0") {
+      writer.uint32(96).int64(message.screenWidth);
+    }
+    if (message.yPosition !== "0") {
+      writer.uint32(104).int64(message.yPosition);
+    }
+    if (message.kind !== "0") {
+      writer.uint32(112).int64(message.kind);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomDecoration {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomDecoration();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.image = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.type = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag === 32) {
+            message.inputRect.push(reader.int64().toString());
+
+            continue;
+          }
+
+          if (tag === 34) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.inputRect.push(reader.int64().toString());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.textSize = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.textColor = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.maxLength = reader.int64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.status = reader.int64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.screenHeight = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.xPosition = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.screenWidth = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.yPosition = reader.int64().toString();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.kind = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomStats(): RoomStats {
+  return {
+    id: "0",
+    idStr: "",
+    fanTicket: "0",
+    totalUser: 0,
+    giftUvCount: 0,
+    followCount: 0,
+    watermelon: 0,
+    enterCount: 0,
+    replayViewers: 0,
+    shareCount: 0,
+    commentCount: "0",
+    watchUserCount: "0",
+    roomFollowCount: "0",
+  };
+}
+
+export const RoomStats: MessageFns<RoomStats> = {
+  encode(message: RoomStats, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "0") {
+      writer.uint32(8).int64(message.id);
+    }
+    if (message.idStr !== "") {
+      writer.uint32(18).string(message.idStr);
+    }
+    if (message.fanTicket !== "0") {
+      writer.uint32(24).int64(message.fanTicket);
+    }
+    if (message.totalUser !== 0) {
+      writer.uint32(40).int32(message.totalUser);
+    }
+    if (message.giftUvCount !== 0) {
+      writer.uint32(48).int32(message.giftUvCount);
+    }
+    if (message.followCount !== 0) {
+      writer.uint32(56).int32(message.followCount);
+    }
+    if (message.watermelon !== 0) {
+      writer.uint32(72).int32(message.watermelon);
+    }
+    if (message.enterCount !== 0) {
+      writer.uint32(88).int32(message.enterCount);
+    }
+    if (message.replayViewers !== 0) {
+      writer.uint32(128).int32(message.replayViewers);
+    }
+    if (message.shareCount !== 0) {
+      writer.uint32(136).int32(message.shareCount);
+    }
+    if (message.commentCount !== "0") {
+      writer.uint32(144).int64(message.commentCount);
+    }
+    if (message.watchUserCount !== "0") {
+      writer.uint32(152).int64(message.watchUserCount);
+    }
+    if (message.roomFollowCount !== "0") {
+      writer.uint32(160).int64(message.roomFollowCount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomStats {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomStats();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.idStr = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fanTicket = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.totalUser = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.giftUvCount = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.followCount = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.watermelon = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.enterCount = reader.int32();
+          continue;
+        }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.replayViewers = reader.int32();
+          continue;
+        }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.shareCount = reader.int32();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.commentCount = reader.int64().toString();
+          continue;
+        }
+        case 19: {
+          if (tag !== 152) {
+            break;
+          }
+
+          message.watchUserCount = reader.int64().toString();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.roomFollowCount = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseRoomSticker(): RoomSticker {
   return {
     id: "0",
@@ -5224,11 +8806,18 @@ function createBaseRoomSticker(): RoomSticker {
     textColor: "",
     image: undefined,
     ninePatchImage: undefined,
+    xPosition: "0",
     yPosition: "0",
+    screenWidth: "0",
+    screenHeight: "0",
+    topLeftH: 0,
     topLeftW: 0,
     bottomRightH: 0,
     bottomRightW: 0,
+    reviewStatus: 0,
+    edited: false,
     auditInfo: undefined,
+    starlingKey: "",
     extra: "",
   };
 }
@@ -5259,8 +8848,20 @@ export const RoomSticker: MessageFns<RoomSticker> = {
     if (message.ninePatchImage !== undefined) {
       ImageModel.encode(message.ninePatchImage, writer.uint32(66).fork()).join();
     }
+    if (message.xPosition !== "0") {
+      writer.uint32(72).int64(message.xPosition);
+    }
     if (message.yPosition !== "0") {
       writer.uint32(80).int64(message.yPosition);
+    }
+    if (message.screenWidth !== "0") {
+      writer.uint32(88).int64(message.screenWidth);
+    }
+    if (message.screenHeight !== "0") {
+      writer.uint32(96).int64(message.screenHeight);
+    }
+    if (message.topLeftH !== 0) {
+      writer.uint32(104).int32(message.topLeftH);
     }
     if (message.topLeftW !== 0) {
       writer.uint32(112).int32(message.topLeftW);
@@ -5271,8 +8872,17 @@ export const RoomSticker: MessageFns<RoomSticker> = {
     if (message.bottomRightW !== 0) {
       writer.uint32(128).int32(message.bottomRightW);
     }
+    if (message.reviewStatus !== 0) {
+      writer.uint32(136).int32(message.reviewStatus);
+    }
+    if (message.edited !== false) {
+      writer.uint32(144).bool(message.edited);
+    }
     if (message.auditInfo !== undefined) {
       RoomStickerAuditInfo.encode(message.auditInfo, writer.uint32(154).fork()).join();
+    }
+    if (message.starlingKey !== "") {
+      writer.uint32(162).string(message.starlingKey);
     }
     if (message.extra !== "") {
       writer.uint32(170).string(message.extra);
@@ -5351,12 +8961,44 @@ export const RoomSticker: MessageFns<RoomSticker> = {
           message.ninePatchImage = ImageModel.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.xPosition = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.yPosition = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.screenWidth = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.screenHeight = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.topLeftH = reader.int32();
           continue;
         }
         case 14: {
@@ -5383,12 +9025,36 @@ export const RoomSticker: MessageFns<RoomSticker> = {
           message.bottomRightW = reader.int32();
           continue;
         }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.reviewStatus = reader.int32();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.edited = reader.bool();
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.auditInfo = RoomStickerAuditInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.starlingKey = reader.string();
           continue;
         }
         case 21: {
@@ -5445,6 +9111,93 @@ export const RoomStickerAuditInfo: MessageFns<RoomStickerAuditInfo> = {
           }
 
           message.taskType = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSceneryContent(): SceneryContent {
+  return {
+    sceneryType: 0,
+    imageContent: undefined,
+    templateImageContent: undefined,
+    imageTransition: 0,
+    scenerySource: "",
+  };
+}
+
+export const SceneryContent: MessageFns<SceneryContent> = {
+  encode(message: SceneryContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sceneryType !== 0) {
+      writer.uint32(8).int32(message.sceneryType);
+    }
+    if (message.imageContent !== undefined) {
+      ImageContent.encode(message.imageContent, writer.uint32(18).fork()).join();
+    }
+    if (message.templateImageContent !== undefined) {
+      ImageContent.encode(message.templateImageContent, writer.uint32(26).fork()).join();
+    }
+    if (message.imageTransition !== 0) {
+      writer.uint32(32).int32(message.imageTransition);
+    }
+    if (message.scenerySource !== "") {
+      writer.uint32(42).string(message.scenerySource);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SceneryContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSceneryContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.sceneryType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.imageContent = ImageContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.templateImageContent = ImageContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.imageTransition = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.scenerySource = reader.string();
           continue;
         }
       }
@@ -5537,7 +9290,9 @@ function createBaseShortTouchItem(): ShortTouchItem {
     fcSecond: "0",
     name: "",
     previewSetting: undefined,
+    animeType: 0,
     iconSkin: "",
+    activityId: "",
   };
 }
 
@@ -5567,8 +9322,14 @@ export const ShortTouchItem: MessageFns<ShortTouchItem> = {
     if (message.previewSetting !== undefined) {
       ShortTouchPreviewSetting.encode(message.previewSetting, writer.uint32(66).fork()).join();
     }
+    if (message.animeType !== 0) {
+      writer.uint32(72).int32(message.animeType);
+    }
     if (message.iconSkin !== "") {
       writer.uint32(82).string(message.iconSkin);
+    }
+    if (message.activityId !== "") {
+      writer.uint32(90).string(message.activityId);
     }
     return writer;
   },
@@ -5644,12 +9405,28 @@ export const ShortTouchItem: MessageFns<ShortTouchItem> = {
           message.previewSetting = ShortTouchPreviewSetting.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.animeType = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.iconSkin = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.activityId = reader.string();
           continue;
         }
       }
@@ -5866,6 +9643,401 @@ export const ShortTouchTemplateData: MessageFns<ShortTouchTemplateData> = {
   },
 };
 
+function createBaseShrinkSpec(): ShrinkSpec {
+  return { enable: false, minFontSize: 0 };
+}
+
+export const ShrinkSpec: MessageFns<ShrinkSpec> = {
+  encode(message: ShrinkSpec, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.enable !== false) {
+      writer.uint32(8).bool(message.enable);
+    }
+    if (message.minFontSize !== 0) {
+      writer.uint32(16).int32(message.minFontSize);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ShrinkSpec {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShrinkSpec();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.enable = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.minFontSize = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSizeSpec(): SizeSpec {
+  return { mode: 0, value: 0, minSize: undefined, maxSize: undefined };
+}
+
+export const SizeSpec: MessageFns<SizeSpec> = {
+  encode(message: SizeSpec, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.mode !== 0) {
+      writer.uint32(8).int32(message.mode);
+    }
+    if (message.value !== 0) {
+      writer.uint32(21).float(message.value);
+    }
+    if (message.minSize !== undefined) {
+      MeasureSpec.encode(message.minSize, writer.uint32(26).fork()).join();
+    }
+    if (message.maxSize !== undefined) {
+      MeasureSpec.encode(message.maxSize, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SizeSpec {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSizeSpec();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.mode = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 21) {
+            break;
+          }
+
+          message.value = reader.float();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.minSize = MeasureSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxSize = MeasureSpec.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSourcePB(): SourcePB {
+  return {
+    strategyBoardValue: "0",
+    strategyLiveType: "0",
+    strategyBoardContentType: "0",
+    industryId: "0",
+    industryName: "",
+    promptVersion: "",
+    aigcModelVersion: "",
+  };
+}
+
+export const SourcePB: MessageFns<SourcePB> = {
+  encode(message: SourcePB, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.strategyBoardValue !== "0") {
+      writer.uint32(8).int64(message.strategyBoardValue);
+    }
+    if (message.strategyLiveType !== "0") {
+      writer.uint32(16).int64(message.strategyLiveType);
+    }
+    if (message.strategyBoardContentType !== "0") {
+      writer.uint32(24).int64(message.strategyBoardContentType);
+    }
+    if (message.industryId !== "0") {
+      writer.uint32(32).int64(message.industryId);
+    }
+    if (message.industryName !== "") {
+      writer.uint32(42).string(message.industryName);
+    }
+    if (message.promptVersion !== "") {
+      writer.uint32(50).string(message.promptVersion);
+    }
+    if (message.aigcModelVersion !== "") {
+      writer.uint32(58).string(message.aigcModelVersion);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SourcePB {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSourcePB();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.strategyBoardValue = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.strategyLiveType = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.strategyBoardContentType = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.industryId = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.industryName = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.promptVersion = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.aigcModelVersion = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseStarCommentPermissionSwitch(): StarCommentPermissionSwitch {
+  return { status: 0, offreason: "" };
+}
+
+export const StarCommentPermissionSwitch: MessageFns<StarCommentPermissionSwitch> = {
+  encode(message: StarCommentPermissionSwitch, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.status !== 0) {
+      writer.uint32(8).int32(message.status);
+    }
+    if (message.offreason !== "") {
+      writer.uint32(18).string(message.offreason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StarCommentPermissionSwitch {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStarCommentPermissionSwitch();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.offreason = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseStrokeStyle(): StrokeStyle {
+  return { color: "", width: 0, offsetX: 0, offsetY: 0 };
+}
+
+export const StrokeStyle: MessageFns<StrokeStyle> = {
+  encode(message: StrokeStyle, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.color !== "") {
+      writer.uint32(10).string(message.color);
+    }
+    if (message.width !== 0) {
+      writer.uint32(21).float(message.width);
+    }
+    if (message.offsetX !== 0) {
+      writer.uint32(29).float(message.offsetX);
+    }
+    if (message.offsetY !== 0) {
+      writer.uint32(37).float(message.offsetY);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StrokeStyle {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStrokeStyle();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 21) {
+            break;
+          }
+
+          message.width = reader.float();
+          continue;
+        }
+        case 3: {
+          if (tag !== 29) {
+            break;
+          }
+
+          message.offsetX = reader.float();
+          continue;
+        }
+        case 4: {
+          if (tag !== 37) {
+            break;
+          }
+
+          message.offsetY = reader.float();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTextSpan(): TextSpan {
+  return { text: "", styleRef: "" };
+}
+
+export const TextSpan: MessageFns<TextSpan> = {
+  encode(message: TextSpan, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.text !== "") {
+      writer.uint32(10).string(message.text);
+    }
+    if (message.styleRef !== "") {
+      writer.uint32(18).string(message.styleRef);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TextSpan {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTextSpan();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.text = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.styleRef = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUGGiftStructInfo(): UGGiftStructInfo {
   return { isUgGift: false, ugPointsCost: "0" };
 }
@@ -5990,6 +10162,7 @@ function createBaseUserAttr(): UserAttr {
     isAdmin: false,
     isSuperAdmin: false,
     muteDuration: "0",
+    adminPermissions: {},
     hasVotingFunction: false,
     isChannelAdmin: false,
   };
@@ -6009,6 +10182,9 @@ export const UserAttr: MessageFns<UserAttr> = {
     if (message.muteDuration !== "0") {
       writer.uint32(32).int64(message.muteDuration);
     }
+    globalThis.Object.entries(message.adminPermissions).forEach(([key, value]: [string, number]) => {
+      UserAttr_AdminPermissionsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     if (message.hasVotingFunction !== false) {
       writer.uint32(48).bool(message.hasVotingFunction);
     }
@@ -6057,6 +10233,17 @@ export const UserAttr: MessageFns<UserAttr> = {
           message.muteDuration = reader.int64().toString();
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = UserAttr_AdminPermissionsEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.adminPermissions[entry5.key] = entry5.value;
+          }
+          continue;
+        }
         case 6: {
           if (tag !== 48) {
             break;
@@ -6083,6 +10270,153 @@ export const UserAttr: MessageFns<UserAttr> = {
   },
 };
 
+function createBaseUserAttr_AdminPermissionsEntry(): UserAttr_AdminPermissionsEntry {
+  return { key: 0, value: 0 };
+}
+
+export const UserAttr_AdminPermissionsEntry: MessageFns<UserAttr_AdminPermissionsEntry> = {
+  encode(message: UserAttr_AdminPermissionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== 0) {
+      writer.uint32(16).int32(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserAttr_AdminPermissionsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserAttr_AdminPermissionsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadge(): UserBadge {
+  return { icons: {}, title: "" };
+}
+
+export const UserBadge: MessageFns<UserBadge> = {
+  encode(message: UserBadge, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.icons).forEach(([key, value]: [string, ImageModel]) => {
+      UserBadge_IconsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+    });
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadge {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadge();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = UserBadge_IconsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.icons[entry1.key] = entry1.value;
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadge_IconsEntry(): UserBadge_IconsEntry {
+  return { key: 0, value: undefined };
+}
+
+export const UserBadge_IconsEntry: MessageFns<UserBadge_IconsEntry> = {
+  encode(message: UserBadge_IconsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
+    }
+    if (message.value !== undefined) {
+      ImageModel.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadge_IconsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadge_IconsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUserHonor(): UserHonor {
   return {
     deprecated20: "0",
@@ -6092,14 +10426,21 @@ function createBaseUserHonor(): UserHonor {
     nextName: "",
     level: 0,
     nextIcon: undefined,
+    deprecated23: "0",
     deprecated24: "0",
+    deprecated25: "0",
+    gradeDescribe: "",
     gradeIconList: [],
     screenChatType: "0",
     imIcon: undefined,
+    imIconWithLevel: undefined,
+    liveIcon: undefined,
     newImIconWithLevel: undefined,
+    newLiveIcon: undefined,
     upgradeNeedConsume: "0",
     nextPrivileges: "",
     background: undefined,
+    backgroundBack: undefined,
     score: "0",
     gradeBanner: "",
   };
@@ -6128,8 +10469,17 @@ export const UserHonor: MessageFns<UserHonor> = {
     if (message.nextIcon !== undefined) {
       ImageModel.encode(message.nextIcon, writer.uint32(58).fork()).join();
     }
+    if (message.deprecated23 !== "0") {
+      writer.uint32(72).int64(message.deprecated23);
+    }
     if (message.deprecated24 !== "0") {
       writer.uint32(80).int64(message.deprecated24);
+    }
+    if (message.deprecated25 !== "0") {
+      writer.uint32(88).int64(message.deprecated25);
+    }
+    if (message.gradeDescribe !== "") {
+      writer.uint32(106).string(message.gradeDescribe);
     }
     for (const v of message.gradeIconList) {
       GradeIcon.encode(v!, writer.uint32(114).fork()).join();
@@ -6140,8 +10490,17 @@ export const UserHonor: MessageFns<UserHonor> = {
     if (message.imIcon !== undefined) {
       ImageModel.encode(message.imIcon, writer.uint32(130).fork()).join();
     }
+    if (message.imIconWithLevel !== undefined) {
+      ImageModel.encode(message.imIconWithLevel, writer.uint32(138).fork()).join();
+    }
+    if (message.liveIcon !== undefined) {
+      ImageModel.encode(message.liveIcon, writer.uint32(146).fork()).join();
+    }
     if (message.newImIconWithLevel !== undefined) {
       ImageModel.encode(message.newImIconWithLevel, writer.uint32(154).fork()).join();
+    }
+    if (message.newLiveIcon !== undefined) {
+      ImageModel.encode(message.newLiveIcon, writer.uint32(162).fork()).join();
     }
     if (message.upgradeNeedConsume !== "0") {
       writer.uint32(168).int64(message.upgradeNeedConsume);
@@ -6151,6 +10510,9 @@ export const UserHonor: MessageFns<UserHonor> = {
     }
     if (message.background !== undefined) {
       ImageModel.encode(message.background, writer.uint32(186).fork()).join();
+    }
+    if (message.backgroundBack !== undefined) {
+      ImageModel.encode(message.backgroundBack, writer.uint32(194).fork()).join();
     }
     if (message.score !== "0") {
       writer.uint32(200).int64(message.score);
@@ -6224,12 +10586,36 @@ export const UserHonor: MessageFns<UserHonor> = {
           message.nextIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.deprecated23 = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.deprecated24 = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.deprecated25 = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.gradeDescribe = reader.string();
           continue;
         }
         case 14: {
@@ -6256,12 +10642,36 @@ export const UserHonor: MessageFns<UserHonor> = {
           message.imIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.imIconWithLevel = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.liveIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.newImIconWithLevel = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.newLiveIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
         case 21: {
@@ -6286,6 +10696,14 @@ export const UserHonor: MessageFns<UserHonor> = {
           }
 
           message.background = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 24: {
+          if (tag !== 194) {
+            break;
+          }
+
+          message.backgroundBack = ImageModel.decode(reader, reader.uint32());
           continue;
         }
         case 25: {

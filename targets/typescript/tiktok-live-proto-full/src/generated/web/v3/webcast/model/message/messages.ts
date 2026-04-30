@@ -25,6 +25,7 @@ import {
   QuizCallUpWebview,
   QuizFinalResult,
   QuizQuestionInfo,
+  QuizRulesIntroduction,
   QuizUserIdentityInfo,
 } from "../activity_quiz.js";
 import { EmoteModel } from "../base/emoji.js";
@@ -41,6 +42,7 @@ import {
   AnchorGrowLevelImMsgV2,
   ColdStartStatData,
   EnlargeScreenScene,
+  EventUserInfo,
   FansTaskType,
   GiftTrayStyle,
   GuestMicCameraChangeScene,
@@ -55,6 +57,7 @@ import {
   PollKind,
   PollTemplateStatus,
   ProfitRankType,
+  PromoteCoupon,
   PunishTypeId,
   RealtimeLiveCenterBaseData,
   RealtimeLiveCenterLopInfo,
@@ -74,7 +77,10 @@ import { PlayScene, PlayUserTag } from "../data/multi_guest_play.js";
 import { AssetsModel } from "../gift/assets.js";
 import { DynamicRestriction, GiftNotice, LiveStreamGoal, LiveStreamGoalIndicator } from "../gift/model.js";
 import { GiftRecommendInfo } from "../gift/model_gift_recommend_info.js";
+import { GalleryMiddleTouchInfo } from "../goal.js";
 import {
+  BattleComboInfo,
+  BattleEffectInfos,
   BattleUserInfo,
   CriticalStrikeCardInfo,
   EnigmaBattleExtraInfo,
@@ -88,6 +94,7 @@ import {
   VaultGloveCardInfo,
   WaveCardInfo,
 } from "../live/match.js";
+import { SMBInfo } from "../live/messages.js";
 import {
   CompetitionContributorInfo,
   CompetitionInitiateInfo as CompetitionInitiateInfo1,
@@ -109,6 +116,12 @@ import {
 } from "../messages.js";
 import { ClassInfo, RankTabInfo, SettleInfo, TeamRankBonusTime } from "../rank.js";
 import { GiftPick, ViewerPicksInfo } from "../viewer_picks.js";
+import {
+  BattleTruthOrDareOptOutNotice,
+  BattleTruthOrDareTips,
+  BattleTruthOrDareTriggerGuide,
+  BattleTruthOrDareTriggerGuideV2,
+} from "./battle.js";
 import { Text } from "./common.js";
 
 export const protobufPackage = "webcast.model.message";
@@ -156,7 +169,13 @@ export interface ActivityCurrent {
   runtimeActivity: string;
   currentSerialId: number;
   nowMs: string;
+  pushActionTypes: number[];
   generateNowMs: string;
+}
+
+export interface AddToCartButton {
+  status: number;
+  clickHintStarling: string;
 }
 
 export interface AffiliatedInfo {
@@ -169,6 +188,12 @@ export interface AffiliatedInfo {
   stickerShowScene: AffiliatedInfoStickerShowScene;
   stickerSettleShowDuration: string;
   stickerGapDesc: Text | undefined;
+  stickerTrackParam: { [key: string]: string };
+}
+
+export interface AffiliatedInfo_StickerTrackParamEntry {
+  key: string;
+  value: string;
 }
 
 export interface AnchorGuideTriggerBizInfo {
@@ -207,10 +232,14 @@ export interface AnchorToolModification {
   modificationType: number;
   role: string;
   msgType: number;
+  subType: string;
   startTime: string;
+  endTime: string;
+  duration: string;
   tab: string;
   mode: string;
   from: string;
+  value: number;
   url: string;
   scene: string;
   status: string;
@@ -250,6 +279,15 @@ export interface AtmosphereTagInfo {
   pinAtmosphereTags: ProductAtmosphereTag[];
 }
 
+export interface AuctionActivityData {
+  user: User | undefined;
+  product: Product | undefined;
+  sku: Sku | undefined;
+  surpriseSetName: string;
+  mainOrderCreateTime: string;
+  mainOrderPaymentTime: string;
+}
+
 export interface AuctionConfig {
   auctionConfigId: string;
   auctionConfigType: number;
@@ -259,10 +297,15 @@ export interface AuctionConfig {
   variantDesc: string;
   stockNum: number;
   auctionMode: number;
+  duration: number;
   extendedAuctionDuration: number;
+  formattedStartingBidPrice: string;
+  numSold: number;
+  numFailed: number;
   latestAuctionItem: LiveAuctionItem | undefined;
   productStatus: number;
   auctionCardType: number;
+  imageUrl: string;
 }
 
 export interface AuctionConfigV2 {
@@ -282,6 +325,7 @@ export interface AuctionItem {
   maxBiddingPrice: string;
   formattedMaxBiddingPrice: string;
   winUserProfileImageUrl: string;
+  expectedEndTimeMs: string;
   paymentStatus: number;
 }
 
@@ -463,6 +507,14 @@ export interface BeansBiz {
   systemBombIntervals: string[];
 }
 
+export interface BigSaleConfig {
+  imageUrl: string;
+  imageId: string;
+  bigSaleVersion: string;
+  height: number;
+  width: number;
+}
+
 export interface Billboard {
   id: string;
   authorId: string;
@@ -472,7 +524,11 @@ export interface Billboard {
   promotionConfig: BillboardPromotionConfig | undefined;
   imageConfig: BillboardImageConfig | undefined;
   productConfig: BillboardProductConfig | undefined;
+  bigSaleConfig: BigSaleConfig | undefined;
   desc: string;
+  schema: string;
+  billboardTypeInt: number;
+  uiType: number;
   sizeGuidanceConfig: BillboardSizeGuidanceConfig | undefined;
   keyMessageConfig: BillboardKeyMessageConfig | undefined;
 }
@@ -488,6 +544,20 @@ export interface BillboardImageConfig {
   imageId: string;
   width: number;
   height: number;
+}
+
+export interface BillboardInfo {
+  billboardType: number;
+  billboardIds: string[];
+  sourceFrom: number;
+  bornTimeMs: string;
+  billboardVersion: number;
+  daInfo: { [key: string]: string };
+}
+
+export interface BillboardInfo_DaInfoEntry {
+  key: string;
+  value: string;
 }
 
 export interface BillboardKeyMessageConfig {
@@ -537,6 +607,24 @@ export interface BubbleDecoration {
   text: Text | undefined;
 }
 
+export interface CampaignBannerDisplay {
+  imageUrl: string;
+  campaignBannerIsDisplay: boolean;
+  sourceFrom: number;
+  bornTimeMs: string;
+  billboardVersion: number;
+  daInfo: { [key: string]: string };
+}
+
+export interface CampaignBannerDisplay_DaInfoEntry {
+  key: string;
+  value: string;
+}
+
+export interface CampaignBannerDisplayResult {
+  campaignBannerDisplayResult: number;
+}
+
 export interface CapsuleBizParamsAnchorPinPerk {
   pinId: string;
   pinCardType: number;
@@ -552,7 +640,9 @@ export interface CapsuleBizParamsCohost {
   inviteeRoomId: string;
   inviteeInnerChannelId: string;
   inviteeUserInfo: User | undefined;
+  isFriend: boolean;
   subType: string;
+  rivalVoteCount: string;
 }
 
 export interface CapsuleBizParamsCommentFlaggedPrompt {
@@ -562,6 +652,37 @@ export interface CapsuleBizParamsCommentFlaggedPrompt {
 export interface CapsuleBizParamsCommentFlaggedPromptForNewUser {
   trigger: string;
   commentIds: string[];
+}
+
+export interface CapsuleBizParamsCommentMuteRulePrompt {
+  content: string;
+  userCnt: string;
+}
+
+export interface CapsuleBizParamsEcom {
+  eventTracking: CapsuleBizParamsEcomEventTracking | undefined;
+}
+
+export interface CapsuleBizParamsEcomEventTracking {
+  ecomRecommId: string;
+  ecomRecommTrigger: string;
+}
+
+export interface CapsuleBizParamsModeratorGuide {
+  isGiftModerator: boolean;
+  isInteractiveModerator: boolean;
+  isToolModerator: boolean;
+  hvUser: User | undefined;
+  welcomeMsg: Text | undefined;
+  recommendSensitiveWords: string[];
+}
+
+export interface CapsuleBizParamsMultiGuestApplyGuide {
+  applyUser: User | undefined;
+  displayStrategy: number;
+  linkmicAudienceApplyNoticeReason: string;
+  noticeType: number;
+  applyNoticeGuide: LinkmicAudienceApplyGuide | undefined;
 }
 
 export interface CapsuleBizParamsMultiGuestInviteGuide {
@@ -601,6 +722,12 @@ export interface CardObtainGuide {
 export interface CeremonyEffect {
   icon: ImageModel | undefined;
   avatarIcon: ImageModel | undefined;
+}
+
+export interface CohostFollowMessage {
+  title: Text | undefined;
+  description: Text | undefined;
+  displayUserInfos: DisplayUserInfo[];
 }
 
 export interface CohostInviteInfo {
@@ -653,9 +780,16 @@ export interface CompetitionStart {
   initiateInfo: CompetitionInitiateInfo1 | undefined;
   endTimestamp: string;
   actualEndTimestamp: string;
+  effectInfos: BattleEffectInfos | undefined;
   gameplayOption: number;
+  comboInfoMap: { [key: string]: BattleComboInfo };
   beansBiz: BeansBiz | undefined;
   takeTheStageBiz: CompetitionStartTakeTheStageBiz | undefined;
+}
+
+export interface CompetitionStart_ComboInfoMapEntry {
+  key: string;
+  value: BattleComboInfo | undefined;
 }
 
 export interface CompetitionStartTakeTheStageBiz {
@@ -724,6 +858,10 @@ export interface DispersionInfo {
   delayParam: DelayParam | undefined;
 }
 
+export interface DisplayUserInfo {
+  userData: User | undefined;
+}
+
 export interface EffectConfigBean {
   type: number;
   icon: ImageModel | undefined;
@@ -776,13 +914,6 @@ export interface EpiDecision_ServerFeaturesEntry {
   value: string;
 }
 
-export interface EventTracking {
-  giftSubSenderId: string;
-  giftSubReceiverId: string;
-  anchorId: string;
-  giftSubOrderCreateTime: string;
-}
-
 export interface ExpChangeData {
   claimedAllPoints: boolean;
   totalUnclaimedScore: string;
@@ -813,6 +944,35 @@ export interface FlareBoostedUsers {
   endTime: string;
 }
 
+export interface FlashSaleAtmosphere {
+  status: number;
+  startTime: string;
+  endTime: string;
+  preheatTime: string;
+}
+
+export interface FlashSaleAtmosphereInfo {
+  productId: string;
+  activityId: string;
+  flashSaleAtmosphere: FlashSaleAtmosphere | undefined;
+  flashSaleStock: FlashSaleStock | undefined;
+  pinnedProduct: boolean;
+  liveOnlyChannel: boolean;
+  creatorLimitType: number;
+}
+
+export interface FlashSaleStock {
+  activityStockStatus: number;
+  activityStock: number;
+  activityStockText: string;
+}
+
+export interface FlexImageModel {
+  urlList: string[];
+  uri: string;
+  flexSetting: string[];
+}
+
 export interface FontStyle {
   maxLines: number;
   fontSize: number;
@@ -822,6 +982,7 @@ export interface FontStyle {
   shadowConfigList: ShadowConfig[];
   enableStroke: boolean;
   strokeConfigList: StrokeConfig[];
+  horizontalAlign: number;
   verticalAlign: number;
 }
 
@@ -847,6 +1008,10 @@ export interface GalleryGoalData {
   goal: LiveStreamGoal | undefined;
   updateSource: number;
   goalExtra: string;
+}
+
+export interface GalleryMiddleTouchMessage {
+  galleryMiddleTouchInfo: GalleryMiddleTouchInfo | undefined;
 }
 
 export interface GameAiScriptAction {
@@ -932,6 +1097,16 @@ export interface GiveawayInfo {
   product: Product | undefined;
 }
 
+export interface GoalData {
+  status: number;
+  goalProgress: { [key: string]: Progress };
+}
+
+export interface GoalData_GoalProgressEntry {
+  key: string;
+  value: Progress | undefined;
+}
+
 export interface GoodsOrder {
   goodsRoomOrder: string;
   orderNum: string;
@@ -1007,6 +1182,13 @@ export interface ImagePadding {
   rightPadding: number;
   topPadding: number;
   bottomPadding: number;
+}
+
+export interface Img {
+  key: string;
+  width: number;
+  height: number;
+  url: string;
 }
 
 export interface InviteTopHostInfo {
@@ -1101,6 +1283,7 @@ export interface LinkmicAudienceApplyGuide {
   displayPosition: string;
   triggerType: string;
   requestId: string;
+  linkmicId: string;
 }
 
 export interface LinkmicAudienceInviteGroupChatMemberGuide {
@@ -1132,7 +1315,10 @@ export interface LiveAuctionItem {
   actualFormattedStartingBidPrice: string;
   numOfBids: number;
   winUsername: string;
+  maxBiddingPrice: string;
   winUserProfileImageUrl: string;
+  paymentStatus: number;
+  paymentTime: string;
 }
 
 export interface LiveFragment {
@@ -1144,7 +1330,10 @@ export interface LiveFragment {
   autocutType: number;
   extra: string;
   duration: number;
+  originFragmentType: number;
   originFragmentSubType: string;
+  llmTitleShort: string;
+  itemIdStr: string;
 }
 
 export interface LivePermissionInfo {
@@ -1217,6 +1406,7 @@ export interface NewAnchorGuideConfig {
   text: Text | undefined;
   displayDuration: number;
   effectParams: NewAnchorEffectParams | undefined;
+  displayType: number;
 }
 
 export interface NewAnchorGuideMsgInfo {
@@ -1252,6 +1442,21 @@ export interface OecLiveCreatorMessageMeta {
   sourceOperateNs: string;
   serverSendNs: string;
   reason: string;
+}
+
+export interface OperationInfo {
+  initialState: OperationState | undefined;
+  successState: OperationState | undefined;
+  failureState: OperationState | undefined;
+}
+
+export interface OperationState {
+  scene: string;
+  icon: ImageModel | undefined;
+  text: Text | undefined;
+  schema: string;
+  animationStyle: string;
+  duration: string;
 }
 
 export interface OptPairInfo {
@@ -1429,6 +1634,21 @@ export interface ProductPrice {
   formatPrice: string;
 }
 
+export interface ProductSnapShot {
+  productId: string;
+  title: string;
+  cover: Img | undefined;
+  stockType: number;
+  timestamp: string;
+  addToCartButton: AddToCartButton | undefined;
+}
+
+export interface Progress {
+  currentProgress: string;
+  target: string;
+  expiredTimestampInMs: string;
+}
+
 export interface ProgressStruct {
   progressId: string;
   progressValue: string;
@@ -1594,10 +1814,35 @@ export interface ResponseExtra {
   now: string;
 }
 
+export interface RoomBasedGiftData {
+  roomBasedGifts: { [key: string]: RoomBasedGifts };
+}
+
+export interface RoomBasedGiftData_RoomBasedGiftsEntry {
+  key: string;
+  value: RoomBasedGifts | undefined;
+}
+
+export interface RoomBasedGiftDataGiftInfo {
+  id: string;
+  price: string;
+}
+
+export interface RoomBasedGifts {
+  giftInfo: RoomBasedGiftDataGiftInfo[];
+}
+
 export interface RoomNotifyMessageExtra {
   duration: string;
   background: Background | undefined;
   contentList: NotifyHighlightInfo | undefined;
+}
+
+export interface RoomNotifyMessageEventTracking {
+  giftSubSenderId: string;
+  giftSubReceiverId: string;
+  anchorId: string;
+  giftSubOrderCreateTime: string;
 }
 
 export interface SeqDetectResult {
@@ -1609,6 +1854,7 @@ export interface ShadowConfig {
   shadowColor: string;
   shadowDx: number;
   shadowDy: number;
+  shadowRadius: number;
 }
 
 export interface ShortTouchExtra {
@@ -1619,6 +1865,13 @@ export interface ShortTouchPollData {
   pollId: string;
   pollEndTime: string;
   pollShowResult: boolean;
+}
+
+export interface Sku {
+  title: string;
+  cover: ImageModel | undefined;
+  price: ProductPrice | undefined;
+  skuId: string;
 }
 
 export interface SpecialEffectNotice {
@@ -1653,6 +1906,7 @@ export interface StarCommentMessage {
   commentOption: StarCommentOption;
   contentLanguage: string;
   emotes: EmoteWithIndex[];
+  schema: string;
 }
 
 export interface StatusText {
@@ -1695,7 +1949,9 @@ export interface StyleDictateParams {
   preselectedMatchItemId: string;
   tapDismissArea: number;
   backgroundColor: string;
+  maxLine: string;
   maxWidth: string;
+  businessType: string;
 }
 
 export interface SubGoalData {
@@ -1748,6 +2004,16 @@ export interface SurpriseSetProperties {
   totalProductQuantity: number;
   productAvailableQuantity: number;
   status: number;
+}
+
+export interface TPSize {
+  width: number;
+  height: number;
+}
+
+export interface TPTuxImage {
+  protocol: string;
+  size: TPSize | undefined;
 }
 
 export interface TagItem {
@@ -1914,6 +2180,8 @@ export interface UserFanTicket {
   animationName: string;
   ticketUiStyle: string;
   completionProgressPercent: number;
+  topGuestRank: number;
+  ticketUiStyleV2: string;
 }
 
 export interface UserInteractionInfo {
@@ -2016,6 +2284,10 @@ export interface ValidRanks {
   rankTypes: number[];
 }
 
+export interface ViolationInfo {
+  violationType: number;
+}
+
 export interface Voucher {
   voucherTypeId: string;
   taskId: string;
@@ -2058,7 +2330,10 @@ export interface WebcastActivityQuizCardMessage {
   answer: QuizAnswerInfo | undefined;
   finalResult: QuizFinalResult | undefined;
   callUpWebview: QuizCallUpWebview | undefined;
+  rulesIntroduction: QuizRulesIntroduction | undefined;
   seiDelayMultiple: number;
+  seiDelayBias: string;
+  expiredTime: string;
 }
 
 export interface WebcastActivityQuizUserIdentityMessage {
@@ -2121,6 +2396,7 @@ export interface WebcastAssetMessage {
   user: User | undefined;
   toUser: User | undefined;
   priority: GiftIMPriority | undefined;
+  logId: string;
   asset: AssetsModel | undefined;
 }
 
@@ -2142,6 +2418,7 @@ export interface WebcastBALeadGenMessage {
   schema: string;
   pinPeriod: number;
   cardIntro: string;
+  cardButtonText: string;
   cardTitle: string;
 }
 
@@ -2273,6 +2550,7 @@ export interface WebcastCommercialCustomMessage {
   backgroundColor: string;
   borderColor: string;
   rightLabel: RightLabel | undefined;
+  duration: string;
 }
 
 export interface WebcastCommonPopupMessage {
@@ -2290,7 +2568,10 @@ export interface WebcastCommonToastMessage {
   backgroundColorStart: string;
   backgroundColorEnd: string;
   position: number;
+  topImg: ImageModel | undefined;
   topImgWidth: number;
+  topImgHeight: number;
+  showMongoliaLayer: boolean;
 }
 
 export interface WebcastCompetitionContributorMessage {
@@ -2463,6 +2744,7 @@ export interface WebcastGameAiScriptMessage {
   showDurationOutapp: string;
   buttonText: Text | undefined;
   titleText: Text | undefined;
+  bizId: string;
   common: CommonMessageData | undefined;
 }
 
@@ -2566,10 +2848,16 @@ export interface WebcastGiftGuideMessage {
   displaySeconds: string;
   triggerName: string;
   schemaUrl: string;
+  shouldUseConfig: boolean;
   guidePageResources: GuidePageResource[];
+  templateType: string;
+  guideTarget: GuideTarget | undefined;
+  biz: string;
   tags: string[];
   giftIds: string[];
   useServerConfig: boolean;
+  subTriggerName: string;
+  styleDictate: boolean;
   styleDictateParams: StyleDictateParams | undefined;
 }
 
@@ -2583,6 +2871,8 @@ export interface WebcastGiftPanelUpdateMessage {
   roomId: string;
   timestamp: string;
   galleryData: GalleryData | undefined;
+  goalData: GoalData | undefined;
+  roomBasedGiftData: RoomBasedGiftData | undefined;
   strategyContext: string;
 }
 
@@ -2664,6 +2954,7 @@ export interface WebcastGuideTaskMessage {
   remindType: string;
   displaySecond: string;
   taskType: number;
+  icon: TPTuxImage | undefined;
 }
 
 export interface WebcastHashtagMessage {
@@ -2797,10 +3088,24 @@ export interface WebcastLinkMicAnchorGuideMessage {
   user: User | undefined;
   logId: string;
   reserveInfo: ReserveInfo | undefined;
+  buttonShowType: number;
   optPairInfo: OptPairInfo | undefined;
+  userModelPredictionData: UserModelPredictionData[];
   isFollowedByRival: boolean;
   availableFriendNumber: number;
   groupChannelId: string;
+  cohostFollowMessage: CohostFollowMessage | undefined;
+}
+
+export interface WebcastLinkMicBattleVictoryLap {
+  common: CommonMessageData | undefined;
+  playType: number;
+  triggerGuide: BattleTruthOrDareTriggerGuide | undefined;
+  playTips: BattleTruthOrDareTips | undefined;
+  truthOrDareCloseNotice: BattleTruthOrDareOptOutNotice | undefined;
+  triggerGuideV2: BattleTruthOrDareTriggerGuideV2 | undefined;
+  anchorRegion: string;
+  battleId: string;
 }
 
 export interface WebcastLinkMicMethod {
@@ -2812,16 +3117,16 @@ export interface WebcastLinkMicMethod {
   fanTicket: string;
   totalLinkmicFanTicket: string;
   channelId: string;
-  layout: string;
+  layout: number;
   vendor: number;
-  dimension: string;
+  dimension: number;
   theme: string;
   inviteUid: string;
   answer: number;
   startTime: string;
   duration: number;
   userScores: Uint8Array[];
-  matchType: string;
+  matchType: number;
   win: boolean;
   prompts: string;
   toUserId: string;
@@ -2866,7 +3171,11 @@ export interface WebcastLinkMicOpponentGifts {
   giftId: string;
   giftCount: string;
   giftPrice: string;
+  giftIconImage: ImageModel | undefined;
   repeatCount: string;
+  sendGiftSuccessTime: string;
+  updateBattleScoreTime: string;
+  logId: string;
   enigmaBattleExtraInfo: EnigmaBattleExtraInfo | undefined;
 }
 
@@ -3038,7 +3347,10 @@ export interface WebcastNewPinMessage {
   method: string;
   pinTime: string;
   operator: User | undefined;
+  action: number;
+  displayDuration: string;
   pinMsgId: string;
+  ecStreamerKey: string;
 }
 
 export interface WebcastNoticeMessage {
@@ -3097,6 +3409,12 @@ export interface WebcastOECDisplayScriptInfoMessage {
   title: string;
   script: string;
   timestamp: string;
+  daInfoMap: { [key: string]: string };
+}
+
+export interface WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry {
+  key: string;
+  value: string;
 }
 
 export interface WebcastOECPcScriptUpdateMessage {
@@ -3123,8 +3441,15 @@ export interface WebcastOecLiveBillboardMessage {
   bornTimeMs: string;
   currentDisplayBillboards: Billboard[];
   operatedBillboards: Billboard[];
+  daInfo: { [key: string]: string };
   popUp: PopUp | undefined;
+  needRequestRefresh: boolean;
   dispersionInfo: DispersionInfo | undefined;
+}
+
+export interface WebcastOecLiveBillboardMessage_DaInfoEntry {
+  key: string;
+  value: string;
 }
 
 export interface WebcastOecLiveCreatorMessage {
@@ -3168,7 +3493,9 @@ export interface WebcastOecLiveManagerMessage {
   subscriptionInfo: SubscriptionInfo | undefined;
   giveawayInfo: GiveawayInfo | undefined;
   askDemoInfo: AskDemoInfo | undefined;
+  violationInfo: ViolationInfo | undefined;
   auctionResult: AuctionResult | undefined;
+  auctionActivityData: AuctionActivityData | undefined;
 }
 
 export interface WebcastOecLiveRankMessage {
@@ -3314,6 +3641,7 @@ export interface WebcastPortalMessage {
   portalInvite: PortalInvite | undefined;
   portalFinish: PortalFinish | undefined;
   portal: Portal | undefined;
+  nextPingTime: string;
 }
 
 export interface WebcastPrivilegeAdvanceMessage {
@@ -3417,6 +3745,7 @@ export interface WebcastRealtimeLiveCenterMethod {
   coldStartStatData: ColdStartStatData | undefined;
   reminderWordInfo: RealtimeReminderWordInfoMsg | undefined;
   lopInfo: RealtimeLiveCenterLopInfo | undefined;
+  promoteCoupon: PromoteCoupon | undefined;
   whiteBoxData: WhiteBoxData | undefined;
 }
 
@@ -3432,6 +3761,8 @@ export interface WebcastRoomBottomMessage {
   actionType: string;
   pushMessageDisplayTime: string;
   actionIcon: ImageModel | undefined;
+  newBackgroundImage: FlexImageModel | undefined;
+  source: string;
 }
 
 export interface WebcastRoomEventMessage {
@@ -3443,6 +3774,7 @@ export interface WebcastRoomEventMessage {
   posY: string;
   subscribedCount: string;
   configOpt: number;
+  eventUserInfo: EventUserInfo[];
 }
 
 export interface WebcastRoomNotifyMessage {
@@ -3454,7 +3786,11 @@ export interface WebcastRoomNotifyMessage {
   extra: RoomNotifyMessageExtra | undefined;
   notifyClass: number;
   flexSetting: string[];
+  source: string;
   fromUserId: string;
+  privilegeLogExtra: PrivilegeLogExtra | undefined;
+  toAnchorId: string;
+  eventTracking: RoomNotifyMessageEventTracking | undefined;
 }
 
 export interface WebcastRoomStickerMessage {
@@ -3494,6 +3830,12 @@ export interface WebcastSMBBoardMessage {
   action: number;
 }
 
+export interface WebcastSMBStateSync {
+  common: CommonMessageData | undefined;
+  anchorId: string;
+  smbInfo: SMBInfo | undefined;
+}
+
 export interface WebcastScreenChatMessage {
   common: CommonMessageData | undefined;
   user: User | undefined;
@@ -3503,6 +3845,7 @@ export interface WebcastScreenChatMessage {
   effect: CeremonyEffect | undefined;
   backgroundImage: ImageModel | undefined;
   effectV2: CeremonyEffect | undefined;
+  backgroundImageV2: ImageModel | undefined;
   publicAreaCommon: PublicAreaCommon | undefined;
 }
 
@@ -4034,6 +4377,7 @@ function createBaseActivityCurrent(): ActivityCurrent {
     runtimeActivity: "",
     currentSerialId: 0,
     nowMs: "",
+    pushActionTypes: [],
     generateNowMs: "0",
   };
 }
@@ -4064,6 +4408,11 @@ export const ActivityCurrent: MessageFns<ActivityCurrent> = {
     if (message.nowMs !== "") {
       writer.uint32(66).string(message.nowMs);
     }
+    writer.uint32(74).fork();
+    for (const v of message.pushActionTypes) {
+      writer.int32(v);
+    }
+    writer.join();
     if (message.generateNowMs !== "0") {
       writer.uint32(80).int64(message.generateNowMs);
     }
@@ -4141,12 +4490,78 @@ export const ActivityCurrent: MessageFns<ActivityCurrent> = {
           message.nowMs = reader.string();
           continue;
         }
+        case 9: {
+          if (tag === 72) {
+            message.pushActionTypes.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 74) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.pushActionTypes.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.generateNowMs = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAddToCartButton(): AddToCartButton {
+  return { status: 0, clickHintStarling: "" };
+}
+
+export const AddToCartButton: MessageFns<AddToCartButton> = {
+  encode(message: AddToCartButton, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.status !== 0) {
+      writer.uint32(8).int32(message.status);
+    }
+    if (message.clickHintStarling !== "") {
+      writer.uint32(18).string(message.clickHintStarling);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AddToCartButton {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAddToCartButton();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.clickHintStarling = reader.string();
           continue;
         }
       }
@@ -4170,6 +4585,7 @@ function createBaseAffiliatedInfo(): AffiliatedInfo {
     stickerShowScene: 0,
     stickerSettleShowDuration: "0",
     stickerGapDesc: undefined,
+    stickerTrackParam: {},
   };
 }
 
@@ -4202,6 +4618,9 @@ export const AffiliatedInfo: MessageFns<AffiliatedInfo> = {
     if (message.stickerGapDesc !== undefined) {
       Text.encode(message.stickerGapDesc, writer.uint32(74).fork()).join();
     }
+    globalThis.Object.entries(message.stickerTrackParam).forEach(([key, value]: [string, string]) => {
+      AffiliatedInfo_StickerTrackParamEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+    });
     return writer;
   },
 
@@ -4282,6 +4701,65 @@ export const AffiliatedInfo: MessageFns<AffiliatedInfo> = {
           }
 
           message.stickerGapDesc = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          const entry10 = AffiliatedInfo_StickerTrackParamEntry.decode(reader, reader.uint32());
+          if (entry10.value !== undefined) {
+            message.stickerTrackParam[entry10.key] = entry10.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAffiliatedInfo_StickerTrackParamEntry(): AffiliatedInfo_StickerTrackParamEntry {
+  return { key: "", value: "" };
+}
+
+export const AffiliatedInfo_StickerTrackParamEntry: MessageFns<AffiliatedInfo_StickerTrackParamEntry> = {
+  encode(message: AffiliatedInfo_StickerTrackParamEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AffiliatedInfo_StickerTrackParamEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAffiliatedInfo_StickerTrackParamEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -4573,10 +5051,14 @@ function createBaseAnchorToolModification(): AnchorToolModification {
     modificationType: 0,
     role: "0",
     msgType: 0,
+    subType: "0",
     startTime: "0",
+    endTime: "0",
+    duration: "0",
     tab: "",
     mode: "0",
     from: "0",
+    value: 0,
     url: "",
     scene: "",
     status: "0",
@@ -4610,8 +5092,17 @@ export const AnchorToolModification: MessageFns<AnchorToolModification> = {
     if (message.msgType !== 0) {
       writer.uint32(64).int32(message.msgType);
     }
+    if (message.subType !== "0") {
+      writer.uint32(72).int64(message.subType);
+    }
     if (message.startTime !== "0") {
       writer.uint32(80).int64(message.startTime);
+    }
+    if (message.endTime !== "0") {
+      writer.uint32(88).int64(message.endTime);
+    }
+    if (message.duration !== "0") {
+      writer.uint32(96).int64(message.duration);
     }
     if (message.tab !== "") {
       writer.uint32(170).string(message.tab);
@@ -4621,6 +5112,9 @@ export const AnchorToolModification: MessageFns<AnchorToolModification> = {
     }
     if (message.from !== "0") {
       writer.uint32(184).int64(message.from);
+    }
+    if (message.value !== 0) {
+      writer.uint32(193).double(message.value);
     }
     if (message.url !== "") {
       writer.uint32(202).string(message.url);
@@ -4708,12 +5202,36 @@ export const AnchorToolModification: MessageFns<AnchorToolModification> = {
           message.msgType = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.subType = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.startTime = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.endTime = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.duration = reader.int64().toString();
           continue;
         }
         case 21: {
@@ -4738,6 +5256,14 @@ export const AnchorToolModification: MessageFns<AnchorToolModification> = {
           }
 
           message.from = reader.int64().toString();
+          continue;
+        }
+        case 24: {
+          if (tag !== 193) {
+            break;
+          }
+
+          message.value = reader.double();
           continue;
         }
         case 25: {
@@ -5110,6 +5636,105 @@ export const AtmosphereTagInfo: MessageFns<AtmosphereTagInfo> = {
   },
 };
 
+function createBaseAuctionActivityData(): AuctionActivityData {
+  return {
+    user: undefined,
+    product: undefined,
+    sku: undefined,
+    surpriseSetName: "",
+    mainOrderCreateTime: "0",
+    mainOrderPaymentTime: "0",
+  };
+}
+
+export const AuctionActivityData: MessageFns<AuctionActivityData> = {
+  encode(message: AuctionActivityData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(10).fork()).join();
+    }
+    if (message.product !== undefined) {
+      Product.encode(message.product, writer.uint32(18).fork()).join();
+    }
+    if (message.sku !== undefined) {
+      Sku.encode(message.sku, writer.uint32(26).fork()).join();
+    }
+    if (message.surpriseSetName !== "") {
+      writer.uint32(34).string(message.surpriseSetName);
+    }
+    if (message.mainOrderCreateTime !== "0") {
+      writer.uint32(40).int64(message.mainOrderCreateTime);
+    }
+    if (message.mainOrderPaymentTime !== "0") {
+      writer.uint32(48).int64(message.mainOrderPaymentTime);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuctionActivityData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuctionActivityData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.product = Product.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.sku = Sku.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.surpriseSetName = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.mainOrderCreateTime = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.mainOrderPaymentTime = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseAuctionConfig(): AuctionConfig {
   return {
     auctionConfigId: "",
@@ -5120,10 +5745,15 @@ function createBaseAuctionConfig(): AuctionConfig {
     variantDesc: "",
     stockNum: 0,
     auctionMode: 0,
+    duration: 0,
     extendedAuctionDuration: 0,
+    formattedStartingBidPrice: "",
+    numSold: 0,
+    numFailed: 0,
     latestAuctionItem: undefined,
     productStatus: 0,
     auctionCardType: 0,
+    imageUrl: "",
   };
 }
 
@@ -5153,8 +5783,20 @@ export const AuctionConfig: MessageFns<AuctionConfig> = {
     if (message.auctionMode !== 0) {
       writer.uint32(64).int32(message.auctionMode);
     }
+    if (message.duration !== 0) {
+      writer.uint32(72).int32(message.duration);
+    }
     if (message.extendedAuctionDuration !== 0) {
       writer.uint32(80).int32(message.extendedAuctionDuration);
+    }
+    if (message.formattedStartingBidPrice !== "") {
+      writer.uint32(90).string(message.formattedStartingBidPrice);
+    }
+    if (message.numSold !== 0) {
+      writer.uint32(96).int32(message.numSold);
+    }
+    if (message.numFailed !== 0) {
+      writer.uint32(104).int32(message.numFailed);
     }
     if (message.latestAuctionItem !== undefined) {
       LiveAuctionItem.encode(message.latestAuctionItem, writer.uint32(114).fork()).join();
@@ -5164,6 +5806,9 @@ export const AuctionConfig: MessageFns<AuctionConfig> = {
     }
     if (message.auctionCardType !== 0) {
       writer.uint32(128).int32(message.auctionCardType);
+    }
+    if (message.imageUrl !== "") {
+      writer.uint32(138).string(message.imageUrl);
     }
     return writer;
   },
@@ -5239,12 +5884,44 @@ export const AuctionConfig: MessageFns<AuctionConfig> = {
           message.auctionMode = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.extendedAuctionDuration = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.formattedStartingBidPrice = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.numSold = reader.int32();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.numFailed = reader.int32();
           continue;
         }
         case 14: {
@@ -5269,6 +5946,14 @@ export const AuctionConfig: MessageFns<AuctionConfig> = {
           }
 
           message.auctionCardType = reader.int32();
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.imageUrl = reader.string();
           continue;
         }
       }
@@ -5378,6 +6063,7 @@ function createBaseAuctionItem(): AuctionItem {
     maxBiddingPrice: "",
     formattedMaxBiddingPrice: "",
     winUserProfileImageUrl: "",
+    expectedEndTimeMs: "",
     paymentStatus: 0,
   };
 }
@@ -5407,6 +6093,9 @@ export const AuctionItem: MessageFns<AuctionItem> = {
     }
     if (message.winUserProfileImageUrl !== "") {
       writer.uint32(66).string(message.winUserProfileImageUrl);
+    }
+    if (message.expectedEndTimeMs !== "") {
+      writer.uint32(74).string(message.expectedEndTimeMs);
     }
     if (message.paymentStatus !== 0) {
       writer.uint32(80).int32(message.paymentStatus);
@@ -5483,6 +6172,14 @@ export const AuctionItem: MessageFns<AuctionItem> = {
           }
 
           message.winUserProfileImageUrl = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.expectedEndTimeMs = reader.string();
           continue;
         }
         case 10: {
@@ -7336,6 +8033,87 @@ export const BeansBiz: MessageFns<BeansBiz> = {
   },
 };
 
+function createBaseBigSaleConfig(): BigSaleConfig {
+  return { imageUrl: "", imageId: "", bigSaleVersion: "", height: 0, width: 0 };
+}
+
+export const BigSaleConfig: MessageFns<BigSaleConfig> = {
+  encode(message: BigSaleConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.imageUrl !== "") {
+      writer.uint32(10).string(message.imageUrl);
+    }
+    if (message.imageId !== "") {
+      writer.uint32(18).string(message.imageId);
+    }
+    if (message.bigSaleVersion !== "") {
+      writer.uint32(26).string(message.bigSaleVersion);
+    }
+    if (message.height !== 0) {
+      writer.uint32(32).int32(message.height);
+    }
+    if (message.width !== 0) {
+      writer.uint32(40).int32(message.width);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BigSaleConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBigSaleConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.imageUrl = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.imageId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.bigSaleVersion = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.height = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.width = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseBillboard(): Billboard {
   return {
     id: "",
@@ -7346,7 +8124,11 @@ function createBaseBillboard(): Billboard {
     promotionConfig: undefined,
     imageConfig: undefined,
     productConfig: undefined,
+    bigSaleConfig: undefined,
     desc: "",
+    schema: "",
+    billboardTypeInt: 0,
+    uiType: 0,
     sizeGuidanceConfig: undefined,
     keyMessageConfig: undefined,
   };
@@ -7378,8 +8160,20 @@ export const Billboard: MessageFns<Billboard> = {
     if (message.productConfig !== undefined) {
       BillboardProductConfig.encode(message.productConfig, writer.uint32(66).fork()).join();
     }
+    if (message.bigSaleConfig !== undefined) {
+      BigSaleConfig.encode(message.bigSaleConfig, writer.uint32(74).fork()).join();
+    }
     if (message.desc !== "") {
       writer.uint32(82).string(message.desc);
+    }
+    if (message.schema !== "") {
+      writer.uint32(90).string(message.schema);
+    }
+    if (message.billboardTypeInt !== 0) {
+      writer.uint32(96).int32(message.billboardTypeInt);
+    }
+    if (message.uiType !== 0) {
+      writer.uint32(104).int32(message.uiType);
     }
     if (message.sizeGuidanceConfig !== undefined) {
       BillboardSizeGuidanceConfig.encode(message.sizeGuidanceConfig, writer.uint32(114).fork()).join();
@@ -7461,12 +8255,44 @@ export const Billboard: MessageFns<Billboard> = {
           message.productConfig = BillboardProductConfig.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.bigSaleConfig = BigSaleConfig.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.desc = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.billboardTypeInt = reader.int32();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.uiType = reader.int32();
           continue;
         }
         case 14: {
@@ -7612,6 +8438,149 @@ export const BillboardImageConfig: MessageFns<BillboardImageConfig> = {
           }
 
           message.height = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBillboardInfo(): BillboardInfo {
+  return { billboardType: 0, billboardIds: [], sourceFrom: 0, bornTimeMs: "", billboardVersion: 0, daInfo: {} };
+}
+
+export const BillboardInfo: MessageFns<BillboardInfo> = {
+  encode(message: BillboardInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.billboardType !== 0) {
+      writer.uint32(8).int32(message.billboardType);
+    }
+    for (const v of message.billboardIds) {
+      writer.uint32(18).string(v!);
+    }
+    if (message.sourceFrom !== 0) {
+      writer.uint32(24).int32(message.sourceFrom);
+    }
+    if (message.bornTimeMs !== "") {
+      writer.uint32(34).string(message.bornTimeMs);
+    }
+    if (message.billboardVersion !== 0) {
+      writer.uint32(40).int32(message.billboardVersion);
+    }
+    globalThis.Object.entries(message.daInfo).forEach(([key, value]: [string, string]) => {
+      BillboardInfo_DaInfoEntry.encode({ key: key as any, value }, writer.uint32(50).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BillboardInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBillboardInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.billboardType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.billboardIds.push(reader.string());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.sourceFrom = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.bornTimeMs = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.billboardVersion = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          const entry6 = BillboardInfo_DaInfoEntry.decode(reader, reader.uint32());
+          if (entry6.value !== undefined) {
+            message.daInfo[entry6.key] = entry6.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBillboardInfo_DaInfoEntry(): BillboardInfo_DaInfoEntry {
+  return { key: "", value: "" };
+}
+
+export const BillboardInfo_DaInfoEntry: MessageFns<BillboardInfo_DaInfoEntry> = {
+  encode(message: BillboardInfo_DaInfoEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BillboardInfo_DaInfoEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBillboardInfo_DaInfoEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -8091,6 +9060,193 @@ export const BubbleDecoration: MessageFns<BubbleDecoration> = {
   },
 };
 
+function createBaseCampaignBannerDisplay(): CampaignBannerDisplay {
+  return {
+    imageUrl: "",
+    campaignBannerIsDisplay: false,
+    sourceFrom: 0,
+    bornTimeMs: "",
+    billboardVersion: 0,
+    daInfo: {},
+  };
+}
+
+export const CampaignBannerDisplay: MessageFns<CampaignBannerDisplay> = {
+  encode(message: CampaignBannerDisplay, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.imageUrl !== "") {
+      writer.uint32(10).string(message.imageUrl);
+    }
+    if (message.campaignBannerIsDisplay !== false) {
+      writer.uint32(16).bool(message.campaignBannerIsDisplay);
+    }
+    if (message.sourceFrom !== 0) {
+      writer.uint32(24).int32(message.sourceFrom);
+    }
+    if (message.bornTimeMs !== "") {
+      writer.uint32(34).string(message.bornTimeMs);
+    }
+    if (message.billboardVersion !== 0) {
+      writer.uint32(40).int32(message.billboardVersion);
+    }
+    globalThis.Object.entries(message.daInfo).forEach(([key, value]: [string, string]) => {
+      CampaignBannerDisplay_DaInfoEntry.encode({ key: key as any, value }, writer.uint32(50).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CampaignBannerDisplay {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCampaignBannerDisplay();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.imageUrl = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.campaignBannerIsDisplay = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.sourceFrom = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.bornTimeMs = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.billboardVersion = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          const entry6 = CampaignBannerDisplay_DaInfoEntry.decode(reader, reader.uint32());
+          if (entry6.value !== undefined) {
+            message.daInfo[entry6.key] = entry6.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCampaignBannerDisplay_DaInfoEntry(): CampaignBannerDisplay_DaInfoEntry {
+  return { key: "", value: "" };
+}
+
+export const CampaignBannerDisplay_DaInfoEntry: MessageFns<CampaignBannerDisplay_DaInfoEntry> = {
+  encode(message: CampaignBannerDisplay_DaInfoEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CampaignBannerDisplay_DaInfoEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCampaignBannerDisplay_DaInfoEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCampaignBannerDisplayResult(): CampaignBannerDisplayResult {
+  return { campaignBannerDisplayResult: 0 };
+}
+
+export const CampaignBannerDisplayResult: MessageFns<CampaignBannerDisplayResult> = {
+  encode(message: CampaignBannerDisplayResult, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.campaignBannerDisplayResult !== 0) {
+      writer.uint32(8).int32(message.campaignBannerDisplayResult);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CampaignBannerDisplayResult {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCampaignBannerDisplayResult();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.campaignBannerDisplayResult = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCapsuleBizParamsAnchorPinPerk(): CapsuleBizParamsAnchorPinPerk {
   return { pinId: "0", pinCardType: 0, templateId: "" };
 }
@@ -8160,7 +9316,9 @@ function createBaseCapsuleBizParamsCohost(): CapsuleBizParamsCohost {
     inviteeRoomId: "0",
     inviteeInnerChannelId: "0",
     inviteeUserInfo: undefined,
+    isFriend: false,
     subType: "",
+    rivalVoteCount: "",
   };
 }
 
@@ -8190,8 +9348,14 @@ export const CapsuleBizParamsCohost: MessageFns<CapsuleBizParamsCohost> = {
     if (message.inviteeUserInfo !== undefined) {
       User.encode(message.inviteeUserInfo, writer.uint32(66).fork()).join();
     }
+    if (message.isFriend !== false) {
+      writer.uint32(72).bool(message.isFriend);
+    }
     if (message.subType !== "") {
       writer.uint32(82).string(message.subType);
+    }
+    if (message.rivalVoteCount !== "") {
+      writer.uint32(90).string(message.rivalVoteCount);
     }
     return writer;
   },
@@ -8267,12 +9431,28 @@ export const CapsuleBizParamsCohost: MessageFns<CapsuleBizParamsCohost> = {
           message.inviteeUserInfo = User.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.isFriend = reader.bool();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.subType = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.rivalVoteCount = reader.string();
           continue;
         }
       }
@@ -8376,6 +9556,325 @@ export const CapsuleBizParamsCommentFlaggedPromptForNewUser: MessageFns<
           }
 
           break;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCapsuleBizParamsCommentMuteRulePrompt(): CapsuleBizParamsCommentMuteRulePrompt {
+  return { content: "", userCnt: "0" };
+}
+
+export const CapsuleBizParamsCommentMuteRulePrompt: MessageFns<CapsuleBizParamsCommentMuteRulePrompt> = {
+  encode(message: CapsuleBizParamsCommentMuteRulePrompt, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.content !== "") {
+      writer.uint32(10).string(message.content);
+    }
+    if (message.userCnt !== "0") {
+      writer.uint32(16).int64(message.userCnt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CapsuleBizParamsCommentMuteRulePrompt {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCapsuleBizParamsCommentMuteRulePrompt();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.userCnt = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCapsuleBizParamsEcom(): CapsuleBizParamsEcom {
+  return { eventTracking: undefined };
+}
+
+export const CapsuleBizParamsEcom: MessageFns<CapsuleBizParamsEcom> = {
+  encode(message: CapsuleBizParamsEcom, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.eventTracking !== undefined) {
+      CapsuleBizParamsEcomEventTracking.encode(message.eventTracking, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CapsuleBizParamsEcom {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCapsuleBizParamsEcom();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.eventTracking = CapsuleBizParamsEcomEventTracking.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCapsuleBizParamsEcomEventTracking(): CapsuleBizParamsEcomEventTracking {
+  return { ecomRecommId: "", ecomRecommTrigger: "" };
+}
+
+export const CapsuleBizParamsEcomEventTracking: MessageFns<CapsuleBizParamsEcomEventTracking> = {
+  encode(message: CapsuleBizParamsEcomEventTracking, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.ecomRecommId !== "") {
+      writer.uint32(10).string(message.ecomRecommId);
+    }
+    if (message.ecomRecommTrigger !== "") {
+      writer.uint32(18).string(message.ecomRecommTrigger);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CapsuleBizParamsEcomEventTracking {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCapsuleBizParamsEcomEventTracking();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.ecomRecommId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.ecomRecommTrigger = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCapsuleBizParamsModeratorGuide(): CapsuleBizParamsModeratorGuide {
+  return {
+    isGiftModerator: false,
+    isInteractiveModerator: false,
+    isToolModerator: false,
+    hvUser: undefined,
+    welcomeMsg: undefined,
+    recommendSensitiveWords: [],
+  };
+}
+
+export const CapsuleBizParamsModeratorGuide: MessageFns<CapsuleBizParamsModeratorGuide> = {
+  encode(message: CapsuleBizParamsModeratorGuide, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isGiftModerator !== false) {
+      writer.uint32(8).bool(message.isGiftModerator);
+    }
+    if (message.isInteractiveModerator !== false) {
+      writer.uint32(16).bool(message.isInteractiveModerator);
+    }
+    if (message.isToolModerator !== false) {
+      writer.uint32(24).bool(message.isToolModerator);
+    }
+    if (message.hvUser !== undefined) {
+      User.encode(message.hvUser, writer.uint32(34).fork()).join();
+    }
+    if (message.welcomeMsg !== undefined) {
+      Text.encode(message.welcomeMsg, writer.uint32(42).fork()).join();
+    }
+    for (const v of message.recommendSensitiveWords) {
+      writer.uint32(50).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CapsuleBizParamsModeratorGuide {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCapsuleBizParamsModeratorGuide();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isGiftModerator = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.isInteractiveModerator = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isToolModerator = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.hvUser = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.welcomeMsg = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.recommendSensitiveWords.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCapsuleBizParamsMultiGuestApplyGuide(): CapsuleBizParamsMultiGuestApplyGuide {
+  return {
+    applyUser: undefined,
+    displayStrategy: 0,
+    linkmicAudienceApplyNoticeReason: "",
+    noticeType: 0,
+    applyNoticeGuide: undefined,
+  };
+}
+
+export const CapsuleBizParamsMultiGuestApplyGuide: MessageFns<CapsuleBizParamsMultiGuestApplyGuide> = {
+  encode(message: CapsuleBizParamsMultiGuestApplyGuide, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.applyUser !== undefined) {
+      User.encode(message.applyUser, writer.uint32(10).fork()).join();
+    }
+    if (message.displayStrategy !== 0) {
+      writer.uint32(16).int32(message.displayStrategy);
+    }
+    if (message.linkmicAudienceApplyNoticeReason !== "") {
+      writer.uint32(26).string(message.linkmicAudienceApplyNoticeReason);
+    }
+    if (message.noticeType !== 0) {
+      writer.uint32(32).int32(message.noticeType);
+    }
+    if (message.applyNoticeGuide !== undefined) {
+      LinkmicAudienceApplyGuide.encode(message.applyNoticeGuide, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CapsuleBizParamsMultiGuestApplyGuide {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCapsuleBizParamsMultiGuestApplyGuide();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.applyUser = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.displayStrategy = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.linkmicAudienceApplyNoticeReason = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.noticeType = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.applyNoticeGuide = LinkmicAudienceApplyGuide.decode(reader, reader.uint32());
+          continue;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -8774,6 +10273,65 @@ export const CeremonyEffect: MessageFns<CeremonyEffect> = {
           }
 
           message.avatarIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCohostFollowMessage(): CohostFollowMessage {
+  return { title: undefined, description: undefined, displayUserInfos: [] };
+}
+
+export const CohostFollowMessage: MessageFns<CohostFollowMessage> = {
+  encode(message: CohostFollowMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== undefined) {
+      Text.encode(message.title, writer.uint32(10).fork()).join();
+    }
+    if (message.description !== undefined) {
+      Text.encode(message.description, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.displayUserInfos) {
+      DisplayUserInfo.encode(v!, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CohostFollowMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCohostFollowMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.displayUserInfos.push(DisplayUserInfo.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -9239,7 +10797,9 @@ function createBaseCompetitionStart(): CompetitionStart {
     initiateInfo: undefined,
     endTimestamp: "0",
     actualEndTimestamp: "0",
+    effectInfos: undefined,
     gameplayOption: 0,
+    comboInfoMap: {},
     beansBiz: undefined,
     takeTheStageBiz: undefined,
   };
@@ -9259,9 +10819,15 @@ export const CompetitionStart: MessageFns<CompetitionStart> = {
     if (message.actualEndTimestamp !== "0") {
       writer.uint32(32).int64(message.actualEndTimestamp);
     }
+    if (message.effectInfos !== undefined) {
+      BattleEffectInfos.encode(message.effectInfos, writer.uint32(402).fork()).join();
+    }
     if (message.gameplayOption !== 0) {
       writer.uint32(408).int32(message.gameplayOption);
     }
+    globalThis.Object.entries(message.comboInfoMap).forEach(([key, value]: [string, BattleComboInfo]) => {
+      CompetitionStart_ComboInfoMapEntry.encode({ key: key as any, value }, writer.uint32(418).fork()).join();
+    });
     if (message.beansBiz !== undefined) {
       BeansBiz.encode(message.beansBiz, writer.uint32(802).fork()).join();
     }
@@ -9310,12 +10876,31 @@ export const CompetitionStart: MessageFns<CompetitionStart> = {
           message.actualEndTimestamp = reader.int64().toString();
           continue;
         }
+        case 50: {
+          if (tag !== 402) {
+            break;
+          }
+
+          message.effectInfos = BattleEffectInfos.decode(reader, reader.uint32());
+          continue;
+        }
         case 51: {
           if (tag !== 408) {
             break;
           }
 
           message.gameplayOption = reader.int32();
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          const entry52 = CompetitionStart_ComboInfoMapEntry.decode(reader, reader.uint32());
+          if (entry52.value !== undefined) {
+            message.comboInfoMap[entry52.key] = entry52.value;
+          }
           continue;
         }
         case 100: {
@@ -9332,6 +10917,54 @@ export const CompetitionStart: MessageFns<CompetitionStart> = {
           }
 
           message.takeTheStageBiz = CompetitionStartTakeTheStageBiz.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCompetitionStart_ComboInfoMapEntry(): CompetitionStart_ComboInfoMapEntry {
+  return { key: "", value: undefined };
+}
+
+export const CompetitionStart_ComboInfoMapEntry: MessageFns<CompetitionStart_ComboInfoMapEntry> = {
+  encode(message: CompetitionStart_ComboInfoMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      BattleComboInfo.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CompetitionStart_ComboInfoMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCompetitionStart_ComboInfoMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = BattleComboInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -10023,6 +11656,43 @@ export const DispersionInfo: MessageFns<DispersionInfo> = {
   },
 };
 
+function createBaseDisplayUserInfo(): DisplayUserInfo {
+  return { userData: undefined };
+}
+
+export const DisplayUserInfo: MessageFns<DisplayUserInfo> = {
+  encode(message: DisplayUserInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userData !== undefined) {
+      User.encode(message.userData, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DisplayUserInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDisplayUserInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userData = User.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseEffectConfigBean(): EffectConfigBean {
   return { type: 0, icon: undefined, text: undefined, badge: undefined };
 }
@@ -10560,76 +12230,6 @@ export const EpiDecision_ServerFeaturesEntry: MessageFns<EpiDecision_ServerFeatu
   },
 };
 
-function createBaseEventTracking(): EventTracking {
-  return { giftSubSenderId: "0", giftSubReceiverId: "0", anchorId: "0", giftSubOrderCreateTime: "0" };
-}
-
-export const EventTracking: MessageFns<EventTracking> = {
-  encode(message: EventTracking, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.giftSubSenderId !== "0") {
-      writer.uint32(8).int64(message.giftSubSenderId);
-    }
-    if (message.giftSubReceiverId !== "0") {
-      writer.uint32(16).int64(message.giftSubReceiverId);
-    }
-    if (message.anchorId !== "0") {
-      writer.uint32(24).int64(message.anchorId);
-    }
-    if (message.giftSubOrderCreateTime !== "0") {
-      writer.uint32(32).int64(message.giftSubOrderCreateTime);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): EventTracking {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEventTracking();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.giftSubSenderId = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.giftSubReceiverId = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.anchorId = reader.int64().toString();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.giftSubOrderCreateTime = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseExpChangeData(): ExpChangeData {
   return { claimedAllPoints: false, totalUnclaimedScore: "0" };
 }
@@ -10948,6 +12548,317 @@ export const FlareBoostedUsers: MessageFns<FlareBoostedUsers> = {
   },
 };
 
+function createBaseFlashSaleAtmosphere(): FlashSaleAtmosphere {
+  return { status: 0, startTime: "0", endTime: "0", preheatTime: "0" };
+}
+
+export const FlashSaleAtmosphere: MessageFns<FlashSaleAtmosphere> = {
+  encode(message: FlashSaleAtmosphere, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.status !== 0) {
+      writer.uint32(8).int32(message.status);
+    }
+    if (message.startTime !== "0") {
+      writer.uint32(16).int64(message.startTime);
+    }
+    if (message.endTime !== "0") {
+      writer.uint32(24).int64(message.endTime);
+    }
+    if (message.preheatTime !== "0") {
+      writer.uint32(32).int64(message.preheatTime);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlashSaleAtmosphere {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlashSaleAtmosphere();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.startTime = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.endTime = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.preheatTime = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFlashSaleAtmosphereInfo(): FlashSaleAtmosphereInfo {
+  return {
+    productId: "",
+    activityId: "0",
+    flashSaleAtmosphere: undefined,
+    flashSaleStock: undefined,
+    pinnedProduct: false,
+    liveOnlyChannel: false,
+    creatorLimitType: 0,
+  };
+}
+
+export const FlashSaleAtmosphereInfo: MessageFns<FlashSaleAtmosphereInfo> = {
+  encode(message: FlashSaleAtmosphereInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.productId !== "") {
+      writer.uint32(10).string(message.productId);
+    }
+    if (message.activityId !== "0") {
+      writer.uint32(16).int64(message.activityId);
+    }
+    if (message.flashSaleAtmosphere !== undefined) {
+      FlashSaleAtmosphere.encode(message.flashSaleAtmosphere, writer.uint32(26).fork()).join();
+    }
+    if (message.flashSaleStock !== undefined) {
+      FlashSaleStock.encode(message.flashSaleStock, writer.uint32(34).fork()).join();
+    }
+    if (message.pinnedProduct !== false) {
+      writer.uint32(40).bool(message.pinnedProduct);
+    }
+    if (message.liveOnlyChannel !== false) {
+      writer.uint32(48).bool(message.liveOnlyChannel);
+    }
+    if (message.creatorLimitType !== 0) {
+      writer.uint32(56).int32(message.creatorLimitType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlashSaleAtmosphereInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlashSaleAtmosphereInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.productId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.activityId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.flashSaleAtmosphere = FlashSaleAtmosphere.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.flashSaleStock = FlashSaleStock.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.pinnedProduct = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.liveOnlyChannel = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.creatorLimitType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFlashSaleStock(): FlashSaleStock {
+  return { activityStockStatus: 0, activityStock: 0, activityStockText: "" };
+}
+
+export const FlashSaleStock: MessageFns<FlashSaleStock> = {
+  encode(message: FlashSaleStock, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.activityStockStatus !== 0) {
+      writer.uint32(8).int32(message.activityStockStatus);
+    }
+    if (message.activityStock !== 0) {
+      writer.uint32(16).int32(message.activityStock);
+    }
+    if (message.activityStockText !== "") {
+      writer.uint32(26).string(message.activityStockText);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlashSaleStock {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlashSaleStock();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.activityStockStatus = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.activityStock = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.activityStockText = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFlexImageModel(): FlexImageModel {
+  return { urlList: [], uri: "", flexSetting: [] };
+}
+
+export const FlexImageModel: MessageFns<FlexImageModel> = {
+  encode(message: FlexImageModel, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.urlList) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.uri !== "") {
+      writer.uint32(18).string(message.uri);
+    }
+    writer.uint32(26).fork();
+    for (const v of message.flexSetting) {
+      writer.int64(v);
+    }
+    writer.join();
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlexImageModel {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlexImageModel();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.urlList.push(reader.string());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.uri = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag === 24) {
+            message.flexSetting.push(reader.int64().toString());
+
+            continue;
+          }
+
+          if (tag === 26) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.flexSetting.push(reader.int64().toString());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseFontStyle(): FontStyle {
   return {
     maxLines: 0,
@@ -10958,6 +12869,7 @@ function createBaseFontStyle(): FontStyle {
     shadowConfigList: [],
     enableStroke: false,
     strokeConfigList: [],
+    horizontalAlign: 0,
     verticalAlign: 0,
   };
 }
@@ -10987,6 +12899,9 @@ export const FontStyle: MessageFns<FontStyle> = {
     }
     for (const v of message.strokeConfigList) {
       StrokeConfig.encode(v!, writer.uint32(66).fork()).join();
+    }
+    if (message.horizontalAlign !== 0) {
+      writer.uint32(72).int32(message.horizontalAlign);
     }
     if (message.verticalAlign !== 0) {
       writer.uint32(80).int32(message.verticalAlign);
@@ -11063,6 +12978,14 @@ export const FontStyle: MessageFns<FontStyle> = {
           }
 
           message.strokeConfigList.push(StrokeConfig.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.horizontalAlign = reader.int32();
           continue;
         }
         case 10: {
@@ -11310,6 +13233,43 @@ export const GalleryGoalData: MessageFns<GalleryGoalData> = {
           }
 
           message.goalExtra = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGalleryMiddleTouchMessage(): GalleryMiddleTouchMessage {
+  return { galleryMiddleTouchInfo: undefined };
+}
+
+export const GalleryMiddleTouchMessage: MessageFns<GalleryMiddleTouchMessage> = {
+  encode(message: GalleryMiddleTouchMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.galleryMiddleTouchInfo !== undefined) {
+      GalleryMiddleTouchInfo.encode(message.galleryMiddleTouchInfo, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GalleryMiddleTouchMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGalleryMiddleTouchMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.galleryMiddleTouchInfo = GalleryMiddleTouchInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -12198,6 +14158,105 @@ export const GiveawayInfo: MessageFns<GiveawayInfo> = {
   },
 };
 
+function createBaseGoalData(): GoalData {
+  return { status: 0, goalProgress: {} };
+}
+
+export const GoalData: MessageFns<GoalData> = {
+  encode(message: GoalData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.status !== 0) {
+      writer.uint32(8).int32(message.status);
+    }
+    globalThis.Object.entries(message.goalProgress).forEach(([key, value]: [string, Progress]) => {
+      GoalData_GoalProgressEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GoalData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGoalData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = GoalData_GoalProgressEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.goalProgress[entry2.key] = entry2.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGoalData_GoalProgressEntry(): GoalData_GoalProgressEntry {
+  return { key: "0", value: undefined };
+}
+
+export const GoalData_GoalProgressEntry: MessageFns<GoalData_GoalProgressEntry> = {
+  encode(message: GoalData_GoalProgressEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      Progress.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GoalData_GoalProgressEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGoalData_GoalProgressEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = Progress.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGoodsOrder(): GoodsOrder {
   return { goodsRoomOrder: "0", orderNum: "0", orderMoney: "0", orderId: "" };
 }
@@ -12968,6 +15027,76 @@ export const ImagePadding: MessageFns<ImagePadding> = {
           }
 
           message.bottomPadding = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseImg(): Img {
+  return { key: "", width: 0, height: 0, url: "" };
+}
+
+export const Img: MessageFns<Img> = {
+  encode(message: Img, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.width !== 0) {
+      writer.uint32(16).int32(message.width);
+    }
+    if (message.height !== 0) {
+      writer.uint32(24).int32(message.height);
+    }
+    if (message.url !== "") {
+      writer.uint32(34).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Img {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseImg();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.width = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.height = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.url = reader.string();
           continue;
         }
       }
@@ -13822,6 +15951,7 @@ function createBaseLinkmicAudienceApplyGuide(): LinkmicAudienceApplyGuide {
     displayPosition: "0",
     triggerType: "",
     requestId: "",
+    linkmicId: "",
   };
 }
 
@@ -13850,6 +15980,9 @@ export const LinkmicAudienceApplyGuide: MessageFns<LinkmicAudienceApplyGuide> = 
     }
     if (message.requestId !== "") {
       writer.uint32(66).string(message.requestId);
+    }
+    if (message.linkmicId !== "") {
+      writer.uint32(74).string(message.linkmicId);
     }
     return writer;
   },
@@ -13923,6 +16056,14 @@ export const LinkmicAudienceApplyGuide: MessageFns<LinkmicAudienceApplyGuide> = 
           }
 
           message.requestId = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.linkmicId = reader.string();
           continue;
         }
       }
@@ -14156,7 +16297,10 @@ function createBaseLiveAuctionItem(): LiveAuctionItem {
     actualFormattedStartingBidPrice: "",
     numOfBids: 0,
     winUsername: "",
+    maxBiddingPrice: "",
     winUserProfileImageUrl: "",
+    paymentStatus: 0,
+    paymentTime: "0",
   };
 }
 
@@ -14186,8 +16330,17 @@ export const LiveAuctionItem: MessageFns<LiveAuctionItem> = {
     if (message.winUsername !== "") {
       writer.uint32(66).string(message.winUsername);
     }
+    if (message.maxBiddingPrice !== "") {
+      writer.uint32(74).string(message.maxBiddingPrice);
+    }
     if (message.winUserProfileImageUrl !== "") {
       writer.uint32(82).string(message.winUserProfileImageUrl);
+    }
+    if (message.paymentStatus !== 0) {
+      writer.uint32(88).int32(message.paymentStatus);
+    }
+    if (message.paymentTime !== "0") {
+      writer.uint32(96).int64(message.paymentTime);
     }
     return writer;
   },
@@ -14263,12 +16416,36 @@ export const LiveAuctionItem: MessageFns<LiveAuctionItem> = {
           message.winUsername = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.maxBiddingPrice = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.winUserProfileImageUrl = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.paymentStatus = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.paymentTime = reader.int64().toString();
           continue;
         }
       }
@@ -14291,7 +16468,10 @@ function createBaseLiveFragment(): LiveFragment {
     autocutType: 0,
     extra: "",
     duration: 0,
+    originFragmentType: 0,
     originFragmentSubType: "",
+    llmTitleShort: "",
+    itemIdStr: "",
   };
 }
 
@@ -14321,8 +16501,17 @@ export const LiveFragment: MessageFns<LiveFragment> = {
     if (message.duration !== 0) {
       writer.uint32(65).double(message.duration);
     }
+    if (message.originFragmentType !== 0) {
+      writer.uint32(72).int32(message.originFragmentType);
+    }
     if (message.originFragmentSubType !== "") {
       writer.uint32(82).string(message.originFragmentSubType);
+    }
+    if (message.llmTitleShort !== "") {
+      writer.uint32(90).string(message.llmTitleShort);
+    }
+    if (message.itemIdStr !== "") {
+      writer.uint32(98).string(message.itemIdStr);
     }
     return writer;
   },
@@ -14398,12 +16587,36 @@ export const LiveFragment: MessageFns<LiveFragment> = {
           message.duration = reader.double();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.originFragmentType = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.originFragmentSubType = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.llmTitleShort = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.itemIdStr = reader.string();
           continue;
         }
       }
@@ -15042,6 +17255,7 @@ function createBaseNewAnchorGuideConfig(): NewAnchorGuideConfig {
     text: undefined,
     displayDuration: 0,
     effectParams: undefined,
+    displayType: 0,
   };
 }
 
@@ -15070,6 +17284,9 @@ export const NewAnchorGuideConfig: MessageFns<NewAnchorGuideConfig> = {
     }
     if (message.effectParams !== undefined) {
       NewAnchorEffectParams.encode(message.effectParams, writer.uint32(66).fork()).join();
+    }
+    if (message.displayType !== 0) {
+      writer.uint32(72).int32(message.displayType);
     }
     return writer;
   },
@@ -15143,6 +17360,14 @@ export const NewAnchorGuideConfig: MessageFns<NewAnchorGuideConfig> = {
           }
 
           message.effectParams = NewAnchorEffectParams.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.displayType = reader.int32();
           continue;
         }
       }
@@ -15479,6 +17704,157 @@ export const OecLiveCreatorMessageMeta: MessageFns<OecLiveCreatorMessageMeta> = 
           }
 
           message.reason = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseOperationInfo(): OperationInfo {
+  return { initialState: undefined, successState: undefined, failureState: undefined };
+}
+
+export const OperationInfo: MessageFns<OperationInfo> = {
+  encode(message: OperationInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.initialState !== undefined) {
+      OperationState.encode(message.initialState, writer.uint32(10).fork()).join();
+    }
+    if (message.successState !== undefined) {
+      OperationState.encode(message.successState, writer.uint32(18).fork()).join();
+    }
+    if (message.failureState !== undefined) {
+      OperationState.encode(message.failureState, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): OperationInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOperationInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.initialState = OperationState.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.successState = OperationState.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.failureState = OperationState.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseOperationState(): OperationState {
+  return { scene: "", icon: undefined, text: undefined, schema: "", animationStyle: "0", duration: "0" };
+}
+
+export const OperationState: MessageFns<OperationState> = {
+  encode(message: OperationState, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.scene !== "") {
+      writer.uint32(10).string(message.scene);
+    }
+    if (message.icon !== undefined) {
+      ImageModel.encode(message.icon, writer.uint32(18).fork()).join();
+    }
+    if (message.text !== undefined) {
+      Text.encode(message.text, writer.uint32(26).fork()).join();
+    }
+    if (message.schema !== "") {
+      writer.uint32(34).string(message.schema);
+    }
+    if (message.animationStyle !== "0") {
+      writer.uint32(40).int64(message.animationStyle);
+    }
+    if (message.duration !== "0") {
+      writer.uint32(48).int64(message.duration);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): OperationState {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOperationState();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.scene = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.icon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.text = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.animationStyle = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.duration = reader.int64().toString();
           continue;
         }
       }
@@ -17287,6 +19663,157 @@ export const ProductPrice: MessageFns<ProductPrice> = {
   },
 };
 
+function createBaseProductSnapShot(): ProductSnapShot {
+  return { productId: "", title: "", cover: undefined, stockType: 0, timestamp: "0", addToCartButton: undefined };
+}
+
+export const ProductSnapShot: MessageFns<ProductSnapShot> = {
+  encode(message: ProductSnapShot, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.productId !== "") {
+      writer.uint32(10).string(message.productId);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.cover !== undefined) {
+      Img.encode(message.cover, writer.uint32(26).fork()).join();
+    }
+    if (message.stockType !== 0) {
+      writer.uint32(32).int32(message.stockType);
+    }
+    if (message.timestamp !== "0") {
+      writer.uint32(40).int64(message.timestamp);
+    }
+    if (message.addToCartButton !== undefined) {
+      AddToCartButton.encode(message.addToCartButton, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ProductSnapShot {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProductSnapShot();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.productId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.cover = Img.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.stockType = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.timestamp = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.addToCartButton = AddToCartButton.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseProgress(): Progress {
+  return { currentProgress: "0", target: "0", expiredTimestampInMs: "0" };
+}
+
+export const Progress: MessageFns<Progress> = {
+  encode(message: Progress, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.currentProgress !== "0") {
+      writer.uint32(8).int64(message.currentProgress);
+    }
+    if (message.target !== "0") {
+      writer.uint32(16).int64(message.target);
+    }
+    if (message.expiredTimestampInMs !== "0") {
+      writer.uint32(24).int64(message.expiredTimestampInMs);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Progress {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProgress();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.currentProgress = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.target = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.expiredTimestampInMs = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseProgressStruct(): ProgressStruct {
   return { progressId: "0", progressValue: "0", progressStatus: 0 };
 }
@@ -19020,6 +21547,179 @@ export const ResponseExtra: MessageFns<ResponseExtra> = {
   },
 };
 
+function createBaseRoomBasedGiftData(): RoomBasedGiftData {
+  return { roomBasedGifts: {} };
+}
+
+export const RoomBasedGiftData: MessageFns<RoomBasedGiftData> = {
+  encode(message: RoomBasedGiftData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.roomBasedGifts).forEach(([key, value]: [string, RoomBasedGifts]) => {
+      RoomBasedGiftData_RoomBasedGiftsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomBasedGiftData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomBasedGiftData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = RoomBasedGiftData_RoomBasedGiftsEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.roomBasedGifts[entry2.key] = entry2.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomBasedGiftData_RoomBasedGiftsEntry(): RoomBasedGiftData_RoomBasedGiftsEntry {
+  return { key: "0", value: undefined };
+}
+
+export const RoomBasedGiftData_RoomBasedGiftsEntry: MessageFns<RoomBasedGiftData_RoomBasedGiftsEntry> = {
+  encode(message: RoomBasedGiftData_RoomBasedGiftsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      RoomBasedGifts.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomBasedGiftData_RoomBasedGiftsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomBasedGiftData_RoomBasedGiftsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = RoomBasedGifts.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomBasedGiftDataGiftInfo(): RoomBasedGiftDataGiftInfo {
+  return { id: "0", price: "0" };
+}
+
+export const RoomBasedGiftDataGiftInfo: MessageFns<RoomBasedGiftDataGiftInfo> = {
+  encode(message: RoomBasedGiftDataGiftInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "0") {
+      writer.uint32(8).int64(message.id);
+    }
+    if (message.price !== "0") {
+      writer.uint32(16).int64(message.price);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomBasedGiftDataGiftInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomBasedGiftDataGiftInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.price = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomBasedGifts(): RoomBasedGifts {
+  return { giftInfo: [] };
+}
+
+export const RoomBasedGifts: MessageFns<RoomBasedGifts> = {
+  encode(message: RoomBasedGifts, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.giftInfo) {
+      RoomBasedGiftDataGiftInfo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomBasedGifts {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomBasedGifts();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.giftInfo.push(RoomBasedGiftDataGiftInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseRoomNotifyMessageExtra(): RoomNotifyMessageExtra {
   return { duration: "0", background: undefined, contentList: undefined };
 }
@@ -19067,6 +21767,76 @@ export const RoomNotifyMessageExtra: MessageFns<RoomNotifyMessageExtra> = {
           }
 
           message.contentList = NotifyHighlightInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomNotifyMessageEventTracking(): RoomNotifyMessageEventTracking {
+  return { giftSubSenderId: "0", giftSubReceiverId: "0", anchorId: "0", giftSubOrderCreateTime: "0" };
+}
+
+export const RoomNotifyMessageEventTracking: MessageFns<RoomNotifyMessageEventTracking> = {
+  encode(message: RoomNotifyMessageEventTracking, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.giftSubSenderId !== "0") {
+      writer.uint32(8).int64(message.giftSubSenderId);
+    }
+    if (message.giftSubReceiverId !== "0") {
+      writer.uint32(16).int64(message.giftSubReceiverId);
+    }
+    if (message.anchorId !== "0") {
+      writer.uint32(24).int64(message.anchorId);
+    }
+    if (message.giftSubOrderCreateTime !== "0") {
+      writer.uint32(32).int64(message.giftSubOrderCreateTime);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomNotifyMessageEventTracking {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomNotifyMessageEventTracking();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.giftSubSenderId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.giftSubReceiverId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.giftSubOrderCreateTime = reader.int64().toString();
           continue;
         }
       }
@@ -19128,7 +21898,7 @@ export const SeqDetectResult: MessageFns<SeqDetectResult> = {
 };
 
 function createBaseShadowConfig(): ShadowConfig {
-  return { shadowColor: "", shadowDx: 0, shadowDy: 0 };
+  return { shadowColor: "", shadowDx: 0, shadowDy: 0, shadowRadius: 0 };
 }
 
 export const ShadowConfig: MessageFns<ShadowConfig> = {
@@ -19141,6 +21911,9 @@ export const ShadowConfig: MessageFns<ShadowConfig> = {
     }
     if (message.shadowDy !== 0) {
       writer.uint32(64).int32(message.shadowDy);
+    }
+    if (message.shadowRadius !== 0) {
+      writer.uint32(72).int32(message.shadowRadius);
     }
     return writer;
   },
@@ -19174,6 +21947,14 @@ export const ShadowConfig: MessageFns<ShadowConfig> = {
           }
 
           message.shadowDy = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.shadowRadius = reader.int32();
           continue;
         }
       }
@@ -19270,6 +22051,76 @@ export const ShortTouchPollData: MessageFns<ShortTouchPollData> = {
           }
 
           message.pollShowResult = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSku(): Sku {
+  return { title: "", cover: undefined, price: undefined, skuId: "" };
+}
+
+export const Sku: MessageFns<Sku> = {
+  encode(message: Sku, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.cover !== undefined) {
+      ImageModel.encode(message.cover, writer.uint32(18).fork()).join();
+    }
+    if (message.price !== undefined) {
+      ProductPrice.encode(message.price, writer.uint32(26).fork()).join();
+    }
+    if (message.skuId !== "") {
+      writer.uint32(34).string(message.skuId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Sku {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSku();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cover = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.price = ProductPrice.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.skuId = reader.string();
           continue;
         }
       }
@@ -19533,6 +22384,7 @@ function createBaseStarCommentMessage(): StarCommentMessage {
     commentOption: 0,
     contentLanguage: "",
     emotes: [],
+    schema: "",
   };
 }
 
@@ -19561,6 +22413,9 @@ export const StarCommentMessage: MessageFns<StarCommentMessage> = {
     }
     for (const v of message.emotes) {
       EmoteWithIndex.encode(v!, writer.uint32(66).fork()).join();
+    }
+    if (message.schema !== "") {
+      writer.uint32(74).string(message.schema);
     }
     return writer;
   },
@@ -19634,6 +22489,14 @@ export const StarCommentMessage: MessageFns<StarCommentMessage> = {
           }
 
           message.emotes.push(EmoteWithIndex.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.schema = reader.string();
           continue;
         }
       }
@@ -19962,7 +22825,9 @@ function createBaseStyleDictateParams(): StyleDictateParams {
     preselectedMatchItemId: "0",
     tapDismissArea: 0,
     backgroundColor: "",
+    maxLine: "0",
     maxWidth: "0",
+    businessType: "",
   };
 }
 
@@ -19992,8 +22857,14 @@ export const StyleDictateParams: MessageFns<StyleDictateParams> = {
     if (message.backgroundColor !== "") {
       writer.uint32(66).string(message.backgroundColor);
     }
+    if (message.maxLine !== "0") {
+      writer.uint32(72).int64(message.maxLine);
+    }
     if (message.maxWidth !== "0") {
       writer.uint32(80).int64(message.maxWidth);
+    }
+    if (message.businessType !== "") {
+      writer.uint32(90).string(message.businessType);
     }
     return writer;
   },
@@ -20069,12 +22940,28 @@ export const StyleDictateParams: MessageFns<StyleDictateParams> = {
           message.backgroundColor = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.maxLine = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.maxWidth = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.businessType = reader.string();
           continue;
         }
       }
@@ -20603,6 +23490,102 @@ export const SurpriseSetProperties: MessageFns<SurpriseSetProperties> = {
           }
 
           message.status = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPSize(): TPSize {
+  return { width: 0, height: 0 };
+}
+
+export const TPSize: MessageFns<TPSize> = {
+  encode(message: TPSize, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.width !== 0) {
+      writer.uint32(8).int32(message.width);
+    }
+    if (message.height !== 0) {
+      writer.uint32(16).int32(message.height);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPSize {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPSize();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.width = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.height = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPTuxImage(): TPTuxImage {
+  return { protocol: "", size: undefined };
+}
+
+export const TPTuxImage: MessageFns<TPTuxImage> = {
+  encode(message: TPTuxImage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.protocol !== "") {
+      writer.uint32(10).string(message.protocol);
+    }
+    if (message.size !== undefined) {
+      TPSize.encode(message.size, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPTuxImage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPTuxImage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.protocol = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.size = TPSize.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -22153,6 +25136,8 @@ function createBaseUserFanTicket(): UserFanTicket {
     animationName: "",
     ticketUiStyle: "",
     completionProgressPercent: 0,
+    topGuestRank: 0,
+    ticketUiStyleV2: "",
   };
 }
 
@@ -22187,6 +25172,12 @@ export const UserFanTicket: MessageFns<UserFanTicket> = {
     }
     if (message.completionProgressPercent !== 0) {
       writer.uint32(80).int32(message.completionProgressPercent);
+    }
+    if (message.topGuestRank !== 0) {
+      writer.uint32(88).int32(message.topGuestRank);
+    }
+    if (message.ticketUiStyleV2 !== "") {
+      writer.uint32(98).string(message.ticketUiStyleV2);
     }
     return writer;
   },
@@ -22276,6 +25267,22 @@ export const UserFanTicket: MessageFns<UserFanTicket> = {
           }
 
           message.completionProgressPercent = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.topGuestRank = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.ticketUiStyleV2 = reader.string();
           continue;
         }
       }
@@ -23345,6 +26352,43 @@ export const ValidRanks: MessageFns<ValidRanks> = {
   },
 };
 
+function createBaseViolationInfo(): ViolationInfo {
+  return { violationType: 0 };
+}
+
+export const ViolationInfo: MessageFns<ViolationInfo> = {
+  encode(message: ViolationInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.violationType !== 0) {
+      writer.uint32(8).int32(message.violationType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ViolationInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseViolationInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.violationType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseVoucher(): Voucher {
   return {
     voucherTypeId: "0",
@@ -23690,7 +26734,10 @@ function createBaseWebcastActivityQuizCardMessage(): WebcastActivityQuizCardMess
     answer: undefined,
     finalResult: undefined,
     callUpWebview: undefined,
+    rulesIntroduction: undefined,
     seiDelayMultiple: 0,
+    seiDelayBias: "0",
+    expiredTime: "0",
   };
 }
 
@@ -23720,8 +26767,17 @@ export const WebcastActivityQuizCardMessage: MessageFns<WebcastActivityQuizCardM
     if (message.callUpWebview !== undefined) {
       QuizCallUpWebview.encode(message.callUpWebview, writer.uint32(66).fork()).join();
     }
+    if (message.rulesIntroduction !== undefined) {
+      QuizRulesIntroduction.encode(message.rulesIntroduction, writer.uint32(74).fork()).join();
+    }
     if (message.seiDelayMultiple !== 0) {
       writer.uint32(85).float(message.seiDelayMultiple);
+    }
+    if (message.seiDelayBias !== "0") {
+      writer.uint32(88).int64(message.seiDelayBias);
+    }
+    if (message.expiredTime !== "0") {
+      writer.uint32(96).int64(message.expiredTime);
     }
     return writer;
   },
@@ -23797,12 +26853,36 @@ export const WebcastActivityQuizCardMessage: MessageFns<WebcastActivityQuizCardM
           message.callUpWebview = QuizCallUpWebview.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.rulesIntroduction = QuizRulesIntroduction.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 85) {
             break;
           }
 
           message.seiDelayMultiple = reader.float();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.seiDelayBias = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.expiredTime = reader.int64().toString();
           continue;
         }
       }
@@ -24330,6 +27410,7 @@ function createBaseWebcastAssetMessage(): WebcastAssetMessage {
     user: undefined,
     toUser: undefined,
     priority: undefined,
+    logId: "",
     asset: undefined,
   };
 }
@@ -24359,6 +27440,9 @@ export const WebcastAssetMessage: MessageFns<WebcastAssetMessage> = {
     }
     if (message.priority !== undefined) {
       GiftIMPriority.encode(message.priority, writer.uint32(66).fork()).join();
+    }
+    if (message.logId !== "") {
+      writer.uint32(74).string(message.logId);
     }
     if (message.asset !== undefined) {
       AssetsModel.encode(message.asset, writer.uint32(82).fork()).join();
@@ -24435,6 +27519,14 @@ export const WebcastAssetMessage: MessageFns<WebcastAssetMessage> = {
           }
 
           message.priority = GiftIMPriority.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.logId = reader.string();
           continue;
         }
         case 10: {
@@ -24557,6 +27649,7 @@ function createBaseWebcastBALeadGenMessage(): WebcastBALeadGenMessage {
     schema: "",
     pinPeriod: 0,
     cardIntro: "",
+    cardButtonText: "",
     cardTitle: "",
   };
 }
@@ -24586,6 +27679,9 @@ export const WebcastBALeadGenMessage: MessageFns<WebcastBALeadGenMessage> = {
     }
     if (message.cardIntro !== "") {
       writer.uint32(66).string(message.cardIntro);
+    }
+    if (message.cardButtonText !== "") {
+      writer.uint32(74).string(message.cardButtonText);
     }
     if (message.cardTitle !== "") {
       writer.uint32(82).string(message.cardTitle);
@@ -24662,6 +27758,14 @@ export const WebcastBALeadGenMessage: MessageFns<WebcastBALeadGenMessage> = {
           }
 
           message.cardIntro = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.cardButtonText = reader.string();
           continue;
         }
         case 10: {
@@ -25941,6 +29045,7 @@ function createBaseWebcastCommercialCustomMessage(): WebcastCommercialCustomMess
     backgroundColor: "",
     borderColor: "",
     rightLabel: undefined,
+    duration: "0",
   };
 }
 
@@ -25969,6 +29074,9 @@ export const WebcastCommercialCustomMessage: MessageFns<WebcastCommercialCustomM
     }
     if (message.rightLabel !== undefined) {
       RightLabel.encode(message.rightLabel, writer.uint32(66).fork()).join();
+    }
+    if (message.duration !== "0") {
+      writer.uint32(72).int64(message.duration);
     }
     return writer;
   },
@@ -26042,6 +29150,14 @@ export const WebcastCommercialCustomMessage: MessageFns<WebcastCommercialCustomM
           }
 
           message.rightLabel = RightLabel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.duration = reader.int64().toString();
           continue;
         }
       }
@@ -26123,7 +29239,10 @@ function createBaseWebcastCommonToastMessage(): WebcastCommonToastMessage {
     backgroundColorStart: "",
     backgroundColorEnd: "",
     position: 0,
+    topImg: undefined,
     topImgWidth: 0,
+    topImgHeight: 0,
+    showMongoliaLayer: false,
   };
 }
 
@@ -26153,8 +29272,17 @@ export const WebcastCommonToastMessage: MessageFns<WebcastCommonToastMessage> = 
     if (message.position !== 0) {
       writer.uint32(64).int32(message.position);
     }
+    if (message.topImg !== undefined) {
+      ImageModel.encode(message.topImg, writer.uint32(74).fork()).join();
+    }
     if (message.topImgWidth !== 0) {
       writer.uint32(80).int32(message.topImgWidth);
+    }
+    if (message.topImgHeight !== 0) {
+      writer.uint32(88).int32(message.topImgHeight);
+    }
+    if (message.showMongoliaLayer !== false) {
+      writer.uint32(96).bool(message.showMongoliaLayer);
     }
     return writer;
   },
@@ -26230,12 +29358,36 @@ export const WebcastCommonToastMessage: MessageFns<WebcastCommonToastMessage> = 
           message.position = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.topImg = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.topImgWidth = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.topImgHeight = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.showMongoliaLayer = reader.bool();
           continue;
         }
       }
@@ -27957,6 +31109,7 @@ function createBaseWebcastGameAiScriptMessage(): WebcastGameAiScriptMessage {
     showDurationOutapp: "0",
     buttonText: undefined,
     titleText: undefined,
+    bizId: "",
     common: undefined,
   };
 }
@@ -27986,6 +31139,9 @@ export const WebcastGameAiScriptMessage: MessageFns<WebcastGameAiScriptMessage> 
     }
     if (message.titleText !== undefined) {
       Text.encode(message.titleText, writer.uint32(66).fork()).join();
+    }
+    if (message.bizId !== "") {
+      writer.uint32(74).string(message.bizId);
     }
     if (message.common !== undefined) {
       CommonMessageData.encode(message.common, writer.uint32(802).fork()).join();
@@ -28062,6 +31218,14 @@ export const WebcastGameAiScriptMessage: MessageFns<WebcastGameAiScriptMessage> 
           }
 
           message.titleText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.bizId = reader.string();
           continue;
         }
         case 100: {
@@ -29048,10 +32212,16 @@ function createBaseWebcastGiftGuideMessage(): WebcastGiftGuideMessage {
     displaySeconds: "0",
     triggerName: "",
     schemaUrl: "",
+    shouldUseConfig: false,
     guidePageResources: [],
+    templateType: "",
+    guideTarget: undefined,
+    biz: "",
     tags: [],
     giftIds: [],
     useServerConfig: false,
+    subTriggerName: "",
+    styleDictate: false,
     styleDictateParams: undefined,
   };
 }
@@ -29082,8 +32252,20 @@ export const WebcastGiftGuideMessage: MessageFns<WebcastGiftGuideMessage> = {
     if (message.schemaUrl !== "") {
       writer.uint32(66).string(message.schemaUrl);
     }
+    if (message.shouldUseConfig !== false) {
+      writer.uint32(72).bool(message.shouldUseConfig);
+    }
     for (const v of message.guidePageResources) {
       GuidePageResource.encode(v!, writer.uint32(82).fork()).join();
+    }
+    if (message.templateType !== "") {
+      writer.uint32(90).string(message.templateType);
+    }
+    if (message.guideTarget !== undefined) {
+      GuideTarget.encode(message.guideTarget, writer.uint32(98).fork()).join();
+    }
+    if (message.biz !== "") {
+      writer.uint32(106).string(message.biz);
     }
     for (const v of message.tags) {
       writer.uint32(114).string(v!);
@@ -29095,6 +32277,12 @@ export const WebcastGiftGuideMessage: MessageFns<WebcastGiftGuideMessage> = {
     writer.join();
     if (message.useServerConfig !== false) {
       writer.uint32(128).bool(message.useServerConfig);
+    }
+    if (message.subTriggerName !== "") {
+      writer.uint32(138).string(message.subTriggerName);
+    }
+    if (message.styleDictate !== false) {
+      writer.uint32(144).bool(message.styleDictate);
     }
     if (message.styleDictateParams !== undefined) {
       StyleDictateParams.encode(message.styleDictateParams, writer.uint32(154).fork()).join();
@@ -29173,12 +32361,44 @@ export const WebcastGiftGuideMessage: MessageFns<WebcastGiftGuideMessage> = {
           message.schemaUrl = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.shouldUseConfig = reader.bool();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.guidePageResources.push(GuidePageResource.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.templateType = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.guideTarget = GuideTarget.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.biz = reader.string();
           continue;
         }
         case 14: {
@@ -29213,6 +32433,22 @@ export const WebcastGiftGuideMessage: MessageFns<WebcastGiftGuideMessage> = {
           }
 
           message.useServerConfig = reader.bool();
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.subTriggerName = reader.string();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.styleDictate = reader.bool();
           continue;
         }
         case 19: {
@@ -29282,7 +32518,15 @@ export const WebcastGiftNoticeMessage: MessageFns<WebcastGiftNoticeMessage> = {
 };
 
 function createBaseWebcastGiftPanelUpdateMessage(): WebcastGiftPanelUpdateMessage {
-  return { common: undefined, roomId: "0", timestamp: "0", galleryData: undefined, strategyContext: "" };
+  return {
+    common: undefined,
+    roomId: "0",
+    timestamp: "0",
+    galleryData: undefined,
+    goalData: undefined,
+    roomBasedGiftData: undefined,
+    strategyContext: "",
+  };
 }
 
 export const WebcastGiftPanelUpdateMessage: MessageFns<WebcastGiftPanelUpdateMessage> = {
@@ -29298,6 +32542,12 @@ export const WebcastGiftPanelUpdateMessage: MessageFns<WebcastGiftPanelUpdateMes
     }
     if (message.galleryData !== undefined) {
       GalleryData.encode(message.galleryData, writer.uint32(82).fork()).join();
+    }
+    if (message.goalData !== undefined) {
+      GoalData.encode(message.goalData, writer.uint32(90).fork()).join();
+    }
+    if (message.roomBasedGiftData !== undefined) {
+      RoomBasedGiftData.encode(message.roomBasedGiftData, writer.uint32(98).fork()).join();
     }
     if (message.strategyContext !== "") {
       writer.uint32(802).string(message.strategyContext);
@@ -29342,6 +32592,22 @@ export const WebcastGiftPanelUpdateMessage: MessageFns<WebcastGiftPanelUpdateMes
           }
 
           message.galleryData = GalleryData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.goalData = GoalData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.roomBasedGiftData = RoomBasedGiftData.decode(reader, reader.uint32());
           continue;
         }
         case 100: {
@@ -30104,6 +33370,7 @@ function createBaseWebcastGuideTaskMessage(): WebcastGuideTaskMessage {
     remindType: "",
     displaySecond: "0",
     taskType: 0,
+    icon: undefined,
   };
 }
 
@@ -30131,6 +33398,9 @@ export const WebcastGuideTaskMessage: MessageFns<WebcastGuideTaskMessage> = {
     }
     if (message.taskType !== 0) {
       writer.uint32(64).int32(message.taskType);
+    }
+    if (message.icon !== undefined) {
+      TPTuxImage.encode(message.icon, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -30206,6 +33476,14 @@ export const WebcastGuideTaskMessage: MessageFns<WebcastGuideTaskMessage> = {
           }
 
           message.taskType = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.icon = TPTuxImage.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -31479,10 +34757,13 @@ function createBaseWebcastLinkMicAnchorGuideMessage(): WebcastLinkMicAnchorGuide
     user: undefined,
     logId: "",
     reserveInfo: undefined,
+    buttonShowType: 0,
     optPairInfo: undefined,
+    userModelPredictionData: [],
     isFollowedByRival: false,
     availableFriendNumber: 0,
     groupChannelId: "0",
+    cohostFollowMessage: undefined,
   };
 }
 
@@ -31512,8 +34793,14 @@ export const WebcastLinkMicAnchorGuideMessage: MessageFns<WebcastLinkMicAnchorGu
     if (message.reserveInfo !== undefined) {
       ReserveInfo.encode(message.reserveInfo, writer.uint32(66).fork()).join();
     }
+    if (message.buttonShowType !== 0) {
+      writer.uint32(72).int32(message.buttonShowType);
+    }
     if (message.optPairInfo !== undefined) {
       OptPairInfo.encode(message.optPairInfo, writer.uint32(82).fork()).join();
+    }
+    for (const v of message.userModelPredictionData) {
+      UserModelPredictionData.encode(v!, writer.uint32(90).fork()).join();
     }
     if (message.isFollowedByRival !== false) {
       writer.uint32(168).bool(message.isFollowedByRival);
@@ -31523,6 +34810,9 @@ export const WebcastLinkMicAnchorGuideMessage: MessageFns<WebcastLinkMicAnchorGu
     }
     if (message.groupChannelId !== "0") {
       writer.uint32(184).int64(message.groupChannelId);
+    }
+    if (message.cohostFollowMessage !== undefined) {
+      CohostFollowMessage.encode(message.cohostFollowMessage, writer.uint32(194).fork()).join();
     }
     return writer;
   },
@@ -31598,12 +34888,28 @@ export const WebcastLinkMicAnchorGuideMessage: MessageFns<WebcastLinkMicAnchorGu
           message.reserveInfo = ReserveInfo.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.buttonShowType = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.optPairInfo = OptPairInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.userModelPredictionData.push(UserModelPredictionData.decode(reader, reader.uint32()));
           continue;
         }
         case 21: {
@@ -31630,6 +34936,137 @@ export const WebcastLinkMicAnchorGuideMessage: MessageFns<WebcastLinkMicAnchorGu
           message.groupChannelId = reader.int64().toString();
           continue;
         }
+        case 24: {
+          if (tag !== 194) {
+            break;
+          }
+
+          message.cohostFollowMessage = CohostFollowMessage.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastLinkMicBattleVictoryLap(): WebcastLinkMicBattleVictoryLap {
+  return {
+    common: undefined,
+    playType: 0,
+    triggerGuide: undefined,
+    playTips: undefined,
+    truthOrDareCloseNotice: undefined,
+    triggerGuideV2: undefined,
+    anchorRegion: "",
+    battleId: "0",
+  };
+}
+
+export const WebcastLinkMicBattleVictoryLap: MessageFns<WebcastLinkMicBattleVictoryLap> = {
+  encode(message: WebcastLinkMicBattleVictoryLap, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.playType !== 0) {
+      writer.uint32(16).int32(message.playType);
+    }
+    if (message.triggerGuide !== undefined) {
+      BattleTruthOrDareTriggerGuide.encode(message.triggerGuide, writer.uint32(26).fork()).join();
+    }
+    if (message.playTips !== undefined) {
+      BattleTruthOrDareTips.encode(message.playTips, writer.uint32(34).fork()).join();
+    }
+    if (message.truthOrDareCloseNotice !== undefined) {
+      BattleTruthOrDareOptOutNotice.encode(message.truthOrDareCloseNotice, writer.uint32(42).fork()).join();
+    }
+    if (message.triggerGuideV2 !== undefined) {
+      BattleTruthOrDareTriggerGuideV2.encode(message.triggerGuideV2, writer.uint32(50).fork()).join();
+    }
+    if (message.anchorRegion !== "") {
+      writer.uint32(82).string(message.anchorRegion);
+    }
+    if (message.battleId !== "0") {
+      writer.uint32(88).int64(message.battleId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastLinkMicBattleVictoryLap {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastLinkMicBattleVictoryLap();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.playType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.triggerGuide = BattleTruthOrDareTriggerGuide.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.playTips = BattleTruthOrDareTips.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.truthOrDareCloseNotice = BattleTruthOrDareOptOutNotice.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.triggerGuideV2 = BattleTruthOrDareTriggerGuideV2.decode(reader, reader.uint32());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.anchorRegion = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.battleId = reader.int64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -31650,16 +35087,16 @@ function createBaseWebcastLinkMicMethod(): WebcastLinkMicMethod {
     fanTicket: "0",
     totalLinkmicFanTicket: "0",
     channelId: "0",
-    layout: "0",
+    layout: 0,
     vendor: 0,
-    dimension: "0",
+    dimension: 0,
     theme: "",
     inviteUid: "0",
     answer: 0,
     startTime: "0",
     duration: 0,
     userScores: [],
-    matchType: "0",
+    matchType: 0,
     win: false,
     prompts: "",
     toUserId: "0",
@@ -31722,14 +35159,14 @@ export const WebcastLinkMicMethod: MessageFns<WebcastLinkMicMethod> = {
     if (message.channelId !== "0") {
       writer.uint32(64).int64(message.channelId);
     }
-    if (message.layout !== "0") {
-      writer.uint32(72).int64(message.layout);
+    if (message.layout !== 0) {
+      writer.uint32(72).int32(message.layout);
     }
     if (message.vendor !== 0) {
       writer.uint32(80).int32(message.vendor);
     }
-    if (message.dimension !== "0") {
-      writer.uint32(88).int64(message.dimension);
+    if (message.dimension !== 0) {
+      writer.uint32(88).int32(message.dimension);
     }
     if (message.theme !== "") {
       writer.uint32(98).string(message.theme);
@@ -31749,8 +35186,8 @@ export const WebcastLinkMicMethod: MessageFns<WebcastLinkMicMethod> = {
     for (const v of message.userScores) {
       writer.uint32(138).bytes(v!);
     }
-    if (message.matchType !== "0") {
-      writer.uint32(144).int64(message.matchType);
+    if (message.matchType !== 0) {
+      writer.uint32(144).int32(message.matchType);
     }
     if (message.win !== false) {
       writer.uint32(152).bool(message.win);
@@ -31930,7 +35367,7 @@ export const WebcastLinkMicMethod: MessageFns<WebcastLinkMicMethod> = {
             break;
           }
 
-          message.layout = reader.int64().toString();
+          message.layout = reader.int32();
           continue;
         }
         case 10: {
@@ -31946,7 +35383,7 @@ export const WebcastLinkMicMethod: MessageFns<WebcastLinkMicMethod> = {
             break;
           }
 
-          message.dimension = reader.int64().toString();
+          message.dimension = reader.int32();
           continue;
         }
         case 12: {
@@ -32002,7 +35439,7 @@ export const WebcastLinkMicMethod: MessageFns<WebcastLinkMicMethod> = {
             break;
           }
 
-          message.matchType = reader.int64().toString();
+          message.matchType = reader.int32();
           continue;
         }
         case 19: {
@@ -32289,7 +35726,11 @@ function createBaseWebcastLinkMicOpponentGifts(): WebcastLinkMicOpponentGifts {
     giftId: "0",
     giftCount: "0",
     giftPrice: "0",
+    giftIconImage: undefined,
     repeatCount: "0",
+    sendGiftSuccessTime: "0",
+    updateBattleScoreTime: "0",
+    logId: "",
     enigmaBattleExtraInfo: undefined,
   };
 }
@@ -32320,8 +35761,20 @@ export const WebcastLinkMicOpponentGifts: MessageFns<WebcastLinkMicOpponentGifts
     if (message.giftPrice !== "0") {
       writer.uint32(64).int64(message.giftPrice);
     }
+    if (message.giftIconImage !== undefined) {
+      ImageModel.encode(message.giftIconImage, writer.uint32(74).fork()).join();
+    }
     if (message.repeatCount !== "0") {
       writer.uint32(80).int64(message.repeatCount);
+    }
+    if (message.sendGiftSuccessTime !== "0") {
+      writer.uint32(88).int64(message.sendGiftSuccessTime);
+    }
+    if (message.updateBattleScoreTime !== "0") {
+      writer.uint32(96).int64(message.updateBattleScoreTime);
+    }
+    if (message.logId !== "") {
+      writer.uint32(106).string(message.logId);
     }
     if (message.enigmaBattleExtraInfo !== undefined) {
       EnigmaBattleExtraInfo.encode(message.enigmaBattleExtraInfo, writer.uint32(114).fork()).join();
@@ -32400,12 +35853,44 @@ export const WebcastLinkMicOpponentGifts: MessageFns<WebcastLinkMicOpponentGifts
           message.giftPrice = reader.int64().toString();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.giftIconImage = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.repeatCount = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.sendGiftSuccessTime = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.updateBattleScoreTime = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.logId = reader.string();
           continue;
         }
         case 14: {
@@ -34104,7 +37589,10 @@ function createBaseWebcastNewPinMessage(): WebcastNewPinMessage {
     method: "",
     pinTime: "0",
     operator: undefined,
+    action: 0,
+    displayDuration: "0",
     pinMsgId: "0",
+    ecStreamerKey: "",
   };
 }
 
@@ -34128,8 +37616,17 @@ export const WebcastNewPinMessage: MessageFns<WebcastNewPinMessage> = {
     if (message.operator !== undefined) {
       User.encode(message.operator, writer.uint32(258).fork()).join();
     }
+    if (message.action !== 0) {
+      writer.uint32(264).int32(message.action);
+    }
+    if (message.displayDuration !== "0") {
+      writer.uint32(272).int64(message.displayDuration);
+    }
     if (message.pinMsgId !== "0") {
       writer.uint32(280).int64(message.pinMsgId);
+    }
+    if (message.ecStreamerKey !== "") {
+      writer.uint32(290).string(message.ecStreamerKey);
     }
     return writer;
   },
@@ -34189,12 +37686,36 @@ export const WebcastNewPinMessage: MessageFns<WebcastNewPinMessage> = {
           message.operator = User.decode(reader, reader.uint32());
           continue;
         }
+        case 33: {
+          if (tag !== 264) {
+            break;
+          }
+
+          message.action = reader.int32();
+          continue;
+        }
+        case 34: {
+          if (tag !== 272) {
+            break;
+          }
+
+          message.displayDuration = reader.int64().toString();
+          continue;
+        }
         case 35: {
           if (tag !== 280) {
             break;
           }
 
           message.pinMsgId = reader.int64().toString();
+          continue;
+        }
+        case 36: {
+          if (tag !== 290) {
+            break;
+          }
+
+          message.ecStreamerKey = reader.string();
           continue;
         }
       }
@@ -34722,6 +38243,7 @@ function createBaseWebcastOECDisplayScriptInfoMessage(): WebcastOECDisplayScript
     title: "",
     script: "",
     timestamp: "0",
+    daInfoMap: {},
   };
 }
 
@@ -34748,6 +38270,10 @@ export const WebcastOECDisplayScriptInfoMessage: MessageFns<WebcastOECDisplayScr
     if (message.timestamp !== "0") {
       writer.uint32(56).int64(message.timestamp);
     }
+    globalThis.Object.entries(message.daInfoMap).forEach(([key, value]: [string, string]) => {
+      WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry.encode({ key: key as any, value }, writer.uint32(66).fork())
+        .join();
+    });
     return writer;
   },
 
@@ -34812,6 +38338,70 @@ export const WebcastOECDisplayScriptInfoMessage: MessageFns<WebcastOECDisplayScr
           }
 
           message.timestamp = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          const entry8 = WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry.decode(reader, reader.uint32());
+          if (entry8.value !== undefined) {
+            message.daInfoMap[entry8.key] = entry8.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastOECDisplayScriptInfoMessage_DaInfoMapEntry(): WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry: MessageFns<
+  WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry
+> = {
+  encode(
+    message: WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastOECDisplayScriptInfoMessage_DaInfoMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastOECDisplayScriptInfoMessage_DaInfoMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -35004,7 +38594,9 @@ function createBaseWebcastOecLiveBillboardMessage(): WebcastOecLiveBillboardMess
     bornTimeMs: "",
     currentDisplayBillboards: [],
     operatedBillboards: [],
+    daInfo: {},
     popUp: undefined,
+    needRequestRefresh: false,
     dispersionInfo: undefined,
   };
 }
@@ -35029,8 +38621,14 @@ export const WebcastOecLiveBillboardMessage: MessageFns<WebcastOecLiveBillboardM
     for (const v of message.operatedBillboards) {
       Billboard.encode(v!, writer.uint32(50).fork()).join();
     }
+    globalThis.Object.entries(message.daInfo).forEach(([key, value]: [string, string]) => {
+      WebcastOecLiveBillboardMessage_DaInfoEntry.encode({ key: key as any, value }, writer.uint32(58).fork()).join();
+    });
     if (message.popUp !== undefined) {
       PopUp.encode(message.popUp, writer.uint32(66).fork()).join();
+    }
+    if (message.needRequestRefresh !== false) {
+      writer.uint32(72).bool(message.needRequestRefresh);
     }
     if (message.dispersionInfo !== undefined) {
       DispersionInfo.encode(message.dispersionInfo, writer.uint32(82).fork()).join();
@@ -35093,6 +38691,17 @@ export const WebcastOecLiveBillboardMessage: MessageFns<WebcastOecLiveBillboardM
           message.operatedBillboards.push(Billboard.decode(reader, reader.uint32()));
           continue;
         }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          const entry7 = WebcastOecLiveBillboardMessage_DaInfoEntry.decode(reader, reader.uint32());
+          if (entry7.value !== undefined) {
+            message.daInfo[entry7.key] = entry7.value;
+          }
+          continue;
+        }
         case 8: {
           if (tag !== 66) {
             break;
@@ -35101,12 +38710,68 @@ export const WebcastOecLiveBillboardMessage: MessageFns<WebcastOecLiveBillboardM
           message.popUp = PopUp.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.needRequestRefresh = reader.bool();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.dispersionInfo = DispersionInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastOecLiveBillboardMessage_DaInfoEntry(): WebcastOecLiveBillboardMessage_DaInfoEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastOecLiveBillboardMessage_DaInfoEntry: MessageFns<WebcastOecLiveBillboardMessage_DaInfoEntry> = {
+  encode(message: WebcastOecLiveBillboardMessage_DaInfoEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastOecLiveBillboardMessage_DaInfoEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastOecLiveBillboardMessage_DaInfoEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -35471,7 +39136,9 @@ function createBaseWebcastOecLiveManagerMessage(): WebcastOecLiveManagerMessage 
     subscriptionInfo: undefined,
     giveawayInfo: undefined,
     askDemoInfo: undefined,
+    violationInfo: undefined,
     auctionResult: undefined,
+    auctionActivityData: undefined,
   };
 }
 
@@ -35495,8 +39162,14 @@ export const WebcastOecLiveManagerMessage: MessageFns<WebcastOecLiveManagerMessa
     if (message.askDemoInfo !== undefined) {
       AskDemoInfo.encode(message.askDemoInfo, writer.uint32(50).fork()).join();
     }
+    if (message.violationInfo !== undefined) {
+      ViolationInfo.encode(message.violationInfo, writer.uint32(74).fork()).join();
+    }
     if (message.auctionResult !== undefined) {
       AuctionResult.encode(message.auctionResult, writer.uint32(82).fork()).join();
+    }
+    if (message.auctionActivityData !== undefined) {
+      AuctionActivityData.encode(message.auctionActivityData, writer.uint32(90).fork()).join();
     }
     return writer;
   },
@@ -35556,12 +39229,28 @@ export const WebcastOecLiveManagerMessage: MessageFns<WebcastOecLiveManagerMessa
           message.askDemoInfo = AskDemoInfo.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.violationInfo = ViolationInfo.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.auctionResult = AuctionResult.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.auctionActivityData = AuctionActivityData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -36953,6 +40642,7 @@ function createBaseWebcastPortalMessage(): WebcastPortalMessage {
     portalInvite: undefined,
     portalFinish: undefined,
     portal: undefined,
+    nextPingTime: "0",
   };
 }
 
@@ -36981,6 +40671,9 @@ export const WebcastPortalMessage: MessageFns<WebcastPortalMessage> = {
     }
     if (message.portal !== undefined) {
       Portal.encode(message.portal, writer.uint32(66).fork()).join();
+    }
+    if (message.nextPingTime !== "0") {
+      writer.uint32(72).int64(message.nextPingTime);
     }
     return writer;
   },
@@ -37054,6 +40747,14 @@ export const WebcastPortalMessage: MessageFns<WebcastPortalMessage> = {
           }
 
           message.portal = Portal.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.nextPingTime = reader.int64().toString();
           continue;
         }
       }
@@ -38025,6 +41726,7 @@ function createBaseWebcastRealtimeLiveCenterMethod(): WebcastRealtimeLiveCenterM
     coldStartStatData: undefined,
     reminderWordInfo: undefined,
     lopInfo: undefined,
+    promoteCoupon: undefined,
     whiteBoxData: undefined,
   };
 }
@@ -38054,6 +41756,9 @@ export const WebcastRealtimeLiveCenterMethod: MessageFns<WebcastRealtimeLiveCent
     }
     if (message.lopInfo !== undefined) {
       RealtimeLiveCenterLopInfo.encode(message.lopInfo, writer.uint32(66).fork()).join();
+    }
+    if (message.promoteCoupon !== undefined) {
+      PromoteCoupon.encode(message.promoteCoupon, writer.uint32(74).fork()).join();
     }
     if (message.whiteBoxData !== undefined) {
       WhiteBoxData.encode(message.whiteBoxData, writer.uint32(82).fork()).join();
@@ -38132,6 +41837,14 @@ export const WebcastRealtimeLiveCenterMethod: MessageFns<WebcastRealtimeLiveCent
           message.lopInfo = RealtimeLiveCenterLopInfo.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.promoteCoupon = PromoteCoupon.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
@@ -38206,6 +41919,8 @@ function createBaseWebcastRoomBottomMessage(): WebcastRoomBottomMessage {
     actionType: "",
     pushMessageDisplayTime: "0",
     actionIcon: undefined,
+    newBackgroundImage: undefined,
+    source: "",
   };
 }
 
@@ -38228,6 +41943,12 @@ export const WebcastRoomBottomMessage: MessageFns<WebcastRoomBottomMessage> = {
     }
     if (message.actionIcon !== undefined) {
       ImageModel.encode(message.actionIcon, writer.uint32(82).fork()).join();
+    }
+    if (message.newBackgroundImage !== undefined) {
+      FlexImageModel.encode(message.newBackgroundImage, writer.uint32(90).fork()).join();
+    }
+    if (message.source !== "") {
+      writer.uint32(98).string(message.source);
     }
     return writer;
   },
@@ -38287,6 +42008,22 @@ export const WebcastRoomBottomMessage: MessageFns<WebcastRoomBottomMessage> = {
           message.actionIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.newBackgroundImage = FlexImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.source = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -38307,6 +42044,7 @@ function createBaseWebcastRoomEventMessage(): WebcastRoomEventMessage {
     posY: "",
     subscribedCount: "0",
     configOpt: 0,
+    eventUserInfo: [],
   };
 }
 
@@ -38335,6 +42073,9 @@ export const WebcastRoomEventMessage: MessageFns<WebcastRoomEventMessage> = {
     }
     if (message.configOpt !== 0) {
       writer.uint32(64).int32(message.configOpt);
+    }
+    for (const v of message.eventUserInfo) {
+      EventUserInfo.encode(v!, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -38410,6 +42151,14 @@ export const WebcastRoomEventMessage: MessageFns<WebcastRoomEventMessage> = {
           message.configOpt = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.eventUserInfo.push(EventUserInfo.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -38430,7 +42179,11 @@ function createBaseWebcastRoomNotifyMessage(): WebcastRoomNotifyMessage {
     extra: undefined,
     notifyClass: 0,
     flexSetting: [],
+    source: "",
     fromUserId: "0",
+    privilegeLogExtra: undefined,
+    toAnchorId: "0",
+    eventTracking: undefined,
   };
 }
 
@@ -38462,8 +42215,20 @@ export const WebcastRoomNotifyMessage: MessageFns<WebcastRoomNotifyMessage> = {
       writer.int64(v);
     }
     writer.join();
+    if (message.source !== "") {
+      writer.uint32(74).string(message.source);
+    }
     if (message.fromUserId !== "0") {
       writer.uint32(80).int64(message.fromUserId);
+    }
+    if (message.privilegeLogExtra !== undefined) {
+      PrivilegeLogExtra.encode(message.privilegeLogExtra, writer.uint32(90).fork()).join();
+    }
+    if (message.toAnchorId !== "0") {
+      writer.uint32(96).int64(message.toAnchorId);
+    }
+    if (message.eventTracking !== undefined) {
+      RoomNotifyMessageEventTracking.encode(message.eventTracking, writer.uint32(106).fork()).join();
     }
     return writer;
   },
@@ -38549,12 +42314,44 @@ export const WebcastRoomNotifyMessage: MessageFns<WebcastRoomNotifyMessage> = {
 
           break;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.source = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.fromUserId = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.privilegeLogExtra = PrivilegeLogExtra.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.toAnchorId = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.eventTracking = RoomNotifyMessageEventTracking.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -38948,6 +42745,65 @@ export const WebcastSMBBoardMessage: MessageFns<WebcastSMBBoardMessage> = {
   },
 };
 
+function createBaseWebcastSMBStateSync(): WebcastSMBStateSync {
+  return { common: undefined, anchorId: "0", smbInfo: undefined };
+}
+
+export const WebcastSMBStateSync: MessageFns<WebcastSMBStateSync> = {
+  encode(message: WebcastSMBStateSync, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.anchorId !== "0") {
+      writer.uint32(16).int64(message.anchorId);
+    }
+    if (message.smbInfo !== undefined) {
+      SMBInfo.encode(message.smbInfo, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastSMBStateSync {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastSMBStateSync();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.smbInfo = SMBInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastScreenChatMessage(): WebcastScreenChatMessage {
   return {
     common: undefined,
@@ -38958,6 +42814,7 @@ function createBaseWebcastScreenChatMessage(): WebcastScreenChatMessage {
     effect: undefined,
     backgroundImage: undefined,
     effectV2: undefined,
+    backgroundImageV2: undefined,
     publicAreaCommon: undefined,
   };
 }
@@ -38987,6 +42844,9 @@ export const WebcastScreenChatMessage: MessageFns<WebcastScreenChatMessage> = {
     }
     if (message.effectV2 !== undefined) {
       CeremonyEffect.encode(message.effectV2, writer.uint32(66).fork()).join();
+    }
+    if (message.backgroundImageV2 !== undefined) {
+      ImageModel.encode(message.backgroundImageV2, writer.uint32(74).fork()).join();
     }
     if (message.publicAreaCommon !== undefined) {
       PublicAreaCommon.encode(message.publicAreaCommon, writer.uint32(82).fork()).join();
@@ -39063,6 +42923,14 @@ export const WebcastScreenChatMessage: MessageFns<WebcastScreenChatMessage> = {
           }
 
           message.effectV2 = CeremonyEffect.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.backgroundImageV2 = ImageModel.decode(reader, reader.uint32());
           continue;
         }
         case 10: {

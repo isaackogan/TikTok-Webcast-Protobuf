@@ -19,7 +19,9 @@ export interface Avatar {
   createdAt: string;
   updatedAt: string;
   status: number;
+  failedTitle: string;
   failedReason: string;
+  isSystem: boolean;
 }
 
 export interface Video {
@@ -40,7 +42,9 @@ function createBaseAvatar(): Avatar {
     createdAt: "0",
     updatedAt: "0",
     status: 0,
+    failedTitle: "",
     failedReason: "",
+    isSystem: false,
   };
 }
 
@@ -70,8 +74,14 @@ export const Avatar: MessageFns<Avatar> = {
     if (message.status !== 0) {
       writer.uint32(64).int32(message.status);
     }
+    if (message.failedTitle !== "") {
+      writer.uint32(74).string(message.failedTitle);
+    }
     if (message.failedReason !== "") {
       writer.uint32(82).string(message.failedReason);
+    }
+    if (message.isSystem !== false) {
+      writer.uint32(96).bool(message.isSystem);
     }
     return writer;
   },
@@ -147,12 +157,28 @@ export const Avatar: MessageFns<Avatar> = {
           message.status = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.failedTitle = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.failedReason = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.isSystem = reader.bool();
           continue;
         }
       }

@@ -8,6 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { ImageModel } from "../base/messages.js";
 import { EnigmaInfo } from "../base/user.js";
+import { User } from "../base/user_2.js";
 import { MicPositionData } from "../message/linkcore_mic_position_data.js";
 
 export const protobufPackage = "webcast.model.data.multi_guest_play";
@@ -69,6 +70,20 @@ export interface CountdownForAllContent {
   startTime: string;
   endTime: string;
   playConfig: CountdownForAllConfig | undefined;
+  playUsers: CountdownForAllUser[];
+}
+
+export interface CountdownForAllUser {
+  userId: string;
+  linkmicId: string;
+  score: string;
+  rank: number;
+  user: User | undefined;
+  nickname: string;
+  displayId: string;
+  avatarThumb: ImageModel | undefined;
+  completionProgressPercent: number;
+  enigmaInfo: EnigmaInfo | undefined;
 }
 
 export interface CountdownUser {
@@ -101,7 +116,10 @@ export interface GuestShowdownContent {
   partyStartTime: string;
   punishmentStartTime: string;
   playConfig: GuestShowdownConfig | undefined;
+  runningPlayUsers: GuestShowdownUser[];
   leavePlayUsers: GuestShowdownUser[];
+  streamId: string;
+  runningStep: number;
 }
 
 export interface GuestShowdownUser {
@@ -113,6 +131,7 @@ export interface GuestShowdownUser {
   displayId: string;
   avatarThumb: ImageModel | undefined;
   userTag: number;
+  iconName: string;
   enigmaInfo: EnigmaInfo | undefined;
 }
 
@@ -125,7 +144,20 @@ export interface NoticeboardContent {
   position: MicPositionData | undefined;
   streamId: string;
   startTime: string;
+  endTime: string;
   passedMediaNodeId: string;
+  lastReviewInfo: NoticeboardReviewInfo | undefined;
+  version: string;
+}
+
+export interface NoticeboardReviewInfo {
+  mediaNodeId: string;
+  reviewStatus: number;
+}
+
+export interface PlaybookGroup {
+  groupId: string;
+  lastActorUserId: string;
 }
 
 export interface ShowConfig {
@@ -156,6 +188,7 @@ export interface ShowListUser {
   avatarThumb: ImageModel | undefined;
   score: string;
   linkmicIdStr: string;
+  enigmaInfo: EnigmaInfo | undefined;
 }
 
 export interface TextHeaderMaterialInfo {
@@ -173,6 +206,7 @@ export interface TextHeaderPlayContent {
   endTime: string;
   runningTextHeaderInfo: TextHeaderRecordInfo | undefined;
   selectedTextHeaderInfo: TextHeaderRecordInfo | undefined;
+  version: string;
 }
 
 export interface TextHeaderRecordInfo {
@@ -210,6 +244,7 @@ export interface WallpaperContent {
   playUserId: string;
   wallpaperUrl: string;
   finishedUserList: WallpaperContext[];
+  playUserList: WallpaperContext[];
 }
 
 export interface WallpaperContext {
@@ -473,6 +508,7 @@ function createBaseCountdownForAllContent(): CountdownForAllContent {
     startTime: "0",
     endTime: "0",
     playConfig: undefined,
+    playUsers: [],
   };
 }
 
@@ -501,6 +537,9 @@ export const CountdownForAllContent: MessageFns<CountdownForAllContent> = {
     }
     if (message.playConfig !== undefined) {
       CountdownForAllConfig.encode(message.playConfig, writer.uint32(66).fork()).join();
+    }
+    for (const v of message.playUsers) {
+      CountdownForAllUser.encode(v!, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -574,6 +613,161 @@ export const CountdownForAllContent: MessageFns<CountdownForAllContent> = {
           }
 
           message.playConfig = CountdownForAllConfig.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.playUsers.push(CountdownForAllUser.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCountdownForAllUser(): CountdownForAllUser {
+  return {
+    userId: "0",
+    linkmicId: "",
+    score: "0",
+    rank: 0,
+    user: undefined,
+    nickname: "",
+    displayId: "",
+    avatarThumb: undefined,
+    completionProgressPercent: 0,
+    enigmaInfo: undefined,
+  };
+}
+
+export const CountdownForAllUser: MessageFns<CountdownForAllUser> = {
+  encode(message: CountdownForAllUser, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "0") {
+      writer.uint32(8).int64(message.userId);
+    }
+    if (message.linkmicId !== "") {
+      writer.uint32(18).string(message.linkmicId);
+    }
+    if (message.score !== "0") {
+      writer.uint32(24).int64(message.score);
+    }
+    if (message.rank !== 0) {
+      writer.uint32(32).int32(message.rank);
+    }
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(42).fork()).join();
+    }
+    if (message.nickname !== "") {
+      writer.uint32(50).string(message.nickname);
+    }
+    if (message.displayId !== "") {
+      writer.uint32(58).string(message.displayId);
+    }
+    if (message.avatarThumb !== undefined) {
+      ImageModel.encode(message.avatarThumb, writer.uint32(66).fork()).join();
+    }
+    if (message.completionProgressPercent !== 0) {
+      writer.uint32(72).int32(message.completionProgressPercent);
+    }
+    if (message.enigmaInfo !== undefined) {
+      EnigmaInfo.encode(message.enigmaInfo, writer.uint32(82).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CountdownForAllUser {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCountdownForAllUser();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.linkmicId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.score = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.rank = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.nickname = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.displayId = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.avatarThumb = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.completionProgressPercent = reader.int32();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.enigmaInfo = EnigmaInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -806,7 +1000,10 @@ function createBaseGuestShowdownContent(): GuestShowdownContent {
     partyStartTime: "0",
     punishmentStartTime: "0",
     playConfig: undefined,
+    runningPlayUsers: [],
     leavePlayUsers: [],
+    streamId: "",
+    runningStep: 0,
   };
 }
 
@@ -836,8 +1033,17 @@ export const GuestShowdownContent: MessageFns<GuestShowdownContent> = {
     if (message.playConfig !== undefined) {
       GuestShowdownConfig.encode(message.playConfig, writer.uint32(66).fork()).join();
     }
+    for (const v of message.runningPlayUsers) {
+      GuestShowdownUser.encode(v!, writer.uint32(74).fork()).join();
+    }
     for (const v of message.leavePlayUsers) {
       GuestShowdownUser.encode(v!, writer.uint32(82).fork()).join();
+    }
+    if (message.streamId !== "") {
+      writer.uint32(90).string(message.streamId);
+    }
+    if (message.runningStep !== 0) {
+      writer.uint32(96).int32(message.runningStep);
     }
     return writer;
   },
@@ -913,12 +1119,36 @@ export const GuestShowdownContent: MessageFns<GuestShowdownContent> = {
           message.playConfig = GuestShowdownConfig.decode(reader, reader.uint32());
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.runningPlayUsers.push(GuestShowdownUser.decode(reader, reader.uint32()));
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.leavePlayUsers.push(GuestShowdownUser.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.streamId = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.runningStep = reader.int32();
           continue;
         }
       }
@@ -941,6 +1171,7 @@ function createBaseGuestShowdownUser(): GuestShowdownUser {
     displayId: "",
     avatarThumb: undefined,
     userTag: 0,
+    iconName: "",
     enigmaInfo: undefined,
   };
 }
@@ -970,6 +1201,9 @@ export const GuestShowdownUser: MessageFns<GuestShowdownUser> = {
     }
     if (message.userTag !== 0) {
       writer.uint32(64).int32(message.userTag);
+    }
+    if (message.iconName !== "") {
+      writer.uint32(74).string(message.iconName);
     }
     if (message.enigmaInfo !== undefined) {
       EnigmaInfo.encode(message.enigmaInfo, writer.uint32(82).fork()).join();
@@ -1048,6 +1282,14 @@ export const GuestShowdownUser: MessageFns<GuestShowdownUser> = {
           message.userTag = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.iconName = reader.string();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
@@ -1076,7 +1318,10 @@ function createBaseNoticeboardContent(): NoticeboardContent {
     position: undefined,
     streamId: "",
     startTime: "0",
+    endTime: "0",
     passedMediaNodeId: "",
+    lastReviewInfo: undefined,
+    version: "0",
   };
 }
 
@@ -1106,8 +1351,17 @@ export const NoticeboardContent: MessageFns<NoticeboardContent> = {
     if (message.startTime !== "0") {
       writer.uint32(64).int64(message.startTime);
     }
+    if (message.endTime !== "0") {
+      writer.uint32(72).int64(message.endTime);
+    }
     if (message.passedMediaNodeId !== "") {
       writer.uint32(82).string(message.passedMediaNodeId);
+    }
+    if (message.lastReviewInfo !== undefined) {
+      NoticeboardReviewInfo.encode(message.lastReviewInfo, writer.uint32(90).fork()).join();
+    }
+    if (message.version !== "0") {
+      writer.uint32(96).int64(message.version);
     }
     return writer;
   },
@@ -1183,12 +1437,132 @@ export const NoticeboardContent: MessageFns<NoticeboardContent> = {
           message.startTime = reader.int64().toString();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.endTime = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.passedMediaNodeId = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.lastReviewInfo = NoticeboardReviewInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.version = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseNoticeboardReviewInfo(): NoticeboardReviewInfo {
+  return { mediaNodeId: "", reviewStatus: 0 };
+}
+
+export const NoticeboardReviewInfo: MessageFns<NoticeboardReviewInfo> = {
+  encode(message: NoticeboardReviewInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.mediaNodeId !== "") {
+      writer.uint32(10).string(message.mediaNodeId);
+    }
+    if (message.reviewStatus !== 0) {
+      writer.uint32(16).int32(message.reviewStatus);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): NoticeboardReviewInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNoticeboardReviewInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.mediaNodeId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.reviewStatus = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePlaybookGroup(): PlaybookGroup {
+  return { groupId: "0", lastActorUserId: "0" };
+}
+
+export const PlaybookGroup: MessageFns<PlaybookGroup> = {
+  encode(message: PlaybookGroup, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.groupId !== "0") {
+      writer.uint32(8).int64(message.groupId);
+    }
+    if (message.lastActorUserId !== "0") {
+      writer.uint32(16).int64(message.lastActorUserId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PlaybookGroup {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePlaybookGroup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.groupId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.lastActorUserId = reader.int64().toString();
           continue;
         }
       }
@@ -1417,6 +1791,7 @@ function createBaseShowListUser(): ShowListUser {
     avatarThumb: undefined,
     score: "0",
     linkmicIdStr: "",
+    enigmaInfo: undefined,
   };
 }
 
@@ -1445,6 +1820,9 @@ export const ShowListUser: MessageFns<ShowListUser> = {
     }
     if (message.linkmicIdStr !== "") {
       writer.uint32(66).string(message.linkmicIdStr);
+    }
+    if (message.enigmaInfo !== undefined) {
+      EnigmaInfo.encode(message.enigmaInfo, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -1518,6 +1896,14 @@ export const ShowListUser: MessageFns<ShowListUser> = {
           }
 
           message.linkmicIdStr = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.enigmaInfo = EnigmaInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1609,6 +1995,7 @@ function createBaseTextHeaderPlayContent(): TextHeaderPlayContent {
     endTime: "0",
     runningTextHeaderInfo: undefined,
     selectedTextHeaderInfo: undefined,
+    version: "0",
   };
 }
 
@@ -1634,6 +2021,9 @@ export const TextHeaderPlayContent: MessageFns<TextHeaderPlayContent> = {
     }
     if (message.selectedTextHeaderInfo !== undefined) {
       TextHeaderRecordInfo.encode(message.selectedTextHeaderInfo, writer.uint32(66).fork()).join();
+    }
+    if (message.version !== "0") {
+      writer.uint32(72).int64(message.version);
     }
     return writer;
   },
@@ -1699,6 +2089,14 @@ export const TextHeaderPlayContent: MessageFns<TextHeaderPlayContent> = {
           }
 
           message.selectedTextHeaderInfo = TextHeaderRecordInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.version = reader.int64().toString();
           continue;
         }
       }
@@ -1993,6 +2391,7 @@ function createBaseWallpaperContent(): WallpaperContent {
     playUserId: "0",
     wallpaperUrl: "",
     finishedUserList: [],
+    playUserList: [],
   };
 }
 
@@ -2021,6 +2420,9 @@ export const WallpaperContent: MessageFns<WallpaperContent> = {
     }
     for (const v of message.finishedUserList) {
       WallpaperContext.encode(v!, writer.uint32(66).fork()).join();
+    }
+    for (const v of message.playUserList) {
+      WallpaperContext.encode(v!, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -2094,6 +2496,14 @@ export const WallpaperContent: MessageFns<WallpaperContent> = {
           }
 
           message.finishedUserList.push(WallpaperContext.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.playUserList.push(WallpaperContext.decode(reader, reader.uint32()));
           continue;
         }
       }

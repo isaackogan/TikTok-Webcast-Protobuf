@@ -259,6 +259,22 @@ export enum StateType {
   UNRECOGNIZED = -1,
 }
 
+export interface AnchorLayoutSetting {
+  latestLayoutStyle: LayoutStyle;
+  layoutStyleSettings: AnchorLayoutStyleSetting[];
+  panelLayoutTypeSetting: AnchorPanelLayoutTypeSetting[];
+}
+
+export interface AnchorLayoutStyleSetting {
+  layoutStyle: LayoutStyle;
+  maxPosition: number;
+}
+
+export interface AnchorPanelLayoutTypeSetting {
+  panelLayoutType: number;
+  maxPosition: number;
+}
+
 export interface AvatarState {
   avatarId: string;
 }
@@ -341,6 +357,7 @@ export interface LinkUserState {
   rtcConnection: RtcConnectionState;
   networkState: NetworkState;
   avatar: AvatarState | undefined;
+  linkerSessionId: string;
 }
 
 export interface LinkerMediaChangeOperator {
@@ -420,6 +437,161 @@ export interface SpotInfo {
   multiGuestSpotExtra: MultiGuestSpotExtra | undefined;
   multiGuestSpotNonSeiExtra: MultiGuestSpotNonSeiExtra | undefined;
 }
+
+function createBaseAnchorLayoutSetting(): AnchorLayoutSetting {
+  return { latestLayoutStyle: 0, layoutStyleSettings: [], panelLayoutTypeSetting: [] };
+}
+
+export const AnchorLayoutSetting: MessageFns<AnchorLayoutSetting> = {
+  encode(message: AnchorLayoutSetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.latestLayoutStyle !== 0) {
+      writer.uint32(8).int32(message.latestLayoutStyle);
+    }
+    for (const v of message.layoutStyleSettings) {
+      AnchorLayoutStyleSetting.encode(v!, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.panelLayoutTypeSetting) {
+      AnchorPanelLayoutTypeSetting.encode(v!, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorLayoutSetting {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorLayoutSetting();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.latestLayoutStyle = reader.int32() as any;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.layoutStyleSettings.push(AnchorLayoutStyleSetting.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.panelLayoutTypeSetting.push(AnchorPanelLayoutTypeSetting.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAnchorLayoutStyleSetting(): AnchorLayoutStyleSetting {
+  return { layoutStyle: 0, maxPosition: 0 };
+}
+
+export const AnchorLayoutStyleSetting: MessageFns<AnchorLayoutStyleSetting> = {
+  encode(message: AnchorLayoutStyleSetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.layoutStyle !== 0) {
+      writer.uint32(8).int32(message.layoutStyle);
+    }
+    if (message.maxPosition !== 0) {
+      writer.uint32(16).int32(message.maxPosition);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorLayoutStyleSetting {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorLayoutStyleSetting();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.layoutStyle = reader.int32() as any;
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxPosition = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAnchorPanelLayoutTypeSetting(): AnchorPanelLayoutTypeSetting {
+  return { panelLayoutType: 0, maxPosition: 0 };
+}
+
+export const AnchorPanelLayoutTypeSetting: MessageFns<AnchorPanelLayoutTypeSetting> = {
+  encode(message: AnchorPanelLayoutTypeSetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.panelLayoutType !== 0) {
+      writer.uint32(8).int32(message.panelLayoutType);
+    }
+    if (message.maxPosition !== 0) {
+      writer.uint32(16).int32(message.maxPosition);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorPanelLayoutTypeSetting {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorPanelLayoutTypeSetting();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.panelLayoutType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxPosition = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 function createBaseAvatarState(): AvatarState {
   return { avatarId: "0" };
@@ -1167,6 +1339,7 @@ function createBaseLinkUserState(): LinkUserState {
     rtcConnection: 0,
     networkState: 0,
     avatar: undefined,
+    linkerSessionId: "",
   };
 }
 
@@ -1201,6 +1374,9 @@ export const LinkUserState: MessageFns<LinkUserState> = {
     }
     if (message.avatar !== undefined) {
       AvatarState.encode(message.avatar, writer.uint32(82).fork()).join();
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(90).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -1290,6 +1466,14 @@ export const LinkUserState: MessageFns<LinkUserState> = {
           }
 
           message.avatar = AvatarState.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }

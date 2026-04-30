@@ -60,6 +60,7 @@ export interface LinkerRandomMatchContent {
   sourceType: string;
   groupChannelId: string;
   playType: LinkmicPlayType;
+  pairedTime: string;
 }
 
 function createBaseLinkerAcceptNoticeContent(): LinkerAcceptNoticeContent {
@@ -426,6 +427,7 @@ function createBaseLinkerRandomMatchContent(): LinkerRandomMatchContent {
     sourceType: "0",
     groupChannelId: "0",
     playType: 0,
+    pairedTime: "0",
   };
 }
 
@@ -454,6 +456,9 @@ export const LinkerRandomMatchContent: MessageFns<LinkerRandomMatchContent> = {
     }
     if (message.playType !== 0) {
       writer.uint32(64).int32(message.playType);
+    }
+    if (message.pairedTime !== "0") {
+      writer.uint32(72).int64(message.pairedTime);
     }
     return writer;
   },
@@ -527,6 +532,14 @@ export const LinkerRandomMatchContent: MessageFns<LinkerRandomMatchContent> = {
           }
 
           message.playType = reader.int32() as any;
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.pairedTime = reader.int64().toString();
           continue;
         }
       }

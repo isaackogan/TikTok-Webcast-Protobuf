@@ -8,9 +8,14 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { ImageModel } from "../base/messages.js";
 import { BattleABTestType, EffectStruct, IceShowdownSetting } from "../data/messages.js";
+import { BattleUserArmies } from "../message/battle.js";
 import { Text } from "../message/common.js";
 
 export const protobufPackage = "webcast.model.live.match";
+
+export interface AnchorMatchSettings {
+  enableAiCommentary: boolean;
+}
 
 export interface BattleABTest {
   abTestType: BattleABTestType;
@@ -40,13 +45,22 @@ export interface BattleBonusConfig {
   previewConfig: PreviewPeriod[];
   targetConfig: TaskPeriodConfig | undefined;
   rewardConfig: RewardPeriodConfig | undefined;
+  giftAmountGuide: { [key: string]: BattleTaskGiftAmountGuide };
   previewStartTimestamp: string;
   previewClickActionSchemaUrl: string;
+}
+
+export interface BattleBonusConfig_GiftAmountGuideEntry {
+  key: string;
+  value: BattleTaskGiftAmountGuide | undefined;
 }
 
 export interface BattleBonusStatus {
   bonusPeriod: number;
   enterRoomPrompt: BattlePrompt | undefined;
+  progress: string;
+  userAssisted: boolean;
+  rewardSettlePrompt: BattlePrompt | undefined;
   rewardSettleDuration: string;
   rewardSettleStatus: string;
 }
@@ -99,6 +113,17 @@ export interface BattleTask {
   battleBonusStatus: BattleBonusStatus | undefined;
 }
 
+export interface BattleTaskGiftAmountGuide {
+  guidePrompt: BattlePrompt | undefined;
+  promptType: number;
+  disappearDuration: number;
+  iconImage: ImageModel | undefined;
+  giftImage: ImageModel | undefined;
+  recommendGiftId: string;
+  recommendGiftCount: number;
+  guideContent: Text | undefined;
+}
+
 export interface BattleTeamResult {
   teamId: string;
   teamUser: BattleTeamUser[];
@@ -113,6 +138,22 @@ export interface BattleTeamUser {
   score: string;
   userIdStr: string;
   enigmaScore: string;
+}
+
+export interface BattleTeamUserArmies {
+  teamId: string;
+  teamUser: BattleTeamUser[];
+  teamTotalScore: string;
+  userArmies: BattleUserArmies | undefined;
+  hostRank: string;
+  teamTotalEnigmaScore: string;
+  teamTotalEnigmaUv: string;
+  hostVisibleRankFromTeamId: { [key: string]: string };
+}
+
+export interface BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+  key: string;
+  value: string;
 }
 
 export interface BattleTruthOrDare {
@@ -165,6 +206,18 @@ export interface CriticalStrikeCardInfo {
   toAnchorIdStr: string;
 }
 
+export interface EffectingCard {
+  criticalStrikeCards: CriticalStrikeCardInfo[];
+  smokeCards: SmokeCardInfo[];
+  extraTimeCards: ExtraTimeCardInfo[];
+  specialEffectCards: SpecialEffectCardInfo[];
+  potionCards: PotionCardInfo[];
+  waveCards: WaveCardInfo[];
+  top2Cards: Top2CardInfo[];
+  top3Cards: Top3CardInfo[];
+  vaultGlovesCards: VaultGloveCardInfo[];
+}
+
 export interface EnigmaBattleExtraInfo {
   hasStarted: boolean;
   isGiftFromEnigma: boolean;
@@ -206,6 +259,15 @@ export interface IceShowdownInfo {
   settingType: IceShowdownSetting;
   promptTimeMs: string;
   startTimeMs: string;
+}
+
+export interface LeagueScoreInfo {
+  estimatedScore: string;
+  isOptOut: boolean;
+  isActivityPeriod: boolean;
+  contentText: Text | undefined;
+  classOptOut: boolean;
+  contentTextOpen: Text | undefined;
 }
 
 export interface MatchPunishEffectInfo {
@@ -270,6 +332,9 @@ export interface RewardPeriodConfig {
   duration: string;
   rewardMultiple: number;
   rewardStartTimestamp: string;
+  rewardPreparePrompt: BattlePrompt | undefined;
+  rewardingPrompt: BattlePrompt | undefined;
+  clickPrompt: BattlePrompt | undefined;
 }
 
 export interface SmokeCardInfo {
@@ -305,6 +370,7 @@ export interface TaskPeriodConfig {
   promptType: number;
   staticPrompt: BattlePrompt | undefined;
   progressTarget: string;
+  targetType: number;
   iconImage: ImageModel | undefined;
   clickActionSchemaUrl: string;
 }
@@ -342,6 +408,43 @@ export interface WaveCardInfo {
   effectTimeSec: string;
   toAnchorId: string;
 }
+
+function createBaseAnchorMatchSettings(): AnchorMatchSettings {
+  return { enableAiCommentary: false };
+}
+
+export const AnchorMatchSettings: MessageFns<AnchorMatchSettings> = {
+  encode(message: AnchorMatchSettings, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.enableAiCommentary !== false) {
+      writer.uint32(8).bool(message.enableAiCommentary);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorMatchSettings {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorMatchSettings();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.enableAiCommentary = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 function createBaseBattleABTest(): BattleABTest {
   return { abTestType: 0, group: 0 };
@@ -574,6 +677,7 @@ function createBaseBattleBonusConfig(): BattleBonusConfig {
     previewConfig: [],
     targetConfig: undefined,
     rewardConfig: undefined,
+    giftAmountGuide: {},
     previewStartTimestamp: "0",
     previewClickActionSchemaUrl: "",
   };
@@ -593,6 +697,9 @@ export const BattleBonusConfig: MessageFns<BattleBonusConfig> = {
     if (message.rewardConfig !== undefined) {
       RewardPeriodConfig.encode(message.rewardConfig, writer.uint32(34).fork()).join();
     }
+    globalThis.Object.entries(message.giftAmountGuide).forEach(([key, value]: [string, BattleTaskGiftAmountGuide]) => {
+      BattleBonusConfig_GiftAmountGuideEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     if (message.previewStartTimestamp !== "0") {
       writer.uint32(48).int64(message.previewStartTimestamp);
     }
@@ -641,6 +748,17 @@ export const BattleBonusConfig: MessageFns<BattleBonusConfig> = {
           message.rewardConfig = RewardPeriodConfig.decode(reader, reader.uint32());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = BattleBonusConfig_GiftAmountGuideEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.giftAmountGuide[entry5.key] = entry5.value;
+          }
+          continue;
+        }
         case 6: {
           if (tag !== 48) {
             break;
@@ -667,8 +785,64 @@ export const BattleBonusConfig: MessageFns<BattleBonusConfig> = {
   },
 };
 
+function createBaseBattleBonusConfig_GiftAmountGuideEntry(): BattleBonusConfig_GiftAmountGuideEntry {
+  return { key: "0", value: undefined };
+}
+
+export const BattleBonusConfig_GiftAmountGuideEntry: MessageFns<BattleBonusConfig_GiftAmountGuideEntry> = {
+  encode(message: BattleBonusConfig_GiftAmountGuideEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      BattleTaskGiftAmountGuide.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleBonusConfig_GiftAmountGuideEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleBonusConfig_GiftAmountGuideEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = BattleTaskGiftAmountGuide.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseBattleBonusStatus(): BattleBonusStatus {
-  return { bonusPeriod: 0, enterRoomPrompt: undefined, rewardSettleDuration: "0", rewardSettleStatus: "0" };
+  return {
+    bonusPeriod: 0,
+    enterRoomPrompt: undefined,
+    progress: "0",
+    userAssisted: false,
+    rewardSettlePrompt: undefined,
+    rewardSettleDuration: "0",
+    rewardSettleStatus: "0",
+  };
 }
 
 export const BattleBonusStatus: MessageFns<BattleBonusStatus> = {
@@ -678,6 +852,15 @@ export const BattleBonusStatus: MessageFns<BattleBonusStatus> = {
     }
     if (message.enterRoomPrompt !== undefined) {
       BattlePrompt.encode(message.enterRoomPrompt, writer.uint32(18).fork()).join();
+    }
+    if (message.progress !== "0") {
+      writer.uint32(88).int64(message.progress);
+    }
+    if (message.userAssisted !== false) {
+      writer.uint32(96).bool(message.userAssisted);
+    }
+    if (message.rewardSettlePrompt !== undefined) {
+      BattlePrompt.encode(message.rewardSettlePrompt, writer.uint32(106).fork()).join();
     }
     if (message.rewardSettleDuration !== "0") {
       writer.uint32(112).int64(message.rewardSettleDuration);
@@ -709,6 +892,30 @@ export const BattleBonusStatus: MessageFns<BattleBonusStatus> = {
           }
 
           message.enterRoomPrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.progress = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.userAssisted = reader.bool();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.rewardSettlePrompt = BattlePrompt.decode(reader, reader.uint32());
           continue;
         }
         case 14: {
@@ -1218,6 +1425,129 @@ export const BattleTask: MessageFns<BattleTask> = {
   },
 };
 
+function createBaseBattleTaskGiftAmountGuide(): BattleTaskGiftAmountGuide {
+  return {
+    guidePrompt: undefined,
+    promptType: 0,
+    disappearDuration: 0,
+    iconImage: undefined,
+    giftImage: undefined,
+    recommendGiftId: "0",
+    recommendGiftCount: 0,
+    guideContent: undefined,
+  };
+}
+
+export const BattleTaskGiftAmountGuide: MessageFns<BattleTaskGiftAmountGuide> = {
+  encode(message: BattleTaskGiftAmountGuide, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.guidePrompt !== undefined) {
+      BattlePrompt.encode(message.guidePrompt, writer.uint32(10).fork()).join();
+    }
+    if (message.promptType !== 0) {
+      writer.uint32(16).int32(message.promptType);
+    }
+    if (message.disappearDuration !== 0) {
+      writer.uint32(24).int32(message.disappearDuration);
+    }
+    if (message.iconImage !== undefined) {
+      ImageModel.encode(message.iconImage, writer.uint32(90).fork()).join();
+    }
+    if (message.giftImage !== undefined) {
+      ImageModel.encode(message.giftImage, writer.uint32(98).fork()).join();
+    }
+    if (message.recommendGiftId !== "0") {
+      writer.uint32(168).int64(message.recommendGiftId);
+    }
+    if (message.recommendGiftCount !== 0) {
+      writer.uint32(176).int32(message.recommendGiftCount);
+    }
+    if (message.guideContent !== undefined) {
+      Text.encode(message.guideContent, writer.uint32(186).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleTaskGiftAmountGuide {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleTaskGiftAmountGuide();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.guidePrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.promptType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.disappearDuration = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.iconImage = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.giftImage = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 21: {
+          if (tag !== 168) {
+            break;
+          }
+
+          message.recommendGiftId = reader.int64().toString();
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.recommendGiftCount = reader.int32();
+          continue;
+        }
+        case 23: {
+          if (tag !== 186) {
+            break;
+          }
+
+          message.guideContent = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseBattleTeamResult(): BattleTeamResult {
   return { teamId: "0", teamUser: [], result: 0, totalScore: "0", totalEnigmaScore: "0", totalEnigmaUv: "0" };
 }
@@ -1368,6 +1698,186 @@ export const BattleTeamUser: MessageFns<BattleTeamUser> = {
           }
 
           message.enigmaScore = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleTeamUserArmies(): BattleTeamUserArmies {
+  return {
+    teamId: "0",
+    teamUser: [],
+    teamTotalScore: "0",
+    userArmies: undefined,
+    hostRank: "0",
+    teamTotalEnigmaScore: "0",
+    teamTotalEnigmaUv: "0",
+    hostVisibleRankFromTeamId: {},
+  };
+}
+
+export const BattleTeamUserArmies: MessageFns<BattleTeamUserArmies> = {
+  encode(message: BattleTeamUserArmies, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.teamId !== "0") {
+      writer.uint32(8).int64(message.teamId);
+    }
+    for (const v of message.teamUser) {
+      BattleTeamUser.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.teamTotalScore !== "0") {
+      writer.uint32(24).int64(message.teamTotalScore);
+    }
+    if (message.userArmies !== undefined) {
+      BattleUserArmies.encode(message.userArmies, writer.uint32(34).fork()).join();
+    }
+    if (message.hostRank !== "0") {
+      writer.uint32(40).int64(message.hostRank);
+    }
+    if (message.teamTotalEnigmaScore !== "0") {
+      writer.uint32(48).int64(message.teamTotalEnigmaScore);
+    }
+    if (message.teamTotalEnigmaUv !== "0") {
+      writer.uint32(56).int64(message.teamTotalEnigmaUv);
+    }
+    globalThis.Object.entries(message.hostVisibleRankFromTeamId).forEach(([key, value]: [string, string]) => {
+      BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry.encode({ key: key as any, value }, writer.uint32(66).fork())
+        .join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleTeamUserArmies {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleTeamUserArmies();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.teamId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.teamUser.push(BattleTeamUser.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.teamTotalScore = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.userArmies = BattleUserArmies.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.hostRank = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.teamTotalEnigmaScore = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.teamTotalEnigmaUv = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          const entry8 = BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry.decode(reader, reader.uint32());
+          if (entry8.value !== undefined) {
+            message.hostVisibleRankFromTeamId[entry8.key] = entry8.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleTeamUserArmies_HostVisibleRankFromTeamIdEntry(): BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+  return { key: "0", value: "0" };
+}
+
+export const BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry: MessageFns<
+  BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry
+> = {
+  encode(
+    message: BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== "0") {
+      writer.uint32(16).int64(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleTeamUserArmies_HostVisibleRankFromTeamIdEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleTeamUserArmies_HostVisibleRankFromTeamIdEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int64().toString();
           continue;
         }
       }
@@ -1912,6 +2422,141 @@ export const CriticalStrikeCardInfo: MessageFns<CriticalStrikeCardInfo> = {
   },
 };
 
+function createBaseEffectingCard(): EffectingCard {
+  return {
+    criticalStrikeCards: [],
+    smokeCards: [],
+    extraTimeCards: [],
+    specialEffectCards: [],
+    potionCards: [],
+    waveCards: [],
+    top2Cards: [],
+    top3Cards: [],
+    vaultGlovesCards: [],
+  };
+}
+
+export const EffectingCard: MessageFns<EffectingCard> = {
+  encode(message: EffectingCard, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.criticalStrikeCards) {
+      CriticalStrikeCardInfo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.smokeCards) {
+      SmokeCardInfo.encode(v!, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.extraTimeCards) {
+      ExtraTimeCardInfo.encode(v!, writer.uint32(26).fork()).join();
+    }
+    for (const v of message.specialEffectCards) {
+      SpecialEffectCardInfo.encode(v!, writer.uint32(34).fork()).join();
+    }
+    for (const v of message.potionCards) {
+      PotionCardInfo.encode(v!, writer.uint32(42).fork()).join();
+    }
+    for (const v of message.waveCards) {
+      WaveCardInfo.encode(v!, writer.uint32(50).fork()).join();
+    }
+    for (const v of message.top2Cards) {
+      Top2CardInfo.encode(v!, writer.uint32(58).fork()).join();
+    }
+    for (const v of message.top3Cards) {
+      Top3CardInfo.encode(v!, writer.uint32(66).fork()).join();
+    }
+    for (const v of message.vaultGlovesCards) {
+      VaultGloveCardInfo.encode(v!, writer.uint32(74).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EffectingCard {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEffectingCard();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.criticalStrikeCards.push(CriticalStrikeCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.smokeCards.push(SmokeCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.extraTimeCards.push(ExtraTimeCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.specialEffectCards.push(SpecialEffectCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.potionCards.push(PotionCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.waveCards.push(WaveCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.top2Cards.push(Top2CardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.top3Cards.push(Top3CardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.vaultGlovesCards.push(VaultGloveCardInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseEnigmaBattleExtraInfo(): EnigmaBattleExtraInfo {
   return { hasStarted: false, isGiftFromEnigma: false };
 }
@@ -2354,6 +2999,105 @@ export const IceShowdownInfo: MessageFns<IceShowdownInfo> = {
           }
 
           message.startTimeMs = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLeagueScoreInfo(): LeagueScoreInfo {
+  return {
+    estimatedScore: "0",
+    isOptOut: false,
+    isActivityPeriod: false,
+    contentText: undefined,
+    classOptOut: false,
+    contentTextOpen: undefined,
+  };
+}
+
+export const LeagueScoreInfo: MessageFns<LeagueScoreInfo> = {
+  encode(message: LeagueScoreInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.estimatedScore !== "0") {
+      writer.uint32(8).int64(message.estimatedScore);
+    }
+    if (message.isOptOut !== false) {
+      writer.uint32(16).bool(message.isOptOut);
+    }
+    if (message.isActivityPeriod !== false) {
+      writer.uint32(24).bool(message.isActivityPeriod);
+    }
+    if (message.contentText !== undefined) {
+      Text.encode(message.contentText, writer.uint32(34).fork()).join();
+    }
+    if (message.classOptOut !== false) {
+      writer.uint32(40).bool(message.classOptOut);
+    }
+    if (message.contentTextOpen !== undefined) {
+      Text.encode(message.contentTextOpen, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LeagueScoreInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLeagueScoreInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.estimatedScore = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.isOptOut = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isActivityPeriod = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.contentText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.classOptOut = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.contentTextOpen = Text.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -2975,7 +3719,15 @@ export const RecommendedPlaybookInfo_PlaybookBizExtrasEntry: MessageFns<
 };
 
 function createBaseRewardPeriodConfig(): RewardPeriodConfig {
-  return { rewardStartTime: "0", duration: "0", rewardMultiple: 0, rewardStartTimestamp: "0" };
+  return {
+    rewardStartTime: "0",
+    duration: "0",
+    rewardMultiple: 0,
+    rewardStartTimestamp: "0",
+    rewardPreparePrompt: undefined,
+    rewardingPrompt: undefined,
+    clickPrompt: undefined,
+  };
 }
 
 export const RewardPeriodConfig: MessageFns<RewardPeriodConfig> = {
@@ -2991,6 +3743,15 @@ export const RewardPeriodConfig: MessageFns<RewardPeriodConfig> = {
     }
     if (message.rewardStartTimestamp !== "0") {
       writer.uint32(32).int64(message.rewardStartTimestamp);
+    }
+    if (message.rewardPreparePrompt !== undefined) {
+      BattlePrompt.encode(message.rewardPreparePrompt, writer.uint32(90).fork()).join();
+    }
+    if (message.rewardingPrompt !== undefined) {
+      BattlePrompt.encode(message.rewardingPrompt, writer.uint32(98).fork()).join();
+    }
+    if (message.clickPrompt !== undefined) {
+      BattlePrompt.encode(message.clickPrompt, writer.uint32(106).fork()).join();
     }
     return writer;
   },
@@ -3032,6 +3793,30 @@ export const RewardPeriodConfig: MessageFns<RewardPeriodConfig> = {
           }
 
           message.rewardStartTimestamp = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.rewardPreparePrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.rewardingPrompt = BattlePrompt.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.clickPrompt = BattlePrompt.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -3324,6 +4109,7 @@ function createBaseTaskPeriodConfig(): TaskPeriodConfig {
     promptType: 0,
     staticPrompt: undefined,
     progressTarget: "0",
+    targetType: 0,
     iconImage: undefined,
     clickActionSchemaUrl: "",
   };
@@ -3354,6 +4140,9 @@ export const TaskPeriodConfig: MessageFns<TaskPeriodConfig> = {
     }
     if (message.progressTarget !== "0") {
       writer.uint32(184).int64(message.progressTarget);
+    }
+    if (message.targetType !== 0) {
+      writer.uint32(192).int32(message.targetType);
     }
     if (message.iconImage !== undefined) {
       ImageModel.encode(message.iconImage, writer.uint32(202).fork()).join();
@@ -3433,6 +4222,14 @@ export const TaskPeriodConfig: MessageFns<TaskPeriodConfig> = {
           }
 
           message.progressTarget = reader.int64().toString();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.targetType = reader.int32();
           continue;
         }
         case 25: {

@@ -49,6 +49,7 @@ import {
   GuestShowdownConfigChange,
   GuestShowdownContent,
   NoticeboardContent,
+  PlaybookGroup,
   ShowContent,
   TextHeaderPlayContent,
   TopGuestMetaContent,
@@ -694,7 +695,13 @@ export interface JoinGroupBizContent {
   tag: TagV2 | undefined;
   gameTag: RivalsGameTag | undefined;
   newUserEducation: string;
+  abInfos: { [key: string]: CohostABInfo };
   joinGroupMsgExtra: JoinGroupMessageExtra | undefined;
+}
+
+export interface JoinGroupBizContent_AbInfosEntry {
+  key: string;
+  value: CohostABInfo | undefined;
 }
 
 export interface JoinGroupContent {
@@ -721,7 +728,13 @@ export interface JoinGroupMessageExtra {
   extra: RivalExtra | undefined;
   otherUsers: RivalExtra[];
   invitationReorderExtra: InvitationReorderExtra | undefined;
+  rivalGuestsMap: { [key: string]: RivalGuestExtras };
   isFromCohostOverIssue: boolean;
+}
+
+export interface JoinGroupMessageExtra_RivalGuestsMapEntry {
+  key: string;
+  value: RivalGuestExtras | undefined;
 }
 
 export interface JoinRoomDirectBizContent {
@@ -1010,7 +1023,11 @@ export interface WebcastPlaybookMessage {
   coverUrl: string;
   playbookEndReason: number;
   playbookStartReason: number;
+  playbookGroup: PlaybookGroup | undefined;
   needRecharge: boolean;
+  bizReason: string;
+  operatorId: string;
+  version: string;
   playbookId: string;
   firstLevelTagTypes: number[];
   currentStateId: string;
@@ -1510,6 +1527,7 @@ function createBaseJoinGroupBizContent(): JoinGroupBizContent {
     tag: undefined,
     gameTag: undefined,
     newUserEducation: "",
+    abInfos: {},
     joinGroupMsgExtra: undefined,
   };
 }
@@ -1546,6 +1564,9 @@ export const JoinGroupBizContent: MessageFns<JoinGroupBizContent> = {
     if (message.newUserEducation !== "") {
       writer.uint32(90).string(message.newUserEducation);
     }
+    globalThis.Object.entries(message.abInfos).forEach(([key, value]: [string, CohostABInfo]) => {
+      JoinGroupBizContent_AbInfosEntry.encode({ key: key as any, value }, writer.uint32(98).fork()).join();
+    });
     if (message.joinGroupMsgExtra !== undefined) {
       JoinGroupMessageExtra.encode(message.joinGroupMsgExtra, writer.uint32(810).fork()).join();
     }
@@ -1639,12 +1660,71 @@ export const JoinGroupBizContent: MessageFns<JoinGroupBizContent> = {
           message.newUserEducation = reader.string();
           continue;
         }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          const entry12 = JoinGroupBizContent_AbInfosEntry.decode(reader, reader.uint32());
+          if (entry12.value !== undefined) {
+            message.abInfos[entry12.key] = entry12.value;
+          }
+          continue;
+        }
         case 101: {
           if (tag !== 810) {
             break;
           }
 
           message.joinGroupMsgExtra = JoinGroupMessageExtra.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseJoinGroupBizContent_AbInfosEntry(): JoinGroupBizContent_AbInfosEntry {
+  return { key: "0", value: undefined };
+}
+
+export const JoinGroupBizContent_AbInfosEntry: MessageFns<JoinGroupBizContent_AbInfosEntry> = {
+  encode(message: JoinGroupBizContent_AbInfosEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      CohostABInfo.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JoinGroupBizContent_AbInfosEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJoinGroupBizContent_AbInfosEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = CohostABInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1851,6 +1931,7 @@ function createBaseJoinGroupMessageExtra(): JoinGroupMessageExtra {
     extra: undefined,
     otherUsers: [],
     invitationReorderExtra: undefined,
+    rivalGuestsMap: {},
     isFromCohostOverIssue: false,
   };
 }
@@ -1869,6 +1950,9 @@ export const JoinGroupMessageExtra: MessageFns<JoinGroupMessageExtra> = {
     if (message.invitationReorderExtra !== undefined) {
       InvitationReorderExtra.encode(message.invitationReorderExtra, writer.uint32(34).fork()).join();
     }
+    globalThis.Object.entries(message.rivalGuestsMap).forEach(([key, value]: [string, RivalGuestExtras]) => {
+      JoinGroupMessageExtra_RivalGuestsMapEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
     if (message.isFromCohostOverIssue !== false) {
       writer.uint32(48).bool(message.isFromCohostOverIssue);
     }
@@ -1914,12 +1998,71 @@ export const JoinGroupMessageExtra: MessageFns<JoinGroupMessageExtra> = {
           message.invitationReorderExtra = InvitationReorderExtra.decode(reader, reader.uint32());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = JoinGroupMessageExtra_RivalGuestsMapEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.rivalGuestsMap[entry5.key] = entry5.value;
+          }
+          continue;
+        }
         case 6: {
           if (tag !== 48) {
             break;
           }
 
           message.isFromCohostOverIssue = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseJoinGroupMessageExtra_RivalGuestsMapEntry(): JoinGroupMessageExtra_RivalGuestsMapEntry {
+  return { key: "0", value: undefined };
+}
+
+export const JoinGroupMessageExtra_RivalGuestsMapEntry: MessageFns<JoinGroupMessageExtra_RivalGuestsMapEntry> = {
+  encode(message: JoinGroupMessageExtra_RivalGuestsMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      RivalGuestExtras.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): JoinGroupMessageExtra_RivalGuestsMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseJoinGroupMessageExtra_RivalGuestsMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = RivalGuestExtras.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -4853,7 +4996,11 @@ function createBaseWebcastPlaybookMessage(): WebcastPlaybookMessage {
     coverUrl: "",
     playbookEndReason: 0,
     playbookStartReason: 0,
+    playbookGroup: undefined,
     needRecharge: false,
+    bizReason: "",
+    operatorId: "0",
+    version: "0",
     playbookId: "0",
     firstLevelTagTypes: [],
     currentStateId: "0",
@@ -4886,8 +5033,20 @@ export const WebcastPlaybookMessage: MessageFns<WebcastPlaybookMessage> = {
     if (message.playbookStartReason !== 0) {
       writer.uint32(64).int32(message.playbookStartReason);
     }
+    if (message.playbookGroup !== undefined) {
+      PlaybookGroup.encode(message.playbookGroup, writer.uint32(74).fork()).join();
+    }
     if (message.needRecharge !== false) {
       writer.uint32(80).bool(message.needRecharge);
+    }
+    if (message.bizReason !== "") {
+      writer.uint32(90).string(message.bizReason);
+    }
+    if (message.operatorId !== "0") {
+      writer.uint32(96).int64(message.operatorId);
+    }
+    if (message.version !== "0") {
+      writer.uint32(104).int64(message.version);
     }
     if (message.playbookId !== "0") {
       writer.uint32(112).int64(message.playbookId);
@@ -4974,12 +5133,44 @@ export const WebcastPlaybookMessage: MessageFns<WebcastPlaybookMessage> = {
           message.playbookStartReason = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.playbookGroup = PlaybookGroup.decode(reader, reader.uint32());
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.needRecharge = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.bizReason = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.operatorId = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.version = reader.int64().toString();
           continue;
         }
         case 14: {

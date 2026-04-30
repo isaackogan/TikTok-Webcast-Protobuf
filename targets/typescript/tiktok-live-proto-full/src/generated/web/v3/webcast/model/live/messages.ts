@@ -6,19 +6,10 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { CohostSettingsInfo, CohostTopic, TopicSessionStatus } from "../../chatroom/model/interact_messages.js";
 import { VideoMetaInfo } from "../../replay_proto.js";
-import { DisplayConfig } from "../../shared/messages.js";
 import { ImageModel } from "../base/messages.js";
 import { FansClubInfo, OwnRoom, SubscribeInfo } from "../base/user.js";
-import { User } from "../base/user_2.js";
-import { RankUser } from "../data/merged.js";
 import { AILiveSummary, PaidEventPaidType } from "../data/messages.js";
-import { CompetitionInfo } from "../live_interact/competition_model.js";
-import { KaraokeSong } from "../merged.js";
-import { Text } from "../message/common.js";
-import { PictionaryInfo, Question } from "../message/messages.js";
-import { BattleInfoResponse } from "./match_battle_info_response.js";
 
 export const protobufPackage = "webcast.model.live";
 
@@ -33,9 +24,37 @@ export interface AgeRestricted {
   source: number;
 }
 
-export interface AggregationData {
-  audience: User | undefined;
-  successlist: number[];
+export interface AnchorLevelPermission {
+  beauty: number;
+  effects: number;
+  share: number;
+  moderatorSetting: number;
+  commentSetting: number;
+  commentFilter: number;
+  pauseLive: number;
+  flip: number;
+  mirror: number;
+  hearYourOwnVoice: number;
+  donationSticker: number;
+  fullScreenMode: number;
+  liveCenter: number;
+  topic: number;
+  sticker: number;
+  voiceEffect: number;
+  liveIntro: number;
+  interactionquestion: number;
+  poll: number;
+  pin: number;
+  pictionary: number;
+  viewerRankList: number;
+  promote: number;
+  customizablePoll: number;
+  goodyBag: number;
+  karaoke: number;
+  treasureBox: number;
+  portal: number;
+  liveBackground: number;
+  playTogether: number;
 }
 
 export interface AudienceLinkmicRelation {
@@ -79,13 +98,6 @@ export interface ChannelInfo {
   groupChannelId: string;
 }
 
-export interface CoStreamer {
-  userId: string;
-  roomId: string;
-  owner: User | undefined;
-  userCount: string;
-}
-
 export interface CommerceStruct {
   commercePermission: number;
   oecLiveEnterRoomInitData: string;
@@ -103,13 +115,6 @@ export interface CommercialContentToggle {
 export interface ContentSpotlightRankInfo {
   score: string;
   scoreIcon: ImageModel | undefined;
-}
-
-export interface CurrentInteractionQuestion {
-  question: Question | undefined;
-  likeCnt: string;
-  selfLikeStatus: number;
-  favoriteStatus: number;
 }
 
 export interface CustomTab {
@@ -161,26 +166,6 @@ export interface EPIFeatureValue_FloatFeatureEntry {
 export interface EPIFeatureValue_StringFeatureEntry {
   key: string;
   value: string;
-}
-
-export interface EcomRankInfo {
-  ranks: EcomRankInfoRank[];
-  selfInfo: EcomRankInfoRank | undefined;
-  ruleUrl: string;
-  displayConfig: DisplayConfig | undefined;
-  anonymous: string;
-  rankType: number;
-  canShowRank: boolean;
-}
-
-export interface EcomRankInfoRank {
-  user: User | undefined;
-  score: string;
-  rank: string;
-  gapDescription: string;
-  userRestrictionLevel: string;
-  rankUser: RankUser | undefined;
-  scoreDisplay: string;
 }
 
 export interface EcommerceRoomHeadTag {
@@ -246,15 +231,6 @@ export interface FYPCommerceStruct {
   oecLivePreviewRoomData: string;
 }
 
-export interface FeedRoomLabel {
-  position: string;
-  text: Text | undefined;
-  icon: ImageModel | undefined;
-  logExtra: string;
-  backgroundColor: string;
-  bgImage: ImageModel | undefined;
-}
-
 export interface FilterMsgRuleParamRandom {
   percentage: number;
 }
@@ -263,10 +239,6 @@ export interface GiftSuspension {
   status: number;
   toast: string;
   endTime: string;
-}
-
-export interface GroupLiveInfo {
-  groupShow: CompetitionInfo | undefined;
 }
 
 export interface GroupLiveMember {
@@ -296,22 +268,15 @@ export interface HighlightToolbarComInfo {
   priority: string;
 }
 
-export interface KaraokeInfo {
-  song: KaraokeSong | undefined;
-  karaokeStatus: boolean;
-  karaokeLyricStatus: boolean;
-  displayKaraoke: boolean;
-}
-
 export interface LikeIconInfo {
   icons: ImageModel[];
   iconsSelf: ImageModel[];
   defaultIcons: ImageModel[];
 }
 
-export interface LiveChain {
-  coStreamers: CoStreamer[];
-  hasCoStreamers: boolean;
+export interface LiveCoreSDKData {
+  pullData: PullData | undefined;
+  pushData: PushData | undefined;
 }
 
 export interface LiveFilterMsgRule {
@@ -359,12 +324,37 @@ export interface MsgNotifyComponentAvoidRuleV2 {
   maxActiveCount: number;
   priority: string;
   avoidScene: string[];
+  recoverThresholdMs: string;
   maxRecoverRemainMs: string;
+  avoidWatchEarlyMs: string;
 }
 
 export interface MsgNotifyComponentRecoverInfo {
   recover: boolean;
   delayMs: string;
+}
+
+export interface MsgNotifyQuota {
+  componentType: number;
+  positionCountMap: { [key: string]: string };
+  defaultCount: string;
+}
+
+export interface MsgNotifyQuota_PositionCountMapEntry {
+  key: string;
+  value: string;
+}
+
+export interface MsgNotifyWatchContinuousQuota {
+  componentType: number;
+  coutinuousRoomCnt: string;
+  count: string;
+}
+
+export interface MsgNotifyWatchEarlyQuota {
+  componentType: number;
+  watchMillSeconds: string;
+  count: string;
 }
 
 export interface MusicInfo {
@@ -410,25 +400,14 @@ export interface NotifyQuota {
   timeGapShowCount: string;
 }
 
-export interface OnlineAudience {
-  ranks: OnlineAudienceRank[];
-  selfInfo: OnlineAudienceRank | undefined;
-  currency: string;
-  anchorShowContribution: boolean;
-  deprecated: boolean;
-  total: string;
-  ruleUrl: string;
-  displayConfig: DisplayConfig | undefined;
-  previewCount: string;
-}
-
-export interface OnlineAudienceRank {
-  user: User | undefined;
-  score: string;
-  rank: string;
-  gapDescription: string;
-  userRestrictionLevel: string;
-  rankUser: RankUser | undefined;
+export interface Options {
+  defaultQuality: Quality | undefined;
+  qualities: Quality[];
+  defaultPreviewQuality: Quality | undefined;
+  showQualityButton: boolean;
+  supportLowLatency: boolean;
+  maxDrmLenientSize: string;
+  maxDrmLenientSizeBackup: string;
 }
 
 export interface PaidContentInfo {
@@ -463,19 +442,8 @@ export interface PartnershipInfo {
   promotingDropsId: string;
   promotingRoom: boolean;
   promotingTaskType: number;
+  showTaskType: number;
   gameInfoList: PartnershipGameInfo[];
-}
-
-export interface PictionaryFullInfo {
-  pictionaryInfo: PictionaryInfo | undefined;
-  pictionaryStatistics: PictionaryStatistics | undefined;
-  guessCorrect: boolean;
-}
-
-export interface PictionaryStatistics {
-  guessCorrectUv: string;
-  guessTotalPv: string;
-  firstUser: User | undefined;
 }
 
 export interface PinInfo {
@@ -525,6 +493,29 @@ export interface PublicCommonDynamicText_ClientStringRefEntry {
   value: string;
 }
 
+export interface PullData {
+  streamData: string;
+  options: Options | undefined;
+}
+
+export interface PushData {
+  resolutionParams: { [key: string]: ResolutionParams };
+  pushStreamLevel: number;
+  streamData: string;
+}
+
+export interface PushData_ResolutionParamsEntry {
+  key: string;
+  value: ResolutionParams | undefined;
+}
+
+export interface Quality {
+  name: string;
+  sdkKey: string;
+  level: number;
+  iconType: number;
+}
+
 export interface QueueInfo {
   queueId: string;
   status: number;
@@ -543,6 +534,7 @@ export interface QuickGift {
   diamondCount: string;
   isBroadcastGift: boolean;
   isEffectBefview: boolean;
+  primaryEffectId: string;
   greyImage: ImageModel | undefined;
 }
 
@@ -557,29 +549,24 @@ export interface RepostInfo {
   firstOthersNote: string;
 }
 
+export interface ResolutionParams {
+  width: string;
+  height: string;
+  defaultBitrate: string;
+  minBitrate: string;
+  maxBitrate: string;
+  fps: string;
+}
+
+export interface ResourceConfig {
+  schema: string;
+  data: string;
+}
+
 export interface RoomCreateUserInfo {
   ownRoom: OwnRoom | undefined;
   fansClubInfo: FansClubInfo | undefined;
   subscribeInfo: SubscribeInfo | undefined;
-}
-
-export interface RoomLinkInfo {
-  channelId: string;
-  channelInfo: ChannelInfo | undefined;
-  rivalAnchorId: string;
-  audienceIdList: string[];
-  showUserList: User[];
-  followedCount: string;
-  battleInfo: BattleInfoResponse | undefined;
-  linkerMode: number;
-  audienceLinkmicRelation: AudienceLinkmicRelation | undefined;
-  topicInfo: CohostTopic | undefined;
-  topicStatus: TopicSessionStatus | undefined;
-  competitionInfo: CompetitionInfo | undefined;
-  cohostSettingsInfo: CohostSettingsInfo | undefined;
-  linkMicChannel: string;
-  linkmicUnifyChannelId: string;
-  multiGuestEnable: boolean;
 }
 
 export interface SMBIndustryInfo {
@@ -590,11 +577,18 @@ export interface SMBIndustryInfo {
 export interface SMBInfo {
   optInStatus: number;
   activeSkuCount: string;
+  publicRoomParam: { [key: string]: string };
   smbOptInSource: number;
   allSkuCount: string;
   creatorServicePlusSwitch: boolean;
   activeSkuTypeList: number[];
   allSkuTypeList: number[];
+  creatorSingleSkuSchema: string;
+}
+
+export interface SMBInfo_PublicRoomParamEntry {
+  key: string;
+  value: string;
 }
 
 export interface SMBLivePreview {
@@ -619,27 +613,6 @@ export interface SecondaryPageInfo {
   logo: string;
   link: string;
   introduction: string;
-}
-
-export interface ShowInfo {
-  showStartTime: string;
-  showEndTime: string;
-  anchors: User[];
-  showIntroduction: string;
-}
-
-export interface ShowInfoV2 {
-  id: string;
-  showStartTime: string;
-  showEndTime: string;
-  anchors: User[];
-  showIntroduction: string;
-  showDisplayName: string;
-  guestInfoList: GuestInfo[];
-  musicInfoList: MusicInfo[];
-  maxNotifyNum: string;
-  secondaryPage: SecondaryPageInfo | undefined;
-  bannerInfo: TopFrameBannerInfo | undefined;
 }
 
 export interface Skin {
@@ -691,20 +664,50 @@ export interface StreamUrl {
   provider: number;
   id: string;
   idStr: string;
+  resolutionName: { [key: string]: string };
   defaultResolution: string;
   extra: StreamUrlExtra | undefined;
   rtmpPushUrl: string;
   rtmpPullUrl: string;
+  flvPullUrl: { [key: string]: string };
   candidateResolution: string[];
+  hlsPullUrl: string;
+  hlsPullUrlParams: string;
+  rtmpPullUrlParams: string;
+  flvPullUrlParams: { [key: string]: string };
   rtmpPushUrlParams: string;
   pushUrls: string[];
+  liveCoreSdkData: LiveCoreSDKData | undefined;
+  hlsPullUrlMap: { [key: string]: string };
   completePushUrls: string[];
+  streamControlType: number;
   streamDelayMs: string;
   pushResolution: string;
+  streamAppId: string;
   aliveTimestamp: string;
   streamSizeWidth: string;
   streamSizeHeight: string;
   drmType: number;
+}
+
+export interface StreamUrl_ResolutionNameEntry {
+  key: string;
+  value: string;
+}
+
+export interface StreamUrl_FlvPullUrlEntry {
+  key: string;
+  value: string;
+}
+
+export interface StreamUrl_FlvPullUrlParamsEntry {
+  key: string;
+  value: string;
+}
+
+export interface StreamUrl_HlsPullUrlMapEntry {
+  key: string;
+  value: string;
 }
 
 export interface StreamUrlExtra {
@@ -716,10 +719,15 @@ export interface StreamUrlExtra {
   defaultBitrate: number;
   bitrateAdaptStrategy: number;
   anchorInteractProfile: number;
+  audienceInteractProfile: number;
   hardwareEncode: boolean;
+  videoProfile: number;
   superResolution: SrConfig | undefined;
   gopSec: number;
+  bframeEnable: boolean;
+  roi: boolean;
   swRoi: boolean;
+  bytevc1Enable: boolean;
 }
 
 export interface SubUpsellInfo {
@@ -750,31 +758,6 @@ export interface TopFrameBannerInfo {
 
 export interface TopFrameBannerLogo {
   uri: string;
-}
-
-export interface TopFrameV2Summary {
-  id: string;
-  title: string;
-  schema: string;
-  showList: ShowInfoV2[];
-  startTime: string;
-  endTime: string;
-  type: number;
-  configVersion: string;
-  timeTravelOffsetSec: string;
-}
-
-export interface WatchReason {
-  watchReasons: WatchReasonItem[];
-  style: number;
-  bgColorType: number;
-  isShow: boolean;
-}
-
-export interface WatchReasonItem {
-  reasonId: number;
-  content: Text | undefined;
-  tuxIconProtocol: string;
 }
 
 function createBaseASRSummary(): ASRSummary {
@@ -884,55 +867,382 @@ export const AgeRestricted: MessageFns<AgeRestricted> = {
   },
 };
 
-function createBaseAggregationData(): AggregationData {
-  return { audience: undefined, successlist: [] };
+function createBaseAnchorLevelPermission(): AnchorLevelPermission {
+  return {
+    beauty: 0,
+    effects: 0,
+    share: 0,
+    moderatorSetting: 0,
+    commentSetting: 0,
+    commentFilter: 0,
+    pauseLive: 0,
+    flip: 0,
+    mirror: 0,
+    hearYourOwnVoice: 0,
+    donationSticker: 0,
+    fullScreenMode: 0,
+    liveCenter: 0,
+    topic: 0,
+    sticker: 0,
+    voiceEffect: 0,
+    liveIntro: 0,
+    interactionquestion: 0,
+    poll: 0,
+    pin: 0,
+    pictionary: 0,
+    viewerRankList: 0,
+    promote: 0,
+    customizablePoll: 0,
+    goodyBag: 0,
+    karaoke: 0,
+    treasureBox: 0,
+    portal: 0,
+    liveBackground: 0,
+    playTogether: 0,
+  };
 }
 
-export const AggregationData: MessageFns<AggregationData> = {
-  encode(message: AggregationData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.audience !== undefined) {
-      User.encode(message.audience, writer.uint32(10).fork()).join();
+export const AnchorLevelPermission: MessageFns<AnchorLevelPermission> = {
+  encode(message: AnchorLevelPermission, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.beauty !== 0) {
+      writer.uint32(8).int32(message.beauty);
     }
-    writer.uint32(18).fork();
-    for (const v of message.successlist) {
-      writer.int32(v);
+    if (message.effects !== 0) {
+      writer.uint32(16).int32(message.effects);
     }
-    writer.join();
+    if (message.share !== 0) {
+      writer.uint32(24).int32(message.share);
+    }
+    if (message.moderatorSetting !== 0) {
+      writer.uint32(32).int32(message.moderatorSetting);
+    }
+    if (message.commentSetting !== 0) {
+      writer.uint32(40).int32(message.commentSetting);
+    }
+    if (message.commentFilter !== 0) {
+      writer.uint32(48).int32(message.commentFilter);
+    }
+    if (message.pauseLive !== 0) {
+      writer.uint32(56).int32(message.pauseLive);
+    }
+    if (message.flip !== 0) {
+      writer.uint32(64).int32(message.flip);
+    }
+    if (message.mirror !== 0) {
+      writer.uint32(72).int32(message.mirror);
+    }
+    if (message.hearYourOwnVoice !== 0) {
+      writer.uint32(80).int32(message.hearYourOwnVoice);
+    }
+    if (message.donationSticker !== 0) {
+      writer.uint32(88).int32(message.donationSticker);
+    }
+    if (message.fullScreenMode !== 0) {
+      writer.uint32(96).int32(message.fullScreenMode);
+    }
+    if (message.liveCenter !== 0) {
+      writer.uint32(104).int32(message.liveCenter);
+    }
+    if (message.topic !== 0) {
+      writer.uint32(112).int32(message.topic);
+    }
+    if (message.sticker !== 0) {
+      writer.uint32(120).int32(message.sticker);
+    }
+    if (message.voiceEffect !== 0) {
+      writer.uint32(128).int32(message.voiceEffect);
+    }
+    if (message.liveIntro !== 0) {
+      writer.uint32(136).int32(message.liveIntro);
+    }
+    if (message.interactionquestion !== 0) {
+      writer.uint32(144).int32(message.interactionquestion);
+    }
+    if (message.poll !== 0) {
+      writer.uint32(152).int32(message.poll);
+    }
+    if (message.pin !== 0) {
+      writer.uint32(160).int32(message.pin);
+    }
+    if (message.pictionary !== 0) {
+      writer.uint32(168).int32(message.pictionary);
+    }
+    if (message.viewerRankList !== 0) {
+      writer.uint32(176).int32(message.viewerRankList);
+    }
+    if (message.promote !== 0) {
+      writer.uint32(184).int32(message.promote);
+    }
+    if (message.customizablePoll !== 0) {
+      writer.uint32(192).int32(message.customizablePoll);
+    }
+    if (message.goodyBag !== 0) {
+      writer.uint32(200).int32(message.goodyBag);
+    }
+    if (message.karaoke !== 0) {
+      writer.uint32(208).int32(message.karaoke);
+    }
+    if (message.treasureBox !== 0) {
+      writer.uint32(216).int32(message.treasureBox);
+    }
+    if (message.portal !== 0) {
+      writer.uint32(224).int32(message.portal);
+    }
+    if (message.liveBackground !== 0) {
+      writer.uint32(232).int32(message.liveBackground);
+    }
+    if (message.playTogether !== 0) {
+      writer.uint32(240).int32(message.playTogether);
+    }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): AggregationData {
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorLevelPermission {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAggregationData();
+    const message = createBaseAnchorLevelPermission();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.audience = User.decode(reader, reader.uint32());
+          message.beauty = reader.int32();
           continue;
         }
         case 2: {
-          if (tag === 16) {
-            message.successlist.push(reader.int32());
-
-            continue;
+          if (tag !== 16) {
+            break;
           }
 
-          if (tag === 18) {
-            const end2 = reader.uint32() + reader.pos;
-            while (reader.pos < end2) {
-              message.successlist.push(reader.int32());
-            }
-
-            continue;
+          message.effects = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
           }
 
-          break;
+          message.share = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.moderatorSetting = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.commentSetting = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.commentFilter = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.pauseLive = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.flip = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.mirror = reader.int32();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.hearYourOwnVoice = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.donationSticker = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.fullScreenMode = reader.int32();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.liveCenter = reader.int32();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.topic = reader.int32();
+          continue;
+        }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.sticker = reader.int32();
+          continue;
+        }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.voiceEffect = reader.int32();
+          continue;
+        }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.liveIntro = reader.int32();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.interactionquestion = reader.int32();
+          continue;
+        }
+        case 19: {
+          if (tag !== 152) {
+            break;
+          }
+
+          message.poll = reader.int32();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.pin = reader.int32();
+          continue;
+        }
+        case 21: {
+          if (tag !== 168) {
+            break;
+          }
+
+          message.pictionary = reader.int32();
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.viewerRankList = reader.int32();
+          continue;
+        }
+        case 23: {
+          if (tag !== 184) {
+            break;
+          }
+
+          message.promote = reader.int32();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.customizablePoll = reader.int32();
+          continue;
+        }
+        case 25: {
+          if (tag !== 200) {
+            break;
+          }
+
+          message.goodyBag = reader.int32();
+          continue;
+        }
+        case 26: {
+          if (tag !== 208) {
+            break;
+          }
+
+          message.karaoke = reader.int32();
+          continue;
+        }
+        case 27: {
+          if (tag !== 216) {
+            break;
+          }
+
+          message.treasureBox = reader.int32();
+          continue;
+        }
+        case 28: {
+          if (tag !== 224) {
+            break;
+          }
+
+          message.portal = reader.int32();
+          continue;
+        }
+        case 29: {
+          if (tag !== 232) {
+            break;
+          }
+
+          message.liveBackground = reader.int32();
+          continue;
+        }
+        case 30: {
+          if (tag !== 240) {
+            break;
+          }
+
+          message.playTogether = reader.int32();
+          continue;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1349,76 +1659,6 @@ export const ChannelInfo: MessageFns<ChannelInfo> = {
   },
 };
 
-function createBaseCoStreamer(): CoStreamer {
-  return { userId: "0", roomId: "0", owner: undefined, userCount: "0" };
-}
-
-export const CoStreamer: MessageFns<CoStreamer> = {
-  encode(message: CoStreamer, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "0") {
-      writer.uint32(8).int64(message.userId);
-    }
-    if (message.roomId !== "0") {
-      writer.uint32(16).int64(message.roomId);
-    }
-    if (message.owner !== undefined) {
-      User.encode(message.owner, writer.uint32(26).fork()).join();
-    }
-    if (message.userCount !== "0") {
-      writer.uint32(32).int64(message.userCount);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): CoStreamer {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCoStreamer();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.userId = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.roomId = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.owner = User.decode(reader, reader.uint32());
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.userCount = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseCommerceStruct(): CommerceStruct {
   return {
     commercePermission: 0,
@@ -1601,76 +1841,6 @@ export const ContentSpotlightRankInfo: MessageFns<ContentSpotlightRankInfo> = {
           }
 
           message.scoreIcon = ImageModel.decode(reader, reader.uint32());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseCurrentInteractionQuestion(): CurrentInteractionQuestion {
-  return { question: undefined, likeCnt: "0", selfLikeStatus: 0, favoriteStatus: 0 };
-}
-
-export const CurrentInteractionQuestion: MessageFns<CurrentInteractionQuestion> = {
-  encode(message: CurrentInteractionQuestion, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.question !== undefined) {
-      Question.encode(message.question, writer.uint32(10).fork()).join();
-    }
-    if (message.likeCnt !== "0") {
-      writer.uint32(16).int64(message.likeCnt);
-    }
-    if (message.selfLikeStatus !== 0) {
-      writer.uint32(24).int32(message.selfLikeStatus);
-    }
-    if (message.favoriteStatus !== 0) {
-      writer.uint32(32).int32(message.favoriteStatus);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): CurrentInteractionQuestion {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCurrentInteractionQuestion();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.question = Question.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.likeCnt = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.selfLikeStatus = reader.int32();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.favoriteStatus = reader.int32();
           continue;
         }
       }
@@ -2185,228 +2355,6 @@ export const EPIFeatureValue_StringFeatureEntry: MessageFns<EPIFeatureValue_Stri
           }
 
           message.value = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseEcomRankInfo(): EcomRankInfo {
-  return {
-    ranks: [],
-    selfInfo: undefined,
-    ruleUrl: "",
-    displayConfig: undefined,
-    anonymous: "0",
-    rankType: 0,
-    canShowRank: false,
-  };
-}
-
-export const EcomRankInfo: MessageFns<EcomRankInfo> = {
-  encode(message: EcomRankInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.ranks) {
-      EcomRankInfoRank.encode(v!, writer.uint32(10).fork()).join();
-    }
-    if (message.selfInfo !== undefined) {
-      EcomRankInfoRank.encode(message.selfInfo, writer.uint32(18).fork()).join();
-    }
-    if (message.ruleUrl !== "") {
-      writer.uint32(26).string(message.ruleUrl);
-    }
-    if (message.displayConfig !== undefined) {
-      DisplayConfig.encode(message.displayConfig, writer.uint32(34).fork()).join();
-    }
-    if (message.anonymous !== "0") {
-      writer.uint32(40).int64(message.anonymous);
-    }
-    if (message.rankType !== 0) {
-      writer.uint32(48).int32(message.rankType);
-    }
-    if (message.canShowRank !== false) {
-      writer.uint32(56).bool(message.canShowRank);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): EcomRankInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEcomRankInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.ranks.push(EcomRankInfoRank.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.selfInfo = EcomRankInfoRank.decode(reader, reader.uint32());
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.ruleUrl = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.displayConfig = DisplayConfig.decode(reader, reader.uint32());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.anonymous = reader.int64().toString();
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.rankType = reader.int32();
-          continue;
-        }
-        case 7: {
-          if (tag !== 56) {
-            break;
-          }
-
-          message.canShowRank = reader.bool();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseEcomRankInfoRank(): EcomRankInfoRank {
-  return {
-    user: undefined,
-    score: "0",
-    rank: "0",
-    gapDescription: "",
-    userRestrictionLevel: "0",
-    rankUser: undefined,
-    scoreDisplay: "",
-  };
-}
-
-export const EcomRankInfoRank: MessageFns<EcomRankInfoRank> = {
-  encode(message: EcomRankInfoRank, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.user !== undefined) {
-      User.encode(message.user, writer.uint32(10).fork()).join();
-    }
-    if (message.score !== "0") {
-      writer.uint32(16).int64(message.score);
-    }
-    if (message.rank !== "0") {
-      writer.uint32(24).int64(message.rank);
-    }
-    if (message.gapDescription !== "") {
-      writer.uint32(34).string(message.gapDescription);
-    }
-    if (message.userRestrictionLevel !== "0") {
-      writer.uint32(40).int64(message.userRestrictionLevel);
-    }
-    if (message.rankUser !== undefined) {
-      RankUser.encode(message.rankUser, writer.uint32(50).fork()).join();
-    }
-    if (message.scoreDisplay !== "") {
-      writer.uint32(58).string(message.scoreDisplay);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): EcomRankInfoRank {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEcomRankInfoRank();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.user = User.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.score = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.rank = reader.int64().toString();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.gapDescription = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.userRestrictionLevel = reader.int64().toString();
-          continue;
-        }
-        case 6: {
-          if (tag !== 50) {
-            break;
-          }
-
-          message.rankUser = RankUser.decode(reader, reader.uint32());
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.scoreDisplay = reader.string();
           continue;
         }
       }
@@ -3057,98 +3005,6 @@ export const FYPCommerceStruct: MessageFns<FYPCommerceStruct> = {
   },
 };
 
-function createBaseFeedRoomLabel(): FeedRoomLabel {
-  return { position: "0", text: undefined, icon: undefined, logExtra: "", backgroundColor: "", bgImage: undefined };
-}
-
-export const FeedRoomLabel: MessageFns<FeedRoomLabel> = {
-  encode(message: FeedRoomLabel, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.position !== "0") {
-      writer.uint32(8).int64(message.position);
-    }
-    if (message.text !== undefined) {
-      Text.encode(message.text, writer.uint32(18).fork()).join();
-    }
-    if (message.icon !== undefined) {
-      ImageModel.encode(message.icon, writer.uint32(26).fork()).join();
-    }
-    if (message.logExtra !== "") {
-      writer.uint32(34).string(message.logExtra);
-    }
-    if (message.backgroundColor !== "") {
-      writer.uint32(42).string(message.backgroundColor);
-    }
-    if (message.bgImage !== undefined) {
-      ImageModel.encode(message.bgImage, writer.uint32(50).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): FeedRoomLabel {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFeedRoomLabel();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.position = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.text = Text.decode(reader, reader.uint32());
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.icon = ImageModel.decode(reader, reader.uint32());
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.logExtra = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 42) {
-            break;
-          }
-
-          message.backgroundColor = reader.string();
-          continue;
-        }
-        case 6: {
-          if (tag !== 50) {
-            break;
-          }
-
-          message.bgImage = ImageModel.decode(reader, reader.uint32());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseFilterMsgRuleParamRandom(): FilterMsgRuleParamRandom {
   return { percentage: 0 };
 }
@@ -3233,43 +3089,6 @@ export const GiftSuspension: MessageFns<GiftSuspension> = {
           }
 
           message.endTime = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseGroupLiveInfo(): GroupLiveInfo {
-  return { groupShow: undefined };
-}
-
-export const GroupLiveInfo: MessageFns<GroupLiveInfo> = {
-  encode(message: GroupLiveInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.groupShow !== undefined) {
-      CompetitionInfo.encode(message.groupShow, writer.uint32(10).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): GroupLiveInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGroupLiveInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.groupShow = CompetitionInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -3556,76 +3375,6 @@ export const HighlightToolbarComInfo: MessageFns<HighlightToolbarComInfo> = {
   },
 };
 
-function createBaseKaraokeInfo(): KaraokeInfo {
-  return { song: undefined, karaokeStatus: false, karaokeLyricStatus: false, displayKaraoke: false };
-}
-
-export const KaraokeInfo: MessageFns<KaraokeInfo> = {
-  encode(message: KaraokeInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.song !== undefined) {
-      KaraokeSong.encode(message.song, writer.uint32(10).fork()).join();
-    }
-    if (message.karaokeStatus !== false) {
-      writer.uint32(16).bool(message.karaokeStatus);
-    }
-    if (message.karaokeLyricStatus !== false) {
-      writer.uint32(24).bool(message.karaokeLyricStatus);
-    }
-    if (message.displayKaraoke !== false) {
-      writer.uint32(32).bool(message.displayKaraoke);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): KaraokeInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseKaraokeInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.song = KaraokeSong.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.karaokeStatus = reader.bool();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.karaokeLyricStatus = reader.bool();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.displayKaraoke = reader.bool();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseLikeIconInfo(): LikeIconInfo {
   return { icons: [], iconsSelf: [], defaultIcons: [] };
 }
@@ -3685,25 +3434,25 @@ export const LikeIconInfo: MessageFns<LikeIconInfo> = {
   },
 };
 
-function createBaseLiveChain(): LiveChain {
-  return { coStreamers: [], hasCoStreamers: false };
+function createBaseLiveCoreSDKData(): LiveCoreSDKData {
+  return { pullData: undefined, pushData: undefined };
 }
 
-export const LiveChain: MessageFns<LiveChain> = {
-  encode(message: LiveChain, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.coStreamers) {
-      CoStreamer.encode(v!, writer.uint32(10).fork()).join();
+export const LiveCoreSDKData: MessageFns<LiveCoreSDKData> = {
+  encode(message: LiveCoreSDKData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.pullData !== undefined) {
+      PullData.encode(message.pullData, writer.uint32(10).fork()).join();
     }
-    if (message.hasCoStreamers !== false) {
-      writer.uint32(16).bool(message.hasCoStreamers);
+    if (message.pushData !== undefined) {
+      PushData.encode(message.pushData, writer.uint32(18).fork()).join();
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): LiveChain {
+  decode(input: BinaryReader | Uint8Array, length?: number): LiveCoreSDKData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLiveChain();
+    const message = createBaseLiveCoreSDKData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3712,15 +3461,15 @@ export const LiveChain: MessageFns<LiveChain> = {
             break;
           }
 
-          message.coStreamers.push(CoStreamer.decode(reader, reader.uint32()));
+          message.pullData = PullData.decode(reader, reader.uint32());
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.hasCoStreamers = reader.bool();
+          message.pushData = PushData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -4097,7 +3846,9 @@ function createBaseMsgNotifyComponentAvoidRuleV2(): MsgNotifyComponentAvoidRuleV
     maxActiveCount: 0,
     priority: "0",
     avoidScene: [],
+    recoverThresholdMs: "0",
     maxRecoverRemainMs: "0",
+    avoidWatchEarlyMs: "0",
   };
 }
 
@@ -4127,8 +3878,14 @@ export const MsgNotifyComponentAvoidRuleV2: MessageFns<MsgNotifyComponentAvoidRu
     for (const v of message.avoidScene) {
       writer.uint32(66).string(v!);
     }
+    if (message.recoverThresholdMs !== "0") {
+      writer.uint32(72).int64(message.recoverThresholdMs);
+    }
     if (message.maxRecoverRemainMs !== "0") {
       writer.uint32(80).int64(message.maxRecoverRemainMs);
+    }
+    if (message.avoidWatchEarlyMs !== "0") {
+      writer.uint32(88).int64(message.avoidWatchEarlyMs);
     }
     return writer;
   },
@@ -4204,12 +3961,28 @@ export const MsgNotifyComponentAvoidRuleV2: MessageFns<MsgNotifyComponentAvoidRu
           message.avoidScene.push(reader.string());
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.recoverThresholdMs = reader.int64().toString();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.maxRecoverRemainMs = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.avoidWatchEarlyMs = reader.int64().toString();
           continue;
         }
       }
@@ -4258,6 +4031,234 @@ export const MsgNotifyComponentRecoverInfo: MessageFns<MsgNotifyComponentRecover
           }
 
           message.delayMs = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMsgNotifyQuota(): MsgNotifyQuota {
+  return { componentType: 0, positionCountMap: {}, defaultCount: "0" };
+}
+
+export const MsgNotifyQuota: MessageFns<MsgNotifyQuota> = {
+  encode(message: MsgNotifyQuota, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.componentType !== 0) {
+      writer.uint32(8).int32(message.componentType);
+    }
+    globalThis.Object.entries(message.positionCountMap).forEach(([key, value]: [string, string]) => {
+      MsgNotifyQuota_PositionCountMapEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).join();
+    });
+    if (message.defaultCount !== "0") {
+      writer.uint32(24).int64(message.defaultCount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgNotifyQuota {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgNotifyQuota();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.componentType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = MsgNotifyQuota_PositionCountMapEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.positionCountMap[entry2.key] = entry2.value;
+          }
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.defaultCount = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMsgNotifyQuota_PositionCountMapEntry(): MsgNotifyQuota_PositionCountMapEntry {
+  return { key: "", value: "0" };
+}
+
+export const MsgNotifyQuota_PositionCountMapEntry: MessageFns<MsgNotifyQuota_PositionCountMapEntry> = {
+  encode(message: MsgNotifyQuota_PositionCountMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "0") {
+      writer.uint32(16).int64(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgNotifyQuota_PositionCountMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgNotifyQuota_PositionCountMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMsgNotifyWatchContinuousQuota(): MsgNotifyWatchContinuousQuota {
+  return { componentType: 0, coutinuousRoomCnt: "0", count: "0" };
+}
+
+export const MsgNotifyWatchContinuousQuota: MessageFns<MsgNotifyWatchContinuousQuota> = {
+  encode(message: MsgNotifyWatchContinuousQuota, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.componentType !== 0) {
+      writer.uint32(8).int32(message.componentType);
+    }
+    if (message.coutinuousRoomCnt !== "0") {
+      writer.uint32(16).int64(message.coutinuousRoomCnt);
+    }
+    if (message.count !== "0") {
+      writer.uint32(24).int64(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgNotifyWatchContinuousQuota {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgNotifyWatchContinuousQuota();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.componentType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.coutinuousRoomCnt = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.count = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMsgNotifyWatchEarlyQuota(): MsgNotifyWatchEarlyQuota {
+  return { componentType: 0, watchMillSeconds: "0", count: "0" };
+}
+
+export const MsgNotifyWatchEarlyQuota: MessageFns<MsgNotifyWatchEarlyQuota> = {
+  encode(message: MsgNotifyWatchEarlyQuota, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.componentType !== 0) {
+      writer.uint32(8).int32(message.componentType);
+    }
+    if (message.watchMillSeconds !== "0") {
+      writer.uint32(16).int64(message.watchMillSeconds);
+    }
+    if (message.count !== "0") {
+      writer.uint32(24).int64(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgNotifyWatchEarlyQuota {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgNotifyWatchEarlyQuota();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.componentType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.watchMillSeconds = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.count = reader.int64().toString();
           continue;
         }
       }
@@ -4719,56 +4720,48 @@ export const NotifyQuota: MessageFns<NotifyQuota> = {
   },
 };
 
-function createBaseOnlineAudience(): OnlineAudience {
+function createBaseOptions(): Options {
   return {
-    ranks: [],
-    selfInfo: undefined,
-    currency: "",
-    anchorShowContribution: false,
-    deprecated: false,
-    total: "0",
-    ruleUrl: "",
-    displayConfig: undefined,
-    previewCount: "0",
+    defaultQuality: undefined,
+    qualities: [],
+    defaultPreviewQuality: undefined,
+    showQualityButton: false,
+    supportLowLatency: false,
+    maxDrmLenientSize: "",
+    maxDrmLenientSizeBackup: "",
   };
 }
 
-export const OnlineAudience: MessageFns<OnlineAudience> = {
-  encode(message: OnlineAudience, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.ranks) {
-      OnlineAudienceRank.encode(v!, writer.uint32(10).fork()).join();
+export const Options: MessageFns<Options> = {
+  encode(message: Options, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.defaultQuality !== undefined) {
+      Quality.encode(message.defaultQuality, writer.uint32(10).fork()).join();
     }
-    if (message.selfInfo !== undefined) {
-      OnlineAudienceRank.encode(message.selfInfo, writer.uint32(18).fork()).join();
+    for (const v of message.qualities) {
+      Quality.encode(v!, writer.uint32(18).fork()).join();
     }
-    if (message.currency !== "") {
-      writer.uint32(26).string(message.currency);
+    if (message.defaultPreviewQuality !== undefined) {
+      Quality.encode(message.defaultPreviewQuality, writer.uint32(26).fork()).join();
     }
-    if (message.anchorShowContribution !== false) {
-      writer.uint32(32).bool(message.anchorShowContribution);
+    if (message.showQualityButton !== false) {
+      writer.uint32(32).bool(message.showQualityButton);
     }
-    if (message.deprecated !== false) {
-      writer.uint32(40).bool(message.deprecated);
+    if (message.supportLowLatency !== false) {
+      writer.uint32(40).bool(message.supportLowLatency);
     }
-    if (message.total !== "0") {
-      writer.uint32(48).int64(message.total);
+    if (message.maxDrmLenientSize !== "") {
+      writer.uint32(50).string(message.maxDrmLenientSize);
     }
-    if (message.ruleUrl !== "") {
-      writer.uint32(58).string(message.ruleUrl);
-    }
-    if (message.displayConfig !== undefined) {
-      DisplayConfig.encode(message.displayConfig, writer.uint32(66).fork()).join();
-    }
-    if (message.previewCount !== "0") {
-      writer.uint32(80).int64(message.previewCount);
+    if (message.maxDrmLenientSizeBackup !== "") {
+      writer.uint32(58).string(message.maxDrmLenientSizeBackup);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): OnlineAudience {
+  decode(input: BinaryReader | Uint8Array, length?: number): Options {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOnlineAudience();
+    const message = createBaseOptions();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4777,7 +4770,7 @@ export const OnlineAudience: MessageFns<OnlineAudience> = {
             break;
           }
 
-          message.ranks.push(OnlineAudienceRank.decode(reader, reader.uint32()));
+          message.defaultQuality = Quality.decode(reader, reader.uint32());
           continue;
         }
         case 2: {
@@ -4785,7 +4778,7 @@ export const OnlineAudience: MessageFns<OnlineAudience> = {
             break;
           }
 
-          message.selfInfo = OnlineAudienceRank.decode(reader, reader.uint32());
+          message.qualities.push(Quality.decode(reader, reader.uint32()));
           continue;
         }
         case 3: {
@@ -4793,7 +4786,7 @@ export const OnlineAudience: MessageFns<OnlineAudience> = {
             break;
           }
 
-          message.currency = reader.string();
+          message.defaultPreviewQuality = Quality.decode(reader, reader.uint32());
           continue;
         }
         case 4: {
@@ -4801,7 +4794,7 @@ export const OnlineAudience: MessageFns<OnlineAudience> = {
             break;
           }
 
-          message.anchorShowContribution = reader.bool();
+          message.showQualityButton = reader.bool();
           continue;
         }
         case 5: {
@@ -4809,123 +4802,7 @@ export const OnlineAudience: MessageFns<OnlineAudience> = {
             break;
           }
 
-          message.deprecated = reader.bool();
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.total = reader.int64().toString();
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.ruleUrl = reader.string();
-          continue;
-        }
-        case 8: {
-          if (tag !== 66) {
-            break;
-          }
-
-          message.displayConfig = DisplayConfig.decode(reader, reader.uint32());
-          continue;
-        }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-
-          message.previewCount = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseOnlineAudienceRank(): OnlineAudienceRank {
-  return { user: undefined, score: "0", rank: "0", gapDescription: "", userRestrictionLevel: "0", rankUser: undefined };
-}
-
-export const OnlineAudienceRank: MessageFns<OnlineAudienceRank> = {
-  encode(message: OnlineAudienceRank, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.user !== undefined) {
-      User.encode(message.user, writer.uint32(10).fork()).join();
-    }
-    if (message.score !== "0") {
-      writer.uint32(16).int64(message.score);
-    }
-    if (message.rank !== "0") {
-      writer.uint32(24).int64(message.rank);
-    }
-    if (message.gapDescription !== "") {
-      writer.uint32(34).string(message.gapDescription);
-    }
-    if (message.userRestrictionLevel !== "0") {
-      writer.uint32(40).int64(message.userRestrictionLevel);
-    }
-    if (message.rankUser !== undefined) {
-      RankUser.encode(message.rankUser, writer.uint32(50).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): OnlineAudienceRank {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOnlineAudienceRank();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.user = User.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.score = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.rank = reader.int64().toString();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.gapDescription = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.userRestrictionLevel = reader.int64().toString();
+          message.supportLowLatency = reader.bool();
           continue;
         }
         case 6: {
@@ -4933,7 +4810,15 @@ export const OnlineAudienceRank: MessageFns<OnlineAudienceRank> = {
             break;
           }
 
-          message.rankUser = RankUser.decode(reader, reader.uint32());
+          message.maxDrmLenientSize = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.maxDrmLenientSizeBackup = reader.string();
           continue;
         }
       }
@@ -5181,6 +5066,7 @@ function createBasePartnershipInfo(): PartnershipInfo {
     promotingDropsId: "",
     promotingRoom: false,
     promotingTaskType: 0,
+    showTaskType: 0,
     gameInfoList: [],
   };
 }
@@ -5210,6 +5096,9 @@ export const PartnershipInfo: MessageFns<PartnershipInfo> = {
     }
     if (message.promotingTaskType !== 0) {
       writer.uint32(64).int32(message.promotingTaskType);
+    }
+    if (message.showTaskType !== 0) {
+      writer.uint32(72).int32(message.showTaskType);
     }
     for (const v of message.gameInfoList) {
       PartnershipGameInfo.encode(v!, writer.uint32(82).fork()).join();
@@ -5288,130 +5177,20 @@ export const PartnershipInfo: MessageFns<PartnershipInfo> = {
           message.promotingTaskType = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.showTaskType = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.gameInfoList.push(PartnershipGameInfo.decode(reader, reader.uint32()));
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBasePictionaryFullInfo(): PictionaryFullInfo {
-  return { pictionaryInfo: undefined, pictionaryStatistics: undefined, guessCorrect: false };
-}
-
-export const PictionaryFullInfo: MessageFns<PictionaryFullInfo> = {
-  encode(message: PictionaryFullInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.pictionaryInfo !== undefined) {
-      PictionaryInfo.encode(message.pictionaryInfo, writer.uint32(10).fork()).join();
-    }
-    if (message.pictionaryStatistics !== undefined) {
-      PictionaryStatistics.encode(message.pictionaryStatistics, writer.uint32(18).fork()).join();
-    }
-    if (message.guessCorrect !== false) {
-      writer.uint32(24).bool(message.guessCorrect);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): PictionaryFullInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePictionaryFullInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.pictionaryInfo = PictionaryInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.pictionaryStatistics = PictionaryStatistics.decode(reader, reader.uint32());
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.guessCorrect = reader.bool();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBasePictionaryStatistics(): PictionaryStatistics {
-  return { guessCorrectUv: "0", guessTotalPv: "0", firstUser: undefined };
-}
-
-export const PictionaryStatistics: MessageFns<PictionaryStatistics> = {
-  encode(message: PictionaryStatistics, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.guessCorrectUv !== "0") {
-      writer.uint32(8).int64(message.guessCorrectUv);
-    }
-    if (message.guessTotalPv !== "0") {
-      writer.uint32(16).int64(message.guessTotalPv);
-    }
-    if (message.firstUser !== undefined) {
-      User.encode(message.firstUser, writer.uint32(26).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): PictionaryStatistics {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePictionaryStatistics();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.guessCorrectUv = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.guessTotalPv = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.firstUser = User.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -5884,6 +5663,234 @@ export const PublicCommonDynamicText_ClientStringRefEntry: MessageFns<PublicComm
   },
 };
 
+function createBasePullData(): PullData {
+  return { streamData: "", options: undefined };
+}
+
+export const PullData: MessageFns<PullData> = {
+  encode(message: PullData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.streamData !== "") {
+      writer.uint32(10).string(message.streamData);
+    }
+    if (message.options !== undefined) {
+      Options.encode(message.options, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PullData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePullData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.streamData = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.options = Options.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePushData(): PushData {
+  return { resolutionParams: {}, pushStreamLevel: 0, streamData: "" };
+}
+
+export const PushData: MessageFns<PushData> = {
+  encode(message: PushData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.resolutionParams).forEach(([key, value]: [string, ResolutionParams]) => {
+      PushData_ResolutionParamsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+    });
+    if (message.pushStreamLevel !== 0) {
+      writer.uint32(16).int32(message.pushStreamLevel);
+    }
+    if (message.streamData !== "") {
+      writer.uint32(26).string(message.streamData);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PushData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePushData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = PushData_ResolutionParamsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.resolutionParams[entry1.key] = entry1.value;
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.pushStreamLevel = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.streamData = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePushData_ResolutionParamsEntry(): PushData_ResolutionParamsEntry {
+  return { key: "", value: undefined };
+}
+
+export const PushData_ResolutionParamsEntry: MessageFns<PushData_ResolutionParamsEntry> = {
+  encode(message: PushData_ResolutionParamsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      ResolutionParams.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PushData_ResolutionParamsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePushData_ResolutionParamsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = ResolutionParams.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseQuality(): Quality {
+  return { name: "", sdkKey: "", level: 0, iconType: 0 };
+}
+
+export const Quality: MessageFns<Quality> = {
+  encode(message: Quality, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.sdkKey !== "") {
+      writer.uint32(18).string(message.sdkKey);
+    }
+    if (message.level !== 0) {
+      writer.uint32(40).int32(message.level);
+    }
+    if (message.iconType !== 0) {
+      writer.uint32(48).int32(message.iconType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Quality {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuality();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sdkKey = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.level = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.iconType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseQueueInfo(): QueueInfo {
   return { queueId: "", status: 0, queueTitle: "", memberCount: "0", currentUserId: "", joinStatus: 0 };
 }
@@ -5986,6 +5993,7 @@ function createBaseQuickGift(): QuickGift {
     diamondCount: "0",
     isBroadcastGift: false,
     isEffectBefview: false,
+    primaryEffectId: "0",
     greyImage: undefined,
   };
 }
@@ -6015,6 +6023,9 @@ export const QuickGift: MessageFns<QuickGift> = {
     }
     if (message.isEffectBefview !== false) {
       writer.uint32(64).bool(message.isEffectBefview);
+    }
+    if (message.primaryEffectId !== "0") {
+      writer.uint32(72).int64(message.primaryEffectId);
     }
     if (message.greyImage !== undefined) {
       ImageModel.encode(message.greyImage, writer.uint32(82).fork()).join();
@@ -6091,6 +6102,14 @@ export const QuickGift: MessageFns<QuickGift> = {
           }
 
           message.isEffectBefview = reader.bool();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.primaryEffectId = reader.int64().toString();
           continue;
         }
         case 10: {
@@ -6218,6 +6237,146 @@ export const RepostInfo: MessageFns<RepostInfo> = {
   },
 };
 
+function createBaseResolutionParams(): ResolutionParams {
+  return { width: "0", height: "0", defaultBitrate: "0", minBitrate: "0", maxBitrate: "0", fps: "0" };
+}
+
+export const ResolutionParams: MessageFns<ResolutionParams> = {
+  encode(message: ResolutionParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.width !== "0") {
+      writer.uint32(8).int64(message.width);
+    }
+    if (message.height !== "0") {
+      writer.uint32(16).int64(message.height);
+    }
+    if (message.defaultBitrate !== "0") {
+      writer.uint32(24).int64(message.defaultBitrate);
+    }
+    if (message.minBitrate !== "0") {
+      writer.uint32(32).int64(message.minBitrate);
+    }
+    if (message.maxBitrate !== "0") {
+      writer.uint32(40).int64(message.maxBitrate);
+    }
+    if (message.fps !== "0") {
+      writer.uint32(48).int64(message.fps);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ResolutionParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseResolutionParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.width = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.height = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.defaultBitrate = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.minBitrate = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.maxBitrate = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.fps = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseResourceConfig(): ResourceConfig {
+  return { schema: "", data: "" };
+}
+
+export const ResourceConfig: MessageFns<ResourceConfig> = {
+  encode(message: ResourceConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.schema !== "") {
+      writer.uint32(10).string(message.schema);
+    }
+    if (message.data !== "") {
+      writer.uint32(18).string(message.data);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ResourceConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseResourceConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseRoomCreateUserInfo(): RoomCreateUserInfo {
   return { ownRoom: undefined, fansClubInfo: undefined, subscribeInfo: undefined };
 }
@@ -6265,237 +6424,6 @@ export const RoomCreateUserInfo: MessageFns<RoomCreateUserInfo> = {
           }
 
           message.subscribeInfo = SubscribeInfo.decode(reader, reader.uint32());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseRoomLinkInfo(): RoomLinkInfo {
-  return {
-    channelId: "0",
-    channelInfo: undefined,
-    rivalAnchorId: "0",
-    audienceIdList: [],
-    showUserList: [],
-    followedCount: "0",
-    battleInfo: undefined,
-    linkerMode: 0,
-    audienceLinkmicRelation: undefined,
-    topicInfo: undefined,
-    topicStatus: undefined,
-    competitionInfo: undefined,
-    cohostSettingsInfo: undefined,
-    linkMicChannel: "0",
-    linkmicUnifyChannelId: "0",
-    multiGuestEnable: false,
-  };
-}
-
-export const RoomLinkInfo: MessageFns<RoomLinkInfo> = {
-  encode(message: RoomLinkInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.channelId !== "0") {
-      writer.uint32(8).int64(message.channelId);
-    }
-    if (message.channelInfo !== undefined) {
-      ChannelInfo.encode(message.channelInfo, writer.uint32(18).fork()).join();
-    }
-    if (message.rivalAnchorId !== "0") {
-      writer.uint32(40).int64(message.rivalAnchorId);
-    }
-    writer.uint32(50).fork();
-    for (const v of message.audienceIdList) {
-      writer.int64(v);
-    }
-    writer.join();
-    for (const v of message.showUserList) {
-      User.encode(v!, writer.uint32(58).fork()).join();
-    }
-    if (message.followedCount !== "0") {
-      writer.uint32(64).int64(message.followedCount);
-    }
-    if (message.battleInfo !== undefined) {
-      BattleInfoResponse.encode(message.battleInfo, writer.uint32(82).fork()).join();
-    }
-    if (message.linkerMode !== 0) {
-      writer.uint32(104).int32(message.linkerMode);
-    }
-    if (message.audienceLinkmicRelation !== undefined) {
-      AudienceLinkmicRelation.encode(message.audienceLinkmicRelation, writer.uint32(114).fork()).join();
-    }
-    if (message.topicInfo !== undefined) {
-      CohostTopic.encode(message.topicInfo, writer.uint32(426).fork()).join();
-    }
-    if (message.topicStatus !== undefined) {
-      TopicSessionStatus.encode(message.topicStatus, writer.uint32(434).fork()).join();
-    }
-    if (message.competitionInfo !== undefined) {
-      CompetitionInfo.encode(message.competitionInfo, writer.uint32(482).fork()).join();
-    }
-    if (message.cohostSettingsInfo !== undefined) {
-      CohostSettingsInfo.encode(message.cohostSettingsInfo, writer.uint32(490).fork()).join();
-    }
-    if (message.linkMicChannel !== "0") {
-      writer.uint32(504).int64(message.linkMicChannel);
-    }
-    if (message.linkmicUnifyChannelId !== "0") {
-      writer.uint32(520).int64(message.linkmicUnifyChannelId);
-    }
-    if (message.multiGuestEnable !== false) {
-      writer.uint32(528).bool(message.multiGuestEnable);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): RoomLinkInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseRoomLinkInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.channelId = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.channelInfo = ChannelInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.rivalAnchorId = reader.int64().toString();
-          continue;
-        }
-        case 6: {
-          if (tag === 48) {
-            message.audienceIdList.push(reader.int64().toString());
-
-            continue;
-          }
-
-          if (tag === 50) {
-            const end2 = reader.uint32() + reader.pos;
-            while (reader.pos < end2) {
-              message.audienceIdList.push(reader.int64().toString());
-            }
-
-            continue;
-          }
-
-          break;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.showUserList.push(User.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.followedCount = reader.int64().toString();
-          continue;
-        }
-        case 10: {
-          if (tag !== 82) {
-            break;
-          }
-
-          message.battleInfo = BattleInfoResponse.decode(reader, reader.uint32());
-          continue;
-        }
-        case 13: {
-          if (tag !== 104) {
-            break;
-          }
-
-          message.linkerMode = reader.int32();
-          continue;
-        }
-        case 14: {
-          if (tag !== 114) {
-            break;
-          }
-
-          message.audienceLinkmicRelation = AudienceLinkmicRelation.decode(reader, reader.uint32());
-          continue;
-        }
-        case 53: {
-          if (tag !== 426) {
-            break;
-          }
-
-          message.topicInfo = CohostTopic.decode(reader, reader.uint32());
-          continue;
-        }
-        case 54: {
-          if (tag !== 434) {
-            break;
-          }
-
-          message.topicStatus = TopicSessionStatus.decode(reader, reader.uint32());
-          continue;
-        }
-        case 60: {
-          if (tag !== 482) {
-            break;
-          }
-
-          message.competitionInfo = CompetitionInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 61: {
-          if (tag !== 490) {
-            break;
-          }
-
-          message.cohostSettingsInfo = CohostSettingsInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 63: {
-          if (tag !== 504) {
-            break;
-          }
-
-          message.linkMicChannel = reader.int64().toString();
-          continue;
-        }
-        case 65: {
-          if (tag !== 520) {
-            break;
-          }
-
-          message.linkmicUnifyChannelId = reader.int64().toString();
-          continue;
-        }
-        case 66: {
-          if (tag !== 528) {
-            break;
-          }
-
-          message.multiGuestEnable = reader.bool();
           continue;
         }
       }
@@ -6560,11 +6488,13 @@ function createBaseSMBInfo(): SMBInfo {
   return {
     optInStatus: 0,
     activeSkuCount: "0",
+    publicRoomParam: {},
     smbOptInSource: 0,
     allSkuCount: "0",
     creatorServicePlusSwitch: false,
     activeSkuTypeList: [],
     allSkuTypeList: [],
+    creatorSingleSkuSchema: "",
   };
 }
 
@@ -6576,6 +6506,9 @@ export const SMBInfo: MessageFns<SMBInfo> = {
     if (message.activeSkuCount !== "0") {
       writer.uint32(16).int64(message.activeSkuCount);
     }
+    globalThis.Object.entries(message.publicRoomParam).forEach(([key, value]: [string, string]) => {
+      SMBInfo_PublicRoomParamEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).join();
+    });
     if (message.smbOptInSource !== 0) {
       writer.uint32(32).int32(message.smbOptInSource);
     }
@@ -6595,6 +6528,9 @@ export const SMBInfo: MessageFns<SMBInfo> = {
       writer.int32(v);
     }
     writer.join();
+    if (message.creatorSingleSkuSchema !== "") {
+      writer.uint32(74).string(message.creatorSingleSkuSchema);
+    }
     return writer;
   },
 
@@ -6619,6 +6555,17 @@ export const SMBInfo: MessageFns<SMBInfo> = {
           }
 
           message.activeSkuCount = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = SMBInfo_PublicRoomParamEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.publicRoomParam[entry3.key] = entry3.value;
+          }
           continue;
         }
         case 4: {
@@ -6680,6 +6627,62 @@ export const SMBInfo: MessageFns<SMBInfo> = {
           }
 
           break;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.creatorSingleSkuSchema = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSMBInfo_PublicRoomParamEntry(): SMBInfo_PublicRoomParamEntry {
+  return { key: "", value: "" };
+}
+
+export const SMBInfo_PublicRoomParamEntry: MessageFns<SMBInfo_PublicRoomParamEntry> = {
+  encode(message: SMBInfo_PublicRoomParamEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SMBInfo_PublicRoomParamEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSMBInfo_PublicRoomParamEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -6930,235 +6933,6 @@ export const SecondaryPageInfo: MessageFns<SecondaryPageInfo> = {
           }
 
           message.introduction = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseShowInfo(): ShowInfo {
-  return { showStartTime: "0", showEndTime: "0", anchors: [], showIntroduction: "" };
-}
-
-export const ShowInfo: MessageFns<ShowInfo> = {
-  encode(message: ShowInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.showStartTime !== "0") {
-      writer.uint32(8).int64(message.showStartTime);
-    }
-    if (message.showEndTime !== "0") {
-      writer.uint32(16).int64(message.showEndTime);
-    }
-    for (const v of message.anchors) {
-      User.encode(v!, writer.uint32(26).fork()).join();
-    }
-    if (message.showIntroduction !== "") {
-      writer.uint32(34).string(message.showIntroduction);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): ShowInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseShowInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.showStartTime = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.showEndTime = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.anchors.push(User.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.showIntroduction = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseShowInfoV2(): ShowInfoV2 {
-  return {
-    id: "0",
-    showStartTime: "0",
-    showEndTime: "0",
-    anchors: [],
-    showIntroduction: "",
-    showDisplayName: "",
-    guestInfoList: [],
-    musicInfoList: [],
-    maxNotifyNum: "0",
-    secondaryPage: undefined,
-    bannerInfo: undefined,
-  };
-}
-
-export const ShowInfoV2: MessageFns<ShowInfoV2> = {
-  encode(message: ShowInfoV2, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "0") {
-      writer.uint32(8).int64(message.id);
-    }
-    if (message.showStartTime !== "0") {
-      writer.uint32(16).int64(message.showStartTime);
-    }
-    if (message.showEndTime !== "0") {
-      writer.uint32(24).int64(message.showEndTime);
-    }
-    for (const v of message.anchors) {
-      User.encode(v!, writer.uint32(34).fork()).join();
-    }
-    if (message.showIntroduction !== "") {
-      writer.uint32(42).string(message.showIntroduction);
-    }
-    if (message.showDisplayName !== "") {
-      writer.uint32(50).string(message.showDisplayName);
-    }
-    for (const v of message.guestInfoList) {
-      GuestInfo.encode(v!, writer.uint32(58).fork()).join();
-    }
-    for (const v of message.musicInfoList) {
-      MusicInfo.encode(v!, writer.uint32(66).fork()).join();
-    }
-    if (message.maxNotifyNum !== "0") {
-      writer.uint32(80).int64(message.maxNotifyNum);
-    }
-    if (message.secondaryPage !== undefined) {
-      SecondaryPageInfo.encode(message.secondaryPage, writer.uint32(114).fork()).join();
-    }
-    if (message.bannerInfo !== undefined) {
-      TopFrameBannerInfo.encode(message.bannerInfo, writer.uint32(122).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): ShowInfoV2 {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseShowInfoV2();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.id = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.showStartTime = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.showEndTime = reader.int64().toString();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.anchors.push(User.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 5: {
-          if (tag !== 42) {
-            break;
-          }
-
-          message.showIntroduction = reader.string();
-          continue;
-        }
-        case 6: {
-          if (tag !== 50) {
-            break;
-          }
-
-          message.showDisplayName = reader.string();
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.guestInfoList.push(GuestInfo.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 8: {
-          if (tag !== 66) {
-            break;
-          }
-
-          message.musicInfoList.push(MusicInfo.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-
-          message.maxNotifyNum = reader.int64().toString();
-          continue;
-        }
-        case 14: {
-          if (tag !== 114) {
-            break;
-          }
-
-          message.secondaryPage = SecondaryPageInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 15: {
-          if (tag !== 122) {
-            break;
-          }
-
-          message.bannerInfo = TopFrameBannerInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -7622,16 +7396,26 @@ function createBaseStreamUrl(): StreamUrl {
     provider: 0,
     id: "0",
     idStr: "",
+    resolutionName: {},
     defaultResolution: "",
     extra: undefined,
     rtmpPushUrl: "",
     rtmpPullUrl: "",
+    flvPullUrl: {},
     candidateResolution: [],
+    hlsPullUrl: "",
+    hlsPullUrlParams: "",
+    rtmpPullUrlParams: "",
+    flvPullUrlParams: {},
     rtmpPushUrlParams: "",
     pushUrls: [],
+    liveCoreSdkData: undefined,
+    hlsPullUrlMap: {},
     completePushUrls: [],
+    streamControlType: 0,
     streamDelayMs: "0",
     pushResolution: "",
+    streamAppId: "0",
     aliveTimestamp: "0",
     streamSizeWidth: "0",
     streamSizeHeight: "0",
@@ -7650,6 +7434,9 @@ export const StreamUrl: MessageFns<StreamUrl> = {
     if (message.idStr !== "") {
       writer.uint32(26).string(message.idStr);
     }
+    globalThis.Object.entries(message.resolutionName).forEach(([key, value]: [string, string]) => {
+      StreamUrl_ResolutionNameEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+    });
     if (message.defaultResolution !== "") {
       writer.uint32(42).string(message.defaultResolution);
     }
@@ -7662,23 +7449,50 @@ export const StreamUrl: MessageFns<StreamUrl> = {
     if (message.rtmpPullUrl !== "") {
       writer.uint32(66).string(message.rtmpPullUrl);
     }
+    globalThis.Object.entries(message.flvPullUrl).forEach(([key, value]: [string, string]) => {
+      StreamUrl_FlvPullUrlEntry.encode({ key: key as any, value }, writer.uint32(74).fork()).join();
+    });
     for (const v of message.candidateResolution) {
       writer.uint32(82).string(v!);
     }
+    if (message.hlsPullUrl !== "") {
+      writer.uint32(90).string(message.hlsPullUrl);
+    }
+    if (message.hlsPullUrlParams !== "") {
+      writer.uint32(98).string(message.hlsPullUrlParams);
+    }
+    if (message.rtmpPullUrlParams !== "") {
+      writer.uint32(106).string(message.rtmpPullUrlParams);
+    }
+    globalThis.Object.entries(message.flvPullUrlParams).forEach(([key, value]: [string, string]) => {
+      StreamUrl_FlvPullUrlParamsEntry.encode({ key: key as any, value }, writer.uint32(114).fork()).join();
+    });
     if (message.rtmpPushUrlParams !== "") {
       writer.uint32(122).string(message.rtmpPushUrlParams);
     }
     for (const v of message.pushUrls) {
       writer.uint32(130).string(v!);
     }
+    if (message.liveCoreSdkData !== undefined) {
+      LiveCoreSDKData.encode(message.liveCoreSdkData, writer.uint32(138).fork()).join();
+    }
+    globalThis.Object.entries(message.hlsPullUrlMap).forEach(([key, value]: [string, string]) => {
+      StreamUrl_HlsPullUrlMapEntry.encode({ key: key as any, value }, writer.uint32(146).fork()).join();
+    });
     for (const v of message.completePushUrls) {
       writer.uint32(154).string(v!);
+    }
+    if (message.streamControlType !== 0) {
+      writer.uint32(160).int32(message.streamControlType);
     }
     if (message.streamDelayMs !== "0") {
       writer.uint32(176).int64(message.streamDelayMs);
     }
     if (message.pushResolution !== "") {
       writer.uint32(186).string(message.pushResolution);
+    }
+    if (message.streamAppId !== "0") {
+      writer.uint32(192).int64(message.streamAppId);
     }
     if (message.aliveTimestamp !== "0") {
       writer.uint32(200).int64(message.aliveTimestamp);
@@ -7726,6 +7540,17 @@ export const StreamUrl: MessageFns<StreamUrl> = {
           message.idStr = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = StreamUrl_ResolutionNameEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.resolutionName[entry4.key] = entry4.value;
+          }
+          continue;
+        }
         case 5: {
           if (tag !== 42) {
             break;
@@ -7758,12 +7583,58 @@ export const StreamUrl: MessageFns<StreamUrl> = {
           message.rtmpPullUrl = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          const entry9 = StreamUrl_FlvPullUrlEntry.decode(reader, reader.uint32());
+          if (entry9.value !== undefined) {
+            message.flvPullUrl[entry9.key] = entry9.value;
+          }
+          continue;
+        }
         case 10: {
           if (tag !== 82) {
             break;
           }
 
           message.candidateResolution.push(reader.string());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.hlsPullUrl = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.hlsPullUrlParams = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.rtmpPullUrlParams = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          const entry14 = StreamUrl_FlvPullUrlParamsEntry.decode(reader, reader.uint32());
+          if (entry14.value !== undefined) {
+            message.flvPullUrlParams[entry14.key] = entry14.value;
+          }
           continue;
         }
         case 15: {
@@ -7782,12 +7653,39 @@ export const StreamUrl: MessageFns<StreamUrl> = {
           message.pushUrls.push(reader.string());
           continue;
         }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.liveCoreSdkData = LiveCoreSDKData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          const entry18 = StreamUrl_HlsPullUrlMapEntry.decode(reader, reader.uint32());
+          if (entry18.value !== undefined) {
+            message.hlsPullUrlMap[entry18.key] = entry18.value;
+          }
+          continue;
+        }
         case 19: {
           if (tag !== 154) {
             break;
           }
 
           message.completePushUrls.push(reader.string());
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.streamControlType = reader.int32();
           continue;
         }
         case 22: {
@@ -7804,6 +7702,14 @@ export const StreamUrl: MessageFns<StreamUrl> = {
           }
 
           message.pushResolution = reader.string();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.streamAppId = reader.int64().toString();
           continue;
         }
         case 25: {
@@ -7848,6 +7754,198 @@ export const StreamUrl: MessageFns<StreamUrl> = {
   },
 };
 
+function createBaseStreamUrl_ResolutionNameEntry(): StreamUrl_ResolutionNameEntry {
+  return { key: "", value: "" };
+}
+
+export const StreamUrl_ResolutionNameEntry: MessageFns<StreamUrl_ResolutionNameEntry> = {
+  encode(message: StreamUrl_ResolutionNameEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StreamUrl_ResolutionNameEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStreamUrl_ResolutionNameEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseStreamUrl_FlvPullUrlEntry(): StreamUrl_FlvPullUrlEntry {
+  return { key: "", value: "" };
+}
+
+export const StreamUrl_FlvPullUrlEntry: MessageFns<StreamUrl_FlvPullUrlEntry> = {
+  encode(message: StreamUrl_FlvPullUrlEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StreamUrl_FlvPullUrlEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStreamUrl_FlvPullUrlEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseStreamUrl_FlvPullUrlParamsEntry(): StreamUrl_FlvPullUrlParamsEntry {
+  return { key: "", value: "" };
+}
+
+export const StreamUrl_FlvPullUrlParamsEntry: MessageFns<StreamUrl_FlvPullUrlParamsEntry> = {
+  encode(message: StreamUrl_FlvPullUrlParamsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StreamUrl_FlvPullUrlParamsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStreamUrl_FlvPullUrlParamsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseStreamUrl_HlsPullUrlMapEntry(): StreamUrl_HlsPullUrlMapEntry {
+  return { key: "", value: "" };
+}
+
+export const StreamUrl_HlsPullUrlMapEntry: MessageFns<StreamUrl_HlsPullUrlMapEntry> = {
+  encode(message: StreamUrl_HlsPullUrlMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StreamUrl_HlsPullUrlMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStreamUrl_HlsPullUrlMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseStreamUrlExtra(): StreamUrlExtra {
   return {
     height: 0,
@@ -7858,10 +7956,15 @@ function createBaseStreamUrlExtra(): StreamUrlExtra {
     defaultBitrate: 0,
     bitrateAdaptStrategy: 0,
     anchorInteractProfile: 0,
+    audienceInteractProfile: 0,
     hardwareEncode: false,
+    videoProfile: 0,
     superResolution: undefined,
     gopSec: 0,
+    bframeEnable: false,
+    roi: false,
     swRoi: false,
+    bytevc1Enable: false,
   };
 }
 
@@ -7891,8 +7994,14 @@ export const StreamUrlExtra: MessageFns<StreamUrlExtra> = {
     if (message.anchorInteractProfile !== 0) {
       writer.uint32(64).int32(message.anchorInteractProfile);
     }
+    if (message.audienceInteractProfile !== 0) {
+      writer.uint32(72).int32(message.audienceInteractProfile);
+    }
     if (message.hardwareEncode !== false) {
       writer.uint32(80).bool(message.hardwareEncode);
+    }
+    if (message.videoProfile !== 0) {
+      writer.uint32(96).int32(message.videoProfile);
     }
     if (message.superResolution !== undefined) {
       SrConfig.encode(message.superResolution, writer.uint32(114).fork()).join();
@@ -7900,8 +8009,17 @@ export const StreamUrlExtra: MessageFns<StreamUrlExtra> = {
     if (message.gopSec !== 0) {
       writer.uint32(133).float(message.gopSec);
     }
+    if (message.bframeEnable !== false) {
+      writer.uint32(136).bool(message.bframeEnable);
+    }
+    if (message.roi !== false) {
+      writer.uint32(144).bool(message.roi);
+    }
     if (message.swRoi !== false) {
       writer.uint32(152).bool(message.swRoi);
+    }
+    if (message.bytevc1Enable !== false) {
+      writer.uint32(160).bool(message.bytevc1Enable);
     }
     return writer;
   },
@@ -7977,12 +8095,28 @@ export const StreamUrlExtra: MessageFns<StreamUrlExtra> = {
           message.anchorInteractProfile = reader.int32();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.audienceInteractProfile = reader.int32();
+          continue;
+        }
         case 10: {
           if (tag !== 80) {
             break;
           }
 
           message.hardwareEncode = reader.bool();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.videoProfile = reader.int32();
           continue;
         }
         case 14: {
@@ -8001,12 +8135,36 @@ export const StreamUrlExtra: MessageFns<StreamUrlExtra> = {
           message.gopSec = reader.float();
           continue;
         }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.bframeEnable = reader.bool();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.roi = reader.bool();
+          continue;
+        }
         case 19: {
           if (tag !== 152) {
             break;
           }
 
           message.swRoi = reader.bool();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.bytevc1Enable = reader.bool();
           continue;
         }
       }
@@ -8295,270 +8453,6 @@ export const TopFrameBannerLogo: MessageFns<TopFrameBannerLogo> = {
           }
 
           message.uri = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseTopFrameV2Summary(): TopFrameV2Summary {
-  return {
-    id: "0",
-    title: "",
-    schema: "",
-    showList: [],
-    startTime: "0",
-    endTime: "0",
-    type: 0,
-    configVersion: "0",
-    timeTravelOffsetSec: "0",
-  };
-}
-
-export const TopFrameV2Summary: MessageFns<TopFrameV2Summary> = {
-  encode(message: TopFrameV2Summary, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "0") {
-      writer.uint32(8).int64(message.id);
-    }
-    if (message.title !== "") {
-      writer.uint32(18).string(message.title);
-    }
-    if (message.schema !== "") {
-      writer.uint32(26).string(message.schema);
-    }
-    for (const v of message.showList) {
-      ShowInfoV2.encode(v!, writer.uint32(34).fork()).join();
-    }
-    if (message.startTime !== "0") {
-      writer.uint32(40).int64(message.startTime);
-    }
-    if (message.endTime !== "0") {
-      writer.uint32(48).int64(message.endTime);
-    }
-    if (message.type !== 0) {
-      writer.uint32(56).int32(message.type);
-    }
-    if (message.configVersion !== "0") {
-      writer.uint32(64).int64(message.configVersion);
-    }
-    if (message.timeTravelOffsetSec !== "0") {
-      writer.uint32(80).int64(message.timeTravelOffsetSec);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): TopFrameV2Summary {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTopFrameV2Summary();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.id = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.title = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.schema = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.showList.push(ShowInfoV2.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.startTime = reader.int64().toString();
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.endTime = reader.int64().toString();
-          continue;
-        }
-        case 7: {
-          if (tag !== 56) {
-            break;
-          }
-
-          message.type = reader.int32();
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.configVersion = reader.int64().toString();
-          continue;
-        }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-
-          message.timeTravelOffsetSec = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseWatchReason(): WatchReason {
-  return { watchReasons: [], style: 0, bgColorType: 0, isShow: false };
-}
-
-export const WatchReason: MessageFns<WatchReason> = {
-  encode(message: WatchReason, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.watchReasons) {
-      WatchReasonItem.encode(v!, writer.uint32(10).fork()).join();
-    }
-    if (message.style !== 0) {
-      writer.uint32(16).int32(message.style);
-    }
-    if (message.bgColorType !== 0) {
-      writer.uint32(24).int32(message.bgColorType);
-    }
-    if (message.isShow !== false) {
-      writer.uint32(32).bool(message.isShow);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): WatchReason {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseWatchReason();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.watchReasons.push(WatchReasonItem.decode(reader, reader.uint32()));
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.style = reader.int32();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.bgColorType = reader.int32();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.isShow = reader.bool();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseWatchReasonItem(): WatchReasonItem {
-  return { reasonId: 0, content: undefined, tuxIconProtocol: "" };
-}
-
-export const WatchReasonItem: MessageFns<WatchReasonItem> = {
-  encode(message: WatchReasonItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.reasonId !== 0) {
-      writer.uint32(8).int32(message.reasonId);
-    }
-    if (message.content !== undefined) {
-      Text.encode(message.content, writer.uint32(18).fork()).join();
-    }
-    if (message.tuxIconProtocol !== "") {
-      writer.uint32(26).string(message.tuxIconProtocol);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): WatchReasonItem {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseWatchReasonItem();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.reasonId = reader.int32();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.content = Text.decode(reader, reader.uint32());
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.tuxIconProtocol = reader.string();
           continue;
         }
       }

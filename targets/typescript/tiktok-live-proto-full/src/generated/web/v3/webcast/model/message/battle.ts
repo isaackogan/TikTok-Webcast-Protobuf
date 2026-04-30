@@ -6,18 +6,8 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { BattleRewardSettleRewardStatus, BattleTaskSettleResult } from "../../im.js";
 import { ImageModel } from "../base/messages.js";
-import {
-  BattleInviteType,
-  BattleResultResult,
-  BattleScene,
-  BattleSettingsBattleStatus,
-  BattleType,
-  IceShowdownSetting,
-  MatchGameplayOption,
-} from "../data/messages.js";
-import { BattleBonusConfig, BattlePrompt, BattleUserInfo, GiftModeMeta } from "../live/match.js";
+import { BattleResultResult } from "../data/messages.js";
 import { Text } from "./common.js";
 
 export const protobufPackage = "webcast.model.message.battle";
@@ -69,38 +59,6 @@ export interface BattleResult {
   enigmaUv: string;
 }
 
-export interface BattleRewardSettle {
-  prompt: BattlePrompt | undefined;
-  status: BattleRewardSettleRewardStatus;
-}
-
-export interface BattleSetting {
-  battleId: string;
-  startTimeMs: string;
-  duration: number;
-  channelId: string;
-  status: BattleSettingsBattleStatus;
-  inviteType: BattleInviteType;
-  giftModeMeta: GiftModeMeta | undefined;
-  battleType: BattleType;
-  extraDurationSecond: string;
-  endTimeMs: string;
-  scene: BattleScene;
-  sourceType: string;
-  iceShowdownSetting: IceShowdownSetting;
-  gameplayOption: MatchGameplayOption;
-}
-
-export interface BattleTaskSettle {
-  result: BattleTaskSettleResult;
-  rewardStartTime: string;
-  rewardStartTimestamp: string;
-}
-
-export interface BattleTaskStart {
-  config: BattleBonusConfig | undefined;
-}
-
 export interface BattleTaskUpdate {
   progress: string;
   fromUserId: string;
@@ -138,6 +96,7 @@ export interface BattleTruthOrDareTriggerGuideV2 {
   ruleDetailUrl: string;
   lapGuideKey: string;
   lapGuideDurationSecond: number;
+  isFirstTime: boolean;
 }
 
 export interface BattleTruthOrDareTriggerGuideV2TruthOrDareTip {
@@ -161,11 +120,6 @@ export interface BattleUserArmy {
   diamondScore: string;
   userIdStr: string;
   enigmaScore: string;
-}
-
-export interface BattleUserInfoWrapper {
-  key: string;
-  value: BattleUserInfo | undefined;
 }
 
 export interface ExemptStrategy {
@@ -651,345 +605,6 @@ export const BattleResult: MessageFns<BattleResult> = {
   },
 };
 
-function createBaseBattleRewardSettle(): BattleRewardSettle {
-  return { prompt: undefined, status: 0 };
-}
-
-export const BattleRewardSettle: MessageFns<BattleRewardSettle> = {
-  encode(message: BattleRewardSettle, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.prompt !== undefined) {
-      BattlePrompt.encode(message.prompt, writer.uint32(10).fork()).join();
-    }
-    if (message.status !== 0) {
-      writer.uint32(16).int32(message.status);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BattleRewardSettle {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBattleRewardSettle();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.prompt = BattlePrompt.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.status = reader.int32() as any;
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseBattleSetting(): BattleSetting {
-  return {
-    battleId: "0",
-    startTimeMs: "0",
-    duration: 0,
-    channelId: "0",
-    status: 0,
-    inviteType: 0,
-    giftModeMeta: undefined,
-    battleType: 0,
-    extraDurationSecond: "0",
-    endTimeMs: "0",
-    scene: 0,
-    sourceType: "0",
-    iceShowdownSetting: 0,
-    gameplayOption: 0,
-  };
-}
-
-export const BattleSetting: MessageFns<BattleSetting> = {
-  encode(message: BattleSetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.battleId !== "0") {
-      writer.uint32(8).int64(message.battleId);
-    }
-    if (message.startTimeMs !== "0") {
-      writer.uint32(16).int64(message.startTimeMs);
-    }
-    if (message.duration !== 0) {
-      writer.uint32(24).int32(message.duration);
-    }
-    if (message.channelId !== "0") {
-      writer.uint32(32).int64(message.channelId);
-    }
-    if (message.status !== 0) {
-      writer.uint32(40).int32(message.status);
-    }
-    if (message.inviteType !== 0) {
-      writer.uint32(48).int32(message.inviteType);
-    }
-    if (message.giftModeMeta !== undefined) {
-      GiftModeMeta.encode(message.giftModeMeta, writer.uint32(58).fork()).join();
-    }
-    if (message.battleType !== 0) {
-      writer.uint32(64).int32(message.battleType);
-    }
-    if (message.extraDurationSecond !== "0") {
-      writer.uint32(72).int64(message.extraDurationSecond);
-    }
-    if (message.endTimeMs !== "0") {
-      writer.uint32(80).int64(message.endTimeMs);
-    }
-    if (message.scene !== 0) {
-      writer.uint32(88).int32(message.scene);
-    }
-    if (message.sourceType !== "0") {
-      writer.uint32(96).int64(message.sourceType);
-    }
-    if (message.iceShowdownSetting !== 0) {
-      writer.uint32(104).int32(message.iceShowdownSetting);
-    }
-    if (message.gameplayOption !== 0) {
-      writer.uint32(112).int32(message.gameplayOption);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BattleSetting {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBattleSetting();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.battleId = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.startTimeMs = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.duration = reader.int32();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.channelId = reader.int64().toString();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.status = reader.int32() as any;
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.inviteType = reader.int32() as any;
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.giftModeMeta = GiftModeMeta.decode(reader, reader.uint32());
-          continue;
-        }
-        case 8: {
-          if (tag !== 64) {
-            break;
-          }
-
-          message.battleType = reader.int32() as any;
-          continue;
-        }
-        case 9: {
-          if (tag !== 72) {
-            break;
-          }
-
-          message.extraDurationSecond = reader.int64().toString();
-          continue;
-        }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-
-          message.endTimeMs = reader.int64().toString();
-          continue;
-        }
-        case 11: {
-          if (tag !== 88) {
-            break;
-          }
-
-          message.scene = reader.int32() as any;
-          continue;
-        }
-        case 12: {
-          if (tag !== 96) {
-            break;
-          }
-
-          message.sourceType = reader.int64().toString();
-          continue;
-        }
-        case 13: {
-          if (tag !== 104) {
-            break;
-          }
-
-          message.iceShowdownSetting = reader.int32() as any;
-          continue;
-        }
-        case 14: {
-          if (tag !== 112) {
-            break;
-          }
-
-          message.gameplayOption = reader.int32() as any;
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseBattleTaskSettle(): BattleTaskSettle {
-  return { result: 0, rewardStartTime: "0", rewardStartTimestamp: "0" };
-}
-
-export const BattleTaskSettle: MessageFns<BattleTaskSettle> = {
-  encode(message: BattleTaskSettle, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.result !== 0) {
-      writer.uint32(8).int32(message.result);
-    }
-    if (message.rewardStartTime !== "0") {
-      writer.uint32(16).int64(message.rewardStartTime);
-    }
-    if (message.rewardStartTimestamp !== "0") {
-      writer.uint32(24).int64(message.rewardStartTimestamp);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BattleTaskSettle {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBattleTaskSettle();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.result = reader.int32() as any;
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.rewardStartTime = reader.int64().toString();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.rewardStartTimestamp = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseBattleTaskStart(): BattleTaskStart {
-  return { config: undefined };
-}
-
-export const BattleTaskStart: MessageFns<BattleTaskStart> = {
-  encode(message: BattleTaskStart, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.config !== undefined) {
-      BattleBonusConfig.encode(message.config, writer.uint32(10).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BattleTaskStart {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBattleTaskStart();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.config = BattleBonusConfig.decode(reader, reader.uint32());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseBattleTaskUpdate(): BattleTaskUpdate {
   return { progress: "0", fromUserId: "0", promptKey: "", logId: "" };
 }
@@ -1273,6 +888,7 @@ function createBaseBattleTruthOrDareTriggerGuideV2(): BattleTruthOrDareTriggerGu
     ruleDetailUrl: "",
     lapGuideKey: "",
     lapGuideDurationSecond: 0,
+    isFirstTime: false,
   };
 }
 
@@ -1301,6 +917,9 @@ export const BattleTruthOrDareTriggerGuideV2: MessageFns<BattleTruthOrDareTrigge
     }
     if (message.lapGuideDurationSecond !== 0) {
       writer.uint32(64).int32(message.lapGuideDurationSecond);
+    }
+    if (message.isFirstTime !== false) {
+      writer.uint32(72).bool(message.isFirstTime);
     }
     return writer;
   },
@@ -1374,6 +993,14 @@ export const BattleTruthOrDareTriggerGuideV2: MessageFns<BattleTruthOrDareTrigge
           }
 
           message.lapGuideDurationSecond = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.isFirstTime = reader.bool();
           continue;
         }
       }
@@ -1618,54 +1245,6 @@ export const BattleUserArmy: MessageFns<BattleUserArmy> = {
           }
 
           message.enigmaScore = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseBattleUserInfoWrapper(): BattleUserInfoWrapper {
-  return { key: "0", value: undefined };
-}
-
-export const BattleUserInfoWrapper: MessageFns<BattleUserInfoWrapper> = {
-  encode(message: BattleUserInfoWrapper, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "0") {
-      writer.uint32(8).int64(message.key);
-    }
-    if (message.value !== undefined) {
-      BattleUserInfo.encode(message.value, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): BattleUserInfoWrapper {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBattleUserInfoWrapper();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.key = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = BattleUserInfo.decode(reader, reader.uint32());
           continue;
         }
       }

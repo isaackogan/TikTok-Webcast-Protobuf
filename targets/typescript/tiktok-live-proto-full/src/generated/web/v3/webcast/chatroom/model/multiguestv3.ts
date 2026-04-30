@@ -62,6 +62,7 @@ export interface PermitBizContent {
   isApplyAutoApproved: boolean;
   linkTypePermission: string;
   isFullPositionPreApproved: boolean;
+  isQuickCallAutoApproved: boolean;
 }
 
 export interface ReplyBizContent {
@@ -446,6 +447,7 @@ function createBasePermitBizContent(): PermitBizContent {
     isApplyAutoApproved: false,
     linkTypePermission: "0",
     isFullPositionPreApproved: false,
+    isQuickCallAutoApproved: false,
   };
 }
 
@@ -474,6 +476,9 @@ export const PermitBizContent: MessageFns<PermitBizContent> = {
     }
     if (message.isFullPositionPreApproved !== false) {
       writer.uint32(64).bool(message.isFullPositionPreApproved);
+    }
+    if (message.isQuickCallAutoApproved !== false) {
+      writer.uint32(72).bool(message.isQuickCallAutoApproved);
     }
     return writer;
   },
@@ -547,6 +552,14 @@ export const PermitBizContent: MessageFns<PermitBizContent> = {
           }
 
           message.isFullPositionPreApproved = reader.bool();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.isQuickCallAutoApproved = reader.bool();
           continue;
         }
       }
