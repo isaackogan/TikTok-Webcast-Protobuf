@@ -10,11 +10,6 @@ import { ImageModel } from "../model/base/messages.js";
 
 export const protobufPackage = "webcast.shared";
 
-export interface AuditInfo {
-  violationId: string;
-  taskType: number;
-}
-
 export interface AuthenticationInfo {
   customVerify: string;
   enterpriseVerifyReason: string;
@@ -37,54 +32,6 @@ export interface UserInfo {
   nickName: string;
   avatarThumb: ImageModel | undefined;
 }
-
-function createBaseAuditInfo(): AuditInfo {
-  return { violationId: "0", taskType: 0 };
-}
-
-export const AuditInfo: MessageFns<AuditInfo> = {
-  encode(message: AuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.violationId !== "0") {
-      writer.uint32(8).int64(message.violationId);
-    }
-    if (message.taskType !== 0) {
-      writer.uint32(16).int32(message.taskType);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): AuditInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuditInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.violationId = reader.int64().toString();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.taskType = reader.int32();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
 
 function createBaseAuthenticationInfo(): AuthenticationInfo {
   return { customVerify: "", enterpriseVerifyReason: "", authenticationBadge: undefined };

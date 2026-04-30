@@ -16,13 +16,13 @@ import {
   SubPinCardTextTextType,
   TimerDetailAntidirtStatus,
   TimerDetailAuditStatus,
+  TimerDetailAuditTaskType,
   TimerStatus,
 } from "../model/data/messages.js";
-import { AuditInfo as AuditInfo1 } from "../shared/messages.js";
 
 export const protobufPackage = "webcast.chatroom.api";
 
-export interface AuditInfo {
+export interface EmoteModelAuditInfo {
   violationId: string;
   taskType: AuditTaskType;
 }
@@ -116,15 +116,20 @@ export interface TimerDetail {
   timerStatus: TimerStatus;
   antidirtStatus: TimerDetailAntidirtStatus;
   auditStatus: TimerDetailAuditStatus;
-  auditInfo: AuditInfo1 | undefined;
+  auditInfo: TimerDetailAuditInfo | undefined;
 }
 
-function createBaseAuditInfo(): AuditInfo {
+export interface TimerDetailAuditInfo {
+  violationId: string;
+  taskType: TimerDetailAuditTaskType;
+}
+
+function createBaseEmoteModelAuditInfo(): EmoteModelAuditInfo {
   return { violationId: "0", taskType: 0 };
 }
 
-export const AuditInfo: MessageFns<AuditInfo> = {
-  encode(message: AuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const EmoteModelAuditInfo: MessageFns<EmoteModelAuditInfo> = {
+  encode(message: EmoteModelAuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.violationId !== "0") {
       writer.uint32(8).int64(message.violationId);
     }
@@ -134,10 +139,10 @@ export const AuditInfo: MessageFns<AuditInfo> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): AuditInfo {
+  decode(input: BinaryReader | Uint8Array, length?: number): EmoteModelAuditInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuditInfo();
+    const message = createBaseEmoteModelAuditInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -949,7 +954,7 @@ export const TimerDetail: MessageFns<TimerDetail> = {
       writer.uint32(176).int32(message.auditStatus);
     }
     if (message.auditInfo !== undefined) {
-      AuditInfo1.encode(message.auditInfo, writer.uint32(186).fork()).join();
+      TimerDetailAuditInfo.encode(message.auditInfo, writer.uint32(186).fork()).join();
     }
     return writer;
   },
@@ -1142,7 +1147,55 @@ export const TimerDetail: MessageFns<TimerDetail> = {
             break;
           }
 
-          message.auditInfo = AuditInfo1.decode(reader, reader.uint32());
+          message.auditInfo = TimerDetailAuditInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTimerDetailAuditInfo(): TimerDetailAuditInfo {
+  return { violationId: "0", taskType: 0 };
+}
+
+export const TimerDetailAuditInfo: MessageFns<TimerDetailAuditInfo> = {
+  encode(message: TimerDetailAuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.violationId !== "0") {
+      writer.uint32(8).int64(message.violationId);
+    }
+    if (message.taskType !== 0) {
+      writer.uint32(16).int32(message.taskType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TimerDetailAuditInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTimerDetailAuditInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.violationId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.taskType = reader.int32() as any;
           continue;
         }
       }
