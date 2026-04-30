@@ -4,7 +4,6 @@
 # This file has been @generated
 
 __all__ = (
-    "AuditInfo",
     "AuthenticationInfo",
     "ShopLabelImage",
     "UserInfo",
@@ -20,20 +19,6 @@ from ...message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
-
-
-@dataclass(eq=False, repr=False)
-class AuditInfo(betterproto2.Message):
-    violation_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
-        betterproto2.field(1, betterproto2.TYPE_INT64)
-    )
-
-    task_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
-        betterproto2.field(2, betterproto2.TYPE_INT32)
-    )
-
-
-default_message_pool.register_message("webcast.shared", "AuditInfo", AuditInfo)
 
 
 @dataclass(eq=False, repr=False)

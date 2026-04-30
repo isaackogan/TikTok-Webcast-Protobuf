@@ -101,6 +101,7 @@ __all__ = (
     "TemplateEffectExtra",
     "TimerDetailAntidirtStatus",
     "TimerDetailAuditStatus",
+    "TimerDetailAuditTaskType",
     "TimerStatus",
     "TopicActionType",
     "UrlDataStruct",
@@ -631,6 +632,8 @@ class EnvelopeBusinessType(betterproto2.Enum):
     BUSINESS_TYPE_CREATOR_LEAGUE_PROMOTION_GT_M = 13
 
     BUSINESS_TYPE_MOY_GT_M_POPULARITY_TICKET = 14
+
+    SUPER_FAN_BOX = 19
 
 
 class EnvelopeDisplay(betterproto2.Enum):
@@ -1441,6 +1444,12 @@ class TimerDetailAuditStatus(betterproto2.Enum):
     AUDIT_STATUS_REVIEWING = 3
 
     AUDIT_STATUS_FORBIDDEN = 4
+
+
+class TimerDetailAuditTaskType(betterproto2.Enum):
+    AUDIT_TASK_TYPE_DEFAULT = 0
+
+    AUDIT_TASK_TYPE_APPEAL = 1
 
 
 class TimerStatus(betterproto2.Enum):

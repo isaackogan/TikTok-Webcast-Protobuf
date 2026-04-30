@@ -54,7 +54,7 @@ class EmoteModel(betterproto2.Message):
         8, betterproto2.TYPE_STRING
     )
 
-    audit_info: "___chatroom__api__.AuditInfo | None" = betterproto2.field(
+    audit_info: "___chatroom__api__.EmoteModelAuditInfo | None" = betterproto2.field(
         9, betterproto2.TYPE_MESSAGE, optional=True
     )
 
