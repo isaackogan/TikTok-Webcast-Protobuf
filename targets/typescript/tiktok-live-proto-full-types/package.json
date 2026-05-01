@@ -29,9 +29,10 @@
     }
   },
   "scripts": {
-    "generate": "tsx scripts/generate.mts && tsx scripts/shuffle.mts",
+    "generate": "tsx scripts/generate.mts && tsx scripts/shuffle.mts && npm run typecheck",
     "shuffle": "tsx scripts/shuffle.mts",
-    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && tsdown",
     "clean": "rm -rf dist tmp",
     "prepack": "npm run build"
   },

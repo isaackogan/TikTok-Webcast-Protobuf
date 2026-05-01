@@ -50,8 +50,9 @@
     }
   },
   "scripts": {
-    "generate": "tsx scripts/generate.mts",
-    "build": "tsdown",
+    "generate": "tsx scripts/generate.mts && npm run typecheck",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && tsdown",
     "clean": "rm -rf dist tmp",
     "prepack": "npm run build"
   },

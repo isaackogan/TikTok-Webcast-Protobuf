@@ -104,6 +104,35 @@ function generateModern(version: string, pluginPath: string): void {
 
   console.log(`[${version}] protoc modern (onlyTypes, ${protos.length} files) ...`);
   execSync(cmd, { stdio: 'inherit' });
+  dedupeDuplicateDeclarations(outGen);
+}
+
+const TOP_LEVEL_DECL_RE = /^export (enum|interface|class|type) ([A-Z][A-Za-z0-9_]*)/;
+function dedupeDuplicateDeclarations(dir: string): void {
+  for (const rel of listGeneratedTs(dir)) {
+    const path = resolve(dir, rel);
+    const original = readFileSync(path, 'utf8');
+    const lines = original.split('\n');
+    const seen = new Set<string>();
+    let renamed = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(TOP_LEVEL_DECL_RE);
+      if (!m) continue;
+      const [, kind, name] = m;
+      if (!seen.has(name)) {
+        seen.add(name);
+        continue;
+      }
+      let n = 2;
+      while (seen.has(`${name}_${n}`)) n++;
+      const newName = `${name}_${n}`;
+      seen.add(newName);
+      lines[i] = lines[i].replace(`export ${kind} ${name}`, `export ${kind} ${newName}`);
+      renamed++;
+      console.warn(`  [dedupe] ${rel}: renamed duplicate \`${kind} ${name}\` → \`${newName}\``);
+    }
+    if (renamed > 0) writeFileSync(path, lines.join('\n'), 'utf8');
+  }
 }
 
 function listGeneratedTs(dir: string, root = dir): string[] {
@@ -183,7 +212,7 @@ function buildBarrel(versionGenDir: string, importPrefix: string, rules: Disambi
     if (items.length === 0) continue;
     const importPath = `${importPrefix}/${file.replace(/\.ts$/, '.js')}`;
     const list = items.map((it) => (it.orig === it.final ? it.orig : `${it.orig} as ${it.final}`));
-    out.push(`export { ${list.join(', ')} } from '${importPath}';`);
+    out.push(`export type { ${list.join(', ')} } from '${importPath}';`);
   }
   return out.join('\n') + '\n';
 }

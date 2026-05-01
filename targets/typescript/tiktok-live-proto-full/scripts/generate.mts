@@ -121,6 +121,35 @@ function generateModern(args: {
 
   console.log(`[${version}/${target}] protoc modern (env=${env}, ${protos.length} files) ...`);
   execSync(cmd, { stdio: 'inherit' });
+  dedupeDuplicateDeclarations(outGen);
+}
+
+const TOP_LEVEL_DECL_RE = /^export (enum|interface|class|type) ([A-Z][A-Za-z0-9_]*)/;
+function dedupeDuplicateDeclarations(dir: string): void {
+  for (const rel of listGeneratedTs(dir)) {
+    const path = resolve(dir, rel);
+    const original = readFileSync(path, 'utf8');
+    const lines = original.split('\n');
+    const seen = new Set<string>();
+    let renamed = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(TOP_LEVEL_DECL_RE);
+      if (!m) continue;
+      const [, kind, name] = m;
+      if (!seen.has(name)) {
+        seen.add(name);
+        continue;
+      }
+      let n = 2;
+      while (seen.has(`${name}_${n}`)) n++;
+      const newName = `${name}_${n}`;
+      seen.add(newName);
+      lines[i] = lines[i].replace(`export ${kind} ${name}`, `export ${kind} ${newName}`);
+      renamed++;
+      console.warn(`  [dedupe] ${rel}: renamed duplicate \`${kind} ${name}\` → \`${newName}\``);
+    }
+    if (renamed > 0) writeFileSync(path, lines.join('\n'), 'utf8');
+  }
 }
 
 function listGeneratedTs(dir: string, root = dir): string[] {

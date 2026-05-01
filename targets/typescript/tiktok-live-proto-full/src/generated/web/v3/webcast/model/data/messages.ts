@@ -448,6 +448,7 @@ export enum EnvelopeBusinessType {
   BUSINESS_TYPE_EO_YG_TM_GAME_DIAMOND = 12,
   BUSINESS_TYPE_CREATOR_LEAGUE_PROMOTION_GT_M = 13,
   BUSINESS_TYPE_MOY_GT_M_POPULARITY_TICKET = 14,
+  SUPER_FAN_BOX = 19,
   UNRECOGNIZED = -1,
 }
 
@@ -1151,7 +1152,7 @@ export enum SubPinCardTextTextType {
   UNRECOGNIZED = -1,
 }
 
-export enum SubPinCardTextTextType {
+export enum SubPinCardTextTextType_2 {
   UNKNOWN_TEXT_TYPE = 0,
   ORIGINAL_TEXT = 1,
   STARLING_KEY = 2,
