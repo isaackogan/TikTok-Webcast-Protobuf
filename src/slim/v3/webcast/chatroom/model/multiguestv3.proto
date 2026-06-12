@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package webcast.chatroom.model.multiguestv3;
 
+import "webcast/chatroom/model/interact_messages.proto";
 import "webcast/chatroom/model/multilive.proto";
 import "webcast/im.proto";
 import "webcast/linkmic/common.proto";
@@ -28,6 +29,7 @@ message InviteBizContent {
   .webcast.model.base.user.User invitee_user_info = 5;
 
   .webcast.model.data.LinkmicShareRevenueSetting share_revenue_setting = 6;
+  interact.LinkmicShareRevenueSettingStruct share_revenue_setting_struct = 7;
 }
 
 message JoinDirectBizContent {
@@ -35,6 +37,7 @@ message JoinDirectBizContent {
 
   .webcast.model.data.MultiGuestOutsideRoomInviteSource outside_room_invite_source = 2;
   bool is_full_position_pre_approved = 3;
+  int32 mg_source_role = 4;
 }
 
 message MultiLiveContent {

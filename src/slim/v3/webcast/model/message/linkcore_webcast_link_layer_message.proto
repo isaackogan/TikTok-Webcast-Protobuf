@@ -43,5 +43,6 @@ message WebcastLinkLayerMessage {
   im.GroupChangeContent group_change_content = 118;
   im.JoinGroupDirectContent join_group_direct_content = 119;
   im.JoinRoomDirectContent join_room_direct_content = 120;
+  im.LinkEnvelopeContent link_envelope_content = 150;
   chatroom.model.multiguestv3.BusinessContent business_content = 200;
 }

@@ -34,4 +34,5 @@ message MultiLiveAnchorPanelSettings {
   int32 save_as_default_layout = 17;
   int32 multi_guest_allow_cohost_invitation = 18;
   int32 multi_guest_allow_cohost_invitation_once = 19;
+  int32 disable_guest_open_camera = 20;
 }

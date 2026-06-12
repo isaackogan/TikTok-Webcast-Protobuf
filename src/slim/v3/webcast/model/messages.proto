@@ -63,6 +63,7 @@ message BorderInfo {
   string desc_starling_key = 10;
   string name = 11;
   string description = 12;
+  bool is_taller_avatar_background = 13;
 }
 
 message CrossScreenEffectInfo {

@@ -3,6 +3,7 @@ syntax = "proto3";
 package webcast.model.data.oec_msg;
 
 import "webcast/model/base/messages.proto";
+import "webcast/shared/messages.proto";
 
 message AtmosphereInfo {
   repeated Tag tags = 1;
@@ -36,6 +37,18 @@ message AuctionInfo {
   int32 auction_text_type_int = 20;
   int32 drawing_state_text_type_int = 21;
   string version_time_str = 22;
+  map<string, string> trace_time_map = 23;
+  EasterEgg easter_egg = 24;
+  int32 auction_knock_perform_middle_text_type = 25;
+  int32 auction_knock_perform_bottom_right_text_type = 26;
+  string auction_id_str = 27;
+  string auction_config_id_str = 28;
+  int32 auction_card_bottom_text_type = 29;
+  int32 auction_card_title_text_type = 30;
+  int32 surprise_set_remain_item_count = 31;
+  int32 auction_event_type_int = 32;
+  BidPanel bid_panel = 33;
+  string lynx_card_info = 100;
 }
 
 message AuctionWinnerPopup {
@@ -50,6 +63,10 @@ message AuctionWinnerPopup {
 
 message BagIndex {
   int32 value = 1;
+}
+
+message BidPanel {
+  int32 bid_btn_text_type_int = 1;
 }
 
 message CarouselCfg {
@@ -71,6 +88,15 @@ message DispersionParam {
   int64 min_delay_ms = 2;
 }
 
+message EasterEgg {
+  int64 winner_rank = 1;
+  int32 winner_rank_text_type = 2;
+  int64 winner_room_win_cnt = 3;
+  int32 winner_room_win_cnt_text_type = 4;
+  int32 winner_rank_text_type_tail = 5;
+  int32 winner_room_win_cnt_text_type_tail = 6;
+}
+
 message EcomLiveElementActions {
   repeated AtomAction atom_actions = 1;
   int64 version = 2;
@@ -82,12 +108,21 @@ message ExtendAuctionCfg {
   int64 extend_auction_time = 3;
 }
 
+message FlashSaleEnhancementInfo {
+  int32 stock_show_status = 1;
+  repeated UserInfo buyer_infos = 2;
+  shared.EnhancementTextInfo enhancement_text_info = 3;
+}
+
 message LiveFlashSaleInfo {
   int64 activity_id = 1;
   int32 type = 2;
   int32 status = 3;
   int32 stock_status = 4;
   int32 available_stock = 5;
+  int32 total_stock = 6;
+  FlashSaleEnhancementInfo enhancement_info = 7;
+  int32 pdp_viewer_count = 8;
 }
 
 message MsgMeta {
@@ -180,6 +215,7 @@ message UserInfo {
   string nick_name = 2;
   base.ImageModel avatar = 3;
   bool is_winner = 4;
+  string user_id_str = 5;
 }
 
 message VoucherItem {

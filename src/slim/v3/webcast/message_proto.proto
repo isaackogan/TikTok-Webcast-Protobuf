@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package webcast.message.proto;
 
+import "webcast/model/base/user.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/shared/messages.proto";
 
@@ -63,6 +64,7 @@ message ShowcaseEntranceInfo {
   int64 sold_count = 2;
   string showcase_name = 3;
   repeated SellingPoint selling_point = 11;
+  model.base.user.CreatorScoreProfile creator_score_profile = 12;
 }
 
 message StoreIdentityLabel {

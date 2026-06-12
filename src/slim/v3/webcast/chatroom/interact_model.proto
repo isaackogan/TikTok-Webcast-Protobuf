@@ -87,6 +87,8 @@ message RivalExtraInfo {
   .webcast.chatroom.model.interact.GiftGalleryBadgeInfo gift_gallery_badge_info = 20;
   OffliveInviteInfo offlive_invite_info = 21;
   .webcast.chatroom.model.interact.UserSuggestionInfo user_suggestion_info = 22;
+  .webcast.chatroom.model.interact.UserSuggestionInfo friend_suggestion_info = 23;
+  .webcast.chatroom.model.interact.ActivityBadgeInfo activity_badge_info = 24;
 }
 
 message Tag {

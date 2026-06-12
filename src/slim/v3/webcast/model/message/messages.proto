@@ -19,6 +19,7 @@ import "webcast/model/gift.proto";
 import "webcast/model/gift/assets.proto";
 import "webcast/model/gift/model.proto";
 import "webcast/model/gift/model_asset_bundle.proto";
+import "webcast/model/gift/model_gift_effect.proto";
 import "webcast/model/linksetting.proto";
 import "webcast/model/live_match.proto";
 import "webcast/model/live_match_battle_team_user_armies.proto";
@@ -35,6 +36,7 @@ import "webcast/model/messages.proto";
 import "webcast/model/rank.proto";
 import "webcast/model/viewer_picks.proto";
 import "webcast/shared/message.proto";
+import "webcast/shared/messages.proto";
 import "webcast/synthetic_enums.proto";
 
 message AccessControlCaptcha {
@@ -71,6 +73,11 @@ message AffiliatedInfo {
   map<string, string> sticker_track_param = 10;
 }
 
+message AnchorPair {
+  int64 source_anchor_id = 1;
+  int64 target_anchor_id = 2;
+}
+
 message AnimationData {
   string gecko_channel_name = 1;
   string file_name = 2;
@@ -83,6 +90,11 @@ message AtmosphereTagInfo {
   int32 tag_type = 1;
   repeated ProductAtmosphereTag atmosphere_tags = 2;
   repeated ProductAtmosphereTag pin_atmosphere_tags = 3;
+}
+
+message AwardCardNotice {
+  common.Text display_content = 1;
+  repeated live.match.BattleUserInfo awarded_users = 2;
 }
 
 message Background {
@@ -204,6 +216,8 @@ message CapsuleBizParamsCohost {
   bool is_friend = 9;
   string sub_type = 10;
   string rival_vote_count = 11;
+  chatroom.model.interact.GiftGalleryBadgeSection anchor_class_label = 12;
+  chatroom.model.interact.GiftGalleryBadgeSection rival_class_label = 13;
 }
 
 message CapsuleBizParamsCommentFlaggedPrompt {
@@ -282,6 +296,10 @@ message CapsuleBizParamsRandomGift {
 message CaptionContent {
   string lang = 1;
   string content = 2;
+}
+
+message CardObtainGuide {
+  int32 not_in_use = 1;
 }
 
 message CohostListChangeContent {
@@ -380,6 +398,8 @@ message FlashSaleAtmosphere {
   int64 start_time = 2;
   int64 end_time = 3;
   int64 preheat_time = 4;
+  FlashSaleEnhancementInfo enhancement_info = 5;
+  int32 pdp_viewer_count = 6;
 }
 
 message FlashSaleAtmosphereInfo {
@@ -392,10 +412,17 @@ message FlashSaleAtmosphereInfo {
   int32 creator_limit_type = 7;
 }
 
+message FlashSaleEnhancementInfo {
+  int32 stock_show_status = 1;
+  repeated UserInfo buyer_infos = 2;
+  shared.EnhancementTextInfo enhancement_text_info = 3;
+}
+
 message FlashSaleStock {
   int32 activity_stock_status = 1;
   int32 activity_stock = 2;
   string activity_stock_text = 3;
+  int32 total_stock = 4;
 }
 
 message FrequencyControl {
@@ -790,6 +817,16 @@ message RoomNotifyMessage_EventTracking {
   int64 gift_sub_order_create_time = 4;
 }
 
+message SpecialEffectNotice {
+  int64 score = 1;
+  int64 from_user_id = 2;
+  int64 to_anchor_id = 3;
+  repeated AnchorPair affected_anchor_pairs = 4;
+  int32 effect_type = 5;
+  live.match.CommunityHeartMeInfo community_heart_me_info = 6;
+  string community_heart_me_info_str = 7;
+}
+
 message SpecifiedDisplayText {
   int64 uid = 1;
   common.Text display_text = 2;
@@ -811,6 +848,9 @@ message TagItem {
 
   data.TagType tag_type = 1;
   common.Text tag_text = 2;
+  int64 tag_value = 3;
+  int32 display_location = 4;
+  map<string, string> event_tracking_fields = 5;
 }
 
 message TeamUsersInfo {
@@ -875,6 +915,64 @@ message UnionAnimationInfo {
   int64 supported_version = 3;
 }
 
+message UseCriticalStrikeCard {
+  live.match.CriticalStrikeCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UseExtraTimeCard {
+  live.match.ExtraTimeCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UsePotionCard {
+  live.match.PotionCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UseSmokeCard {
+  live.match.SmokeCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UseSpecialEffectCard {
+  live.match.SpecialEffectCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+  repeated AnchorPair affected_anchor_pairs = 4;
+  int32 effect_type = 5;
+  live.match.CommunityHeartMeInfo community_heart_me_info = 6;
+  string community_heart_me_info_str = 7;
+}
+
+message UseTop2Card {
+  live.match.Top2CardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UseTop3Card {
+  live.match.Top3CardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UseVaultGloveCard {
+  live.match.VaultGloveCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
+message UseWaveCard {
+  live.match.WaveCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
 message UserCountdownInfo {
   int64 countdown_id = 1;
   int64 score = 2;
@@ -895,6 +993,11 @@ message UserFanTicket {
   int32 completion_progress_percent = 10;
   int32 top_guest_rank = 11;
   string ticket_ui_style_v2 = 12;
+}
+
+message UserInfo {
+  int64 user_id = 1;
+  base.ImageModel avatar = 2;
 }
 
 message UserInteractionInfo {
@@ -1183,6 +1286,10 @@ message WebcastGiftMessage {
   bool is_asset_bundle_gift = 51;
   gift.model.AssetBundle asset_bundle = 52;
   string effect_extra = 53;
+  gift.model.SecondaryEffectInfo secondary_effect_info = 54;
+  int32 gift_variant_id = 55;
+  string shiny_card_unlock_token = 56;
+  gift.model.GiftEffect gift_effect = 100;
 }
 
 message WebcastGiftPanelUpdateMessage {
@@ -1343,6 +1450,30 @@ message WebcastLinkMicBattle {
   live.match.EnigmaBattleSetting enigma_battle_setting = 25;
   map<int64, live.match.AnchorMatchSettings> anchor_match_settings = 26;
   live.match.BattleFeatureFlags battle_feature_flags = 27;
+  linkmic.common.LayoutData cross_room_layout = 28;
+  map<string, string> tracking_extra = 29;
+  live.match.MatchThemeDisplayResource match_theme_display_resource = 30;
+}
+
+message WebcastLinkMicBattleItemCard {
+
+  shared.message.CommonMessageData common = 1;
+  int64 battle_id = 2;
+
+  im.BattleCardMsgType msg_type = 3;
+  CardObtainGuide card_obtain_guide = 4;
+  UseCriticalStrikeCard use_critical_strike_card = 5;
+  UseSmokeCard use_smoke_card = 6;
+  AwardCardNotice award_card_notice = 7;
+  UseExtraTimeCard use_extra_time_card = 8;
+  UseSpecialEffectCard use_special_effect_card = 9;
+  UsePotionCard use_potion_card = 10;
+  UseWaveCard use_wave_card = 11;
+  SpecialEffectNotice special_effect_notice = 12;
+  UseTop2Card use_top2_card = 13;
+  UseTop3Card use_top3_card = 14;
+  UseVaultGloveCard use_vault_glove_card = 15;
+  int32 award_reason = 16;
 }
 
 message WebcastLinkMicBattlePunishFinish {
@@ -1617,6 +1748,7 @@ message WebcastRankTextMessage {
 
   data.ProfitRankType rank_type = 10;
   .webcast.message.proto.RankUserEnigmaInfo user_enigma_info = 11;
+  PublicAreaMessageCommon public_area_msg_common = 12;
 }
 
 message WebcastRankUpdateMessage {

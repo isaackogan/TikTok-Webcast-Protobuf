@@ -5,6 +5,7 @@ package webcast.model.message.redenvelope;
 import "webcast/envelope.proto";
 import "webcast/model/base/messages.proto";
 import "webcast/model/data/messages.proto";
+import "webcast/model/message/messages.proto";
 import "webcast/shared/message.proto";
 
 message MessageRedEnvelopInfo {
@@ -35,4 +36,5 @@ message WebcastEnvelopeMessage {
   MessageRedEnvelopInfo envelope_info = 2;
 
   data.EnvelopeDisplay display = 3;
+  PublicAreaMessageCommon public_area_msg_common = 4;
 }

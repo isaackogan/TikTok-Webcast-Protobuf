@@ -6,6 +6,14 @@ import "webcast/model/base/messages.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/shared/messages.proto";
 
+message ActivityBadgeInfo {
+  LinkmicDisplayText badge_text = 1;
+  LinkmicDisplayText badge_text_dark = 2;
+  string background_color = 3;
+  string background_color_dark = 4;
+  map<string, string> event_trace = 5;
+}
+
 message BattleGamePlayContent {
   int64 battle_id = 1;
   int64 group_channel_id = 2;
@@ -114,6 +122,24 @@ message LinkMicGiftGalleryDisplayText {
   string dark_mode_color = 3;
 }
 
+message LinkmicDisplayText {
+  string color = 1;
+  string key = 20;
+  string default_pattern = 21;
+  repeated LinkmicDisplayTextPieces pieces = 22;
+}
+
+message LinkmicDisplayTextPieces {
+  string string_piece = 1;
+}
+
+message LinkmicShareRevenueSettingStruct {
+  int64 share_revenue_setting_version_code = 1;
+  int32 linkmic_share_revenue_setting = 2;
+  int32 linkmic_share_revenue_setting_ratio = 3;
+  bool enable_setting_ratio = 4;
+}
+
 message OptPairInfo {
   int64 mapping_id = 1;
   int64 expected_time_sec = 2;
@@ -186,6 +212,7 @@ message UserGroup {
 message UserSuggestionInfo {
   int64 vote_count = 1;
   repeated shared.UserInfo voter_info_list = 2;
+  string detail_page_lynx = 3;
 }
 
 message VirtualWaitingUser {

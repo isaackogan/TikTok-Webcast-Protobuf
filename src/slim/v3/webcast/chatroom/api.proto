@@ -65,6 +65,7 @@ message SubPinCard {
   SubPinCardExtra extra_info = 11;
   int64 highlight_text_num = 12;
   repeated .webcast.model.base.ImageModel icons = 13;
+  int32 pin_source = 14;
 }
 
 message SubPinCardExtra {

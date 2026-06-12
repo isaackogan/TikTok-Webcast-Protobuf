@@ -41,6 +41,7 @@ message GiftPickExtraGameInteractionExternal {
 
 message GiftPickExtraGameInteractionStorage {
   string instruction = 1;
+  string instruction_desc_key = 2;
 }
 
 message GiftPickExtraGameTricks {
@@ -95,6 +96,7 @@ message ProfileExtraGameInteractionExternal {
 
 message ProfileExtraGameInteractionStorage {
   string game_id = 1;
+  string template_id = 2;
 }
 
 message ProfileExtraGameTricks {

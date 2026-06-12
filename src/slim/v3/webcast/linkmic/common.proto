@@ -262,10 +262,31 @@ message BackGroundImageState {
 
 message CohostMode {
   bool is_take_the_stage_v2_supported = 1;
+  int64 highest_take_the_stage_version_supported = 2;
 }
 
 message CohostStreamConfig {
   string screen_share_stream_id = 1;
+}
+
+message CohostTypeLayoutExtra {
+  int32 is_zoom_layout = 1;
+  int32 offset_y = 2;
+  int32 scene = 3;
+  bool local_layout_only = 4;
+  int32 is_enlarge_mode = 5;
+  bool disable_match_component = 6;
+}
+
+message CohostTypeLayoutNonSeiExtra {
+}
+
+message CohostTypeSpotExtra {
+  bool is_enlarged = 1;
+  int32 content_type = 2;
+}
+
+message CohostTypeSpotNonSeiExtra {
 }
 
 message CohostUserInfo {
@@ -310,11 +331,32 @@ message GuestUserInfo {
   bool is_enigma = 7;
 }
 
+message LayoutData {
+  LayoutState layout = 1;
+  repeated SpotInfo spot_list = 2;
+  int64 version = 3;
+  int64 group_channel_id = 4;
+  repeated PosIdentity ui_pos = 101;
+}
+
 message LayoutState {
   string layout_id = 1;
   string layout_key = 2;
   MultiGuestLayoutExtra multi_guest_layout_extra = 3;
   MultiGuestLayoutNonSeiExtra multi_guest_layout_non_sei_extra = 4;
+  CohostTypeLayoutExtra cohost_layout_extra = 5;
+  CohostTypeLayoutNonSeiExtra cohost_layout_non_sei_extra = 6;
+}
+
+message LinkEnvelopeMessagePayload {
+  int32 message_type = 1;
+  ResolutionDemandPayload resolution_demand_payload = 100;
+}
+
+message LinkUserIdentity {
+  model.message.linkcore.Player player = 1;
+  string link_mic_id = 2;
+  int64 channel_id = 3;
 }
 
 message LinkUserState {
@@ -387,6 +429,22 @@ message PosIdentity {
   string value = 2;
 }
 
+message PosIdentityExtra {
+  string content_linkmic_i_d = 1;
+}
+
+message ResolutionDemandPayload {
+  int32 action = 1;
+  double width_ratio = 2;
+  double height_ratio = 3;
+  string config_id = 4;
+  string layout_key = 5;
+  int64 spot_id = 6;
+  int64 canvas_width = 7;
+  int64 canvas_height = 8;
+  int64 timestamp_ms = 9;
+}
+
 message SocialGameLayoutExtra {
   int32 game_id = 1;
   int32 game_just_dance_status = 2;
@@ -417,4 +475,7 @@ message SpotInfo {
   PosIdentity pos_identity = 2;
   MultiGuestSpotExtra multi_guest_spot_extra = 3;
   MultiGuestSpotNonSeiExtra multi_guest_spot_non_sei_extra = 4;
+  CohostTypeSpotExtra cohost_spot_extra = 5;
+  CohostTypeSpotNonSeiExtra cohost_spot_non_sei_extra = 6;
+  PosIdentityExtra pos_identity_extra = 7;
 }

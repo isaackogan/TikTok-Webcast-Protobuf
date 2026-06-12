@@ -55,6 +55,32 @@ message GiftColorInfo {
   int64 color_image_size = 8;
 }
 
+message GiftEffectCrossScreenStickerSpec {
+  map<int64, int32> single_action_asset_ids = 1;
+  map<int64, int32> action_asset_ids = 2;
+  map<int64, int32> reaction_asset_ids = 3;
+}
+
+message GiftEffectLynxSpec {
+  repeated int64 asset_ids = 1;
+}
+
+message GiftEffectPrefabSpec {
+  int64 template_asset_id = 1;
+  repeated int64 prefab_asset_ids = 2;
+}
+
+message GiftEffectSerialSpec {
+  repeated int64 serial_asset_ids = 2;
+}
+
+message GiftEffectSpecs {
+  GiftEffectCrossScreenStickerSpec cross_screen_sticker = 1;
+  GiftEffectLynxSpec lynx = 2;
+  GiftEffectPrefabSpec prefab = 3;
+  GiftEffectSerialSpec serial_spec = 4;
+}
+
 message GiftPanelBeaconBubble {
   string lynx_url = 1;
   string lynx_extra = 2;
@@ -175,6 +201,12 @@ message SceneRestriction {
   repeated int64 match_hidden_gids = 2;
   repeated int64 cohost_hidden_gids = 3;
   repeated int64 multiguest_hidden_gids = 4;
+}
+
+message SecondaryEffectInfo {
+  repeated int64 effect_ids = 1;
+  repeated string builtin_strings = 2;
+  int64 minute_game_gameplay_id = 3;
 }
 
 message TransitionConfig {

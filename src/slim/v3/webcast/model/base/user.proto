@@ -73,6 +73,27 @@ message ComboBadgeInfo {
   int64 combo_count = 2;
 }
 
+message CreatorScoreDisplayInfo {
+  CreatorScoreLabelInfo ecommerce_entrance_label = 1;
+  int32 score_level = 2;
+}
+
+message CreatorScoreLabelInfo {
+  string label_text = 1;
+  string label_text_color_dark = 2;
+  string label_text_color_light = 3;
+  ImageModel logo_dark = 4;
+  ImageModel logo_light = 5;
+  PopUpInfo pop_up_info = 6;
+}
+
+message CreatorScoreProfile {
+  double final_score = 1;
+  string country_code = 3;
+  CreatorScoreDisplayInfo display_info = 4;
+  map<string, string> score_info_extra = 5;
+}
+
 message EnigmaInfo {
   bool is_enigma_mask_on = 1;
 }
@@ -141,6 +162,11 @@ message PaddingInfo {
   data.HorizontalPaddingRule horizontal_padding_rule = 8;
 
   data.VerticalPaddingRule vertical_padding_rule = 9;
+}
+
+message PopUpInfo {
+  string title = 1;
+  string description = 2;
 }
 
 message PrivilegeLogExtra {

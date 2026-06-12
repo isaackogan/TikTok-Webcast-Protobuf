@@ -53,6 +53,7 @@ message BattleSetting {
   data.IceShowdownSetting ice_showdown_setting = 13;
 
   data.MatchGameplayOption gameplay_option = 14;
+  live.match.GiftModeMetaV2 gift_mode_meta_v2 = 15;
 }
 
 message BattleTaskSettle {
