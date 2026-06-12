@@ -289,6 +289,14 @@ class RivalExtraInfo(betterproto2.Message):
         betterproto2.field(22, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    friend_suggestion_info: "__model__interact__.UserSuggestionInfo | None" = (
+        betterproto2.field(23, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    activity_badge_info: "__model__interact__.ActivityBadgeInfo | None" = (
+        betterproto2.field(24, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.interact.model", "RivalExtraInfo", RivalExtraInfo

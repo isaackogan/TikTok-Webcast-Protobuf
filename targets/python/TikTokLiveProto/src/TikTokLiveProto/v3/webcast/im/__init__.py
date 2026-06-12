@@ -8,6 +8,7 @@ __all__ = (
     "BarrageMessageIconDisplayType",
     "BarrageMessageRenderType",
     "BarrageMessageShowType",
+    "BattleCardMsgType",
     "BattleRewardSettleRewardStatus",
     "BattleTaskMessageType",
     "BattleTaskSettleResult",
@@ -45,6 +46,7 @@ __all__ = (
     "JustDanceLayoutExtra",
     "KickOutBizContent",
     "LeaveJoinGroupContent",
+    "LinkEnvelopeContent",
     "LinkLayerMessageType",
     "LinkMicArmiesTriggerReason",
     "LinkMicBattleBattleAction",
@@ -154,6 +156,34 @@ class BarrageMessageShowType(betterproto2.Enum):
     SHOW_TYPE_NORMAL = 0
 
     SHOW_TYPE_FADE_IN_OUT = 1
+
+
+class BattleCardMsgType(betterproto2.Enum):
+    UNKNOWN_CARD_ACTION = 0
+
+    CARD_OBTAIN_GUIDE = 1
+
+    USE_CRITICAL_STRIKE_CARD = 2
+
+    USE_SMOKE_CARD = 3
+
+    AWARD_CARD_NOTICE = 4
+
+    USE_EXTRA_TIME_CARD = 5
+
+    USE_SPECIAL_EFFECT_CARD = 6
+
+    USE_POTION_CARD = 7
+
+    USE_WAVE_CARD = 8
+
+    SPECIAL_EFFECT_NOTICE = 9
+
+    USE_TOP_2_CARD = 10
+
+    USE_TOP_3_CARD = 11
+
+    USE_VAULT_GLOVE_CARD = 12
 
 
 class BattleRewardSettleRewardStatus(betterproto2.Enum):
@@ -972,6 +1002,8 @@ class JoinGroupDirectBizContent(betterproto2.Message):
         betterproto2.field(2, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    skip_cancel_match: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
+
 
 default_message_pool.register_message(
     "webcast.im", "JoinGroupDirectBizContent", JoinGroupDirectBizContent
@@ -994,6 +1026,10 @@ class JoinGroupDirectContent(betterproto2.Message):
 
     content_pos: "list[_linkmic__common__.ContentPosition]" = betterproto2.field(
         4, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    cross_room_layout: "_linkmic__common__.LayoutData | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -1153,6 +1189,26 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class LinkEnvelopeContent(betterproto2.Message):
+    sender: "_linkmic__common__.LinkUserIdentity | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    receiver: "_linkmic__common__.LinkUserIdentity | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    message_payload: "_linkmic__common__.LinkEnvelopeMessagePayload | None" = (
+        betterproto2.field(10, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.im", "LinkEnvelopeContent", LinkEnvelopeContent
+)
+
+
+@dataclass(eq=False, repr=False)
 class ListChangeBizContent(betterproto2.Message):
     user_infos: "dict[int, _linkmic__common__.CohostUserInfo]" = betterproto2.field(
         1,
@@ -1242,6 +1298,10 @@ class P2PGroupChangeContent(betterproto2.Message):
         4, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
+    cross_room_layout: "_linkmic__common__.LayoutData | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.im", "P2PGroupChangeContent", P2PGroupChangeContent
@@ -1261,6 +1321,8 @@ class PermitJoinGroupBizContent(betterproto2.Message):
         betterproto2.TYPE_ENUM,
         default_factory=lambda: _linkmic__common__.SourceType(0),
     )
+
+    skip_cancel_match: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
 
 
 default_message_pool.register_message(
@@ -1304,6 +1366,10 @@ class PermitJoinGroupContent(betterproto2.Message):
 
     permit_group_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         8, betterproto2.TYPE_INT32
+    )
+
+    cross_room_layout: "_linkmic__common__.LayoutData | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -1398,6 +1464,10 @@ class RivalExtra(betterproto2.Message):
 
     room_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(21, betterproto2.TYPE_INT64)
+    )
+
+    activity_badge_info: "_chatroom__model__interact__.ActivityBadgeInfo | None" = (
+        betterproto2.field(22, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
 

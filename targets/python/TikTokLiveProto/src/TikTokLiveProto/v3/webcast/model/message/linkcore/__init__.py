@@ -864,6 +864,10 @@ class WebcastLinkLayerMessage(betterproto2.Message):
         betterproto2.field(120, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    link_envelope_content: "___im__.LinkEnvelopeContent | None" = betterproto2.field(
+        150, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
     business_content: "___chatroom__model__multiguestv3__.BusinessContent | None" = (
         betterproto2.field(200, betterproto2.TYPE_MESSAGE, optional=True)
     )

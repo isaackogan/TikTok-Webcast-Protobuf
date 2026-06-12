@@ -12,6 +12,10 @@ __all__ = (
     "BackGroundImageState",
     "CohostMode",
     "CohostStreamConfig",
+    "CohostTypeLayoutExtra",
+    "CohostTypeLayoutNonSeiExtra",
+    "CohostTypeSpotExtra",
+    "CohostTypeSpotNonSeiExtra",
     "CohostUserInfo",
     "ContentPosition",
     "ContentPositionType",
@@ -22,10 +26,13 @@ __all__ = (
     "GuestUserInfo",
     "JoinType",
     "KickoutReason",
+    "LayoutData",
     "LayoutEnlargeStatus",
     "LayoutState",
     "LayoutStyle",
+    "LinkEnvelopeMessagePayload",
     "LinkMicUserAdminType",
+    "LinkUserIdentity",
     "LinkUserState",
     "LinkerMediaChangeOperator",
     "LinkerMode",
@@ -39,8 +46,10 @@ __all__ = (
     "NetworkState",
     "OnlineUserState",
     "PosIdentity",
+    "PosIdentityExtra",
     "PosIdentityType",
     "ReplyStatus",
+    "ResolutionDemandPayload",
     "RtcConnectionState",
     "Scene",
     "SocialGameLayoutExtra",
@@ -554,6 +563,10 @@ class CohostMode(betterproto2.Message):
         1, betterproto2.TYPE_BOOL
     )
 
+    highest_take_the_stage_version_supported: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT64
+    )
+
 
 default_message_pool.register_message(
     "webcast.linkmic.common", "CohostMode", CohostMode
@@ -569,6 +582,68 @@ class CohostStreamConfig(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.linkmic.common", "CohostStreamConfig", CohostStreamConfig
+)
+
+
+@dataclass(eq=False, repr=False)
+class CohostTypeLayoutExtra(betterproto2.Message):
+    is_zoom_layout: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    offset_y: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    scene: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT32)
+    )
+
+    local_layout_only: "bool" = betterproto2.field(4, betterproto2.TYPE_BOOL)
+
+    is_enlarge_mode: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT32
+    )
+
+    disable_match_component: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "CohostTypeLayoutExtra", CohostTypeLayoutExtra
+)
+
+
+@dataclass(eq=False, repr=False)
+class CohostTypeLayoutNonSeiExtra(betterproto2.Message):
+    pass
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "CohostTypeLayoutNonSeiExtra", CohostTypeLayoutNonSeiExtra
+)
+
+
+@dataclass(eq=False, repr=False)
+class CohostTypeSpotExtra(betterproto2.Message):
+    is_enlarged: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
+
+    content_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "CohostTypeSpotExtra", CohostTypeSpotExtra
+)
+
+
+@dataclass(eq=False, repr=False)
+class CohostTypeSpotNonSeiExtra(betterproto2.Message):
+    pass
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "CohostTypeSpotNonSeiExtra", CohostTypeSpotNonSeiExtra
 )
 
 
@@ -769,6 +844,34 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class LayoutData(betterproto2.Message):
+    layout: "LayoutState | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    spot_list: "list[SpotInfo]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    version: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    group_channel_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT64
+    )
+
+    ui_pos: "list[PosIdentity]" = betterproto2.field(
+        101, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "LayoutData", LayoutData
+)
+
+
+@dataclass(eq=False, repr=False)
 class LayoutState(betterproto2.Message):
     layout_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -786,9 +889,33 @@ class LayoutState(betterproto2.Message):
         betterproto2.field(4, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    cohost_layout_extra: "CohostTypeLayoutExtra | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    cohost_layout_non_sei_extra: "CohostTypeLayoutNonSeiExtra | None" = (
+        betterproto2.field(6, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.linkmic.common", "LayoutState", LayoutState
+)
+
+
+@dataclass(eq=False, repr=False)
+class LinkEnvelopeMessagePayload(betterproto2.Message):
+    message_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    resolution_demand_payload: "ResolutionDemandPayload | None" = betterproto2.field(
+        100, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "LinkEnvelopeMessagePayload", LinkEnvelopeMessagePayload
 )
 
 
@@ -813,6 +940,26 @@ class LinkerMediaChangeOperator(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.linkmic.common", "LinkerMediaChangeOperator", LinkerMediaChangeOperator
+)
+
+
+@dataclass(eq=False, repr=False)
+class LinkUserIdentity(betterproto2.Message):
+    player: "__model__message__linkcore__.Player | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    link_mic_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+    channel_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "LinkUserIdentity", LinkUserIdentity
 )
 
 
@@ -991,6 +1138,58 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class PosIdentityExtra(betterproto2.Message):
+    content_linkmic_i_d: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "PosIdentityExtra", PosIdentityExtra
+)
+
+
+@dataclass(eq=False, repr=False)
+class ResolutionDemandPayload(betterproto2.Message):
+    action: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    width_ratio: "float" = betterproto2.field(2, betterproto2.TYPE_DOUBLE)
+
+    height_ratio: "float" = betterproto2.field(3, betterproto2.TYPE_DOUBLE)
+
+    config_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    layout_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    spot_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(6, betterproto2.TYPE_INT64)
+    )
+
+    canvas_width: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(7, betterproto2.TYPE_INT64)
+    )
+
+    canvas_height: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+    timestamp_ms: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "ResolutionDemandPayload", ResolutionDemandPayload
+)
+
+
+@dataclass(eq=False, repr=False)
 class SocialGameLayoutExtra(betterproto2.Message):
     game_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT32)
@@ -1088,6 +1287,18 @@ class SpotInfo(betterproto2.Message):
 
     multi_guest_spot_non_sei_extra: "MultiGuestSpotNonSeiExtra | None" = (
         betterproto2.field(4, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    cohost_spot_extra: "CohostTypeSpotExtra | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    cohost_spot_non_sei_extra: "CohostTypeSpotNonSeiExtra | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    pos_identity_extra: "PosIdentityExtra | None" = betterproto2.field(
+        7, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 

@@ -257,6 +257,10 @@ class SubPinCard(betterproto2.Message):
         13, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
+    pin_source: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(14, betterproto2.TYPE_INT32)
+    )
+
 
 default_message_pool.register_message("webcast.chatroom.api", "SubPinCard", SubPinCard)
 

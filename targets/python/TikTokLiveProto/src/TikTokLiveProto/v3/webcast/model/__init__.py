@@ -241,6 +241,8 @@ class BorderInfo(betterproto2.Message):
         12, betterproto2.TYPE_STRING
     )
 
+    is_taller_avatar_background: "bool" = betterproto2.field(13, betterproto2.TYPE_BOOL)
+
 
 default_message_pool.register_message("webcast.model", "BorderInfo", BorderInfo)
 

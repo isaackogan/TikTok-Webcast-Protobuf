@@ -4,6 +4,7 @@
 # This file has been @generated
 
 __all__ = (
+    "ActivityBadgeInfo",
     "BattleGamePlayContent",
     "BattleGamePlayContentUserInfo",
     "BattleUserSettings",
@@ -17,6 +18,9 @@ __all__ = (
     "GiftGalleryBadgeInfo",
     "GiftGalleryBadgeSection",
     "LinkMicGiftGalleryDisplayText",
+    "LinkmicDisplayText",
+    "LinkmicDisplayTextPieces",
+    "LinkmicShareRevenueSettingStruct",
     "OptPairInfo",
     "RandomMatchContent",
     "RandomMatchContentUserInfo",
@@ -42,6 +46,38 @@ from .....message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+@dataclass(eq=False, repr=False)
+class ActivityBadgeInfo(betterproto2.Message):
+    badge_text: "LinkmicDisplayText | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    badge_text_dark: "LinkmicDisplayText | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    background_color: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+    background_color_dark: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    event_trace: "dict[str, str]" = betterproto2.field(
+        5,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.chatroom.model.interact", "ActivityBadgeInfo", ActivityBadgeInfo
+)
 
 
 @dataclass(eq=False, repr=False)
@@ -367,6 +403,44 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class LinkmicDisplayText(betterproto2.Message):
+    color: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        20, betterproto2.TYPE_STRING
+    )
+
+    default_pattern: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        21, betterproto2.TYPE_STRING
+    )
+
+    pieces: "list[LinkmicDisplayTextPieces]" = betterproto2.field(
+        22, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.chatroom.model.interact", "LinkmicDisplayText", LinkmicDisplayText
+)
+
+
+@dataclass(eq=False, repr=False)
+class LinkmicDisplayTextPieces(betterproto2.Message):
+    string_piece: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.chatroom.model.interact",
+    "LinkmicDisplayTextPieces",
+    LinkmicDisplayTextPieces,
+)
+
+
+@dataclass(eq=False, repr=False)
 class LinkMicGiftGalleryDisplayText(betterproto2.Message):
     content: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -385,6 +459,30 @@ default_message_pool.register_message(
     "webcast.chatroom.model.interact",
     "LinkMicGiftGalleryDisplayText",
     LinkMicGiftGalleryDisplayText,
+)
+
+
+@dataclass(eq=False, repr=False)
+class LinkmicShareRevenueSettingStruct(betterproto2.Message):
+    share_revenue_setting_version_code: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    linkmic_share_revenue_setting: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT32
+    )
+
+    linkmic_share_revenue_setting_ratio: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT32
+    )
+
+    enable_setting_ratio: "bool" = betterproto2.field(4, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message(
+    "webcast.chatroom.model.interact",
+    "LinkmicShareRevenueSettingStruct",
+    LinkmicShareRevenueSettingStruct,
 )
 
 
@@ -626,6 +724,10 @@ class UserSuggestionInfo(betterproto2.Message):
 
     voter_info_list: "list[___shared__.UserInfo]" = betterproto2.field(
         2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    detail_page_lynx: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
     )
 
 

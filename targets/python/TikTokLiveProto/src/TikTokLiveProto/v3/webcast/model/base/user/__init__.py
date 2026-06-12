@@ -10,6 +10,9 @@ __all__ = (
     "CombineBadgeBackground",
     "CombineBadgeStruct",
     "ComboBadgeInfo",
+    "CreatorScoreDisplayInfo",
+    "CreatorScoreLabelInfo",
+    "CreatorScoreProfile",
     "EnigmaInfo",
     "FansClubInfo",
     "FollowInfo",
@@ -20,6 +23,7 @@ __all__ = (
     "NumberConfig",
     "OwnRoom",
     "PaddingInfo",
+    "PopUpInfo",
     "PrivilegeLogExtra",
     "ProfileCardPanel",
     "ProfileContent",
@@ -259,6 +263,80 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class CreatorScoreDisplayInfo(betterproto2.Message):
+    ecommerce_entrance_label: "CreatorScoreLabelInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    score_level: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.base.user", "CreatorScoreDisplayInfo", CreatorScoreDisplayInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class CreatorScoreLabelInfo(betterproto2.Message):
+    label_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    label_text_color_dark: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+    label_text_color_light: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+    logo_dark: "__base__.ImageModel | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    logo_light: "__base__.ImageModel | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    pop_up_info: "PopUpInfo | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.base.user", "CreatorScoreLabelInfo", CreatorScoreLabelInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class CreatorScoreProfile(betterproto2.Message):
+    final_score: "float" = betterproto2.field(1, betterproto2.TYPE_DOUBLE)
+
+    country_code: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+    display_info: "CreatorScoreDisplayInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    score_info_extra: "dict[str, str]" = betterproto2.field(
+        5,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.base.user", "CreatorScoreProfile", CreatorScoreProfile
+)
+
+
+@dataclass(eq=False, repr=False)
 class EnigmaInfo(betterproto2.Message):
     is_enigma_mask_on: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -474,6 +552,20 @@ class PaddingInfo(betterproto2.Message):
 default_message_pool.register_message(
     "webcast.model.base.user", "PaddingInfo", PaddingInfo
 )
+
+
+@dataclass(eq=False, repr=False)
+class PopUpInfo(betterproto2.Message):
+    title: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    description: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message("webcast.model.base.user", "PopUpInfo", PopUpInfo)
 
 
 @dataclass(eq=False, repr=False)

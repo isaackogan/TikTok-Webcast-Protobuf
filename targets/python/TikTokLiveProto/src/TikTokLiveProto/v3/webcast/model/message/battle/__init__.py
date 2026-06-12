@@ -175,6 +175,10 @@ class BattleSetting(betterproto2.Message):
         default_factory=lambda: __data__.MatchGameplayOption(0),
     )
 
+    gift_mode_meta_v2: "__live__match__.GiftModeMetaV2 | None" = betterproto2.field(
+        15, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message.battle", "BattleSetting", BattleSetting

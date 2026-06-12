@@ -8,8 +8,10 @@ __all__ = (
     "ActionButton",
     "AddToCartButton",
     "AffiliatedInfo",
+    "AnchorPair",
     "AnimationData",
     "AtmosphereTagInfo",
+    "AwardCardNotice",
     "Background",
     "BarrageEvent",
     "BarrageTypeEcomLiveParam",
@@ -38,6 +40,7 @@ __all__ = (
     "CapsuleBizParamsNewAnchorEffect",
     "CapsuleBizParamsRandomGift",
     "CaptionContent",
+    "CardObtainGuide",
     "CohostListChangeContent",
     "CommentLabelScore",
     "CommentQualityScore",
@@ -51,6 +54,7 @@ __all__ = (
     "FanTicketRoomNoticeContent",
     "FlashSaleAtmosphere",
     "FlashSaleAtmosphereInfo",
+    "FlashSaleEnhancementInfo",
     "FlashSaleStock",
     "FrequencyControl",
     "GalleryData",
@@ -110,6 +114,7 @@ __all__ = (
     "RoomBasedGifts",
     "RoomNotifyMessageEventTracking",
     "RoomNotifyMessageExtra",
+    "SpecialEffectNotice",
     "SpecifiedDisplayText",
     "SponsorshipInfo",
     "TagItem",
@@ -121,8 +126,18 @@ __all__ = (
     "Topic",
     "TriggerCondition",
     "UnionAnimationInfo",
+    "UseCriticalStrikeCard",
+    "UseExtraTimeCard",
+    "UsePotionCard",
+    "UseSmokeCard",
+    "UseSpecialEffectCard",
+    "UseTop2Card",
+    "UseTop3Card",
+    "UseVaultGloveCard",
+    "UseWaveCard",
     "UserCountdownInfo",
     "UserFanTicket",
+    "UserInfo",
     "UserInteractionInfo",
     "UserMetrics",
     "UserModelPredictionData",
@@ -153,6 +168,7 @@ __all__ = (
     "WebcastLinkMessage",
     "WebcastLinkMicArmies",
     "WebcastLinkMicBattle",
+    "WebcastLinkMicBattleItemCard",
     "WebcastLinkMicBattlePunishFinish",
     "WebcastLinkMicFanTicketMethod",
     "WebcastLinkMicMethod",
@@ -314,6 +330,20 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class AnchorPair(betterproto2.Message):
+    source_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    target_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message("webcast.model.message", "AnchorPair", AnchorPair)
+
+
+@dataclass(eq=False, repr=False)
 class AnimationData(betterproto2.Message):
     gecko_channel_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -358,6 +388,22 @@ class AtmosphereTagInfo(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "AtmosphereTagInfo", AtmosphereTagInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class AwardCardNotice(betterproto2.Message):
+    display_content: "common.Text | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    awarded_users: "list[_live__match__.BattleUserInfo]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "AwardCardNotice", AwardCardNotice
 )
 
 
@@ -775,6 +821,14 @@ class CapsuleBizParamsCohost(betterproto2.Message):
         11, betterproto2.TYPE_STRING
     )
 
+    anchor_class_label: "__chatroom__model__interact__.GiftGalleryBadgeSection | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    rival_class_label: "__chatroom__model__interact__.GiftGalleryBadgeSection | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "CapsuleBizParamsCohost", CapsuleBizParamsCohost
@@ -1052,6 +1106,18 @@ class CaptionContent(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "CaptionContent", CaptionContent
+)
+
+
+@dataclass(eq=False, repr=False)
+class CardObtainGuide(betterproto2.Message):
+    not_in_use: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "CardObtainGuide", CardObtainGuide
 )
 
 
@@ -1369,6 +1435,14 @@ class FlashSaleAtmosphere(betterproto2.Message):
         betterproto2.field(4, betterproto2.TYPE_INT64)
     )
 
+    enhancement_info: "FlashSaleEnhancementInfo | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    pdp_viewer_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        6, betterproto2.TYPE_INT32
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "FlashSaleAtmosphere", FlashSaleAtmosphere
@@ -1408,6 +1482,26 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class FlashSaleEnhancementInfo(betterproto2.Message):
+    stock_show_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+    buyer_infos: "list[UserInfo]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    enhancement_text_info: "__shared__.EnhancementTextInfo | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "FlashSaleEnhancementInfo", FlashSaleEnhancementInfo
+)
+
+
+@dataclass(eq=False, repr=False)
 class FlashSaleStock(betterproto2.Message):
     activity_stock_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT32
@@ -1419,6 +1513,10 @@ class FlashSaleStock(betterproto2.Message):
 
     activity_stock_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         3, betterproto2.TYPE_STRING
+    )
+
+    total_stock: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT32)
     )
 
 
@@ -2888,6 +2986,42 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class SpecialEffectNotice(betterproto2.Message):
+    score: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    affected_anchor_pairs: "list[AnchorPair]" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    effect_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(5, betterproto2.TYPE_INT32)
+    )
+
+    community_heart_me_info: "_live__match__.CommunityHeartMeInfo | None" = (
+        betterproto2.field(6, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    community_heart_me_info_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "SpecialEffectNotice", SpecialEffectNotice
+)
+
+
+@dataclass(eq=False, repr=False)
 class SpecifiedDisplayText(betterproto2.Message):
     uid: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -2945,6 +3079,22 @@ class TagItem(betterproto2.Message):
 
     tag_text: "common.Text | None" = betterproto2.field(
         2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    tag_value: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    display_location: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT32
+    )
+
+    event_tracking_fields: "dict[str, str]" = betterproto2.field(
+        5,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
     )
 
 
@@ -3130,6 +3280,66 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class UseCriticalStrikeCard(betterproto2.Message):
+    card_info: "_live__match__.CriticalStrikeCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseCriticalStrikeCard", UseCriticalStrikeCard
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseExtraTimeCard(betterproto2.Message):
+    card_info: "_live__match__.ExtraTimeCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseExtraTimeCard", UseExtraTimeCard
+)
+
+
+@dataclass(eq=False, repr=False)
+class UsePotionCard(betterproto2.Message):
+    card_info: "_live__match__.PotionCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UsePotionCard", UsePotionCard
+)
+
+
+@dataclass(eq=False, repr=False)
 class UserCountdownInfo(betterproto2.Message):
     countdown_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -3207,6 +3417,20 @@ class UserFanTicket(betterproto2.Message):
 default_message_pool.register_message(
     "webcast.model.message", "UserFanTicket", UserFanTicket
 )
+
+
+@dataclass(eq=False, repr=False)
+class UserInfo(betterproto2.Message):
+    user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    avatar: "_base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message("webcast.model.message", "UserInfo", UserInfo)
 
 
 @dataclass(eq=False, repr=False)
@@ -3302,6 +3526,142 @@ class UserPlayInfo(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "UserPlayInfo", UserPlayInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseSmokeCard(betterproto2.Message):
+    card_info: "_live__match__.SmokeCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseSmokeCard", UseSmokeCard
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseSpecialEffectCard(betterproto2.Message):
+    card_info: "_live__match__.SpecialEffectCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    affected_anchor_pairs: "list[AnchorPair]" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    effect_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(5, betterproto2.TYPE_INT32)
+    )
+
+    community_heart_me_info: "_live__match__.CommunityHeartMeInfo | None" = (
+        betterproto2.field(6, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    community_heart_me_info_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseSpecialEffectCard", UseSpecialEffectCard
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseTop2Card(betterproto2.Message):
+    card_info: "_live__match__.Top2CardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseTop2Card", UseTop2Card
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseTop3Card(betterproto2.Message):
+    card_info: "_live__match__.Top3CardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseTop3Card", UseTop3Card
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseVaultGloveCard(betterproto2.Message):
+    card_info: "_live__match__.VaultGloveCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseVaultGloveCard", UseVaultGloveCard
+)
+
+
+@dataclass(eq=False, repr=False)
+class UseWaveCard(betterproto2.Message):
+    card_info: "_live__match__.WaveCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseWaveCard", UseWaveCard
 )
 
 
@@ -4155,6 +4515,22 @@ class WebcastGiftMessage(betterproto2.Message):
         53, betterproto2.TYPE_STRING
     )
 
+    secondary_effect_info: "_gift__model__.SecondaryEffectInfo | None" = (
+        betterproto2.field(54, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    gift_variant_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        55, betterproto2.TYPE_INT32
+    )
+
+    shiny_card_unlock_token: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        56, betterproto2.TYPE_STRING
+    )
+
+    gift_effect: "_gift__model__.GiftEffect | None" = betterproto2.field(
+        100, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "WebcastGiftMessage", WebcastGiftMessage
@@ -4733,9 +5109,99 @@ class WebcastLinkMicBattle(betterproto2.Message):
         betterproto2.field(27, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    cross_room_layout: "__linkmic__common__.LayoutData | None" = betterproto2.field(
+        28, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    tracking_extra: "dict[str, str]" = betterproto2.field(
+        29,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+    match_theme_display_resource: "_live__match__.MatchThemeDisplayResource | None" = (
+        betterproto2.field(30, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "WebcastLinkMicBattle", WebcastLinkMicBattle
+)
+
+
+@dataclass(eq=False, repr=False)
+class WebcastLinkMicBattleItemCard(betterproto2.Message):
+    common: "__shared__message__.CommonMessageData | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    battle_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    msg_type: "__im__.BattleCardMsgType" = betterproto2.field(
+        3, betterproto2.TYPE_ENUM, default_factory=lambda: __im__.BattleCardMsgType(0)
+    )
+
+    card_obtain_guide: "CardObtainGuide | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_critical_strike_card: "UseCriticalStrikeCard | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_smoke_card: "UseSmokeCard | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    award_card_notice: "AwardCardNotice | None" = betterproto2.field(
+        7, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_extra_time_card: "UseExtraTimeCard | None" = betterproto2.field(
+        8, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_special_effect_card: "UseSpecialEffectCard | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_potion_card: "UsePotionCard | None" = betterproto2.field(
+        10, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_wave_card: "UseWaveCard | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    special_effect_notice: "SpecialEffectNotice | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_top2_card: "UseTop2Card | None" = betterproto2.field(
+        13, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_top3_card: "UseTop3Card | None" = betterproto2.field(
+        14, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    use_vault_glove_card: "UseVaultGloveCard | None" = betterproto2.field(
+        15, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    award_reason: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(16, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "WebcastLinkMicBattleItemCard",
+    WebcastLinkMicBattleItemCard,
 )
 
 
@@ -5585,6 +6051,10 @@ class WebcastRankTextMessage(betterproto2.Message):
         betterproto2.field(11, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    public_area_msg_common: "PublicAreaMessageCommon | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "WebcastRankTextMessage", WebcastRankTextMessage
@@ -6137,6 +6607,7 @@ default_message_pool.register_message(
 
 from ... import im as __im__
 from ... import model as __model__
+from ... import shared as __shared__
 from ...chatroom import api as __chatroom__api__
 from ...chatroom.interact import model as __chatroom__interact__model__
 from ...chatroom.model import interact as __chatroom__model__interact__

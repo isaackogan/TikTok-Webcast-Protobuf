@@ -5,6 +5,9 @@
 
 __all__ = (
     "AuthenticationInfo",
+    "EnhancementText",
+    "EnhancementTextInfo",
+    "PlaceholderInfo",
     "ShopLabelImage",
     "UserInfo",
 )
@@ -38,6 +41,50 @@ class AuthenticationInfo(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.shared", "AuthenticationInfo", AuthenticationInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class EnhancementText(betterproto2.Message):
+    type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    placeholder_info: "list[PlaceholderInfo]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.shared", "EnhancementText", EnhancementText
+)
+
+
+@dataclass(eq=False, repr=False)
+class EnhancementTextInfo(betterproto2.Message):
+    enhancement_texts: "list[EnhancementText]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.shared", "EnhancementTextInfo", EnhancementTextInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class PlaceholderInfo(betterproto2.Message):
+    placeholder: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    value: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.shared", "PlaceholderInfo", PlaceholderInfo
 )
 
 

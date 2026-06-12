@@ -168,6 +168,10 @@ class GiftPickExtraGameInteractionStorage(betterproto2.Message):
         1, betterproto2.TYPE_STRING
     )
 
+    instruction_desc_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.viewer_picks",
@@ -348,6 +352,10 @@ default_message_pool.register_message(
 class ProfileExtraGameInteractionStorage(betterproto2.Message):
     game_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
+    )
+
+    template_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
     )
 
 

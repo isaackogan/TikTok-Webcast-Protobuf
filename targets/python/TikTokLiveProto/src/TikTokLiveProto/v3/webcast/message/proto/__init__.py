@@ -280,6 +280,10 @@ class ShowcaseEntranceInfo(betterproto2.Message):
         11, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
+    creator_score_profile: "__model__base__user__.CreatorScoreProfile | None" = (
+        betterproto2.field(12, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.message.proto", "ShowcaseEntranceInfo", ShowcaseEntranceInfo
@@ -392,4 +396,5 @@ default_message_pool.register_message(
 
 from ... import shared as __shared__
 from ...model import data as __model__data__
+from ...model.base import user as __model__base__user__
 from ...model.message import common as __model__message__common__

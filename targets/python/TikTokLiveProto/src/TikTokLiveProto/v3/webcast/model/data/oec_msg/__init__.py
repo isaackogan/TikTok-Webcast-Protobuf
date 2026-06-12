@@ -9,11 +9,14 @@ __all__ = (
     "AuctionInfo",
     "AuctionWinnerPopup",
     "BagIndex",
+    "BidPanel",
     "CarouselCfg",
     "CommerceInfo",
     "DispersionParam",
+    "EasterEgg",
     "EcomLiveElementActions",
     "ExtendAuctionCfg",
+    "FlashSaleEnhancementInfo",
     "LiveFlashSaleInfo",
     "MsgMeta",
     "OecLiveShoppingMessageV2",
@@ -157,6 +160,58 @@ class AuctionInfo(betterproto2.Message):
         22, betterproto2.TYPE_STRING
     )
 
+    trace_time_map: "dict[str, str]" = betterproto2.field(
+        23,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+    easter_egg: "EasterEgg | None" = betterproto2.field(
+        24, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    auction_knock_perform_middle_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        25, betterproto2.TYPE_INT32
+    )
+
+    auction_knock_perform_bottom_right_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        26, betterproto2.TYPE_INT32
+    )
+
+    auction_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        27, betterproto2.TYPE_STRING
+    )
+
+    auction_config_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        28, betterproto2.TYPE_STRING
+    )
+
+    auction_card_bottom_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        29, betterproto2.TYPE_INT32
+    )
+
+    auction_card_title_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        30, betterproto2.TYPE_INT32
+    )
+
+    surprise_set_remain_item_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        31, betterproto2.TYPE_INT32
+    )
+
+    auction_event_type_int: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        32, betterproto2.TYPE_INT32
+    )
+
+    bid_panel: "BidPanel | None" = betterproto2.field(
+        33, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    lynx_card_info: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        100, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.data.oec_msg", "AuctionInfo", AuctionInfo
@@ -208,6 +263,18 @@ class BagIndex(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.data.oec_msg", "BagIndex", BagIndex
+)
+
+
+@dataclass(eq=False, repr=False)
+class BidPanel(betterproto2.Message):
+    bid_btn_text_type_int: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.data.oec_msg", "BidPanel", BidPanel
 )
 
 
@@ -284,6 +351,38 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class EasterEgg(betterproto2.Message):
+    winner_rank: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    winner_rank_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT32
+    )
+
+    winner_room_win_cnt: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT64
+    )
+
+    winner_room_win_cnt_text_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT32
+    )
+
+    winner_rank_text_type_tail: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT32
+    )
+
+    winner_room_win_cnt_text_type_tail: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        6, betterproto2.TYPE_INT32
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.data.oec_msg", "EasterEgg", EasterEgg
+)
+
+
+@dataclass(eq=False, repr=False)
 class EcomLiveElementActions(betterproto2.Message):
     atom_actions: "list[AtomAction]" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, repeated=True
@@ -316,6 +415,26 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class FlashSaleEnhancementInfo(betterproto2.Message):
+    stock_show_status: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+    buyer_infos: "list[UserInfo]" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    enhancement_text_info: "___shared__.EnhancementTextInfo | None" = (
+        betterproto2.field(3, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.data.oec_msg", "FlashSaleEnhancementInfo", FlashSaleEnhancementInfo
+)
+
+
+@dataclass(eq=False, repr=False)
 class LiveFlashSaleInfo(betterproto2.Message):
     activity_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -335,6 +454,18 @@ class LiveFlashSaleInfo(betterproto2.Message):
 
     available_stock: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         5, betterproto2.TYPE_INT32
+    )
+
+    total_stock: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(6, betterproto2.TYPE_INT32)
+    )
+
+    enhancement_info: "FlashSaleEnhancementInfo | None" = betterproto2.field(
+        7, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    pdp_viewer_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        8, betterproto2.TYPE_INT32
     )
 
 
@@ -645,6 +776,10 @@ class UserInfo(betterproto2.Message):
 
     is_winner: "bool" = betterproto2.field(4, betterproto2.TYPE_BOOL)
 
+    user_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.data.oec_msg", "UserInfo", UserInfo
@@ -683,4 +818,5 @@ default_message_pool.register_message(
 )
 
 
+from .... import shared as ___shared__
 from ... import base as __base__

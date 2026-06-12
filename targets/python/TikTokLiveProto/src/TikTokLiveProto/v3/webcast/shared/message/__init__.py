@@ -45,6 +45,10 @@ class BaseProtoMessage(betterproto2.Message):
 
     is_history: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
 
+    sample_flag: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(7, betterproto2.TYPE_INT32)
+    )
+
 
 default_message_pool.register_message(
     "webcast.shared.message", "BaseProtoMessage", BaseProtoMessage

@@ -129,6 +129,10 @@ class MultiLiveAnchorPanelSettings(betterproto2.Message):
         19, betterproto2.TYPE_INT32
     )
 
+    disable_guest_open_camera: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        20, betterproto2.TYPE_INT32
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.model.multilive",

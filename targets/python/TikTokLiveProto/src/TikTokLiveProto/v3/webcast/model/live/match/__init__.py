@@ -4,6 +4,7 @@
 # This file has been @generated
 
 __all__ = (
+    "AnchorGiftModeMetaMap",
     "AnchorMatchSettings",
     "BattleAbTest",
     "BattleAbTestList",
@@ -24,19 +25,40 @@ __all__ = (
     "BattleUserInfo",
     "BestTeammateRelation",
     "CohostContentGuideInfo",
+    "CommonCardInfo",
+    "CommunityActiveDecoration",
+    "CommunityHeartMeInfo",
+    "CriticalStrikeCardInfo",
     "EnigmaBattleExtraInfo",
     "EnigmaBattleSetting",
+    "ExtraTimeCardInfo",
     "GiftModeMeta",
+    "GiftModeMetaList",
+    "GiftModeMetaV2",
     "HighScoreControlCfg",
     "LeagueScoreInfo",
+    "MatchInvitePanelConfig",
+    "MatchOpeningAnimationConfig",
     "MatchPunishEffectInfo",
     "MatchPunishExtraInfo",
+    "MatchThemeDisplayResource",
+    "MatchTitleBarConfig",
+    "MatchTitleBarDisplayRule",
+    "MatchTitleBarTrigger",
     "PlaybookBizExtra",
+    "PotionCardInfo",
     "PreviewPeriod",
     "RecommendedPlaybookInfo",
     "RewardPeriodConfig",
+    "SmokeCardInfo",
+    "SpecialEffectCardInfo",
     "TaskPeriodConfig",
     "TeamMatchCampaign",
+    "TitleBarDisplayResource",
+    "Top2CardInfo",
+    "Top3CardInfo",
+    "VaultGloveCardInfo",
+    "WaveCardInfo",
 )
 
 import typing
@@ -49,6 +71,22 @@ from .....message_pool import default_message_pool
 
 _COMPILER_VERSION = "0.9.0"
 betterproto2.check_compiler_version(_COMPILER_VERSION)
+
+
+@dataclass(eq=False, repr=False)
+class AnchorGiftModeMetaMap(betterproto2.Message):
+    anchor_gift_mode_metas: "dict[int, GiftModeMetaList]" = betterproto2.field(
+        1,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "AnchorGiftModeMetaMap", AnchorGiftModeMetaMap
+)
 
 
 @dataclass(eq=False, repr=False)
@@ -504,6 +542,158 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class CommonCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+    to_anchor_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "CommonCardInfo", CommonCardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class CommunityActiveDecoration(betterproto2.Message):
+    decoration_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    slot_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    images: "dict[int, __base__.ImageModel]" = betterproto2.field(
+        3,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT32, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "CommunityActiveDecoration", CommunityActiveDecoration
+)
+
+
+@dataclass(eq=False, repr=False)
+class CommunityHeartMeInfo(betterproto2.Message):
+    slots: "dict[int, CommunityActiveDecoration]" = betterproto2.field(
+        1,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT32, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+    thrown_item_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_community_level: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "CommunityHeartMeInfo", CommunityHeartMeInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class CriticalStrikeCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    critical_strike_rate_low: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        6, betterproto2.TYPE_INT64
+    )
+
+    critical_strike_rate_high: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    multiple: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+    gift_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        11, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT64)
+    )
+
+    to_anchor_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "CriticalStrikeCardInfo", CriticalStrikeCardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
 class EnigmaBattleExtraInfo(betterproto2.Message):
     has_started: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -527,9 +717,65 @@ class EnigmaBattleSetting(betterproto2.Message):
         3, betterproto2.TYPE_INT64
     )
 
+    enigma_score_reveal_countdown_sec: "list[typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]]" = betterproto2.field(
+        4, betterproto2.TYPE_INT64, repeated=True
+    )
+
+    enigma_score_reveal_duration_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.live.match", "EnigmaBattleSetting", EnigmaBattleSetting
+)
+
+
+@dataclass(eq=False, repr=False)
+class ExtraTimeCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+    extra_duration_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        9, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "ExtraTimeCardInfo", ExtraTimeCardInfo
 )
 
 
@@ -554,6 +800,36 @@ class GiftModeMeta(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.live.match", "GiftModeMeta", GiftModeMeta
+)
+
+
+@dataclass(eq=False, repr=False)
+class GiftModeMetaList(betterproto2.Message):
+    gift_mode_meta: "list[GiftModeMeta]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "GiftModeMetaList", GiftModeMetaList
+)
+
+
+@dataclass(eq=False, repr=False)
+class GiftModeMetaV2(betterproto2.Message):
+    anchor_gift_mode_meta_by_type: "dict[int, AnchorGiftModeMetaMap]" = (
+        betterproto2.field(
+            1,
+            betterproto2.TYPE_MAP,
+            map_meta=betterproto2.map_meta(
+                betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+            ),
+        )
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "GiftModeMetaV2", GiftModeMetaV2
 )
 
 
@@ -595,9 +871,63 @@ class LeagueScoreInfo(betterproto2.Message):
         6, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    match_theme: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(7, betterproto2.TYPE_INT32)
+    )
+
+    left_icon: "__base__.ImageModel | None" = betterproto2.field(
+        8, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    right_icon: "__base__.ImageModel | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    right_schema_jump_link: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.live.match", "LeagueScoreInfo", LeagueScoreInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class MatchInvitePanelConfig(betterproto2.Message):
+    header_text: "__message__common__.Text | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    header_text_dark_mode: "__message__common__.Text | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    desc_text: "__message__common__.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    desc_text_dark_mode: "__message__common__.Text | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "MatchInvitePanelConfig", MatchInvitePanelConfig
+)
+
+
+@dataclass(eq=False, repr=False)
+class MatchOpeningAnimationConfig(betterproto2.Message):
+    start_animation_rule: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match",
+    "MatchOpeningAnimationConfig",
+    MatchOpeningAnimationConfig,
 )
 
 
@@ -648,6 +978,70 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class MatchThemeDisplayResource(betterproto2.Message):
+    match_theme: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    match_opening_animation_config: "MatchOpeningAnimationConfig | None" = (
+        betterproto2.field(2, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    match_title_bar_config: "MatchTitleBarConfig | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    match_invite_panel_config: "MatchInvitePanelConfig | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "MatchThemeDisplayResource", MatchThemeDisplayResource
+)
+
+
+@dataclass(eq=False, repr=False)
+class MatchTitleBarConfig(betterproto2.Message):
+    display_rules: "list[MatchTitleBarDisplayRule]" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "MatchTitleBarConfig", MatchTitleBarConfig
+)
+
+
+@dataclass(eq=False, repr=False)
+class MatchTitleBarDisplayRule(betterproto2.Message):
+    trigger: "MatchTitleBarTrigger | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    display_resource: "TitleBarDisplayResource | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "MatchTitleBarDisplayRule", MatchTitleBarDisplayRule
+)
+
+
+@dataclass(eq=False, repr=False)
+class MatchTitleBarTrigger(betterproto2.Message):
+    type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "MatchTitleBarTrigger", MatchTitleBarTrigger
+)
+
+
+@dataclass(eq=False, repr=False)
 class PlaybookBizExtra(betterproto2.Message):
     custom_atomic_capabilities: "dict[str, str]" = betterproto2.field(
         1,
@@ -660,6 +1054,46 @@ class PlaybookBizExtra(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.live.match", "PlaybookBizExtra", PlaybookBizExtra
+)
+
+
+@dataclass(eq=False, repr=False)
+class PotionCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "PotionCardInfo", PotionCardInfo
 )
 
 
@@ -740,6 +1174,94 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class SmokeCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT64)
+    )
+
+    to_anchor_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        13, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "SmokeCardInfo", SmokeCardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class SpecialEffectCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+    to_anchor_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "SpecialEffectCardInfo", SpecialEffectCardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
 class TaskPeriodConfig(betterproto2.Message):
     target_start_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
         1, betterproto2.TYPE_INT64
@@ -806,6 +1328,130 @@ class TeamMatchCampaign(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.live.match", "TeamMatchCampaign", TeamMatchCampaign
+)
+
+
+@dataclass(eq=False, repr=False)
+class TitleBarDisplayResource(betterproto2.Message):
+    left_icon: "__base__.ImageModel | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    content_text: "__message__common__.Text | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    right_icon: "__base__.ImageModel | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    right_icon_schema_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    duration_ms: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(5, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "TitleBarDisplayResource", TitleBarDisplayResource
+)
+
+
+@dataclass(eq=False, repr=False)
+class Top2CardInfo(betterproto2.Message):
+    common: "CommonCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "Top2CardInfo", Top2CardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class Top3CardInfo(betterproto2.Message):
+    common: "CommonCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "Top3CardInfo", Top3CardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class VaultGloveCardInfo(betterproto2.Message):
+    common: "CommonCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    gift_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+    multiple: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    multiple_other: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+    critical_strike_rate_low: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    critical_strike_rate_high: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        6, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "VaultGloveCardInfo", VaultGloveCardInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class WaveCardInfo(betterproto2.Message):
+    card_name_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    card_image: "__base__.ImageModel | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    send_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    send_user: "BattleUserInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_last_duration: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    rule_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    effect_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT64
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "WaveCardInfo", WaveCardInfo
 )
 
 

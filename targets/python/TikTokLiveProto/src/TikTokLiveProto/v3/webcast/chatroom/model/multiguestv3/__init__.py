@@ -93,6 +93,10 @@ class InviteBizContent(betterproto2.Message):
         )
     )
 
+    share_revenue_setting_struct: "_interact__.LinkmicShareRevenueSettingStruct | None" = betterproto2.field(
+        7, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.model.multiguestv3", "InviteBizContent", InviteBizContent
@@ -117,6 +121,10 @@ class JoinDirectBizContent(betterproto2.Message):
 
     is_full_position_pre_approved: "bool" = betterproto2.field(
         3, betterproto2.TYPE_BOOL
+    )
+
+    mg_source_role: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT32)
     )
 
 
@@ -235,4 +243,5 @@ from .... import im as ___im__
 from ....linkmic import common as ___linkmic__common__
 from ....model import data as ___model__data__
 from ....model.base import user as ___model__base__user__
+from .. import interact as _interact__
 from .. import multilive as _multilive__

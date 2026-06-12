@@ -110,6 +110,10 @@ class WebcastEnvelopeMessage(betterproto2.Message):
         3, betterproto2.TYPE_ENUM, default_factory=lambda: __data__.EnvelopeDisplay(0)
     )
 
+    public_area_msg_common: "__message__.PublicAreaMessageCommon | None" = (
+        betterproto2.field(4, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message.redenvelope",
@@ -122,3 +126,4 @@ from .... import envelope as ___envelope__
 from ....shared import message as ___shared__message__
 from ... import base as __base__
 from ... import data as __data__
+from ... import message as __message__
