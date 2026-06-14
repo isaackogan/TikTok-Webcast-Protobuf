@@ -28,6 +28,13 @@ publishing {
                         url.set("https://opensource.org/licenses/MIT")
                     }
                 }
+                developers {
+                    developer {
+                        id.set("eulerstream")
+                        name.set("EulerStream")
+                        url.set("https://www.eulerstream.com")
+                    }
+                }
                 scm {
                     url.set("https://github.com/isaackogan/TikTok-Webcast-Protobuf")
                     connection.set("scm:git:https://github.com/isaackogan/TikTok-Webcast-Protobuf.git")

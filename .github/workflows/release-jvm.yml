@@ -1,4 +1,4 @@
-name: "Release (JVM): Build & Publish to Maven"
+name: "Release (JVM): Build & Publish to Maven Central"
 
 on:
   workflow_dispatch:
@@ -60,12 +60,13 @@ jobs:
           sed -i -E "s/^version=.*/version=$NEW/" gradle.properties
           echo "version=$NEW" >> "$GITHUB_OUTPUT"
 
-      - name: Build and publish
+      - name: Build and publish to Maven Central
         env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-          MAVEN_REPO_URL: ${{ vars.MAVEN_REPO_URL }}
-        run: ./gradlew --no-daemon clean publish
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: ./gradlew --no-daemon clean publishAggregationToCentralPortal
 
       - name: Commit version bump
         working-directory: ${{ github.workspace }}
@@ -90,5 +91,5 @@ jobs:
 
       - name: Summary
         run: |
-          echo "### Published com.isaackogan:tiktok-live-proto:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Published com.isaackogan:tiktok-live-proto-kotlin:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Published com.eulerstream:tiktok-live-proto:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Published com.eulerstream:tiktok-live-proto-kotlin:${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
