@@ -1,6 +1,6 @@
 {
   "name": "@eulerstream/tiktok-live-proto-full",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Private TypeScript bindings for the full TikTok Webcast Protobuf schema.",
   "license": "UNLICENSED",
   "type": "module",
