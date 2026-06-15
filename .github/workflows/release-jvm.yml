@@ -41,11 +41,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - uses: gradle/actions/setup-gradle@v4
+
+      - name: Verify generated sources are committed
+        run: |
+          test -d tiktok-live-proto/src/generated/java
+          test -d tiktok-live-proto-kotlin/src/generated/kotlin
 
       - name: Bump version
         id: bump

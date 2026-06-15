@@ -11,6 +11,23 @@ allprojects {
     }
 }
 
+// Code generation is a separate stage from building. Pass -PgenerateProtos to (re)generate the
+// committed sources (see .github/workflows/generate-jvm.yml); normal builds/releases compile the
+// already-committed src/generated/** without Wire, protoc, or python. This task stages the slim
+// protos once at the JVM root; both modules' Wire tasks read from build/proto-staging.
+val generateProtos = providers.gradleProperty("generateProtos").isPresent
+
+if (generateProtos) {
+    tasks.register<Exec>("prepareProtos") {
+        description = "Stage slim/* protos into build/proto-staging with `option java_package` injected per version."
+        executable = "python3"
+        args(file("scripts/prepare_protos.py").absolutePath)
+        inputs.dir(rootDir.resolve("../../src/slim"))
+        inputs.file("scripts/prepare_protos.py")
+        outputs.dir(layout.buildDirectory.dir("proto-staging"))
+    }
+}
+
 subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "signing")

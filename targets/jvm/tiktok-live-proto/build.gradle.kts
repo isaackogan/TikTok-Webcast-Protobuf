@@ -1,40 +1,48 @@
 plugins {
     `java-library`
-    id("com.squareup.wire")
     `maven-publish`
 }
 
 description = "Java bindings for the slim TikTok Webcast Protobuf schema (Square Wire)."
 
+// Wire is applied only when (re)generating sources (-PgenerateProtos). Normal builds and releases
+// compile the committed src/generated/java directly — no Wire, protoc, or python needed.
+val generateProtos = providers.gradleProperty("generateProtos").isPresent
+val generatedJavaDir = layout.projectDirectory.dir("src/generated/java")
+
 dependencies {
+    // Generated code extends com.squareup.wire.Message etc.; needed at compile + runtime.
     api("com.squareup.wire:wire-runtime-jvm:5.5.1")
 }
 
-val prepareProtos by tasks.registering(Exec::class) {
-    description = "Copy slim/* protos into build/proto-staging with `option java_package` injected per version."
-    executable = "python3"
-    args(file("scripts/prepare_protos.py").absolutePath)
-    inputs.dir(rootDir.resolve("../../src/slim"))
-    inputs.file("scripts/prepare_protos.py")
-    outputs.dir(layout.buildDirectory.dir("proto-staging"))
-}
+if (generateProtos) {
+    apply(plugin = "com.squareup.wire")
 
-wire {
-    permitPackageCycles(true)
-    sourcePath {
-        srcDir(layout.buildDirectory.dir("proto-staging/v1").get().asFile.absolutePath)
+    configure<com.squareup.wire.gradle.WireExtension> {
+        permitPackageCycles(true)
+        sourcePath {
+            srcDir(rootProject.layout.buildDirectory.dir("proto-staging/v1").get().asFile.absolutePath)
+        }
+        sourcePath {
+            srcDir(rootProject.layout.buildDirectory.dir("proto-staging/v2").get().asFile.absolutePath)
+        }
+        sourcePath {
+            srcDir(rootProject.layout.buildDirectory.dir("proto-staging/v3").get().asFile.absolutePath)
+        }
+        java {
+            // Emit directly into the git-tracked source dir so regeneration is authoritative.
+            out = generatedJavaDir.asFile.absolutePath
+        }
     }
-    sourcePath {
-        srcDir(layout.buildDirectory.dir("proto-staging/v2").get().asFile.absolutePath)
-    }
-    sourcePath {
-        srcDir(layout.buildDirectory.dir("proto-staging/v3").get().asFile.absolutePath)
-    }
-    java {}
-}
 
-tasks.withType<com.squareup.wire.gradle.WireTask>().configureEach {
-    dependsOn(prepareProtos)
+    tasks.withType<com.squareup.wire.gradle.WireTask>().configureEach {
+        dependsOn(rootProject.tasks.named("prepareProtos"))
+    }
+} else {
+    // Build/publish mode: compile the committed generated sources as plain Java.
+    sourceSets.named("main") {
+        java.srcDir(generatedJavaDir)
+    }
 }
 
 publishing {
