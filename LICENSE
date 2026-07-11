@@ -678,7 +678,7 @@ the downstream library itself being forced to adopt the AGPL-3.0 license,
 provided that the downstream library does not violate Section 19 below. You
 may also integrate this in derivative works that do NOT violate Section 19,
 with the specific exceptions enumerated below, such as TikTok LIVE Overlay
-services, TikTok LIVE games, automated tools, etc.
+services, TikTok LIVE games, automated tools, etc. 
 
   19. WebSocket Servers, SaaS APIs, and Cloud Hosting Restrictions
 
@@ -708,3 +708,11 @@ full compliance with the AGPL-3.0 constitutes copyright infringement.
   Revocation of these additional permissions does not affect the rights of
 other parties who remain in compliance, nor does it limit any other remedy
 available to the Copyright Holder at law or in equity.
+
+  21. Excepted Parties
+
+  The following parties are excepted from Section 19 restrictions. These
+parties are free to use the service in any capacity & derivate form:
+
+  1. TikFinity / STV GmBH
+  2. Euler Stream Inc.
