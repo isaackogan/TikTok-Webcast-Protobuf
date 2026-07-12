@@ -77,7 +77,7 @@ The TypeScript target is the reference implementation — mirror its layout and 
 
 ## License
 
-This project is licensed under the MIT License and is intended for **non-commercial use only** (research, interoperability, and reverse-engineering). See the `LICENSE` file at the repo root for details.
+This project is licensed under a modified AGPL License and is intended for **non-commercial use only** (research, interoperability, and reverse-engineering). See the `LICENSE` file at the repo root for details.
 
 ## Contributors
 
