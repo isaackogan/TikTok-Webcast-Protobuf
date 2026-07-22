@@ -2,6 +2,7 @@
 // Source: webcast.chatroom.model.interact.RandomMatchContent_UserInfo in webcast/chatroom/model/interact_messages.proto
 package com.eulerstream.webcast.v3.webcast.chatroom.model.interact;
 
+import com.eulerstream.webcast.v3.webcast.model.base.ImageModel;
 import com.squareup.wire.FieldEncoding;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoAdapter;
@@ -50,16 +51,37 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
   )
   public final int invitation_role_type;
 
-  public RandomMatchContent_UserInfo(long user_id, long room_id, int invitation_role_type) {
-    this(user_id, room_id, invitation_role_type, ByteString.EMPTY);
+  @WireField(
+      tag = 4,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "avatarThumb"
+  )
+  public final ImageModel avatar_thumb;
+
+  @WireField(
+      tag = 5,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY
+  )
+  public final String nickname;
+
+  public RandomMatchContent_UserInfo(long user_id, long room_id, int invitation_role_type,
+      ImageModel avatar_thumb, String nickname) {
+    this(user_id, room_id, invitation_role_type, avatar_thumb, nickname, ByteString.EMPTY);
   }
 
   public RandomMatchContent_UserInfo(long user_id, long room_id, int invitation_role_type,
-      ByteString unknownFields) {
+      ImageModel avatar_thumb, String nickname, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.user_id = user_id;
     this.room_id = room_id;
     this.invitation_role_type = invitation_role_type;
+    this.avatar_thumb = avatar_thumb;
+    if (nickname == null) {
+      throw new IllegalArgumentException("nickname == null");
+    }
+    this.nickname = nickname;
   }
 
   @Override
@@ -68,6 +90,8 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
     builder.user_id = user_id;
     builder.room_id = room_id;
     builder.invitation_role_type = invitation_role_type;
+    builder.avatar_thumb = avatar_thumb;
+    builder.nickname = nickname;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -80,7 +104,9 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(user_id, o.user_id)
         && Internal.equals(room_id, o.room_id)
-        && Internal.equals(invitation_role_type, o.invitation_role_type);
+        && Internal.equals(invitation_role_type, o.invitation_role_type)
+        && Internal.equals(avatar_thumb, o.avatar_thumb)
+        && Internal.equals(nickname, o.nickname);
   }
 
   @Override
@@ -91,6 +117,8 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
       result = result * 37 + Long.hashCode(user_id);
       result = result * 37 + Long.hashCode(room_id);
       result = result * 37 + Integer.hashCode(invitation_role_type);
+      result = result * 37 + (avatar_thumb != null ? avatar_thumb.hashCode() : 0);
+      result = result * 37 + (nickname != null ? nickname.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -102,6 +130,8 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
     builder.append(", user_id=").append(user_id);
     builder.append(", room_id=").append(room_id);
     builder.append(", invitation_role_type=").append(invitation_role_type);
+    if (avatar_thumb != null) builder.append(", avatar_thumb=").append(avatar_thumb);
+    if (nickname != null) builder.append(", nickname=").append(Internal.sanitize(nickname));
     return builder.replace(0, 2, "RandomMatchContent_UserInfo{").append('}').toString();
   }
 
@@ -112,10 +142,15 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
 
     public int invitation_role_type;
 
+    public ImageModel avatar_thumb;
+
+    public String nickname;
+
     public Builder() {
       user_id = 0L;
       room_id = 0L;
       invitation_role_type = 0;
+      nickname = "";
     }
 
     public Builder user_id(long user_id) {
@@ -133,9 +168,19 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
       return this;
     }
 
+    public Builder avatar_thumb(ImageModel avatar_thumb) {
+      this.avatar_thumb = avatar_thumb;
+      return this;
+    }
+
+    public Builder nickname(String nickname) {
+      this.nickname = nickname;
+      return this;
+    }
+
     @Override
     public RandomMatchContent_UserInfo build() {
-      return new RandomMatchContent_UserInfo(user_id, room_id, invitation_role_type, super.buildUnknownFields());
+      return new RandomMatchContent_UserInfo(user_id, room_id, invitation_role_type, avatar_thumb, nickname, super.buildUnknownFields());
     }
   }
 
@@ -156,6 +201,12 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
       if (!Objects.equals(value.invitation_role_type, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(3, value.invitation_role_type);
       }
+      if (!Objects.equals(value.avatar_thumb, null)) {
+        result += ImageModel.ADAPTER.encodedSizeWithTag(4, value.avatar_thumb);
+      }
+      if (!Objects.equals(value.nickname, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(5, value.nickname);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -165,6 +216,8 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
       if (!Objects.equals(value.user_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 1, value.user_id);
       if (!Objects.equals(value.room_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 2, value.room_id);
       if (!Objects.equals(value.invitation_role_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 3, value.invitation_role_type);
+      if (!Objects.equals(value.avatar_thumb, null)) ImageModel.ADAPTER.encodeWithTag(writer, 4, value.avatar_thumb);
+      if (!Objects.equals(value.nickname, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.nickname);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -172,6 +225,8 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
     public void encode(ReverseProtoWriter writer, RandomMatchContent_UserInfo value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.nickname, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.nickname);
+      if (!Objects.equals(value.avatar_thumb, null)) ImageModel.ADAPTER.encodeWithTag(writer, 4, value.avatar_thumb);
       if (!Objects.equals(value.invitation_role_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 3, value.invitation_role_type);
       if (!Objects.equals(value.room_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 2, value.room_id);
       if (!Objects.equals(value.user_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 1, value.user_id);
@@ -186,6 +241,8 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
           case 1: builder.user_id(ProtoAdapter.INT64.decode(reader)); break;
           case 2: builder.room_id(ProtoAdapter.INT64.decode(reader)); break;
           case 3: builder.invitation_role_type(ProtoAdapter.INT32.decode(reader)); break;
+          case 4: builder.avatar_thumb(ImageModel.ADAPTER.decode(reader)); break;
+          case 5: builder.nickname(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -198,6 +255,7 @@ public final class RandomMatchContent_UserInfo extends Message<RandomMatchConten
     @Override
     public RandomMatchContent_UserInfo redact(RandomMatchContent_UserInfo value) {
       Builder builder = value.newBuilder();
+      if (builder.avatar_thumb != null) builder.avatar_thumb = ImageModel.ADAPTER.redact(builder.avatar_thumb);
       builder.clearUnknownFields();
       return builder.build();
     }

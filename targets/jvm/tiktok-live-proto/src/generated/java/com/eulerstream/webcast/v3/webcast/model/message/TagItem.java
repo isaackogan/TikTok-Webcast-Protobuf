@@ -14,6 +14,7 @@ import com.squareup.wire.Syntax;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
@@ -69,13 +70,40 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
   )
   public final Map<String, String> event_tracking_fields;
 
+  @WireField(
+      tag = 6,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "bizName"
+  )
+  public final String biz_name;
+
+  @WireField(
+      tag = 10,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "disableCountFrequencyControl"
+  )
+  public final boolean disable_count_frequency_control;
+
+  @WireField(
+      tag = 11,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "disableCrmClick"
+  )
+  public final boolean disable_crm_click;
+
   public TagItem(TagType tag_type, Text tag_text, long tag_value, int display_location,
-      Map<String, String> event_tracking_fields) {
-    this(tag_type, tag_text, tag_value, display_location, event_tracking_fields, ByteString.EMPTY);
+      Map<String, String> event_tracking_fields, String biz_name,
+      boolean disable_count_frequency_control, boolean disable_crm_click) {
+    this(tag_type, tag_text, tag_value, display_location, event_tracking_fields, biz_name, disable_count_frequency_control, disable_crm_click, ByteString.EMPTY);
   }
 
   public TagItem(TagType tag_type, Text tag_text, long tag_value, int display_location,
-      Map<String, String> event_tracking_fields, ByteString unknownFields) {
+      Map<String, String> event_tracking_fields, String biz_name,
+      boolean disable_count_frequency_control, boolean disable_crm_click,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (tag_type == null) {
       throw new IllegalArgumentException("tag_type == null");
@@ -85,6 +113,12 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
     this.tag_value = tag_value;
     this.display_location = display_location;
     this.event_tracking_fields = Internal.immutableCopyOf("event_tracking_fields", event_tracking_fields);
+    if (biz_name == null) {
+      throw new IllegalArgumentException("biz_name == null");
+    }
+    this.biz_name = biz_name;
+    this.disable_count_frequency_control = disable_count_frequency_control;
+    this.disable_crm_click = disable_crm_click;
   }
 
   @Override
@@ -95,6 +129,9 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
     builder.tag_value = tag_value;
     builder.display_location = display_location;
     builder.event_tracking_fields = Internal.copyOf(event_tracking_fields);
+    builder.biz_name = biz_name;
+    builder.disable_count_frequency_control = disable_count_frequency_control;
+    builder.disable_crm_click = disable_crm_click;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -109,7 +146,10 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
         && Internal.equals(tag_text, o.tag_text)
         && Internal.equals(tag_value, o.tag_value)
         && Internal.equals(display_location, o.display_location)
-        && event_tracking_fields.equals(o.event_tracking_fields);
+        && event_tracking_fields.equals(o.event_tracking_fields)
+        && Internal.equals(biz_name, o.biz_name)
+        && Internal.equals(disable_count_frequency_control, o.disable_count_frequency_control)
+        && Internal.equals(disable_crm_click, o.disable_crm_click);
   }
 
   @Override
@@ -122,6 +162,9 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
       result = result * 37 + Long.hashCode(tag_value);
       result = result * 37 + Integer.hashCode(display_location);
       result = result * 37 + event_tracking_fields.hashCode();
+      result = result * 37 + (biz_name != null ? biz_name.hashCode() : 0);
+      result = result * 37 + Boolean.hashCode(disable_count_frequency_control);
+      result = result * 37 + Boolean.hashCode(disable_crm_click);
       super.hashCode = result;
     }
     return result;
@@ -135,6 +178,9 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
     builder.append(", tag_value=").append(tag_value);
     builder.append(", display_location=").append(display_location);
     if (!event_tracking_fields.isEmpty()) builder.append(", event_tracking_fields=").append(event_tracking_fields);
+    if (biz_name != null) builder.append(", biz_name=").append(Internal.sanitize(biz_name));
+    builder.append(", disable_count_frequency_control=").append(disable_count_frequency_control);
+    builder.append(", disable_crm_click=").append(disable_crm_click);
     return builder.replace(0, 2, "TagItem{").append('}').toString();
   }
 
@@ -149,11 +195,20 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
 
     public Map<String, String> event_tracking_fields;
 
+    public String biz_name;
+
+    public boolean disable_count_frequency_control;
+
+    public boolean disable_crm_click;
+
     public Builder() {
       tag_type = TagType.CREATOR_CRM_TAG_TYPE_UNKNOWN;
       tag_value = 0L;
       display_location = 0;
       event_tracking_fields = Internal.newMutableMap();
+      biz_name = "";
+      disable_count_frequency_control = false;
+      disable_crm_click = false;
     }
 
     public Builder tag_type(TagType tag_type) {
@@ -182,9 +237,24 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
       return this;
     }
 
+    public Builder biz_name(String biz_name) {
+      this.biz_name = biz_name;
+      return this;
+    }
+
+    public Builder disable_count_frequency_control(boolean disable_count_frequency_control) {
+      this.disable_count_frequency_control = disable_count_frequency_control;
+      return this;
+    }
+
+    public Builder disable_crm_click(boolean disable_crm_click) {
+      this.disable_crm_click = disable_crm_click;
+      return this;
+    }
+
     @Override
     public TagItem build() {
-      return new TagItem(tag_type, tag_text, tag_value, display_location, event_tracking_fields, super.buildUnknownFields());
+      return new TagItem(tag_type, tag_text, tag_value, display_location, event_tracking_fields, biz_name, disable_count_frequency_control, disable_crm_click, super.buildUnknownFields());
     }
   }
 
@@ -211,6 +281,15 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
         result += ProtoAdapter.INT32.encodedSizeWithTag(4, value.display_location);
       }
       result += event_tracking_fieldsAdapter().encodedSizeWithTag(5, value.event_tracking_fields);
+      if (!Objects.equals(value.biz_name, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(6, value.biz_name);
+      }
+      if (!Objects.equals(value.disable_count_frequency_control, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(10, value.disable_count_frequency_control);
+      }
+      if (!Objects.equals(value.disable_crm_click, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(11, value.disable_crm_click);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -222,12 +301,18 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
       if (!Objects.equals(value.tag_value, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 3, value.tag_value);
       if (!Objects.equals(value.display_location, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.display_location);
       event_tracking_fieldsAdapter().encodeWithTag(writer, 5, value.event_tracking_fields);
+      if (!Objects.equals(value.biz_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.biz_name);
+      if (!Objects.equals(value.disable_count_frequency_control, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control);
+      if (!Objects.equals(value.disable_crm_click, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 11, value.disable_crm_click);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, TagItem value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.disable_crm_click, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 11, value.disable_crm_click);
+      if (!Objects.equals(value.disable_count_frequency_control, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control);
+      if (!Objects.equals(value.biz_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.biz_name);
       event_tracking_fieldsAdapter().encodeWithTag(writer, 5, value.event_tracking_fields);
       if (!Objects.equals(value.display_location, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.display_location);
       if (!Objects.equals(value.tag_value, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 3, value.tag_value);
@@ -253,6 +338,9 @@ public final class TagItem extends Message<TagItem, TagItem.Builder> {
           case 3: builder.tag_value(ProtoAdapter.INT64.decode(reader)); break;
           case 4: builder.display_location(ProtoAdapter.INT32.decode(reader)); break;
           case 5: builder.event_tracking_fields.putAll(event_tracking_fieldsAdapter().decode(reader)); break;
+          case 6: builder.biz_name(ProtoAdapter.STRING.decode(reader)); break;
+          case 10: builder.disable_count_frequency_control(ProtoAdapter.BOOL.decode(reader)); break;
+          case 11: builder.disable_crm_click(ProtoAdapter.BOOL.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

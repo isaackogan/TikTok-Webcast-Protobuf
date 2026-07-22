@@ -45,6 +45,14 @@ public class CohostTypeSpotExtra(
     schemaIndex = 1,
   )
   public val content_type: Int = 0,
+  @field:WireField(
+    tag = 3,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "preEnlargeSpotId",
+    schemaIndex = 2,
+  )
+  public val pre_enlarge_spot_id: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<CohostTypeSpotExtra, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -59,6 +67,7 @@ public class CohostTypeSpotExtra(
     if (unknownFields != other.unknownFields) return false
     if (is_enlarged != other.is_enlarged) return false
     if (content_type != other.content_type) return false
+    if (pre_enlarge_spot_id != other.pre_enlarge_spot_id) return false
     return true
   }
 
@@ -68,6 +77,7 @@ public class CohostTypeSpotExtra(
       result = unknownFields.hashCode()
       result = result * 37 + is_enlarged.hashCode()
       result = result * 37 + content_type.hashCode()
+      result = result * 37 + pre_enlarge_spot_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -77,14 +87,16 @@ public class CohostTypeSpotExtra(
     val result = mutableListOf<String>()
     result += """is_enlarged=$is_enlarged"""
     result += """content_type=$content_type"""
+    result += """pre_enlarge_spot_id=$pre_enlarge_spot_id"""
     return result.joinToString(prefix = "CohostTypeSpotExtra{", separator = ", ", postfix = "}")
   }
 
   public fun copy(
     is_enlarged: Boolean = this.is_enlarged,
     content_type: Int = this.content_type,
+    pre_enlarge_spot_id: Int = this.pre_enlarge_spot_id,
     unknownFields: ByteString = this.unknownFields,
-  ): CohostTypeSpotExtra = CohostTypeSpotExtra(is_enlarged, content_type, unknownFields)
+  ): CohostTypeSpotExtra = CohostTypeSpotExtra(is_enlarged, content_type, pre_enlarge_spot_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -105,6 +117,9 @@ public class CohostTypeSpotExtra(
         if (value.content_type != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(2, value.content_type)
         }
+        if (value.pre_enlarge_spot_id != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(3, value.pre_enlarge_spot_id)
+        }
         return size
       }
 
@@ -115,11 +130,17 @@ public class CohostTypeSpotExtra(
         if (value.content_type != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 2, value.content_type)
         }
+        if (value.pre_enlarge_spot_id != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 3, value.pre_enlarge_spot_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: CohostTypeSpotExtra) {
         writer.writeBytes(value.unknownFields)
+        if (value.pre_enlarge_spot_id != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 3, value.pre_enlarge_spot_id)
+        }
         if (value.content_type != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 2, value.content_type)
         }
@@ -131,16 +152,19 @@ public class CohostTypeSpotExtra(
       override fun decode(reader: ProtoReader): CohostTypeSpotExtra {
         var is_enlarged: Boolean = false
         var content_type: Int = 0
+        var pre_enlarge_spot_id: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> is_enlarged = ProtoAdapter.BOOL.decode(reader)
             2 -> content_type = ProtoAdapter.INT32.decode(reader)
+            3 -> pre_enlarge_spot_id = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
         return CohostTypeSpotExtra(
           is_enlarged = is_enlarged,
           content_type = content_type,
+          pre_enlarge_spot_id = pre_enlarge_spot_id,
           unknownFields = unknownFields
         )
       }

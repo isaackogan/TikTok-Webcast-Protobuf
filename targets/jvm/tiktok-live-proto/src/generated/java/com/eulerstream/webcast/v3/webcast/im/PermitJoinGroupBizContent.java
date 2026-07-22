@@ -15,6 +15,7 @@ import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -51,13 +52,31 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
   )
   public final boolean skip_cancel_match;
 
+  @WireField(
+      tag = 4,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "matchedPreferenceTag"
+  )
+  public final int matched_preference_tag;
+
+  @WireField(
+      tag = 5,
+      adapter = "com.eulerstream.webcast.v3.webcast.im.QuickCohostInviteeUserInfo#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "quickCohostInviteeUserInfo"
+  )
+  public final QuickCohostInviteeUserInfo quick_cohost_invitee_user_info;
+
   public PermitJoinGroupBizContent(ReplyStatus reply_status, SourceType source_type,
-      boolean skip_cancel_match) {
-    this(reply_status, source_type, skip_cancel_match, ByteString.EMPTY);
+      boolean skip_cancel_match, int matched_preference_tag,
+      QuickCohostInviteeUserInfo quick_cohost_invitee_user_info) {
+    this(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, ByteString.EMPTY);
   }
 
   public PermitJoinGroupBizContent(ReplyStatus reply_status, SourceType source_type,
-      boolean skip_cancel_match, ByteString unknownFields) {
+      boolean skip_cancel_match, int matched_preference_tag,
+      QuickCohostInviteeUserInfo quick_cohost_invitee_user_info, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (reply_status == null) {
       throw new IllegalArgumentException("reply_status == null");
@@ -68,6 +87,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     }
     this.source_type = source_type;
     this.skip_cancel_match = skip_cancel_match;
+    this.matched_preference_tag = matched_preference_tag;
+    this.quick_cohost_invitee_user_info = quick_cohost_invitee_user_info;
   }
 
   @Override
@@ -76,6 +97,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     builder.reply_status = reply_status;
     builder.source_type = source_type;
     builder.skip_cancel_match = skip_cancel_match;
+    builder.matched_preference_tag = matched_preference_tag;
+    builder.quick_cohost_invitee_user_info = quick_cohost_invitee_user_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -88,7 +111,9 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(reply_status, o.reply_status)
         && Internal.equals(source_type, o.source_type)
-        && Internal.equals(skip_cancel_match, o.skip_cancel_match);
+        && Internal.equals(skip_cancel_match, o.skip_cancel_match)
+        && Internal.equals(matched_preference_tag, o.matched_preference_tag)
+        && Internal.equals(quick_cohost_invitee_user_info, o.quick_cohost_invitee_user_info);
   }
 
   @Override
@@ -99,6 +124,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       result = result * 37 + (reply_status != null ? reply_status.hashCode() : 0);
       result = result * 37 + (source_type != null ? source_type.hashCode() : 0);
       result = result * 37 + Boolean.hashCode(skip_cancel_match);
+      result = result * 37 + Integer.hashCode(matched_preference_tag);
+      result = result * 37 + (quick_cohost_invitee_user_info != null ? quick_cohost_invitee_user_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -110,6 +137,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     if (reply_status != null) builder.append(", reply_status=").append(reply_status);
     if (source_type != null) builder.append(", source_type=").append(source_type);
     builder.append(", skip_cancel_match=").append(skip_cancel_match);
+    builder.append(", matched_preference_tag=").append(matched_preference_tag);
+    if (quick_cohost_invitee_user_info != null) builder.append(", quick_cohost_invitee_user_info=").append(quick_cohost_invitee_user_info);
     return builder.replace(0, 2, "PermitJoinGroupBizContent{").append('}').toString();
   }
 
@@ -120,10 +149,15 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
 
     public boolean skip_cancel_match;
 
+    public int matched_preference_tag;
+
+    public QuickCohostInviteeUserInfo quick_cohost_invitee_user_info;
+
     public Builder() {
       reply_status = ReplyStatus.REPLY_STATUS_UNKNOWN;
       source_type = SourceType.SOURCE_TYPE_UNKNOWN;
       skip_cancel_match = false;
+      matched_preference_tag = 0;
     }
 
     public Builder reply_status(ReplyStatus reply_status) {
@@ -141,9 +175,20 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       return this;
     }
 
+    public Builder matched_preference_tag(int matched_preference_tag) {
+      this.matched_preference_tag = matched_preference_tag;
+      return this;
+    }
+
+    public Builder quick_cohost_invitee_user_info(
+        QuickCohostInviteeUserInfo quick_cohost_invitee_user_info) {
+      this.quick_cohost_invitee_user_info = quick_cohost_invitee_user_info;
+      return this;
+    }
+
     @Override
     public PermitJoinGroupBizContent build() {
-      return new PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, super.buildUnknownFields());
+      return new PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, super.buildUnknownFields());
     }
   }
 
@@ -164,6 +209,12 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       if (!Objects.equals(value.skip_cancel_match, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(3, value.skip_cancel_match);
       }
+      if (!Objects.equals(value.matched_preference_tag, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(4, value.matched_preference_tag);
+      }
+      if (!Objects.equals(value.quick_cohost_invitee_user_info, null)) {
+        result += QuickCohostInviteeUserInfo.ADAPTER.encodedSizeWithTag(5, value.quick_cohost_invitee_user_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -173,6 +224,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       if (!Objects.equals(value.reply_status, ReplyStatus.REPLY_STATUS_UNKNOWN)) ReplyStatus.ADAPTER.encodeWithTag(writer, 1, value.reply_status);
       if (!Objects.equals(value.source_type, SourceType.SOURCE_TYPE_UNKNOWN)) SourceType.ADAPTER.encodeWithTag(writer, 2, value.source_type);
       if (!Objects.equals(value.skip_cancel_match, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.skip_cancel_match);
+      if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.matched_preference_tag);
+      if (!Objects.equals(value.quick_cohost_invitee_user_info, null)) QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -180,6 +233,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     public void encode(ReverseProtoWriter writer, PermitJoinGroupBizContent value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.quick_cohost_invitee_user_info, null)) QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info);
+      if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.matched_preference_tag);
       if (!Objects.equals(value.skip_cancel_match, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.skip_cancel_match);
       if (!Objects.equals(value.source_type, SourceType.SOURCE_TYPE_UNKNOWN)) SourceType.ADAPTER.encodeWithTag(writer, 2, value.source_type);
       if (!Objects.equals(value.reply_status, ReplyStatus.REPLY_STATUS_UNKNOWN)) ReplyStatus.ADAPTER.encodeWithTag(writer, 1, value.reply_status);
@@ -208,6 +263,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
             break;
           }
           case 3: builder.skip_cancel_match(ProtoAdapter.BOOL.decode(reader)); break;
+          case 4: builder.matched_preference_tag(ProtoAdapter.INT32.decode(reader)); break;
+          case 5: builder.quick_cohost_invitee_user_info(QuickCohostInviteeUserInfo.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -220,6 +277,7 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     @Override
     public PermitJoinGroupBizContent redact(PermitJoinGroupBizContent value) {
       Builder builder = value.newBuilder();
+      if (builder.quick_cohost_invitee_user_info != null) builder.quick_cohost_invitee_user_info = QuickCohostInviteeUserInfo.ADAPTER.redact(builder.quick_cohost_invitee_user_info);
       builder.clearUnknownFields();
       return builder.build();
     }

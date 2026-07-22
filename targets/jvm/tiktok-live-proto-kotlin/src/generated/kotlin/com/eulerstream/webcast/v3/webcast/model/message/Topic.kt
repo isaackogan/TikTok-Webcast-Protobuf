@@ -21,6 +21,7 @@ import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
 import com.squareup.wire.`internal`.immutableCopyOf
+import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -94,6 +95,22 @@ public class Topic(
   public val display_location:
       PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation = PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.DISPLAY_LOCATION_FULL_SCREEN,
   event_tracking_fields: Map<String, String> = emptyMap(),
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "bizName",
+    schemaIndex = 8,
+  )
+  public val biz_name: String = "",
+  @field:WireField(
+    tag = 10,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "disableCountFrequencyControl",
+    schemaIndex = 9,
+  )
+  public val disable_count_frequency_control: Boolean = false,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<Topic, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -124,6 +141,8 @@ public class Topic(
     if (tag_type != other.tag_type) return false
     if (display_location != other.display_location) return false
     if (event_tracking_fields != other.event_tracking_fields) return false
+    if (biz_name != other.biz_name) return false
+    if (disable_count_frequency_control != other.disable_count_frequency_control) return false
     return true
   }
 
@@ -139,6 +158,8 @@ public class Topic(
       result = result * 37 + tag_type.hashCode()
       result = result * 37 + display_location.hashCode()
       result = result * 37 + event_tracking_fields.hashCode()
+      result = result * 37 + biz_name.hashCode()
+      result = result * 37 + disable_count_frequency_control.hashCode()
       super.hashCode = result
     }
     return result
@@ -154,6 +175,8 @@ public class Topic(
     result += """tag_type=$tag_type"""
     result += """display_location=$display_location"""
     if (event_tracking_fields.isNotEmpty()) result += """event_tracking_fields=$event_tracking_fields"""
+    result += """biz_name=${sanitize(biz_name)}"""
+    result += """disable_count_frequency_control=$disable_count_frequency_control"""
     return result.joinToString(prefix = "Topic{", separator = ", ", postfix = "}")
   }
 
@@ -166,8 +189,10 @@ public class Topic(
     tag_type: TagType = this.tag_type,
     display_location: PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation = this.display_location,
     event_tracking_fields: Map<String, String> = this.event_tracking_fields,
+    biz_name: String = this.biz_name,
+    disable_count_frequency_control: Boolean = this.disable_count_frequency_control,
     unknownFields: ByteString = this.unknownFields,
-  ): Topic = Topic(topic_action_type, topic_text, topic_tips, has_button, action_button, tag_type, display_location, event_tracking_fields, unknownFields)
+  ): Topic = Topic(topic_action_type, topic_text, topic_tips, has_button, action_button, tag_type, display_location, event_tracking_fields, biz_name, disable_count_frequency_control, unknownFields)
 
   public companion object {
     @JvmField
@@ -206,6 +231,12 @@ public class Topic(
           size += PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.ADAPTER.encodedSizeWithTag(7, value.display_location)
         }
         size += event_tracking_fieldsAdapter.encodedSizeWithTag(8, value.event_tracking_fields)
+        if (value.biz_name != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(9, value.biz_name)
+        }
+        if (value.disable_count_frequency_control != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(10, value.disable_count_frequency_control)
+        }
         return size
       }
 
@@ -232,11 +263,23 @@ public class Topic(
           PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.ADAPTER.encodeWithTag(writer, 7, value.display_location)
         }
         event_tracking_fieldsAdapter.encodeWithTag(writer, 8, value.event_tracking_fields)
+        if (value.biz_name != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 9, value.biz_name)
+        }
+        if (value.disable_count_frequency_control != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: Topic) {
         writer.writeBytes(value.unknownFields)
+        if (value.disable_count_frequency_control != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control)
+        }
+        if (value.biz_name != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 9, value.biz_name)
+        }
         event_tracking_fieldsAdapter.encodeWithTag(writer, 8, value.event_tracking_fields)
         if (value.display_location != com.eulerstream.webcast.v3.webcast.im.PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.DISPLAY_LOCATION_FULL_SCREEN) {
           PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.ADAPTER.encodeWithTag(writer, 7, value.display_location)
@@ -270,6 +313,8 @@ public class Topic(
         var tag_type: TagType = TagType.CREATOR_CRM_TAG_TYPE_UNKNOWN
         var display_location: PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation = PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.DISPLAY_LOCATION_FULL_SCREEN
         val event_tracking_fields = mutableMapOf<String, String>()
+        var biz_name: String = ""
+        var disable_count_frequency_control: Boolean = false
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> try {
@@ -292,6 +337,8 @@ public class Topic(
               reader.addUnknownField(tag, FieldEncoding.VARINT, e.value.toLong())
             }
             8 -> event_tracking_fields.putAll(event_tracking_fieldsAdapter.decode(reader))
+            9 -> biz_name = ProtoAdapter.STRING.decode(reader)
+            10 -> disable_count_frequency_control = ProtoAdapter.BOOL.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -304,6 +351,8 @@ public class Topic(
           tag_type = tag_type,
           display_location = display_location,
           event_tracking_fields = event_tracking_fields,
+          biz_name = biz_name,
+          disable_count_frequency_control = disable_count_frequency_control,
           unknownFields = unknownFields
         )
       }

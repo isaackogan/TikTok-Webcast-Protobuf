@@ -2,6 +2,7 @@
 // Source: webcast.model.GiftSeriesInfo in webcast/model/messages.proto
 package com.eulerstream.webcast.v3.webcast.model;
 
+import com.eulerstream.webcast.v3.webcast.model.base.ImageModel;
 import com.squareup.wire.FieldEncoding;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoAdapter;
@@ -50,11 +51,55 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
   )
   public final boolean enabled;
 
-  public GiftSeriesInfo(String series_name, List<Long> gift_ids, boolean enabled) {
-    this(series_name, gift_ids, enabled, ByteString.EMPTY);
+  @WireField(
+      tag = 5,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "containerBackground"
+  )
+  public final ImageModel container_background;
+
+  @WireField(
+      tag = 6,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "sendGiftButtonColor"
+  )
+  public final String send_gift_button_color;
+
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "pointingBackTriColor"
+  )
+  public final String pointing_back_tri_color;
+
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "seriesNameColor"
+  )
+  public final String series_name_color;
+
+  @WireField(
+      tag = 9,
+      adapter = "com.squareup.wire.ProtoAdapter#INT64",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "endTimeSec"
+  )
+  public final long end_time_sec;
+
+  public GiftSeriesInfo(String series_name, List<Long> gift_ids, boolean enabled,
+      ImageModel container_background, String send_gift_button_color,
+      String pointing_back_tri_color, String series_name_color, long end_time_sec) {
+    this(series_name, gift_ids, enabled, container_background, send_gift_button_color, pointing_back_tri_color, series_name_color, end_time_sec, ByteString.EMPTY);
   }
 
   public GiftSeriesInfo(String series_name, List<Long> gift_ids, boolean enabled,
+      ImageModel container_background, String send_gift_button_color,
+      String pointing_back_tri_color, String series_name_color, long end_time_sec,
       ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (series_name == null) {
@@ -63,6 +108,20 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
     this.series_name = series_name;
     this.gift_ids = Internal.immutableCopyOf("gift_ids", gift_ids);
     this.enabled = enabled;
+    this.container_background = container_background;
+    if (send_gift_button_color == null) {
+      throw new IllegalArgumentException("send_gift_button_color == null");
+    }
+    this.send_gift_button_color = send_gift_button_color;
+    if (pointing_back_tri_color == null) {
+      throw new IllegalArgumentException("pointing_back_tri_color == null");
+    }
+    this.pointing_back_tri_color = pointing_back_tri_color;
+    if (series_name_color == null) {
+      throw new IllegalArgumentException("series_name_color == null");
+    }
+    this.series_name_color = series_name_color;
+    this.end_time_sec = end_time_sec;
   }
 
   @Override
@@ -71,6 +130,11 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
     builder.series_name = series_name;
     builder.gift_ids = Internal.copyOf(gift_ids);
     builder.enabled = enabled;
+    builder.container_background = container_background;
+    builder.send_gift_button_color = send_gift_button_color;
+    builder.pointing_back_tri_color = pointing_back_tri_color;
+    builder.series_name_color = series_name_color;
+    builder.end_time_sec = end_time_sec;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -83,7 +147,12 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(series_name, o.series_name)
         && gift_ids.equals(o.gift_ids)
-        && Internal.equals(enabled, o.enabled);
+        && Internal.equals(enabled, o.enabled)
+        && Internal.equals(container_background, o.container_background)
+        && Internal.equals(send_gift_button_color, o.send_gift_button_color)
+        && Internal.equals(pointing_back_tri_color, o.pointing_back_tri_color)
+        && Internal.equals(series_name_color, o.series_name_color)
+        && Internal.equals(end_time_sec, o.end_time_sec);
   }
 
   @Override
@@ -94,6 +163,11 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
       result = result * 37 + (series_name != null ? series_name.hashCode() : 0);
       result = result * 37 + gift_ids.hashCode();
       result = result * 37 + Boolean.hashCode(enabled);
+      result = result * 37 + (container_background != null ? container_background.hashCode() : 0);
+      result = result * 37 + (send_gift_button_color != null ? send_gift_button_color.hashCode() : 0);
+      result = result * 37 + (pointing_back_tri_color != null ? pointing_back_tri_color.hashCode() : 0);
+      result = result * 37 + (series_name_color != null ? series_name_color.hashCode() : 0);
+      result = result * 37 + Long.hashCode(end_time_sec);
       super.hashCode = result;
     }
     return result;
@@ -105,6 +179,11 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
     if (series_name != null) builder.append(", series_name=").append(Internal.sanitize(series_name));
     if (!gift_ids.isEmpty()) builder.append(", gift_ids=").append(gift_ids);
     builder.append(", enabled=").append(enabled);
+    if (container_background != null) builder.append(", container_background=").append(container_background);
+    if (send_gift_button_color != null) builder.append(", send_gift_button_color=").append(Internal.sanitize(send_gift_button_color));
+    if (pointing_back_tri_color != null) builder.append(", pointing_back_tri_color=").append(Internal.sanitize(pointing_back_tri_color));
+    if (series_name_color != null) builder.append(", series_name_color=").append(Internal.sanitize(series_name_color));
+    builder.append(", end_time_sec=").append(end_time_sec);
     return builder.replace(0, 2, "GiftSeriesInfo{").append('}').toString();
   }
 
@@ -115,10 +194,24 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
 
     public boolean enabled;
 
+    public ImageModel container_background;
+
+    public String send_gift_button_color;
+
+    public String pointing_back_tri_color;
+
+    public String series_name_color;
+
+    public long end_time_sec;
+
     public Builder() {
       series_name = "";
       gift_ids = Internal.newMutableList();
       enabled = false;
+      send_gift_button_color = "";
+      pointing_back_tri_color = "";
+      series_name_color = "";
+      end_time_sec = 0L;
     }
 
     public Builder series_name(String series_name) {
@@ -137,9 +230,34 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
       return this;
     }
 
+    public Builder container_background(ImageModel container_background) {
+      this.container_background = container_background;
+      return this;
+    }
+
+    public Builder send_gift_button_color(String send_gift_button_color) {
+      this.send_gift_button_color = send_gift_button_color;
+      return this;
+    }
+
+    public Builder pointing_back_tri_color(String pointing_back_tri_color) {
+      this.pointing_back_tri_color = pointing_back_tri_color;
+      return this;
+    }
+
+    public Builder series_name_color(String series_name_color) {
+      this.series_name_color = series_name_color;
+      return this;
+    }
+
+    public Builder end_time_sec(long end_time_sec) {
+      this.end_time_sec = end_time_sec;
+      return this;
+    }
+
     @Override
     public GiftSeriesInfo build() {
-      return new GiftSeriesInfo(series_name, gift_ids, enabled, super.buildUnknownFields());
+      return new GiftSeriesInfo(series_name, gift_ids, enabled, container_background, send_gift_button_color, pointing_back_tri_color, series_name_color, end_time_sec, super.buildUnknownFields());
     }
   }
 
@@ -158,6 +276,21 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
       if (!Objects.equals(value.enabled, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(4, value.enabled);
       }
+      if (!Objects.equals(value.container_background, null)) {
+        result += ImageModel.ADAPTER.encodedSizeWithTag(5, value.container_background);
+      }
+      if (!Objects.equals(value.send_gift_button_color, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(6, value.send_gift_button_color);
+      }
+      if (!Objects.equals(value.pointing_back_tri_color, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.pointing_back_tri_color);
+      }
+      if (!Objects.equals(value.series_name_color, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(8, value.series_name_color);
+      }
+      if (!Objects.equals(value.end_time_sec, 0L)) {
+        result += ProtoAdapter.INT64.encodedSizeWithTag(9, value.end_time_sec);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -167,12 +300,22 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
       if (!Objects.equals(value.series_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.series_name);
       ProtoAdapter.INT64.asPacked().encodeWithTag(writer, 3, value.gift_ids);
       if (!Objects.equals(value.enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.enabled);
+      if (!Objects.equals(value.container_background, null)) ImageModel.ADAPTER.encodeWithTag(writer, 5, value.container_background);
+      if (!Objects.equals(value.send_gift_button_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.send_gift_button_color);
+      if (!Objects.equals(value.pointing_back_tri_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.pointing_back_tri_color);
+      if (!Objects.equals(value.series_name_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.series_name_color);
+      if (!Objects.equals(value.end_time_sec, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_sec);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, GiftSeriesInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.end_time_sec, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_sec);
+      if (!Objects.equals(value.series_name_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.series_name_color);
+      if (!Objects.equals(value.pointing_back_tri_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.pointing_back_tri_color);
+      if (!Objects.equals(value.send_gift_button_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.send_gift_button_color);
+      if (!Objects.equals(value.container_background, null)) ImageModel.ADAPTER.encodeWithTag(writer, 5, value.container_background);
       if (!Objects.equals(value.enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.enabled);
       ProtoAdapter.INT64.asPacked().encodeWithTag(writer, 3, value.gift_ids);
       if (!Objects.equals(value.series_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.series_name);
@@ -187,6 +330,11 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
           case 2: builder.series_name(ProtoAdapter.STRING.decode(reader)); break;
           case 3: builder.gift_ids.add(ProtoAdapter.INT64.decode(reader)); break;
           case 4: builder.enabled(ProtoAdapter.BOOL.decode(reader)); break;
+          case 5: builder.container_background(ImageModel.ADAPTER.decode(reader)); break;
+          case 6: builder.send_gift_button_color(ProtoAdapter.STRING.decode(reader)); break;
+          case 7: builder.pointing_back_tri_color(ProtoAdapter.STRING.decode(reader)); break;
+          case 8: builder.series_name_color(ProtoAdapter.STRING.decode(reader)); break;
+          case 9: builder.end_time_sec(ProtoAdapter.INT64.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -199,6 +347,7 @@ public final class GiftSeriesInfo extends Message<GiftSeriesInfo, GiftSeriesInfo
     @Override
     public GiftSeriesInfo redact(GiftSeriesInfo value) {
       Builder builder = value.newBuilder();
+      if (builder.container_background != null) builder.container_background = ImageModel.ADAPTER.redact(builder.container_background);
       builder.clearUnknownFields();
       return builder.build();
     }

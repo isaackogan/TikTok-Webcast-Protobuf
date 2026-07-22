@@ -42,6 +42,14 @@ public class AssetBundle(
     schemaIndex = 1,
   )
   public val prefab_bundle: PrefabBundle? = null,
+  @field:WireField(
+    tag = 3,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.gift.model.GiftEffectStreamSpec#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "streamEffectSpec",
+    schemaIndex = 2,
+  )
+  public val stream_effect_spec: GiftEffectStreamSpec? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<AssetBundle, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -64,6 +72,7 @@ public class AssetBundle(
     if (unknownFields != other.unknownFields) return false
     if (assets != other.assets) return false
     if (prefab_bundle != other.prefab_bundle) return false
+    if (stream_effect_spec != other.stream_effect_spec) return false
     return true
   }
 
@@ -73,6 +82,7 @@ public class AssetBundle(
       result = unknownFields.hashCode()
       result = result * 37 + assets.hashCode()
       result = result * 37 + (prefab_bundle?.hashCode() ?: 0)
+      result = result * 37 + (stream_effect_spec?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -82,14 +92,16 @@ public class AssetBundle(
     val result = mutableListOf<String>()
     if (assets.isNotEmpty()) result += """assets=$assets"""
     if (prefab_bundle != null) result += """prefab_bundle=$prefab_bundle"""
+    if (stream_effect_spec != null) result += """stream_effect_spec=$stream_effect_spec"""
     return result.joinToString(prefix = "AssetBundle{", separator = ", ", postfix = "}")
   }
 
   public fun copy(
     assets: List<AssetsModel> = this.assets,
     prefab_bundle: PrefabBundle? = this.prefab_bundle,
+    stream_effect_spec: GiftEffectStreamSpec? = this.stream_effect_spec,
     unknownFields: ByteString = this.unknownFields,
-  ): AssetBundle = AssetBundle(assets, prefab_bundle, unknownFields)
+  ): AssetBundle = AssetBundle(assets, prefab_bundle, stream_effect_spec, unknownFields)
 
   public companion object {
     @JvmField
@@ -107,6 +119,9 @@ public class AssetBundle(
         if (value.prefab_bundle != null) {
           size += PrefabBundle.ADAPTER.encodedSizeWithTag(2, value.prefab_bundle)
         }
+        if (value.stream_effect_spec != null) {
+          size += GiftEffectStreamSpec.ADAPTER.encodedSizeWithTag(3, value.stream_effect_spec)
+        }
         return size
       }
 
@@ -115,11 +130,17 @@ public class AssetBundle(
         if (value.prefab_bundle != null) {
           PrefabBundle.ADAPTER.encodeWithTag(writer, 2, value.prefab_bundle)
         }
+        if (value.stream_effect_spec != null) {
+          GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 3, value.stream_effect_spec)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: AssetBundle) {
         writer.writeBytes(value.unknownFields)
+        if (value.stream_effect_spec != null) {
+          GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 3, value.stream_effect_spec)
+        }
         if (value.prefab_bundle != null) {
           PrefabBundle.ADAPTER.encodeWithTag(writer, 2, value.prefab_bundle)
         }
@@ -129,16 +150,19 @@ public class AssetBundle(
       override fun decode(reader: ProtoReader): AssetBundle {
         val assets = mutableListOf<AssetsModel>()
         var prefab_bundle: PrefabBundle? = null
+        var stream_effect_spec: GiftEffectStreamSpec? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> assets.add(AssetsModel.ADAPTER.decode(reader))
             2 -> prefab_bundle = PrefabBundle.ADAPTER.decode(reader)
+            3 -> stream_effect_spec = GiftEffectStreamSpec.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
         return AssetBundle(
           assets = assets,
           prefab_bundle = prefab_bundle,
+          stream_effect_spec = stream_effect_spec,
           unknownFields = unknownFields
         )
       }
@@ -146,6 +170,7 @@ public class AssetBundle(
       override fun redact(`value`: AssetBundle): AssetBundle = value.copy(
         assets = value.assets.redactElements(AssetsModel.ADAPTER),
         prefab_bundle = value.prefab_bundle?.let(PrefabBundle.ADAPTER::redact),
+        stream_effect_spec = value.stream_effect_spec?.let(GiftEffectStreamSpec.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

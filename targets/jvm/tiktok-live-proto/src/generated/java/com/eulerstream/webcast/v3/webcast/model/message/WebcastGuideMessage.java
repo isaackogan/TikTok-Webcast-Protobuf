@@ -78,14 +78,23 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
   )
   public final String scene;
 
+  @WireField(
+      tag = 8,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.message.GuideMessageFrequencyRule#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "frequencyRule"
+  )
+  public final GuideMessageFrequencyRule frequency_rule;
+
   public WebcastGuideMessage(CommonMessageData common, long guide_type, long gift_id,
-      String description, long duration, long display_style, String scene) {
-    this(common, guide_type, gift_id, description, duration, display_style, scene, ByteString.EMPTY);
+      String description, long duration, long display_style, String scene,
+      GuideMessageFrequencyRule frequency_rule) {
+    this(common, guide_type, gift_id, description, duration, display_style, scene, frequency_rule, ByteString.EMPTY);
   }
 
   public WebcastGuideMessage(CommonMessageData common, long guide_type, long gift_id,
       String description, long duration, long display_style, String scene,
-      ByteString unknownFields) {
+      GuideMessageFrequencyRule frequency_rule, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.common = common;
     this.guide_type = guide_type;
@@ -100,6 +109,7 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
       throw new IllegalArgumentException("scene == null");
     }
     this.scene = scene;
+    this.frequency_rule = frequency_rule;
   }
 
   @Override
@@ -112,6 +122,7 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
     builder.duration = duration;
     builder.display_style = display_style;
     builder.scene = scene;
+    builder.frequency_rule = frequency_rule;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -128,7 +139,8 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
         && Internal.equals(description, o.description)
         && Internal.equals(duration, o.duration)
         && Internal.equals(display_style, o.display_style)
-        && Internal.equals(scene, o.scene);
+        && Internal.equals(scene, o.scene)
+        && Internal.equals(frequency_rule, o.frequency_rule);
   }
 
   @Override
@@ -143,6 +155,7 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
       result = result * 37 + Long.hashCode(duration);
       result = result * 37 + Long.hashCode(display_style);
       result = result * 37 + (scene != null ? scene.hashCode() : 0);
+      result = result * 37 + (frequency_rule != null ? frequency_rule.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -158,6 +171,7 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
     builder.append(", duration=").append(duration);
     builder.append(", display_style=").append(display_style);
     if (scene != null) builder.append(", scene=").append(Internal.sanitize(scene));
+    if (frequency_rule != null) builder.append(", frequency_rule=").append(frequency_rule);
     return builder.replace(0, 2, "WebcastGuideMessage{").append('}').toString();
   }
 
@@ -175,6 +189,8 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
     public long display_style;
 
     public String scene;
+
+    public GuideMessageFrequencyRule frequency_rule;
 
     public Builder() {
       guide_type = 0L;
@@ -220,9 +236,14 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
       return this;
     }
 
+    public Builder frequency_rule(GuideMessageFrequencyRule frequency_rule) {
+      this.frequency_rule = frequency_rule;
+      return this;
+    }
+
     @Override
     public WebcastGuideMessage build() {
-      return new WebcastGuideMessage(common, guide_type, gift_id, description, duration, display_style, scene, super.buildUnknownFields());
+      return new WebcastGuideMessage(common, guide_type, gift_id, description, duration, display_style, scene, frequency_rule, super.buildUnknownFields());
     }
   }
 
@@ -255,6 +276,9 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
       if (!Objects.equals(value.scene, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.scene);
       }
+      if (!Objects.equals(value.frequency_rule, null)) {
+        result += GuideMessageFrequencyRule.ADAPTER.encodedSizeWithTag(8, value.frequency_rule);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -268,12 +292,14 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
       if (!Objects.equals(value.duration, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.duration);
       if (!Objects.equals(value.display_style, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 6, value.display_style);
       if (!Objects.equals(value.scene, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.scene);
+      if (!Objects.equals(value.frequency_rule, null)) GuideMessageFrequencyRule.ADAPTER.encodeWithTag(writer, 8, value.frequency_rule);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, WebcastGuideMessage value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.frequency_rule, null)) GuideMessageFrequencyRule.ADAPTER.encodeWithTag(writer, 8, value.frequency_rule);
       if (!Objects.equals(value.scene, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.scene);
       if (!Objects.equals(value.display_style, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 6, value.display_style);
       if (!Objects.equals(value.duration, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.duration);
@@ -296,6 +322,7 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
           case 5: builder.duration(ProtoAdapter.INT64.decode(reader)); break;
           case 6: builder.display_style(ProtoAdapter.INT64.decode(reader)); break;
           case 7: builder.scene(ProtoAdapter.STRING.decode(reader)); break;
+          case 8: builder.frequency_rule(GuideMessageFrequencyRule.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -309,6 +336,7 @@ public final class WebcastGuideMessage extends Message<WebcastGuideMessage, Webc
     public WebcastGuideMessage redact(WebcastGuideMessage value) {
       Builder builder = value.newBuilder();
       if (builder.common != null) builder.common = CommonMessageData.ADAPTER.redact(builder.common);
+      if (builder.frequency_rule != null) builder.frequency_rule = GuideMessageFrequencyRule.ADAPTER.redact(builder.frequency_rule);
       builder.clearUnknownFields();
       return builder.build();
     }

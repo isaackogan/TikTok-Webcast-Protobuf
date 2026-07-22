@@ -92,15 +92,41 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
   )
   public final long color_image_size;
 
+  @WireField(
+      tag = 9,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.REPEATED,
+      jsonName = "colorReason"
+  )
+  public final List<String> color_reason;
+
+  @WireField(
+      tag = 10,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "colorNameEnglish"
+  )
+  public final String color_name_english;
+
+  @WireField(
+      tag = 11,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "giftDescribe"
+  )
+  public final String gift_describe;
+
   public GiftColorInfo(long color_id, String color_name, List<String> color_values,
       ImageModel color_image, ImageModel gift_image, long color_effect_id, boolean is_default,
-      long color_image_size) {
-    this(color_id, color_name, color_values, color_image, gift_image, color_effect_id, is_default, color_image_size, ByteString.EMPTY);
+      long color_image_size, List<String> color_reason, String color_name_english,
+      String gift_describe) {
+    this(color_id, color_name, color_values, color_image, gift_image, color_effect_id, is_default, color_image_size, color_reason, color_name_english, gift_describe, ByteString.EMPTY);
   }
 
   public GiftColorInfo(long color_id, String color_name, List<String> color_values,
       ImageModel color_image, ImageModel gift_image, long color_effect_id, boolean is_default,
-      long color_image_size, ByteString unknownFields) {
+      long color_image_size, List<String> color_reason, String color_name_english,
+      String gift_describe, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.color_id = color_id;
     if (color_name == null) {
@@ -113,6 +139,15 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
     this.color_effect_id = color_effect_id;
     this.is_default = is_default;
     this.color_image_size = color_image_size;
+    this.color_reason = Internal.immutableCopyOf("color_reason", color_reason);
+    if (color_name_english == null) {
+      throw new IllegalArgumentException("color_name_english == null");
+    }
+    this.color_name_english = color_name_english;
+    if (gift_describe == null) {
+      throw new IllegalArgumentException("gift_describe == null");
+    }
+    this.gift_describe = gift_describe;
   }
 
   @Override
@@ -126,6 +161,9 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
     builder.color_effect_id = color_effect_id;
     builder.is_default = is_default;
     builder.color_image_size = color_image_size;
+    builder.color_reason = Internal.copyOf(color_reason);
+    builder.color_name_english = color_name_english;
+    builder.gift_describe = gift_describe;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -143,7 +181,10 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
         && Internal.equals(gift_image, o.gift_image)
         && Internal.equals(color_effect_id, o.color_effect_id)
         && Internal.equals(is_default, o.is_default)
-        && Internal.equals(color_image_size, o.color_image_size);
+        && Internal.equals(color_image_size, o.color_image_size)
+        && color_reason.equals(o.color_reason)
+        && Internal.equals(color_name_english, o.color_name_english)
+        && Internal.equals(gift_describe, o.gift_describe);
   }
 
   @Override
@@ -159,6 +200,9 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
       result = result * 37 + Long.hashCode(color_effect_id);
       result = result * 37 + Boolean.hashCode(is_default);
       result = result * 37 + Long.hashCode(color_image_size);
+      result = result * 37 + color_reason.hashCode();
+      result = result * 37 + (color_name_english != null ? color_name_english.hashCode() : 0);
+      result = result * 37 + (gift_describe != null ? gift_describe.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -175,6 +219,9 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
     builder.append(", color_effect_id=").append(color_effect_id);
     builder.append(", is_default=").append(is_default);
     builder.append(", color_image_size=").append(color_image_size);
+    if (!color_reason.isEmpty()) builder.append(", color_reason=").append(Internal.sanitize(color_reason));
+    if (color_name_english != null) builder.append(", color_name_english=").append(Internal.sanitize(color_name_english));
+    if (gift_describe != null) builder.append(", gift_describe=").append(Internal.sanitize(gift_describe));
     return builder.replace(0, 2, "GiftColorInfo{").append('}').toString();
   }
 
@@ -195,6 +242,12 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
 
     public long color_image_size;
 
+    public List<String> color_reason;
+
+    public String color_name_english;
+
+    public String gift_describe;
+
     public Builder() {
       color_id = 0L;
       color_name = "";
@@ -202,6 +255,9 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
       color_effect_id = 0L;
       is_default = false;
       color_image_size = 0L;
+      color_reason = Internal.newMutableList();
+      color_name_english = "";
+      gift_describe = "";
     }
 
     public Builder color_id(long color_id) {
@@ -245,9 +301,25 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
       return this;
     }
 
+    public Builder color_reason(List<String> color_reason) {
+      Internal.checkElementsNotNull(color_reason);
+      this.color_reason = color_reason;
+      return this;
+    }
+
+    public Builder color_name_english(String color_name_english) {
+      this.color_name_english = color_name_english;
+      return this;
+    }
+
+    public Builder gift_describe(String gift_describe) {
+      this.gift_describe = gift_describe;
+      return this;
+    }
+
     @Override
     public GiftColorInfo build() {
-      return new GiftColorInfo(color_id, color_name, color_values, color_image, gift_image, color_effect_id, is_default, color_image_size, super.buildUnknownFields());
+      return new GiftColorInfo(color_id, color_name, color_values, color_image, gift_image, color_effect_id, is_default, color_image_size, color_reason, color_name_english, gift_describe, super.buildUnknownFields());
     }
   }
 
@@ -281,6 +353,13 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
       if (!Objects.equals(value.color_image_size, 0L)) {
         result += ProtoAdapter.INT64.encodedSizeWithTag(8, value.color_image_size);
       }
+      result += ProtoAdapter.STRING.asRepeated().encodedSizeWithTag(9, value.color_reason);
+      if (!Objects.equals(value.color_name_english, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(10, value.color_name_english);
+      }
+      if (!Objects.equals(value.gift_describe, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(11, value.gift_describe);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -295,12 +374,18 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
       if (!Objects.equals(value.color_effect_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 6, value.color_effect_id);
       if (!Objects.equals(value.is_default, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 7, value.is_default);
       if (!Objects.equals(value.color_image_size, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 8, value.color_image_size);
+      ProtoAdapter.STRING.asRepeated().encodeWithTag(writer, 9, value.color_reason);
+      if (!Objects.equals(value.color_name_english, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.color_name_english);
+      if (!Objects.equals(value.gift_describe, "")) ProtoAdapter.STRING.encodeWithTag(writer, 11, value.gift_describe);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, GiftColorInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.gift_describe, "")) ProtoAdapter.STRING.encodeWithTag(writer, 11, value.gift_describe);
+      if (!Objects.equals(value.color_name_english, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.color_name_english);
+      ProtoAdapter.STRING.asRepeated().encodeWithTag(writer, 9, value.color_reason);
       if (!Objects.equals(value.color_image_size, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 8, value.color_image_size);
       if (!Objects.equals(value.is_default, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 7, value.is_default);
       if (!Objects.equals(value.color_effect_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 6, value.color_effect_id);
@@ -325,6 +410,9 @@ public final class GiftColorInfo extends Message<GiftColorInfo, GiftColorInfo.Bu
           case 6: builder.color_effect_id(ProtoAdapter.INT64.decode(reader)); break;
           case 7: builder.is_default(ProtoAdapter.BOOL.decode(reader)); break;
           case 8: builder.color_image_size(ProtoAdapter.INT64.decode(reader)); break;
+          case 9: builder.color_reason.add(ProtoAdapter.STRING.decode(reader)); break;
+          case 10: builder.color_name_english(ProtoAdapter.STRING.decode(reader)); break;
+          case 11: builder.gift_describe(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

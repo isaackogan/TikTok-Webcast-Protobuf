@@ -7,6 +7,7 @@
 
 package com.eulerstream.webcast.v3.webcast.chatroom.interact.model
 
+import com.eulerstream.webcast.v3.webcast.chatroom.model.interact.SubtitleSettings
 import com.squareup.wire.FieldEncoding
 import com.squareup.wire.Message
 import com.squareup.wire.ProtoAdapter
@@ -189,6 +190,14 @@ public class AnchorLinkmicUserSettings(
     schemaIndex = 19,
   )
   public val allow_guest_apply_during_cohost: Boolean = false,
+  @field:WireField(
+    tag = 21,
+    adapter = "com.eulerstream.webcast.v3.webcast.chatroom.model.interact.SubtitleSettings#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "subtitleSetting",
+    schemaIndex = 20,
+  )
+  public val subtitle_setting: SubtitleSettings? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<AnchorLinkmicUserSettings, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -221,6 +230,7 @@ public class AnchorLinkmicUserSettings(
     if (allow_live_notice_of_suggested != other.allow_live_notice_of_suggested) return false
     if (allow_guest_request_during_cohost != other.allow_guest_request_during_cohost) return false
     if (allow_guest_apply_during_cohost != other.allow_guest_apply_during_cohost) return false
+    if (subtitle_setting != other.subtitle_setting) return false
     return true
   }
 
@@ -248,6 +258,7 @@ public class AnchorLinkmicUserSettings(
       result = result * 37 + allow_live_notice_of_suggested.hashCode()
       result = result * 37 + allow_guest_request_during_cohost.hashCode()
       result = result * 37 + allow_guest_apply_during_cohost.hashCode()
+      result = result * 37 + (subtitle_setting?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -275,6 +286,7 @@ public class AnchorLinkmicUserSettings(
     result += """allow_live_notice_of_suggested=$allow_live_notice_of_suggested"""
     result += """allow_guest_request_during_cohost=$allow_guest_request_during_cohost"""
     result += """allow_guest_apply_during_cohost=$allow_guest_apply_during_cohost"""
+    if (subtitle_setting != null) result += """subtitle_setting=$subtitle_setting"""
     return result.joinToString(prefix = "AnchorLinkmicUserSettings{", separator = ", ", postfix = "}")
   }
 
@@ -299,8 +311,9 @@ public class AnchorLinkmicUserSettings(
     allow_live_notice_of_suggested: Boolean = this.allow_live_notice_of_suggested,
     allow_guest_request_during_cohost: Boolean = this.allow_guest_request_during_cohost,
     allow_guest_apply_during_cohost: Boolean = this.allow_guest_apply_during_cohost,
+    subtitle_setting: SubtitleSettings? = this.subtitle_setting,
     unknownFields: ByteString = this.unknownFields,
-  ): AnchorLinkmicUserSettings = AnchorLinkmicUserSettings(is_turn_on, accept_multi_linkmic, accept_not_follower_invite, allow_gift_to_other_anchors, block_invitation_of_this_live, receive_friend_multi_host_invites, receive_friend_multi_host_application, block_this_multi_host_invites, block_this_multi_host_application, receive_not_friend_multi_host_invites, receive_not_friend_multi_host_application, allow_live_notice_of_friends, allow_friend_invites, allow_suggested_invites, allow_friend_invites_when_offlive, allow_user_cohost_suggestions, allow_missed_invitation_notice, allow_live_notice_of_suggested, allow_guest_request_during_cohost, allow_guest_apply_during_cohost, unknownFields)
+  ): AnchorLinkmicUserSettings = AnchorLinkmicUserSettings(is_turn_on, accept_multi_linkmic, accept_not_follower_invite, allow_gift_to_other_anchors, block_invitation_of_this_live, receive_friend_multi_host_invites, receive_friend_multi_host_application, block_this_multi_host_invites, block_this_multi_host_application, receive_not_friend_multi_host_invites, receive_not_friend_multi_host_application, allow_live_notice_of_friends, allow_friend_invites, allow_suggested_invites, allow_friend_invites_when_offlive, allow_user_cohost_suggestions, allow_missed_invitation_notice, allow_live_notice_of_suggested, allow_guest_request_during_cohost, allow_guest_apply_during_cohost, subtitle_setting, unknownFields)
 
   public companion object {
     @JvmField
@@ -375,6 +388,9 @@ public class AnchorLinkmicUserSettings(
         if (value.allow_guest_apply_during_cohost != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(20, value.allow_guest_apply_during_cohost)
         }
+        if (value.subtitle_setting != null) {
+          size += SubtitleSettings.ADAPTER.encodedSizeWithTag(21, value.subtitle_setting)
+        }
         return size
       }
 
@@ -439,11 +455,17 @@ public class AnchorLinkmicUserSettings(
         if (value.allow_guest_apply_during_cohost != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 20, value.allow_guest_apply_during_cohost)
         }
+        if (value.subtitle_setting != null) {
+          SubtitleSettings.ADAPTER.encodeWithTag(writer, 21, value.subtitle_setting)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: AnchorLinkmicUserSettings) {
         writer.writeBytes(value.unknownFields)
+        if (value.subtitle_setting != null) {
+          SubtitleSettings.ADAPTER.encodeWithTag(writer, 21, value.subtitle_setting)
+        }
         if (value.allow_guest_apply_during_cohost != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 20, value.allow_guest_apply_during_cohost)
         }
@@ -527,6 +549,7 @@ public class AnchorLinkmicUserSettings(
         var allow_live_notice_of_suggested: Boolean = false
         var allow_guest_request_during_cohost: Boolean = false
         var allow_guest_apply_during_cohost: Boolean = false
+        var subtitle_setting: SubtitleSettings? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> is_turn_on = ProtoAdapter.BOOL.decode(reader)
@@ -549,6 +572,7 @@ public class AnchorLinkmicUserSettings(
             18 -> allow_live_notice_of_suggested = ProtoAdapter.BOOL.decode(reader)
             19 -> allow_guest_request_during_cohost = ProtoAdapter.BOOL.decode(reader)
             20 -> allow_guest_apply_during_cohost = ProtoAdapter.BOOL.decode(reader)
+            21 -> subtitle_setting = SubtitleSettings.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -573,11 +597,13 @@ public class AnchorLinkmicUserSettings(
           allow_live_notice_of_suggested = allow_live_notice_of_suggested,
           allow_guest_request_during_cohost = allow_guest_request_during_cohost,
           allow_guest_apply_during_cohost = allow_guest_apply_during_cohost,
+          subtitle_setting = subtitle_setting,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: AnchorLinkmicUserSettings): AnchorLinkmicUserSettings = value.copy(
+        subtitle_setting = value.subtitle_setting?.let(SubtitleSettings.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

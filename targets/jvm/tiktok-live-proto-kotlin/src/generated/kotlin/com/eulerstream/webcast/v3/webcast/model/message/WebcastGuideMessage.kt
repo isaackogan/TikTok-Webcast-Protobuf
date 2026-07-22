@@ -83,6 +83,14 @@ public class WebcastGuideMessage(
     schemaIndex = 6,
   )
   public val scene: String = "",
+  @field:WireField(
+    tag = 8,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.message.GuideMessageFrequencyRule#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "frequencyRule",
+    schemaIndex = 7,
+  )
+  public val frequency_rule: GuideMessageFrequencyRule? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastGuideMessage, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -102,6 +110,7 @@ public class WebcastGuideMessage(
     if (duration != other.duration) return false
     if (display_style != other.display_style) return false
     if (scene != other.scene) return false
+    if (frequency_rule != other.frequency_rule) return false
     return true
   }
 
@@ -116,6 +125,7 @@ public class WebcastGuideMessage(
       result = result * 37 + duration.hashCode()
       result = result * 37 + display_style.hashCode()
       result = result * 37 + scene.hashCode()
+      result = result * 37 + (frequency_rule?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -130,6 +140,7 @@ public class WebcastGuideMessage(
     result += """duration=$duration"""
     result += """display_style=$display_style"""
     result += """scene=${sanitize(scene)}"""
+    if (frequency_rule != null) result += """frequency_rule=$frequency_rule"""
     return result.joinToString(prefix = "WebcastGuideMessage{", separator = ", ", postfix = "}")
   }
 
@@ -141,8 +152,9 @@ public class WebcastGuideMessage(
     duration: Long = this.duration,
     display_style: Long = this.display_style,
     scene: String = this.scene,
+    frequency_rule: GuideMessageFrequencyRule? = this.frequency_rule,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastGuideMessage = WebcastGuideMessage(common, guide_type, gift_id, description, duration, display_style, scene, unknownFields)
+  ): WebcastGuideMessage = WebcastGuideMessage(common, guide_type, gift_id, description, duration, display_style, scene, frequency_rule, unknownFields)
 
   public companion object {
     @JvmField
@@ -178,6 +190,9 @@ public class WebcastGuideMessage(
         if (value.scene != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.scene)
         }
+        if (value.frequency_rule != null) {
+          size += GuideMessageFrequencyRule.ADAPTER.encodedSizeWithTag(8, value.frequency_rule)
+        }
         return size
       }
 
@@ -203,11 +218,17 @@ public class WebcastGuideMessage(
         if (value.scene != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 7, value.scene)
         }
+        if (value.frequency_rule != null) {
+          GuideMessageFrequencyRule.ADAPTER.encodeWithTag(writer, 8, value.frequency_rule)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastGuideMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.frequency_rule != null) {
+          GuideMessageFrequencyRule.ADAPTER.encodeWithTag(writer, 8, value.frequency_rule)
+        }
         if (value.scene != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 7, value.scene)
         }
@@ -239,6 +260,7 @@ public class WebcastGuideMessage(
         var duration: Long = 0L
         var display_style: Long = 0L
         var scene: String = ""
+        var frequency_rule: GuideMessageFrequencyRule? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -248,6 +270,7 @@ public class WebcastGuideMessage(
             5 -> duration = ProtoAdapter.INT64.decode(reader)
             6 -> display_style = ProtoAdapter.INT64.decode(reader)
             7 -> scene = ProtoAdapter.STRING.decode(reader)
+            8 -> frequency_rule = GuideMessageFrequencyRule.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -259,12 +282,14 @@ public class WebcastGuideMessage(
           duration = duration,
           display_style = display_style,
           scene = scene,
+          frequency_rule = frequency_rule,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: WebcastGuideMessage): WebcastGuideMessage = value.copy(
         common = value.common?.let(CommonMessageData.ADAPTER::redact),
+        frequency_rule = value.frequency_rule?.let(GuideMessageFrequencyRule.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

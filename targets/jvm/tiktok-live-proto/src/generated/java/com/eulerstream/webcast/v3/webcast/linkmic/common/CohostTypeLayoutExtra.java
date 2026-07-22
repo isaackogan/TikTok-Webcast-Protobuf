@@ -73,14 +73,23 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
   )
   public final boolean disable_match_component;
 
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "rematchSpotId"
+  )
+  public final int rematch_spot_id;
+
   public CohostTypeLayoutExtra(int is_zoom_layout, int offset_y, int scene,
-      boolean local_layout_only, int is_enlarge_mode, boolean disable_match_component) {
-    this(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, ByteString.EMPTY);
+      boolean local_layout_only, int is_enlarge_mode, boolean disable_match_component,
+      int rematch_spot_id) {
+    this(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, ByteString.EMPTY);
   }
 
   public CohostTypeLayoutExtra(int is_zoom_layout, int offset_y, int scene,
       boolean local_layout_only, int is_enlarge_mode, boolean disable_match_component,
-      ByteString unknownFields) {
+      int rematch_spot_id, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.is_zoom_layout = is_zoom_layout;
     this.offset_y = offset_y;
@@ -88,6 +97,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
     this.local_layout_only = local_layout_only;
     this.is_enlarge_mode = is_enlarge_mode;
     this.disable_match_component = disable_match_component;
+    this.rematch_spot_id = rematch_spot_id;
   }
 
   @Override
@@ -99,6 +109,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
     builder.local_layout_only = local_layout_only;
     builder.is_enlarge_mode = is_enlarge_mode;
     builder.disable_match_component = disable_match_component;
+    builder.rematch_spot_id = rematch_spot_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -114,7 +125,8 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
         && Internal.equals(scene, o.scene)
         && Internal.equals(local_layout_only, o.local_layout_only)
         && Internal.equals(is_enlarge_mode, o.is_enlarge_mode)
-        && Internal.equals(disable_match_component, o.disable_match_component);
+        && Internal.equals(disable_match_component, o.disable_match_component)
+        && Internal.equals(rematch_spot_id, o.rematch_spot_id);
   }
 
   @Override
@@ -128,6 +140,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       result = result * 37 + Boolean.hashCode(local_layout_only);
       result = result * 37 + Integer.hashCode(is_enlarge_mode);
       result = result * 37 + Boolean.hashCode(disable_match_component);
+      result = result * 37 + Integer.hashCode(rematch_spot_id);
       super.hashCode = result;
     }
     return result;
@@ -142,6 +155,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
     builder.append(", local_layout_only=").append(local_layout_only);
     builder.append(", is_enlarge_mode=").append(is_enlarge_mode);
     builder.append(", disable_match_component=").append(disable_match_component);
+    builder.append(", rematch_spot_id=").append(rematch_spot_id);
     return builder.replace(0, 2, "CohostTypeLayoutExtra{").append('}').toString();
   }
 
@@ -158,6 +172,8 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
 
     public boolean disable_match_component;
 
+    public int rematch_spot_id;
+
     public Builder() {
       is_zoom_layout = 0;
       offset_y = 0;
@@ -165,6 +181,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       local_layout_only = false;
       is_enlarge_mode = 0;
       disable_match_component = false;
+      rematch_spot_id = 0;
     }
 
     public Builder is_zoom_layout(int is_zoom_layout) {
@@ -197,9 +214,14 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       return this;
     }
 
+    public Builder rematch_spot_id(int rematch_spot_id) {
+      this.rematch_spot_id = rematch_spot_id;
+      return this;
+    }
+
     @Override
     public CohostTypeLayoutExtra build() {
-      return new CohostTypeLayoutExtra(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, super.buildUnknownFields());
+      return new CohostTypeLayoutExtra(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, super.buildUnknownFields());
     }
   }
 
@@ -229,6 +251,9 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       if (!Objects.equals(value.disable_match_component, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(6, value.disable_match_component);
       }
+      if (!Objects.equals(value.rematch_spot_id, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(7, value.rematch_spot_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -241,12 +266,14 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       if (!Objects.equals(value.local_layout_only, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.local_layout_only);
       if (!Objects.equals(value.is_enlarge_mode, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 5, value.is_enlarge_mode);
       if (!Objects.equals(value.disable_match_component, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.disable_match_component);
+      if (!Objects.equals(value.rematch_spot_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.rematch_spot_id);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, CohostTypeLayoutExtra value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.rematch_spot_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.rematch_spot_id);
       if (!Objects.equals(value.disable_match_component, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.disable_match_component);
       if (!Objects.equals(value.is_enlarge_mode, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 5, value.is_enlarge_mode);
       if (!Objects.equals(value.local_layout_only, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.local_layout_only);
@@ -267,6 +294,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
           case 4: builder.local_layout_only(ProtoAdapter.BOOL.decode(reader)); break;
           case 5: builder.is_enlarge_mode(ProtoAdapter.INT32.decode(reader)); break;
           case 6: builder.disable_match_component(ProtoAdapter.BOOL.decode(reader)); break;
+          case 7: builder.rematch_spot_id(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

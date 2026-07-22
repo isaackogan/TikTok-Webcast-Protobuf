@@ -19,6 +19,7 @@ import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
 import com.squareup.wire.`internal`.immutableCopyOf
+import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -67,6 +68,30 @@ public class TagItem(
   )
   public val display_location: Int = 0,
   event_tracking_fields: Map<String, String> = emptyMap(),
+  @field:WireField(
+    tag = 6,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "bizName",
+    schemaIndex = 5,
+  )
+  public val biz_name: String = "",
+  @field:WireField(
+    tag = 10,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "disableCountFrequencyControl",
+    schemaIndex = 6,
+  )
+  public val disable_count_frequency_control: Boolean = false,
+  @field:WireField(
+    tag = 11,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "disableCrmClick",
+    schemaIndex = 7,
+  )
+  public val disable_crm_click: Boolean = false,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<TagItem, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -94,6 +119,9 @@ public class TagItem(
     if (tag_value != other.tag_value) return false
     if (display_location != other.display_location) return false
     if (event_tracking_fields != other.event_tracking_fields) return false
+    if (biz_name != other.biz_name) return false
+    if (disable_count_frequency_control != other.disable_count_frequency_control) return false
+    if (disable_crm_click != other.disable_crm_click) return false
     return true
   }
 
@@ -106,6 +134,9 @@ public class TagItem(
       result = result * 37 + tag_value.hashCode()
       result = result * 37 + display_location.hashCode()
       result = result * 37 + event_tracking_fields.hashCode()
+      result = result * 37 + biz_name.hashCode()
+      result = result * 37 + disable_count_frequency_control.hashCode()
+      result = result * 37 + disable_crm_click.hashCode()
       super.hashCode = result
     }
     return result
@@ -118,6 +149,9 @@ public class TagItem(
     result += """tag_value=$tag_value"""
     result += """display_location=$display_location"""
     if (event_tracking_fields.isNotEmpty()) result += """event_tracking_fields=$event_tracking_fields"""
+    result += """biz_name=${sanitize(biz_name)}"""
+    result += """disable_count_frequency_control=$disable_count_frequency_control"""
+    result += """disable_crm_click=$disable_crm_click"""
     return result.joinToString(prefix = "TagItem{", separator = ", ", postfix = "}")
   }
 
@@ -127,8 +161,11 @@ public class TagItem(
     tag_value: Long = this.tag_value,
     display_location: Int = this.display_location,
     event_tracking_fields: Map<String, String> = this.event_tracking_fields,
+    biz_name: String = this.biz_name,
+    disable_count_frequency_control: Boolean = this.disable_count_frequency_control,
+    disable_crm_click: Boolean = this.disable_crm_click,
     unknownFields: ByteString = this.unknownFields,
-  ): TagItem = TagItem(tag_type, tag_text, tag_value, display_location, event_tracking_fields, unknownFields)
+  ): TagItem = TagItem(tag_type, tag_text, tag_value, display_location, event_tracking_fields, biz_name, disable_count_frequency_control, disable_crm_click, unknownFields)
 
   public companion object {
     @JvmField
@@ -158,6 +195,15 @@ public class TagItem(
           size += ProtoAdapter.INT32.encodedSizeWithTag(4, value.display_location)
         }
         size += event_tracking_fieldsAdapter.encodedSizeWithTag(5, value.event_tracking_fields)
+        if (value.biz_name != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(6, value.biz_name)
+        }
+        if (value.disable_count_frequency_control != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(10, value.disable_count_frequency_control)
+        }
+        if (value.disable_crm_click != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(11, value.disable_crm_click)
+        }
         return size
       }
 
@@ -175,11 +221,29 @@ public class TagItem(
           ProtoAdapter.INT32.encodeWithTag(writer, 4, value.display_location)
         }
         event_tracking_fieldsAdapter.encodeWithTag(writer, 5, value.event_tracking_fields)
+        if (value.biz_name != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.biz_name)
+        }
+        if (value.disable_count_frequency_control != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control)
+        }
+        if (value.disable_crm_click != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 11, value.disable_crm_click)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: TagItem) {
         writer.writeBytes(value.unknownFields)
+        if (value.disable_crm_click != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 11, value.disable_crm_click)
+        }
+        if (value.disable_count_frequency_control != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control)
+        }
+        if (value.biz_name != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.biz_name)
+        }
         event_tracking_fieldsAdapter.encodeWithTag(writer, 5, value.event_tracking_fields)
         if (value.display_location != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 4, value.display_location)
@@ -201,6 +265,9 @@ public class TagItem(
         var tag_value: Long = 0L
         var display_location: Int = 0
         val event_tracking_fields = mutableMapOf<String, String>()
+        var biz_name: String = ""
+        var disable_count_frequency_control: Boolean = false
+        var disable_crm_click: Boolean = false
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> try {
@@ -212,6 +279,9 @@ public class TagItem(
             3 -> tag_value = ProtoAdapter.INT64.decode(reader)
             4 -> display_location = ProtoAdapter.INT32.decode(reader)
             5 -> event_tracking_fields.putAll(event_tracking_fieldsAdapter.decode(reader))
+            6 -> biz_name = ProtoAdapter.STRING.decode(reader)
+            10 -> disable_count_frequency_control = ProtoAdapter.BOOL.decode(reader)
+            11 -> disable_crm_click = ProtoAdapter.BOOL.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -221,6 +291,9 @@ public class TagItem(
           tag_value = tag_value,
           display_location = display_location,
           event_tracking_fields = event_tracking_fields,
+          biz_name = biz_name,
+          disable_count_frequency_control = disable_count_frequency_control,
+          disable_crm_click = disable_crm_click,
           unknownFields = unknownFields
         )
       }

@@ -76,6 +76,14 @@ public class CohostTypeLayoutExtra(
     schemaIndex = 5,
   )
   public val disable_match_component: Boolean = false,
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "rematchSpotId",
+    schemaIndex = 6,
+  )
+  public val rematch_spot_id: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<CohostTypeLayoutExtra, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -94,6 +102,7 @@ public class CohostTypeLayoutExtra(
     if (local_layout_only != other.local_layout_only) return false
     if (is_enlarge_mode != other.is_enlarge_mode) return false
     if (disable_match_component != other.disable_match_component) return false
+    if (rematch_spot_id != other.rematch_spot_id) return false
     return true
   }
 
@@ -107,6 +116,7 @@ public class CohostTypeLayoutExtra(
       result = result * 37 + local_layout_only.hashCode()
       result = result * 37 + is_enlarge_mode.hashCode()
       result = result * 37 + disable_match_component.hashCode()
+      result = result * 37 + rematch_spot_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -120,6 +130,7 @@ public class CohostTypeLayoutExtra(
     result += """local_layout_only=$local_layout_only"""
     result += """is_enlarge_mode=$is_enlarge_mode"""
     result += """disable_match_component=$disable_match_component"""
+    result += """rematch_spot_id=$rematch_spot_id"""
     return result.joinToString(prefix = "CohostTypeLayoutExtra{", separator = ", ", postfix = "}")
   }
 
@@ -130,8 +141,9 @@ public class CohostTypeLayoutExtra(
     local_layout_only: Boolean = this.local_layout_only,
     is_enlarge_mode: Int = this.is_enlarge_mode,
     disable_match_component: Boolean = this.disable_match_component,
+    rematch_spot_id: Int = this.rematch_spot_id,
     unknownFields: ByteString = this.unknownFields,
-  ): CohostTypeLayoutExtra = CohostTypeLayoutExtra(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, unknownFields)
+  ): CohostTypeLayoutExtra = CohostTypeLayoutExtra(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -164,6 +176,9 @@ public class CohostTypeLayoutExtra(
         if (value.disable_match_component != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(6, value.disable_match_component)
         }
+        if (value.rematch_spot_id != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(7, value.rematch_spot_id)
+        }
         return size
       }
 
@@ -186,11 +201,17 @@ public class CohostTypeLayoutExtra(
         if (value.disable_match_component != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.disable_match_component)
         }
+        if (value.rematch_spot_id != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 7, value.rematch_spot_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: CohostTypeLayoutExtra) {
         writer.writeBytes(value.unknownFields)
+        if (value.rematch_spot_id != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 7, value.rematch_spot_id)
+        }
         if (value.disable_match_component != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.disable_match_component)
         }
@@ -218,6 +239,7 @@ public class CohostTypeLayoutExtra(
         var local_layout_only: Boolean = false
         var is_enlarge_mode: Int = 0
         var disable_match_component: Boolean = false
+        var rematch_spot_id: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> is_zoom_layout = ProtoAdapter.INT32.decode(reader)
@@ -226,6 +248,7 @@ public class CohostTypeLayoutExtra(
             4 -> local_layout_only = ProtoAdapter.BOOL.decode(reader)
             5 -> is_enlarge_mode = ProtoAdapter.INT32.decode(reader)
             6 -> disable_match_component = ProtoAdapter.BOOL.decode(reader)
+            7 -> rematch_spot_id = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -236,6 +259,7 @@ public class CohostTypeLayoutExtra(
           local_layout_only = local_layout_only,
           is_enlarge_mode = is_enlarge_mode,
           disable_match_component = disable_match_component,
+          rematch_spot_id = rematch_spot_id,
           unknownFields = unknownFields
         )
       }

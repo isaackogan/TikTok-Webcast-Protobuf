@@ -122,6 +122,14 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
   public final Map<Long, CohostABInfo> ab_infos;
 
   @WireField(
+      tag = 13,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "matchedPreferenceTag"
+  )
+  public final int matched_preference_tag;
+
+  @WireField(
       tag = 101,
       adapter = "com.eulerstream.webcast.v3.webcast.im.JoinGroupMessageExtra#ADAPTER",
       label = WireField.Label.OMIT_IDENTITY,
@@ -133,15 +141,16 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
       PerceptionDialogInfo dialog, PunishEventInfo punish_info, CohostTopic topic_info,
       String algo_request_id, CohostLayoutMode cohost_layout_mode, TagV2 tag,
       RivalsGameTag game_tag, String new_user_education, Map<Long, CohostABInfo> ab_infos,
-      JoinGroupMessageExtra join_group_msg_extra) {
-    this(from_room_age_restricted, from_tag, dialog, punish_info, topic_info, algo_request_id, cohost_layout_mode, tag, game_tag, new_user_education, ab_infos, join_group_msg_extra, ByteString.EMPTY);
+      int matched_preference_tag, JoinGroupMessageExtra join_group_msg_extra) {
+    this(from_room_age_restricted, from_tag, dialog, punish_info, topic_info, algo_request_id, cohost_layout_mode, tag, game_tag, new_user_education, ab_infos, matched_preference_tag, join_group_msg_extra, ByteString.EMPTY);
   }
 
   public JoinGroupBizContent(int from_room_age_restricted, Tag from_tag,
       PerceptionDialogInfo dialog, PunishEventInfo punish_info, CohostTopic topic_info,
       String algo_request_id, CohostLayoutMode cohost_layout_mode, TagV2 tag,
       RivalsGameTag game_tag, String new_user_education, Map<Long, CohostABInfo> ab_infos,
-      JoinGroupMessageExtra join_group_msg_extra, ByteString unknownFields) {
+      int matched_preference_tag, JoinGroupMessageExtra join_group_msg_extra,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.from_room_age_restricted = from_room_age_restricted;
     this.from_tag = from_tag;
@@ -163,6 +172,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
     }
     this.new_user_education = new_user_education;
     this.ab_infos = Internal.immutableCopyOf("ab_infos", ab_infos);
+    this.matched_preference_tag = matched_preference_tag;
     this.join_group_msg_extra = join_group_msg_extra;
   }
 
@@ -180,6 +190,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
     builder.game_tag = game_tag;
     builder.new_user_education = new_user_education;
     builder.ab_infos = Internal.copyOf(ab_infos);
+    builder.matched_preference_tag = matched_preference_tag;
     builder.join_group_msg_extra = join_group_msg_extra;
     builder.addUnknownFields(unknownFields());
     return builder;
@@ -202,6 +213,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
         && Internal.equals(game_tag, o.game_tag)
         && Internal.equals(new_user_education, o.new_user_education)
         && ab_infos.equals(o.ab_infos)
+        && Internal.equals(matched_preference_tag, o.matched_preference_tag)
         && Internal.equals(join_group_msg_extra, o.join_group_msg_extra);
   }
 
@@ -221,6 +233,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
       result = result * 37 + (game_tag != null ? game_tag.hashCode() : 0);
       result = result * 37 + (new_user_education != null ? new_user_education.hashCode() : 0);
       result = result * 37 + ab_infos.hashCode();
+      result = result * 37 + Integer.hashCode(matched_preference_tag);
       result = result * 37 + (join_group_msg_extra != null ? join_group_msg_extra.hashCode() : 0);
       super.hashCode = result;
     }
@@ -241,6 +254,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
     if (game_tag != null) builder.append(", game_tag=").append(game_tag);
     if (new_user_education != null) builder.append(", new_user_education=").append(Internal.sanitize(new_user_education));
     if (!ab_infos.isEmpty()) builder.append(", ab_infos=").append(ab_infos);
+    builder.append(", matched_preference_tag=").append(matched_preference_tag);
     if (join_group_msg_extra != null) builder.append(", join_group_msg_extra=").append(join_group_msg_extra);
     return builder.replace(0, 2, "JoinGroupBizContent{").append('}').toString();
   }
@@ -268,6 +282,8 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
 
     public Map<Long, CohostABInfo> ab_infos;
 
+    public int matched_preference_tag;
+
     public JoinGroupMessageExtra join_group_msg_extra;
 
     public Builder() {
@@ -276,6 +292,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
       cohost_layout_mode = CohostLayoutMode.COHOST_LAYOUT_MODE_NORMAL;
       new_user_education = "";
       ab_infos = Internal.newMutableMap();
+      matched_preference_tag = 0;
     }
 
     public Builder from_room_age_restricted(int from_room_age_restricted) {
@@ -334,6 +351,11 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
       return this;
     }
 
+    public Builder matched_preference_tag(int matched_preference_tag) {
+      this.matched_preference_tag = matched_preference_tag;
+      return this;
+    }
+
     public Builder join_group_msg_extra(JoinGroupMessageExtra join_group_msg_extra) {
       this.join_group_msg_extra = join_group_msg_extra;
       return this;
@@ -341,7 +363,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
 
     @Override
     public JoinGroupBizContent build() {
-      return new JoinGroupBizContent(from_room_age_restricted, from_tag, dialog, punish_info, topic_info, algo_request_id, cohost_layout_mode, tag, game_tag, new_user_education, ab_infos, join_group_msg_extra, super.buildUnknownFields());
+      return new JoinGroupBizContent(from_room_age_restricted, from_tag, dialog, punish_info, topic_info, algo_request_id, cohost_layout_mode, tag, game_tag, new_user_education, ab_infos, matched_preference_tag, join_group_msg_extra, super.buildUnknownFields());
     }
   }
 
@@ -386,6 +408,9 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
         result += ProtoAdapter.STRING.encodedSizeWithTag(11, value.new_user_education);
       }
       result += ab_infosAdapter().encodedSizeWithTag(12, value.ab_infos);
+      if (!Objects.equals(value.matched_preference_tag, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(13, value.matched_preference_tag);
+      }
       if (!Objects.equals(value.join_group_msg_extra, null)) {
         result += JoinGroupMessageExtra.ADAPTER.encodedSizeWithTag(101, value.join_group_msg_extra);
       }
@@ -406,6 +431,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
       if (!Objects.equals(value.game_tag, null)) RivalsGameTag.ADAPTER.encodeWithTag(writer, 9, value.game_tag);
       if (!Objects.equals(value.new_user_education, "")) ProtoAdapter.STRING.encodeWithTag(writer, 11, value.new_user_education);
       ab_infosAdapter().encodeWithTag(writer, 12, value.ab_infos);
+      if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 13, value.matched_preference_tag);
       if (!Objects.equals(value.join_group_msg_extra, null)) JoinGroupMessageExtra.ADAPTER.encodeWithTag(writer, 101, value.join_group_msg_extra);
       writer.writeBytes(value.unknownFields());
     }
@@ -414,6 +440,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
     public void encode(ReverseProtoWriter writer, JoinGroupBizContent value) throws IOException {
       writer.writeBytes(value.unknownFields());
       if (!Objects.equals(value.join_group_msg_extra, null)) JoinGroupMessageExtra.ADAPTER.encodeWithTag(writer, 101, value.join_group_msg_extra);
+      if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 13, value.matched_preference_tag);
       ab_infosAdapter().encodeWithTag(writer, 12, value.ab_infos);
       if (!Objects.equals(value.new_user_education, "")) ProtoAdapter.STRING.encodeWithTag(writer, 11, value.new_user_education);
       if (!Objects.equals(value.game_tag, null)) RivalsGameTag.ADAPTER.encodeWithTag(writer, 9, value.game_tag);
@@ -451,6 +478,7 @@ public final class JoinGroupBizContent extends Message<JoinGroupBizContent, Join
           case 9: builder.game_tag(RivalsGameTag.ADAPTER.decode(reader)); break;
           case 11: builder.new_user_education(ProtoAdapter.STRING.decode(reader)); break;
           case 12: builder.ab_infos.putAll(ab_infosAdapter().decode(reader)); break;
+          case 13: builder.matched_preference_tag(ProtoAdapter.INT32.decode(reader)); break;
           case 101: builder.join_group_msg_extra(JoinGroupMessageExtra.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);

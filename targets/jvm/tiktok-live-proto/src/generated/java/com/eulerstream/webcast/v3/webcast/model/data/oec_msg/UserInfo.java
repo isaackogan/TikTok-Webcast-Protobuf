@@ -58,21 +58,12 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
   )
   public final boolean is_winner;
 
-  @WireField(
-      tag = 5,
-      adapter = "com.squareup.wire.ProtoAdapter#STRING",
-      label = WireField.Label.OMIT_IDENTITY,
-      jsonName = "userIdStr"
-  )
-  public final String user_id_str;
-
-  public UserInfo(long user_id, String nick_name, ImageModel avatar, boolean is_winner,
-      String user_id_str) {
-    this(user_id, nick_name, avatar, is_winner, user_id_str, ByteString.EMPTY);
+  public UserInfo(long user_id, String nick_name, ImageModel avatar, boolean is_winner) {
+    this(user_id, nick_name, avatar, is_winner, ByteString.EMPTY);
   }
 
   public UserInfo(long user_id, String nick_name, ImageModel avatar, boolean is_winner,
-      String user_id_str, ByteString unknownFields) {
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.user_id = user_id;
     if (nick_name == null) {
@@ -81,10 +72,6 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
     this.nick_name = nick_name;
     this.avatar = avatar;
     this.is_winner = is_winner;
-    if (user_id_str == null) {
-      throw new IllegalArgumentException("user_id_str == null");
-    }
-    this.user_id_str = user_id_str;
   }
 
   @Override
@@ -94,7 +81,6 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
     builder.nick_name = nick_name;
     builder.avatar = avatar;
     builder.is_winner = is_winner;
-    builder.user_id_str = user_id_str;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -108,8 +94,7 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
         && Internal.equals(user_id, o.user_id)
         && Internal.equals(nick_name, o.nick_name)
         && Internal.equals(avatar, o.avatar)
-        && Internal.equals(is_winner, o.is_winner)
-        && Internal.equals(user_id_str, o.user_id_str);
+        && Internal.equals(is_winner, o.is_winner);
   }
 
   @Override
@@ -121,7 +106,6 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
       result = result * 37 + (nick_name != null ? nick_name.hashCode() : 0);
       result = result * 37 + (avatar != null ? avatar.hashCode() : 0);
       result = result * 37 + Boolean.hashCode(is_winner);
-      result = result * 37 + (user_id_str != null ? user_id_str.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -134,7 +118,6 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
     if (nick_name != null) builder.append(", nick_name=").append(Internal.sanitize(nick_name));
     if (avatar != null) builder.append(", avatar=").append(avatar);
     builder.append(", is_winner=").append(is_winner);
-    if (user_id_str != null) builder.append(", user_id_str=").append(Internal.sanitize(user_id_str));
     return builder.replace(0, 2, "UserInfo{").append('}').toString();
   }
 
@@ -147,13 +130,10 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
 
     public boolean is_winner;
 
-    public String user_id_str;
-
     public Builder() {
       user_id = 0L;
       nick_name = "";
       is_winner = false;
-      user_id_str = "";
     }
 
     public Builder user_id(long user_id) {
@@ -176,14 +156,9 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
       return this;
     }
 
-    public Builder user_id_str(String user_id_str) {
-      this.user_id_str = user_id_str;
-      return this;
-    }
-
     @Override
     public UserInfo build() {
-      return new UserInfo(user_id, nick_name, avatar, is_winner, user_id_str, super.buildUnknownFields());
+      return new UserInfo(user_id, nick_name, avatar, is_winner, super.buildUnknownFields());
     }
   }
 
@@ -207,9 +182,6 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
       if (!Objects.equals(value.is_winner, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(4, value.is_winner);
       }
-      if (!Objects.equals(value.user_id_str, "")) {
-        result += ProtoAdapter.STRING.encodedSizeWithTag(5, value.user_id_str);
-      }
       result += value.unknownFields().size();
       return result;
     }
@@ -220,14 +192,12 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
       if (!Objects.equals(value.nick_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.nick_name);
       if (!Objects.equals(value.avatar, null)) ImageModel.ADAPTER.encodeWithTag(writer, 3, value.avatar);
       if (!Objects.equals(value.is_winner, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.is_winner);
-      if (!Objects.equals(value.user_id_str, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.user_id_str);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, UserInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
-      if (!Objects.equals(value.user_id_str, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.user_id_str);
       if (!Objects.equals(value.is_winner, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.is_winner);
       if (!Objects.equals(value.avatar, null)) ImageModel.ADAPTER.encodeWithTag(writer, 3, value.avatar);
       if (!Objects.equals(value.nick_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.nick_name);
@@ -244,7 +214,6 @@ public final class UserInfo extends Message<UserInfo, UserInfo.Builder> {
           case 2: builder.nick_name(ProtoAdapter.STRING.decode(reader)); break;
           case 3: builder.avatar(ImageModel.ADAPTER.decode(reader)); break;
           case 4: builder.is_winner(ProtoAdapter.BOOL.decode(reader)); break;
-          case 5: builder.user_id_str(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

@@ -7,6 +7,7 @@
 
 package com.eulerstream.webcast.v3.webcast.chatroom.model.interact
 
+import com.eulerstream.webcast.v3.webcast.model.base.ImageModel
 import com.squareup.wire.FieldEncoding
 import com.squareup.wire.Message
 import com.squareup.wire.ProtoAdapter
@@ -16,6 +17,7 @@ import com.squareup.wire.ReverseProtoWriter
 import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
+import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -53,6 +55,21 @@ public class RandomMatchContent_UserInfo(
     schemaIndex = 2,
   )
   public val invitation_role_type: Int = 0,
+  @field:WireField(
+    tag = 4,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "avatarThumb",
+    schemaIndex = 3,
+  )
+  public val avatar_thumb: ImageModel? = null,
+  @field:WireField(
+    tag = 5,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    schemaIndex = 4,
+  )
+  public val nickname: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<RandomMatchContent_UserInfo, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -68,6 +85,8 @@ public class RandomMatchContent_UserInfo(
     if (user_id != other.user_id) return false
     if (room_id != other.room_id) return false
     if (invitation_role_type != other.invitation_role_type) return false
+    if (avatar_thumb != other.avatar_thumb) return false
+    if (nickname != other.nickname) return false
     return true
   }
 
@@ -78,6 +97,8 @@ public class RandomMatchContent_UserInfo(
       result = result * 37 + user_id.hashCode()
       result = result * 37 + room_id.hashCode()
       result = result * 37 + invitation_role_type.hashCode()
+      result = result * 37 + (avatar_thumb?.hashCode() ?: 0)
+      result = result * 37 + nickname.hashCode()
       super.hashCode = result
     }
     return result
@@ -88,6 +109,8 @@ public class RandomMatchContent_UserInfo(
     result += """user_id=$user_id"""
     result += """room_id=$room_id"""
     result += """invitation_role_type=$invitation_role_type"""
+    if (avatar_thumb != null) result += """avatar_thumb=$avatar_thumb"""
+    result += """nickname=${sanitize(nickname)}"""
     return result.joinToString(prefix = "RandomMatchContent_UserInfo{", separator = ", ", postfix = "}")
   }
 
@@ -95,8 +118,10 @@ public class RandomMatchContent_UserInfo(
     user_id: Long = this.user_id,
     room_id: Long = this.room_id,
     invitation_role_type: Int = this.invitation_role_type,
+    avatar_thumb: ImageModel? = this.avatar_thumb,
+    nickname: String = this.nickname,
     unknownFields: ByteString = this.unknownFields,
-  ): RandomMatchContent_UserInfo = RandomMatchContent_UserInfo(user_id, room_id, invitation_role_type, unknownFields)
+  ): RandomMatchContent_UserInfo = RandomMatchContent_UserInfo(user_id, room_id, invitation_role_type, avatar_thumb, nickname, unknownFields)
 
   public companion object {
     @JvmField
@@ -120,6 +145,12 @@ public class RandomMatchContent_UserInfo(
         if (value.invitation_role_type != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(3, value.invitation_role_type)
         }
+        if (value.avatar_thumb != null) {
+          size += ImageModel.ADAPTER.encodedSizeWithTag(4, value.avatar_thumb)
+        }
+        if (value.nickname != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(5, value.nickname)
+        }
         return size
       }
 
@@ -133,11 +164,23 @@ public class RandomMatchContent_UserInfo(
         if (value.invitation_role_type != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 3, value.invitation_role_type)
         }
+        if (value.avatar_thumb != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 4, value.avatar_thumb)
+        }
+        if (value.nickname != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 5, value.nickname)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: RandomMatchContent_UserInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.nickname != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 5, value.nickname)
+        }
+        if (value.avatar_thumb != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 4, value.avatar_thumb)
+        }
         if (value.invitation_role_type != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 3, value.invitation_role_type)
         }
@@ -153,11 +196,15 @@ public class RandomMatchContent_UserInfo(
         var user_id: Long = 0L
         var room_id: Long = 0L
         var invitation_role_type: Int = 0
+        var avatar_thumb: ImageModel? = null
+        var nickname: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> user_id = ProtoAdapter.INT64.decode(reader)
             2 -> room_id = ProtoAdapter.INT64.decode(reader)
             3 -> invitation_role_type = ProtoAdapter.INT32.decode(reader)
+            4 -> avatar_thumb = ImageModel.ADAPTER.decode(reader)
+            5 -> nickname = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -165,11 +212,14 @@ public class RandomMatchContent_UserInfo(
           user_id = user_id,
           room_id = room_id,
           invitation_role_type = invitation_role_type,
+          avatar_thumb = avatar_thumb,
+          nickname = nickname,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: RandomMatchContent_UserInfo): RandomMatchContent_UserInfo = value.copy(
+        avatar_thumb = value.avatar_thumb?.let(ImageModel.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

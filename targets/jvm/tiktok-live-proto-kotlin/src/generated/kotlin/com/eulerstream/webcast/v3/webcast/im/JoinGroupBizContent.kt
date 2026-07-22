@@ -122,11 +122,19 @@ public class JoinGroupBizContent(
   public val new_user_education: String = "",
   ab_infos: Map<Long, CohostABInfo> = emptyMap(),
   @field:WireField(
+    tag = 13,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "matchedPreferenceTag",
+    schemaIndex = 11,
+  )
+  public val matched_preference_tag: Int = 0,
+  @field:WireField(
     tag = 101,
     adapter = "com.eulerstream.webcast.v3.webcast.im.JoinGroupMessageExtra#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "joinGroupMsgExtra",
-    schemaIndex = 11,
+    schemaIndex = 12,
   )
   public val join_group_msg_extra: JoinGroupMessageExtra? = null,
   unknownFields: ByteString = ByteString.EMPTY,
@@ -161,6 +169,7 @@ public class JoinGroupBizContent(
     if (game_tag != other.game_tag) return false
     if (new_user_education != other.new_user_education) return false
     if (ab_infos != other.ab_infos) return false
+    if (matched_preference_tag != other.matched_preference_tag) return false
     if (join_group_msg_extra != other.join_group_msg_extra) return false
     return true
   }
@@ -180,6 +189,7 @@ public class JoinGroupBizContent(
       result = result * 37 + (game_tag?.hashCode() ?: 0)
       result = result * 37 + new_user_education.hashCode()
       result = result * 37 + ab_infos.hashCode()
+      result = result * 37 + matched_preference_tag.hashCode()
       result = result * 37 + (join_group_msg_extra?.hashCode() ?: 0)
       super.hashCode = result
     }
@@ -199,6 +209,7 @@ public class JoinGroupBizContent(
     if (game_tag != null) result += """game_tag=$game_tag"""
     result += """new_user_education=${sanitize(new_user_education)}"""
     if (ab_infos.isNotEmpty()) result += """ab_infos=$ab_infos"""
+    result += """matched_preference_tag=$matched_preference_tag"""
     if (join_group_msg_extra != null) result += """join_group_msg_extra=$join_group_msg_extra"""
     return result.joinToString(prefix = "JoinGroupBizContent{", separator = ", ", postfix = "}")
   }
@@ -215,9 +226,10 @@ public class JoinGroupBizContent(
     game_tag: RivalsGameTag? = this.game_tag,
     new_user_education: String = this.new_user_education,
     ab_infos: Map<Long, CohostABInfo> = this.ab_infos,
+    matched_preference_tag: Int = this.matched_preference_tag,
     join_group_msg_extra: JoinGroupMessageExtra? = this.join_group_msg_extra,
     unknownFields: ByteString = this.unknownFields,
-  ): JoinGroupBizContent = JoinGroupBizContent(from_room_age_restricted, from_tag, dialog, punish_info, topic_info, algo_request_id, cohost_layout_mode, tag, game_tag, new_user_education, ab_infos, join_group_msg_extra, unknownFields)
+  ): JoinGroupBizContent = JoinGroupBizContent(from_room_age_restricted, from_tag, dialog, punish_info, topic_info, algo_request_id, cohost_layout_mode, tag, game_tag, new_user_education, ab_infos, matched_preference_tag, join_group_msg_extra, unknownFields)
 
   public companion object {
     @JvmField
@@ -266,6 +278,9 @@ public class JoinGroupBizContent(
           size += ProtoAdapter.STRING.encodedSizeWithTag(11, value.new_user_education)
         }
         size += ab_infosAdapter.encodedSizeWithTag(12, value.ab_infos)
+        if (value.matched_preference_tag != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(13, value.matched_preference_tag)
+        }
         if (value.join_group_msg_extra != null) {
           size += JoinGroupMessageExtra.ADAPTER.encodedSizeWithTag(101, value.join_group_msg_extra)
         }
@@ -304,6 +319,9 @@ public class JoinGroupBizContent(
           ProtoAdapter.STRING.encodeWithTag(writer, 11, value.new_user_education)
         }
         ab_infosAdapter.encodeWithTag(writer, 12, value.ab_infos)
+        if (value.matched_preference_tag != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 13, value.matched_preference_tag)
+        }
         if (value.join_group_msg_extra != null) {
           JoinGroupMessageExtra.ADAPTER.encodeWithTag(writer, 101, value.join_group_msg_extra)
         }
@@ -314,6 +332,9 @@ public class JoinGroupBizContent(
         writer.writeBytes(value.unknownFields)
         if (value.join_group_msg_extra != null) {
           JoinGroupMessageExtra.ADAPTER.encodeWithTag(writer, 101, value.join_group_msg_extra)
+        }
+        if (value.matched_preference_tag != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 13, value.matched_preference_tag)
         }
         ab_infosAdapter.encodeWithTag(writer, 12, value.ab_infos)
         if (value.new_user_education != "") {
@@ -360,6 +381,7 @@ public class JoinGroupBizContent(
         var game_tag: RivalsGameTag? = null
         var new_user_education: String = ""
         val ab_infos = mutableMapOf<Long, CohostABInfo>()
+        var matched_preference_tag: Int = 0
         var join_group_msg_extra: JoinGroupMessageExtra? = null
         val unknownFields = reader.forEachTag { tag_ ->
           when (tag_) {
@@ -378,6 +400,7 @@ public class JoinGroupBizContent(
             9 -> game_tag = RivalsGameTag.ADAPTER.decode(reader)
             11 -> new_user_education = ProtoAdapter.STRING.decode(reader)
             12 -> ab_infos.putAll(ab_infosAdapter.decode(reader))
+            13 -> matched_preference_tag = ProtoAdapter.INT32.decode(reader)
             101 -> join_group_msg_extra = JoinGroupMessageExtra.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag_)
           }
@@ -394,6 +417,7 @@ public class JoinGroupBizContent(
           game_tag = game_tag,
           new_user_education = new_user_education,
           ab_infos = ab_infos,
+          matched_preference_tag = matched_preference_tag,
           join_group_msg_extra = join_group_msg_extra,
           unknownFields = unknownFields
         )

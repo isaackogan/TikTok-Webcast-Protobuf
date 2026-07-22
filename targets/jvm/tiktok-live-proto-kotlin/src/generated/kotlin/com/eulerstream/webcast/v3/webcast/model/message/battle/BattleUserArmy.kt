@@ -85,6 +85,14 @@ public class BattleUserArmy(
     schemaIndex = 6,
   )
   public val enigma_score: Long = 0L,
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "isEnigma",
+    schemaIndex = 7,
+  )
+  public val is_enigma: Boolean = false,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<BattleUserArmy, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -104,6 +112,7 @@ public class BattleUserArmy(
     if (diamond_score != other.diamond_score) return false
     if (user_id_str != other.user_id_str) return false
     if (enigma_score != other.enigma_score) return false
+    if (is_enigma != other.is_enigma) return false
     return true
   }
 
@@ -118,6 +127,7 @@ public class BattleUserArmy(
       result = result * 37 + diamond_score.hashCode()
       result = result * 37 + user_id_str.hashCode()
       result = result * 37 + enigma_score.hashCode()
+      result = result * 37 + is_enigma.hashCode()
       super.hashCode = result
     }
     return result
@@ -132,6 +142,7 @@ public class BattleUserArmy(
     result += """diamond_score=$diamond_score"""
     result += """user_id_str=${sanitize(user_id_str)}"""
     result += """enigma_score=$enigma_score"""
+    result += """is_enigma=$is_enigma"""
     return result.joinToString(prefix = "BattleUserArmy{", separator = ", ", postfix = "}")
   }
 
@@ -143,8 +154,9 @@ public class BattleUserArmy(
     diamond_score: Long = this.diamond_score,
     user_id_str: String = this.user_id_str,
     enigma_score: Long = this.enigma_score,
+    is_enigma: Boolean = this.is_enigma,
     unknownFields: ByteString = this.unknownFields,
-  ): BattleUserArmy = BattleUserArmy(user_id, score, nickname, avatar_thumb, diamond_score, user_id_str, enigma_score, unknownFields)
+  ): BattleUserArmy = BattleUserArmy(user_id, score, nickname, avatar_thumb, diamond_score, user_id_str, enigma_score, is_enigma, unknownFields)
 
   public companion object {
     @JvmField
@@ -179,6 +191,9 @@ public class BattleUserArmy(
         if (value.enigma_score != 0L) {
           size += ProtoAdapter.INT64.encodedSizeWithTag(7, value.enigma_score)
         }
+        if (value.is_enigma != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(8, value.is_enigma)
+        }
         return size
       }
 
@@ -204,11 +219,17 @@ public class BattleUserArmy(
         if (value.enigma_score != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 7, value.enigma_score)
         }
+        if (value.is_enigma != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_enigma)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: BattleUserArmy) {
         writer.writeBytes(value.unknownFields)
+        if (value.is_enigma != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_enigma)
+        }
         if (value.enigma_score != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 7, value.enigma_score)
         }
@@ -240,6 +261,7 @@ public class BattleUserArmy(
         var diamond_score: Long = 0L
         var user_id_str: String = ""
         var enigma_score: Long = 0L
+        var is_enigma: Boolean = false
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> user_id = ProtoAdapter.INT64.decode(reader)
@@ -249,6 +271,7 @@ public class BattleUserArmy(
             5 -> diamond_score = ProtoAdapter.INT64.decode(reader)
             6 -> user_id_str = ProtoAdapter.STRING.decode(reader)
             7 -> enigma_score = ProtoAdapter.INT64.decode(reader)
+            8 -> is_enigma = ProtoAdapter.BOOL.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -260,6 +283,7 @@ public class BattleUserArmy(
           diamond_score = diamond_score,
           user_id_str = user_id_str,
           enigma_score = enigma_score,
+          is_enigma = is_enigma,
           unknownFields = unknownFields
         )
       }

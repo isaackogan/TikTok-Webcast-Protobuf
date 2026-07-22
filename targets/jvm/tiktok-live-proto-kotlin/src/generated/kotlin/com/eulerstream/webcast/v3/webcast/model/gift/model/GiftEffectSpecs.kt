@@ -59,6 +59,14 @@ public class GiftEffectSpecs(
     schemaIndex = 3,
   )
   public val serial_spec: GiftEffectSerialSpec? = null,
+  @field:WireField(
+    tag = 5,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.gift.model.GiftEffectStreamSpec#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "streamEffectSpec",
+    schemaIndex = 4,
+  )
+  public val stream_effect_spec: GiftEffectStreamSpec? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<GiftEffectSpecs, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -75,6 +83,7 @@ public class GiftEffectSpecs(
     if (lynx != other.lynx) return false
     if (prefab != other.prefab) return false
     if (serial_spec != other.serial_spec) return false
+    if (stream_effect_spec != other.stream_effect_spec) return false
     return true
   }
 
@@ -86,6 +95,7 @@ public class GiftEffectSpecs(
       result = result * 37 + (lynx?.hashCode() ?: 0)
       result = result * 37 + (prefab?.hashCode() ?: 0)
       result = result * 37 + (serial_spec?.hashCode() ?: 0)
+      result = result * 37 + (stream_effect_spec?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -97,6 +107,7 @@ public class GiftEffectSpecs(
     if (lynx != null) result += """lynx=$lynx"""
     if (prefab != null) result += """prefab=$prefab"""
     if (serial_spec != null) result += """serial_spec=$serial_spec"""
+    if (stream_effect_spec != null) result += """stream_effect_spec=$stream_effect_spec"""
     return result.joinToString(prefix = "GiftEffectSpecs{", separator = ", ", postfix = "}")
   }
 
@@ -105,8 +116,9 @@ public class GiftEffectSpecs(
     lynx: GiftEffectLynxSpec? = this.lynx,
     prefab: GiftEffectPrefabSpec? = this.prefab,
     serial_spec: GiftEffectSerialSpec? = this.serial_spec,
+    stream_effect_spec: GiftEffectStreamSpec? = this.stream_effect_spec,
     unknownFields: ByteString = this.unknownFields,
-  ): GiftEffectSpecs = GiftEffectSpecs(cross_screen_sticker, lynx, prefab, serial_spec, unknownFields)
+  ): GiftEffectSpecs = GiftEffectSpecs(cross_screen_sticker, lynx, prefab, serial_spec, stream_effect_spec, unknownFields)
 
   public companion object {
     @JvmField
@@ -132,6 +144,9 @@ public class GiftEffectSpecs(
         if (value.serial_spec != null) {
           size += GiftEffectSerialSpec.ADAPTER.encodedSizeWithTag(4, value.serial_spec)
         }
+        if (value.stream_effect_spec != null) {
+          size += GiftEffectStreamSpec.ADAPTER.encodedSizeWithTag(5, value.stream_effect_spec)
+        }
         return size
       }
 
@@ -148,11 +163,17 @@ public class GiftEffectSpecs(
         if (value.serial_spec != null) {
           GiftEffectSerialSpec.ADAPTER.encodeWithTag(writer, 4, value.serial_spec)
         }
+        if (value.stream_effect_spec != null) {
+          GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 5, value.stream_effect_spec)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: GiftEffectSpecs) {
         writer.writeBytes(value.unknownFields)
+        if (value.stream_effect_spec != null) {
+          GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 5, value.stream_effect_spec)
+        }
         if (value.serial_spec != null) {
           GiftEffectSerialSpec.ADAPTER.encodeWithTag(writer, 4, value.serial_spec)
         }
@@ -172,12 +193,14 @@ public class GiftEffectSpecs(
         var lynx: GiftEffectLynxSpec? = null
         var prefab: GiftEffectPrefabSpec? = null
         var serial_spec: GiftEffectSerialSpec? = null
+        var stream_effect_spec: GiftEffectStreamSpec? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> cross_screen_sticker = GiftEffectCrossScreenStickerSpec.ADAPTER.decode(reader)
             2 -> lynx = GiftEffectLynxSpec.ADAPTER.decode(reader)
             3 -> prefab = GiftEffectPrefabSpec.ADAPTER.decode(reader)
             4 -> serial_spec = GiftEffectSerialSpec.ADAPTER.decode(reader)
+            5 -> stream_effect_spec = GiftEffectStreamSpec.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -186,6 +209,7 @@ public class GiftEffectSpecs(
           lynx = lynx,
           prefab = prefab,
           serial_spec = serial_spec,
+          stream_effect_spec = stream_effect_spec,
           unknownFields = unknownFields
         )
       }
@@ -195,6 +219,7 @@ public class GiftEffectSpecs(
         lynx = value.lynx?.let(GiftEffectLynxSpec.ADAPTER::redact),
         prefab = value.prefab?.let(GiftEffectPrefabSpec.ADAPTER::redact),
         serial_spec = value.serial_spec?.let(GiftEffectSerialSpec.ADAPTER::redact),
+        stream_effect_spec = value.stream_effect_spec?.let(GiftEffectStreamSpec.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

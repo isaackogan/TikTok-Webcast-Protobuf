@@ -42,14 +42,24 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
   )
   public final int content_type;
 
-  public CohostTypeSpotExtra(boolean is_enlarged, int content_type) {
-    this(is_enlarged, content_type, ByteString.EMPTY);
+  @WireField(
+      tag = 3,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "preEnlargeSpotId"
+  )
+  public final int pre_enlarge_spot_id;
+
+  public CohostTypeSpotExtra(boolean is_enlarged, int content_type, int pre_enlarge_spot_id) {
+    this(is_enlarged, content_type, pre_enlarge_spot_id, ByteString.EMPTY);
   }
 
-  public CohostTypeSpotExtra(boolean is_enlarged, int content_type, ByteString unknownFields) {
+  public CohostTypeSpotExtra(boolean is_enlarged, int content_type, int pre_enlarge_spot_id,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.is_enlarged = is_enlarged;
     this.content_type = content_type;
+    this.pre_enlarge_spot_id = pre_enlarge_spot_id;
   }
 
   @Override
@@ -57,6 +67,7 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
     Builder builder = new Builder();
     builder.is_enlarged = is_enlarged;
     builder.content_type = content_type;
+    builder.pre_enlarge_spot_id = pre_enlarge_spot_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -68,7 +79,8 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
     CohostTypeSpotExtra o = (CohostTypeSpotExtra) other;
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(is_enlarged, o.is_enlarged)
-        && Internal.equals(content_type, o.content_type);
+        && Internal.equals(content_type, o.content_type)
+        && Internal.equals(pre_enlarge_spot_id, o.pre_enlarge_spot_id);
   }
 
   @Override
@@ -78,6 +90,7 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
       result = unknownFields().hashCode();
       result = result * 37 + Boolean.hashCode(is_enlarged);
       result = result * 37 + Integer.hashCode(content_type);
+      result = result * 37 + Integer.hashCode(pre_enlarge_spot_id);
       super.hashCode = result;
     }
     return result;
@@ -88,6 +101,7 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
     StringBuilder builder = new StringBuilder();
     builder.append(", is_enlarged=").append(is_enlarged);
     builder.append(", content_type=").append(content_type);
+    builder.append(", pre_enlarge_spot_id=").append(pre_enlarge_spot_id);
     return builder.replace(0, 2, "CohostTypeSpotExtra{").append('}').toString();
   }
 
@@ -96,9 +110,12 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
 
     public int content_type;
 
+    public int pre_enlarge_spot_id;
+
     public Builder() {
       is_enlarged = false;
       content_type = 0;
+      pre_enlarge_spot_id = 0;
     }
 
     public Builder is_enlarged(boolean is_enlarged) {
@@ -111,9 +128,14 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
       return this;
     }
 
+    public Builder pre_enlarge_spot_id(int pre_enlarge_spot_id) {
+      this.pre_enlarge_spot_id = pre_enlarge_spot_id;
+      return this;
+    }
+
     @Override
     public CohostTypeSpotExtra build() {
-      return new CohostTypeSpotExtra(is_enlarged, content_type, super.buildUnknownFields());
+      return new CohostTypeSpotExtra(is_enlarged, content_type, pre_enlarge_spot_id, super.buildUnknownFields());
     }
   }
 
@@ -131,6 +153,9 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
       if (!Objects.equals(value.content_type, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(2, value.content_type);
       }
+      if (!Objects.equals(value.pre_enlarge_spot_id, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(3, value.pre_enlarge_spot_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -139,12 +164,14 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
     public void encode(ProtoWriter writer, CohostTypeSpotExtra value) throws IOException {
       if (!Objects.equals(value.is_enlarged, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1, value.is_enlarged);
       if (!Objects.equals(value.content_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 2, value.content_type);
+      if (!Objects.equals(value.pre_enlarge_spot_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 3, value.pre_enlarge_spot_id);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, CohostTypeSpotExtra value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.pre_enlarge_spot_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 3, value.pre_enlarge_spot_id);
       if (!Objects.equals(value.content_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 2, value.content_type);
       if (!Objects.equals(value.is_enlarged, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1, value.is_enlarged);
     }
@@ -157,6 +184,7 @@ public final class CohostTypeSpotExtra extends Message<CohostTypeSpotExtra, Coho
         switch (tag) {
           case 1: builder.is_enlarged(ProtoAdapter.BOOL.decode(reader)); break;
           case 2: builder.content_type(ProtoAdapter.INT32.decode(reader)); break;
+          case 3: builder.pre_enlarge_spot_id(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

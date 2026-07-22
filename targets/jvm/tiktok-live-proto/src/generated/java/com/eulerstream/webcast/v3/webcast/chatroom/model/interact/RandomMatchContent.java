@@ -12,6 +12,7 @@ import com.squareup.wire.Syntax;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -58,13 +59,21 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
   )
   public final List<UserGroup> paired_group_list;
 
+  @WireField(
+      tag = 20,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "matchedPreferenceTag"
+  )
+  public final int matched_preference_tag;
+
   public RandomMatchContent(String match_id, long source_type, long paired_time,
-      List<UserGroup> paired_group_list) {
-    this(match_id, source_type, paired_time, paired_group_list, ByteString.EMPTY);
+      List<UserGroup> paired_group_list, int matched_preference_tag) {
+    this(match_id, source_type, paired_time, paired_group_list, matched_preference_tag, ByteString.EMPTY);
   }
 
   public RandomMatchContent(String match_id, long source_type, long paired_time,
-      List<UserGroup> paired_group_list, ByteString unknownFields) {
+      List<UserGroup> paired_group_list, int matched_preference_tag, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (match_id == null) {
       throw new IllegalArgumentException("match_id == null");
@@ -73,6 +82,7 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
     this.source_type = source_type;
     this.paired_time = paired_time;
     this.paired_group_list = Internal.immutableCopyOf("paired_group_list", paired_group_list);
+    this.matched_preference_tag = matched_preference_tag;
   }
 
   @Override
@@ -82,6 +92,7 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
     builder.source_type = source_type;
     builder.paired_time = paired_time;
     builder.paired_group_list = Internal.copyOf(paired_group_list);
+    builder.matched_preference_tag = matched_preference_tag;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -95,7 +106,8 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
         && Internal.equals(match_id, o.match_id)
         && Internal.equals(source_type, o.source_type)
         && Internal.equals(paired_time, o.paired_time)
-        && paired_group_list.equals(o.paired_group_list);
+        && paired_group_list.equals(o.paired_group_list)
+        && Internal.equals(matched_preference_tag, o.matched_preference_tag);
   }
 
   @Override
@@ -107,6 +119,7 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
       result = result * 37 + Long.hashCode(source_type);
       result = result * 37 + Long.hashCode(paired_time);
       result = result * 37 + paired_group_list.hashCode();
+      result = result * 37 + Integer.hashCode(matched_preference_tag);
       super.hashCode = result;
     }
     return result;
@@ -119,6 +132,7 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
     builder.append(", source_type=").append(source_type);
     builder.append(", paired_time=").append(paired_time);
     if (!paired_group_list.isEmpty()) builder.append(", paired_group_list=").append(paired_group_list);
+    builder.append(", matched_preference_tag=").append(matched_preference_tag);
     return builder.replace(0, 2, "RandomMatchContent{").append('}').toString();
   }
 
@@ -131,11 +145,14 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
 
     public List<UserGroup> paired_group_list;
 
+    public int matched_preference_tag;
+
     public Builder() {
       match_id = "";
       source_type = 0L;
       paired_time = 0L;
       paired_group_list = Internal.newMutableList();
+      matched_preference_tag = 0;
     }
 
     public Builder match_id(String match_id) {
@@ -159,9 +176,14 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
       return this;
     }
 
+    public Builder matched_preference_tag(int matched_preference_tag) {
+      this.matched_preference_tag = matched_preference_tag;
+      return this;
+    }
+
     @Override
     public RandomMatchContent build() {
-      return new RandomMatchContent(match_id, source_type, paired_time, paired_group_list, super.buildUnknownFields());
+      return new RandomMatchContent(match_id, source_type, paired_time, paired_group_list, matched_preference_tag, super.buildUnknownFields());
     }
   }
 
@@ -183,6 +205,9 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
         result += ProtoAdapter.INT64.encodedSizeWithTag(3, value.paired_time);
       }
       result += UserGroup.ADAPTER.asRepeated().encodedSizeWithTag(4, value.paired_group_list);
+      if (!Objects.equals(value.matched_preference_tag, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(20, value.matched_preference_tag);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -193,12 +218,14 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
       if (!Objects.equals(value.source_type, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 2, value.source_type);
       if (!Objects.equals(value.paired_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 3, value.paired_time);
       UserGroup.ADAPTER.asRepeated().encodeWithTag(writer, 4, value.paired_group_list);
+      if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 20, value.matched_preference_tag);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, RandomMatchContent value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 20, value.matched_preference_tag);
       UserGroup.ADAPTER.asRepeated().encodeWithTag(writer, 4, value.paired_group_list);
       if (!Objects.equals(value.paired_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 3, value.paired_time);
       if (!Objects.equals(value.source_type, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 2, value.source_type);
@@ -215,6 +242,7 @@ public final class RandomMatchContent extends Message<RandomMatchContent, Random
           case 2: builder.source_type(ProtoAdapter.INT64.decode(reader)); break;
           case 3: builder.paired_time(ProtoAdapter.INT64.decode(reader)); break;
           case 4: builder.paired_group_list.add(UserGroup.ADAPTER.decode(reader)); break;
+          case 20: builder.matched_preference_tag(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

@@ -41,15 +41,25 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
   )
   public final PrefabBundle prefab_bundle;
 
-  public AssetBundle(List<AssetsModel> assets, PrefabBundle prefab_bundle) {
-    this(assets, prefab_bundle, ByteString.EMPTY);
+  @WireField(
+      tag = 3,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.gift.model.GiftEffectStreamSpec#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "streamEffectSpec"
+  )
+  public final GiftEffectStreamSpec stream_effect_spec;
+
+  public AssetBundle(List<AssetsModel> assets, PrefabBundle prefab_bundle,
+      GiftEffectStreamSpec stream_effect_spec) {
+    this(assets, prefab_bundle, stream_effect_spec, ByteString.EMPTY);
   }
 
   public AssetBundle(List<AssetsModel> assets, PrefabBundle prefab_bundle,
-      ByteString unknownFields) {
+      GiftEffectStreamSpec stream_effect_spec, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.assets = Internal.immutableCopyOf("assets", assets);
     this.prefab_bundle = prefab_bundle;
+    this.stream_effect_spec = stream_effect_spec;
   }
 
   @Override
@@ -57,6 +67,7 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
     Builder builder = new Builder();
     builder.assets = Internal.copyOf(assets);
     builder.prefab_bundle = prefab_bundle;
+    builder.stream_effect_spec = stream_effect_spec;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -68,7 +79,8 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
     AssetBundle o = (AssetBundle) other;
     return unknownFields().equals(o.unknownFields())
         && assets.equals(o.assets)
-        && Internal.equals(prefab_bundle, o.prefab_bundle);
+        && Internal.equals(prefab_bundle, o.prefab_bundle)
+        && Internal.equals(stream_effect_spec, o.stream_effect_spec);
   }
 
   @Override
@@ -78,6 +90,7 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
       result = unknownFields().hashCode();
       result = result * 37 + assets.hashCode();
       result = result * 37 + (prefab_bundle != null ? prefab_bundle.hashCode() : 0);
+      result = result * 37 + (stream_effect_spec != null ? stream_effect_spec.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -88,6 +101,7 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
     StringBuilder builder = new StringBuilder();
     if (!assets.isEmpty()) builder.append(", assets=").append(assets);
     if (prefab_bundle != null) builder.append(", prefab_bundle=").append(prefab_bundle);
+    if (stream_effect_spec != null) builder.append(", stream_effect_spec=").append(stream_effect_spec);
     return builder.replace(0, 2, "AssetBundle{").append('}').toString();
   }
 
@@ -95,6 +109,8 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
     public List<AssetsModel> assets;
 
     public PrefabBundle prefab_bundle;
+
+    public GiftEffectStreamSpec stream_effect_spec;
 
     public Builder() {
       assets = Internal.newMutableList();
@@ -111,9 +127,14 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
       return this;
     }
 
+    public Builder stream_effect_spec(GiftEffectStreamSpec stream_effect_spec) {
+      this.stream_effect_spec = stream_effect_spec;
+      return this;
+    }
+
     @Override
     public AssetBundle build() {
-      return new AssetBundle(assets, prefab_bundle, super.buildUnknownFields());
+      return new AssetBundle(assets, prefab_bundle, stream_effect_spec, super.buildUnknownFields());
     }
   }
 
@@ -129,6 +150,9 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
       if (!Objects.equals(value.prefab_bundle, null)) {
         result += PrefabBundle.ADAPTER.encodedSizeWithTag(2, value.prefab_bundle);
       }
+      if (!Objects.equals(value.stream_effect_spec, null)) {
+        result += GiftEffectStreamSpec.ADAPTER.encodedSizeWithTag(3, value.stream_effect_spec);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -137,12 +161,14 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
     public void encode(ProtoWriter writer, AssetBundle value) throws IOException {
       AssetsModel.ADAPTER.asRepeated().encodeWithTag(writer, 1, value.assets);
       if (!Objects.equals(value.prefab_bundle, null)) PrefabBundle.ADAPTER.encodeWithTag(writer, 2, value.prefab_bundle);
+      if (!Objects.equals(value.stream_effect_spec, null)) GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 3, value.stream_effect_spec);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, AssetBundle value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.stream_effect_spec, null)) GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 3, value.stream_effect_spec);
       if (!Objects.equals(value.prefab_bundle, null)) PrefabBundle.ADAPTER.encodeWithTag(writer, 2, value.prefab_bundle);
       AssetsModel.ADAPTER.asRepeated().encodeWithTag(writer, 1, value.assets);
     }
@@ -155,6 +181,7 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
         switch (tag) {
           case 1: builder.assets.add(AssetsModel.ADAPTER.decode(reader)); break;
           case 2: builder.prefab_bundle(PrefabBundle.ADAPTER.decode(reader)); break;
+          case 3: builder.stream_effect_spec(GiftEffectStreamSpec.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -169,6 +196,7 @@ public final class AssetBundle extends Message<AssetBundle, AssetBundle.Builder>
       Builder builder = value.newBuilder();
       Internal.redactElements(builder.assets, AssetsModel.ADAPTER);
       if (builder.prefab_bundle != null) builder.prefab_bundle = PrefabBundle.ADAPTER.redact(builder.prefab_bundle);
+      if (builder.stream_effect_spec != null) builder.stream_effect_spec = GiftEffectStreamSpec.ADAPTER.redact(builder.stream_effect_spec);
       builder.clearUnknownFields();
       return builder.build();
     }

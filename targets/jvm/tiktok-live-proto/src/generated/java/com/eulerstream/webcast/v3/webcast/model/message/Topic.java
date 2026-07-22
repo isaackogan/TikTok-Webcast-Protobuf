@@ -94,17 +94,35 @@ public final class Topic extends Message<Topic, Topic.Builder> {
   )
   public final Map<String, String> event_tracking_fields;
 
+  @WireField(
+      tag = 9,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "bizName"
+  )
+  public final String biz_name;
+
+  @WireField(
+      tag = 10,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "disableCountFrequencyControl"
+  )
+  public final boolean disable_count_frequency_control;
+
   public Topic(TopicActionType topic_action_type, Text topic_text, Text topic_tips,
       boolean has_button, ActionButton action_button, TagType tag_type,
       PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation display_location,
-      Map<String, String> event_tracking_fields) {
-    this(topic_action_type, topic_text, topic_tips, has_button, action_button, tag_type, display_location, event_tracking_fields, ByteString.EMPTY);
+      Map<String, String> event_tracking_fields, String biz_name,
+      boolean disable_count_frequency_control) {
+    this(topic_action_type, topic_text, topic_tips, has_button, action_button, tag_type, display_location, event_tracking_fields, biz_name, disable_count_frequency_control, ByteString.EMPTY);
   }
 
   public Topic(TopicActionType topic_action_type, Text topic_text, Text topic_tips,
       boolean has_button, ActionButton action_button, TagType tag_type,
       PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation display_location,
-      Map<String, String> event_tracking_fields, ByteString unknownFields) {
+      Map<String, String> event_tracking_fields, String biz_name,
+      boolean disable_count_frequency_control, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (topic_action_type == null) {
       throw new IllegalArgumentException("topic_action_type == null");
@@ -123,6 +141,11 @@ public final class Topic extends Message<Topic, Topic.Builder> {
     }
     this.display_location = display_location;
     this.event_tracking_fields = Internal.immutableCopyOf("event_tracking_fields", event_tracking_fields);
+    if (biz_name == null) {
+      throw new IllegalArgumentException("biz_name == null");
+    }
+    this.biz_name = biz_name;
+    this.disable_count_frequency_control = disable_count_frequency_control;
   }
 
   @Override
@@ -136,6 +159,8 @@ public final class Topic extends Message<Topic, Topic.Builder> {
     builder.tag_type = tag_type;
     builder.display_location = display_location;
     builder.event_tracking_fields = Internal.copyOf(event_tracking_fields);
+    builder.biz_name = biz_name;
+    builder.disable_count_frequency_control = disable_count_frequency_control;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -153,7 +178,9 @@ public final class Topic extends Message<Topic, Topic.Builder> {
         && Internal.equals(action_button, o.action_button)
         && Internal.equals(tag_type, o.tag_type)
         && Internal.equals(display_location, o.display_location)
-        && event_tracking_fields.equals(o.event_tracking_fields);
+        && event_tracking_fields.equals(o.event_tracking_fields)
+        && Internal.equals(biz_name, o.biz_name)
+        && Internal.equals(disable_count_frequency_control, o.disable_count_frequency_control);
   }
 
   @Override
@@ -169,6 +196,8 @@ public final class Topic extends Message<Topic, Topic.Builder> {
       result = result * 37 + (tag_type != null ? tag_type.hashCode() : 0);
       result = result * 37 + (display_location != null ? display_location.hashCode() : 0);
       result = result * 37 + event_tracking_fields.hashCode();
+      result = result * 37 + (biz_name != null ? biz_name.hashCode() : 0);
+      result = result * 37 + Boolean.hashCode(disable_count_frequency_control);
       super.hashCode = result;
     }
     return result;
@@ -185,6 +214,8 @@ public final class Topic extends Message<Topic, Topic.Builder> {
     if (tag_type != null) builder.append(", tag_type=").append(tag_type);
     if (display_location != null) builder.append(", display_location=").append(display_location);
     if (!event_tracking_fields.isEmpty()) builder.append(", event_tracking_fields=").append(event_tracking_fields);
+    if (biz_name != null) builder.append(", biz_name=").append(Internal.sanitize(biz_name));
+    builder.append(", disable_count_frequency_control=").append(disable_count_frequency_control);
     return builder.replace(0, 2, "Topic{").append('}').toString();
   }
 
@@ -205,12 +236,18 @@ public final class Topic extends Message<Topic, Topic.Builder> {
 
     public Map<String, String> event_tracking_fields;
 
+    public String biz_name;
+
+    public boolean disable_count_frequency_control;
+
     public Builder() {
       topic_action_type = TopicActionType.TOPIC_ACTION_TYPE_UNKNOWN;
       has_button = false;
       tag_type = TagType.CREATOR_CRM_TAG_TYPE_UNKNOWN;
       display_location = PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.DISPLAY_LOCATION_FULL_SCREEN;
       event_tracking_fields = Internal.newMutableMap();
+      biz_name = "";
+      disable_count_frequency_control = false;
     }
 
     public Builder topic_action_type(TopicActionType topic_action_type) {
@@ -255,9 +292,19 @@ public final class Topic extends Message<Topic, Topic.Builder> {
       return this;
     }
 
+    public Builder biz_name(String biz_name) {
+      this.biz_name = biz_name;
+      return this;
+    }
+
+    public Builder disable_count_frequency_control(boolean disable_count_frequency_control) {
+      this.disable_count_frequency_control = disable_count_frequency_control;
+      return this;
+    }
+
     @Override
     public Topic build() {
-      return new Topic(topic_action_type, topic_text, topic_tips, has_button, action_button, tag_type, display_location, event_tracking_fields, super.buildUnknownFields());
+      return new Topic(topic_action_type, topic_text, topic_tips, has_button, action_button, tag_type, display_location, event_tracking_fields, biz_name, disable_count_frequency_control, super.buildUnknownFields());
     }
   }
 
@@ -293,6 +340,12 @@ public final class Topic extends Message<Topic, Topic.Builder> {
         result += PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.ADAPTER.encodedSizeWithTag(7, value.display_location);
       }
       result += event_tracking_fieldsAdapter().encodedSizeWithTag(8, value.event_tracking_fields);
+      if (!Objects.equals(value.biz_name, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(9, value.biz_name);
+      }
+      if (!Objects.equals(value.disable_count_frequency_control, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(10, value.disable_count_frequency_control);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -307,12 +360,16 @@ public final class Topic extends Message<Topic, Topic.Builder> {
       if (!Objects.equals(value.tag_type, TagType.CREATOR_CRM_TAG_TYPE_UNKNOWN)) TagType.ADAPTER.encodeWithTag(writer, 6, value.tag_type);
       if (!Objects.equals(value.display_location, PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.DISPLAY_LOCATION_FULL_SCREEN)) PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.ADAPTER.encodeWithTag(writer, 7, value.display_location);
       event_tracking_fieldsAdapter().encodeWithTag(writer, 8, value.event_tracking_fields);
+      if (!Objects.equals(value.biz_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.biz_name);
+      if (!Objects.equals(value.disable_count_frequency_control, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, Topic value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.disable_count_frequency_control, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.disable_count_frequency_control);
+      if (!Objects.equals(value.biz_name, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.biz_name);
       event_tracking_fieldsAdapter().encodeWithTag(writer, 8, value.event_tracking_fields);
       if (!Objects.equals(value.display_location, PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.DISPLAY_LOCATION_FULL_SCREEN)) PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation.ADAPTER.encodeWithTag(writer, 7, value.display_location);
       if (!Objects.equals(value.tag_type, TagType.CREATOR_CRM_TAG_TYPE_UNKNOWN)) TagType.ADAPTER.encodeWithTag(writer, 6, value.tag_type);
@@ -358,6 +415,8 @@ public final class Topic extends Message<Topic, Topic.Builder> {
             break;
           }
           case 8: builder.event_tracking_fields.putAll(event_tracking_fieldsAdapter().decode(reader)); break;
+          case 9: builder.biz_name(ProtoAdapter.STRING.decode(reader)); break;
+          case 10: builder.disable_count_frequency_control(ProtoAdapter.BOOL.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

@@ -55,6 +55,22 @@ public class PermitJoinGroupBizContent(
     schemaIndex = 2,
   )
   public val skip_cancel_match: Boolean = false,
+  @field:WireField(
+    tag = 4,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "matchedPreferenceTag",
+    schemaIndex = 3,
+  )
+  public val matched_preference_tag: Int = 0,
+  @field:WireField(
+    tag = 5,
+    adapter = "com.eulerstream.webcast.v3.webcast.im.QuickCohostInviteeUserInfo#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "quickCohostInviteeUserInfo",
+    schemaIndex = 4,
+  )
+  public val quick_cohost_invitee_user_info: QuickCohostInviteeUserInfo? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<PermitJoinGroupBizContent, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -70,6 +86,8 @@ public class PermitJoinGroupBizContent(
     if (reply_status != other.reply_status) return false
     if (source_type != other.source_type) return false
     if (skip_cancel_match != other.skip_cancel_match) return false
+    if (matched_preference_tag != other.matched_preference_tag) return false
+    if (quick_cohost_invitee_user_info != other.quick_cohost_invitee_user_info) return false
     return true
   }
 
@@ -80,6 +98,8 @@ public class PermitJoinGroupBizContent(
       result = result * 37 + reply_status.hashCode()
       result = result * 37 + source_type.hashCode()
       result = result * 37 + skip_cancel_match.hashCode()
+      result = result * 37 + matched_preference_tag.hashCode()
+      result = result * 37 + (quick_cohost_invitee_user_info?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -90,6 +110,8 @@ public class PermitJoinGroupBizContent(
     result += """reply_status=$reply_status"""
     result += """source_type=$source_type"""
     result += """skip_cancel_match=$skip_cancel_match"""
+    result += """matched_preference_tag=$matched_preference_tag"""
+    if (quick_cohost_invitee_user_info != null) result += """quick_cohost_invitee_user_info=$quick_cohost_invitee_user_info"""
     return result.joinToString(prefix = "PermitJoinGroupBizContent{", separator = ", ", postfix = "}")
   }
 
@@ -97,8 +119,10 @@ public class PermitJoinGroupBizContent(
     reply_status: ReplyStatus = this.reply_status,
     source_type: SourceType = this.source_type,
     skip_cancel_match: Boolean = this.skip_cancel_match,
+    matched_preference_tag: Int = this.matched_preference_tag,
+    quick_cohost_invitee_user_info: QuickCohostInviteeUserInfo? = this.quick_cohost_invitee_user_info,
     unknownFields: ByteString = this.unknownFields,
-  ): PermitJoinGroupBizContent = PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, unknownFields)
+  ): PermitJoinGroupBizContent = PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -122,6 +146,12 @@ public class PermitJoinGroupBizContent(
         if (value.skip_cancel_match != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(3, value.skip_cancel_match)
         }
+        if (value.matched_preference_tag != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(4, value.matched_preference_tag)
+        }
+        if (value.quick_cohost_invitee_user_info != null) {
+          size += QuickCohostInviteeUserInfo.ADAPTER.encodedSizeWithTag(5, value.quick_cohost_invitee_user_info)
+        }
         return size
       }
 
@@ -135,11 +165,23 @@ public class PermitJoinGroupBizContent(
         if (value.skip_cancel_match != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.skip_cancel_match)
         }
+        if (value.matched_preference_tag != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 4, value.matched_preference_tag)
+        }
+        if (value.quick_cohost_invitee_user_info != null) {
+          QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: PermitJoinGroupBizContent) {
         writer.writeBytes(value.unknownFields)
+        if (value.quick_cohost_invitee_user_info != null) {
+          QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info)
+        }
+        if (value.matched_preference_tag != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 4, value.matched_preference_tag)
+        }
         if (value.skip_cancel_match != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.skip_cancel_match)
         }
@@ -155,6 +197,8 @@ public class PermitJoinGroupBizContent(
         var reply_status: ReplyStatus = ReplyStatus.REPLY_STATUS_UNKNOWN
         var source_type: SourceType = SourceType.SOURCE_TYPE_UNKNOWN
         var skip_cancel_match: Boolean = false
+        var matched_preference_tag: Int = 0
+        var quick_cohost_invitee_user_info: QuickCohostInviteeUserInfo? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> try {
@@ -168,6 +212,8 @@ public class PermitJoinGroupBizContent(
               reader.addUnknownField(tag, FieldEncoding.VARINT, e.value.toLong())
             }
             3 -> skip_cancel_match = ProtoAdapter.BOOL.decode(reader)
+            4 -> matched_preference_tag = ProtoAdapter.INT32.decode(reader)
+            5 -> quick_cohost_invitee_user_info = QuickCohostInviteeUserInfo.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -175,11 +221,14 @@ public class PermitJoinGroupBizContent(
           reply_status = reply_status,
           source_type = source_type,
           skip_cancel_match = skip_cancel_match,
+          matched_preference_tag = matched_preference_tag,
+          quick_cohost_invitee_user_info = quick_cohost_invitee_user_info,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: PermitJoinGroupBizContent): PermitJoinGroupBizContent = value.copy(
+        quick_cohost_invitee_user_info = value.quick_cohost_invitee_user_info?.let(QuickCohostInviteeUserInfo.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

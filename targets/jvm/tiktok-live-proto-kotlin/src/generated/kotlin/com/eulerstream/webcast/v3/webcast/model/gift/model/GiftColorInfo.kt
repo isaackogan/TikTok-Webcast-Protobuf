@@ -90,6 +90,23 @@ public class GiftColorInfo(
     schemaIndex = 7,
   )
   public val color_image_size: Long = 0L,
+  color_reason: List<String> = emptyList(),
+  @field:WireField(
+    tag = 10,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "colorNameEnglish",
+    schemaIndex = 9,
+  )
+  public val color_name_english: String = "",
+  @field:WireField(
+    tag = 11,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "giftDescribe",
+    schemaIndex = 10,
+  )
+  public val gift_describe: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<GiftColorInfo, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -100,6 +117,15 @@ public class GiftColorInfo(
     schemaIndex = 2,
   )
   public val color_values: List<String> = immutableCopyOf("color_values", color_values)
+
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.REPEATED,
+    jsonName = "colorReason",
+    schemaIndex = 8,
+  )
+  public val color_reason: List<String> = immutableCopyOf("color_reason", color_reason)
 
   @Deprecated(
     message = "Shouldn't be used in Kotlin",
@@ -119,6 +145,9 @@ public class GiftColorInfo(
     if (color_effect_id != other.color_effect_id) return false
     if (is_default != other.is_default) return false
     if (color_image_size != other.color_image_size) return false
+    if (color_reason != other.color_reason) return false
+    if (color_name_english != other.color_name_english) return false
+    if (gift_describe != other.gift_describe) return false
     return true
   }
 
@@ -134,6 +163,9 @@ public class GiftColorInfo(
       result = result * 37 + color_effect_id.hashCode()
       result = result * 37 + is_default.hashCode()
       result = result * 37 + color_image_size.hashCode()
+      result = result * 37 + color_reason.hashCode()
+      result = result * 37 + color_name_english.hashCode()
+      result = result * 37 + gift_describe.hashCode()
       super.hashCode = result
     }
     return result
@@ -149,6 +181,9 @@ public class GiftColorInfo(
     result += """color_effect_id=$color_effect_id"""
     result += """is_default=$is_default"""
     result += """color_image_size=$color_image_size"""
+    if (color_reason.isNotEmpty()) result += """color_reason=${sanitize(color_reason)}"""
+    result += """color_name_english=${sanitize(color_name_english)}"""
+    result += """gift_describe=${sanitize(gift_describe)}"""
     return result.joinToString(prefix = "GiftColorInfo{", separator = ", ", postfix = "}")
   }
 
@@ -161,8 +196,11 @@ public class GiftColorInfo(
     color_effect_id: Long = this.color_effect_id,
     is_default: Boolean = this.is_default,
     color_image_size: Long = this.color_image_size,
+    color_reason: List<String> = this.color_reason,
+    color_name_english: String = this.color_name_english,
+    gift_describe: String = this.gift_describe,
     unknownFields: ByteString = this.unknownFields,
-  ): GiftColorInfo = GiftColorInfo(color_id, color_name, color_values, color_image, gift_image, color_effect_id, is_default, color_image_size, unknownFields)
+  ): GiftColorInfo = GiftColorInfo(color_id, color_name, color_values, color_image, gift_image, color_effect_id, is_default, color_image_size, color_reason, color_name_english, gift_describe, unknownFields)
 
   public companion object {
     @JvmField
@@ -198,6 +236,13 @@ public class GiftColorInfo(
         if (value.color_image_size != 0L) {
           size += ProtoAdapter.INT64.encodedSizeWithTag(8, value.color_image_size)
         }
+        size += ProtoAdapter.STRING.asRepeated().encodedSizeWithTag(9, value.color_reason)
+        if (value.color_name_english != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(10, value.color_name_english)
+        }
+        if (value.gift_describe != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(11, value.gift_describe)
+        }
         return size
       }
 
@@ -224,11 +269,25 @@ public class GiftColorInfo(
         if (value.color_image_size != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 8, value.color_image_size)
         }
+        ProtoAdapter.STRING.asRepeated().encodeWithTag(writer, 9, value.color_reason)
+        if (value.color_name_english != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 10, value.color_name_english)
+        }
+        if (value.gift_describe != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 11, value.gift_describe)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: GiftColorInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.gift_describe != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 11, value.gift_describe)
+        }
+        if (value.color_name_english != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 10, value.color_name_english)
+        }
+        ProtoAdapter.STRING.asRepeated().encodeWithTag(writer, 9, value.color_reason)
         if (value.color_image_size != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 8, value.color_image_size)
         }
@@ -262,6 +321,9 @@ public class GiftColorInfo(
         var color_effect_id: Long = 0L
         var is_default: Boolean = false
         var color_image_size: Long = 0L
+        val color_reason = mutableListOf<String>()
+        var color_name_english: String = ""
+        var gift_describe: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> color_id = ProtoAdapter.INT64.decode(reader)
@@ -272,6 +334,9 @@ public class GiftColorInfo(
             6 -> color_effect_id = ProtoAdapter.INT64.decode(reader)
             7 -> is_default = ProtoAdapter.BOOL.decode(reader)
             8 -> color_image_size = ProtoAdapter.INT64.decode(reader)
+            9 -> color_reason.add(ProtoAdapter.STRING.decode(reader))
+            10 -> color_name_english = ProtoAdapter.STRING.decode(reader)
+            11 -> gift_describe = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -284,6 +349,9 @@ public class GiftColorInfo(
           color_effect_id = color_effect_id,
           is_default = is_default,
           color_image_size = color_image_size,
+          color_reason = color_reason,
+          color_name_english = color_name_english,
+          gift_describe = gift_describe,
           unknownFields = unknownFields
         )
       }

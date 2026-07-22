@@ -58,6 +58,14 @@ public class RandomMatchContent(
   )
   public val paired_time: Long = 0L,
   paired_group_list: List<UserGroup> = emptyList(),
+  @field:WireField(
+    tag = 20,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "matchedPreferenceTag",
+    schemaIndex = 4,
+  )
+  public val matched_preference_tag: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<RandomMatchContent, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -84,6 +92,7 @@ public class RandomMatchContent(
     if (source_type != other.source_type) return false
     if (paired_time != other.paired_time) return false
     if (paired_group_list != other.paired_group_list) return false
+    if (matched_preference_tag != other.matched_preference_tag) return false
     return true
   }
 
@@ -95,6 +104,7 @@ public class RandomMatchContent(
       result = result * 37 + source_type.hashCode()
       result = result * 37 + paired_time.hashCode()
       result = result * 37 + paired_group_list.hashCode()
+      result = result * 37 + matched_preference_tag.hashCode()
       super.hashCode = result
     }
     return result
@@ -106,6 +116,7 @@ public class RandomMatchContent(
     result += """source_type=$source_type"""
     result += """paired_time=$paired_time"""
     if (paired_group_list.isNotEmpty()) result += """paired_group_list=$paired_group_list"""
+    result += """matched_preference_tag=$matched_preference_tag"""
     return result.joinToString(prefix = "RandomMatchContent{", separator = ", ", postfix = "}")
   }
 
@@ -114,8 +125,9 @@ public class RandomMatchContent(
     source_type: Long = this.source_type,
     paired_time: Long = this.paired_time,
     paired_group_list: List<UserGroup> = this.paired_group_list,
+    matched_preference_tag: Int = this.matched_preference_tag,
     unknownFields: ByteString = this.unknownFields,
-  ): RandomMatchContent = RandomMatchContent(match_id, source_type, paired_time, paired_group_list, unknownFields)
+  ): RandomMatchContent = RandomMatchContent(match_id, source_type, paired_time, paired_group_list, matched_preference_tag, unknownFields)
 
   public companion object {
     @JvmField
@@ -140,6 +152,9 @@ public class RandomMatchContent(
           size += ProtoAdapter.INT64.encodedSizeWithTag(3, value.paired_time)
         }
         size += UserGroup.ADAPTER.asRepeated().encodedSizeWithTag(4, value.paired_group_list)
+        if (value.matched_preference_tag != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(20, value.matched_preference_tag)
+        }
         return size
       }
 
@@ -154,11 +169,17 @@ public class RandomMatchContent(
           ProtoAdapter.INT64.encodeWithTag(writer, 3, value.paired_time)
         }
         UserGroup.ADAPTER.asRepeated().encodeWithTag(writer, 4, value.paired_group_list)
+        if (value.matched_preference_tag != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 20, value.matched_preference_tag)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: RandomMatchContent) {
         writer.writeBytes(value.unknownFields)
+        if (value.matched_preference_tag != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 20, value.matched_preference_tag)
+        }
         UserGroup.ADAPTER.asRepeated().encodeWithTag(writer, 4, value.paired_group_list)
         if (value.paired_time != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 3, value.paired_time)
@@ -176,12 +197,14 @@ public class RandomMatchContent(
         var source_type: Long = 0L
         var paired_time: Long = 0L
         val paired_group_list = mutableListOf<UserGroup>()
+        var matched_preference_tag: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> match_id = ProtoAdapter.STRING.decode(reader)
             2 -> source_type = ProtoAdapter.INT64.decode(reader)
             3 -> paired_time = ProtoAdapter.INT64.decode(reader)
             4 -> paired_group_list.add(UserGroup.ADAPTER.decode(reader))
+            20 -> matched_preference_tag = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -190,6 +213,7 @@ public class RandomMatchContent(
           source_type = source_type,
           paired_time = paired_time,
           paired_group_list = paired_group_list,
+          matched_preference_tag = matched_preference_tag,
           unknownFields = unknownFields
         )
       }

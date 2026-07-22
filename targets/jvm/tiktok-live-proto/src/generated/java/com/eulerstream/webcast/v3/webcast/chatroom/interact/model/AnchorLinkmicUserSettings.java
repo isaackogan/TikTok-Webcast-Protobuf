@@ -2,6 +2,7 @@
 // Source: webcast.chatroom.interact.model.AnchorLinkmicUserSettings in webcast/chatroom/interact_model.proto
 package com.eulerstream.webcast.v3.webcast.chatroom.interact.model;
 
+import com.eulerstream.webcast.v3.webcast.chatroom.model.interact.SubtitleSettings;
 import com.squareup.wire.FieldEncoding;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoAdapter;
@@ -185,6 +186,14 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
   )
   public final boolean allow_guest_apply_during_cohost;
 
+  @WireField(
+      tag = 21,
+      adapter = "com.eulerstream.webcast.v3.webcast.chatroom.model.interact.SubtitleSettings#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "subtitleSetting"
+  )
+  public final SubtitleSettings subtitle_setting;
+
   public AnchorLinkmicUserSettings(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.is_turn_on = builder.is_turn_on;
@@ -207,6 +216,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
     this.allow_live_notice_of_suggested = builder.allow_live_notice_of_suggested;
     this.allow_guest_request_during_cohost = builder.allow_guest_request_during_cohost;
     this.allow_guest_apply_during_cohost = builder.allow_guest_apply_during_cohost;
+    this.subtitle_setting = builder.subtitle_setting;
   }
 
   @Override
@@ -232,6 +242,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
     builder.allow_live_notice_of_suggested = allow_live_notice_of_suggested;
     builder.allow_guest_request_during_cohost = allow_guest_request_during_cohost;
     builder.allow_guest_apply_during_cohost = allow_guest_apply_during_cohost;
+    builder.subtitle_setting = subtitle_setting;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -261,7 +272,8 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
         && Internal.equals(allow_missed_invitation_notice, o.allow_missed_invitation_notice)
         && Internal.equals(allow_live_notice_of_suggested, o.allow_live_notice_of_suggested)
         && Internal.equals(allow_guest_request_during_cohost, o.allow_guest_request_during_cohost)
-        && Internal.equals(allow_guest_apply_during_cohost, o.allow_guest_apply_during_cohost);
+        && Internal.equals(allow_guest_apply_during_cohost, o.allow_guest_apply_during_cohost)
+        && Internal.equals(subtitle_setting, o.subtitle_setting);
   }
 
   @Override
@@ -289,6 +301,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
       result = result * 37 + Boolean.hashCode(allow_live_notice_of_suggested);
       result = result * 37 + Boolean.hashCode(allow_guest_request_during_cohost);
       result = result * 37 + Boolean.hashCode(allow_guest_apply_during_cohost);
+      result = result * 37 + (subtitle_setting != null ? subtitle_setting.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -317,6 +330,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
     builder.append(", allow_live_notice_of_suggested=").append(allow_live_notice_of_suggested);
     builder.append(", allow_guest_request_during_cohost=").append(allow_guest_request_during_cohost);
     builder.append(", allow_guest_apply_during_cohost=").append(allow_guest_apply_during_cohost);
+    if (subtitle_setting != null) builder.append(", subtitle_setting=").append(subtitle_setting);
     return builder.replace(0, 2, "AnchorLinkmicUserSettings{").append('}').toString();
   }
 
@@ -360,6 +374,8 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
     public boolean allow_guest_request_during_cohost;
 
     public boolean allow_guest_apply_during_cohost;
+
+    public SubtitleSettings subtitle_setting;
 
     public Builder() {
       is_turn_on = false;
@@ -487,6 +503,11 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
       return this;
     }
 
+    public Builder subtitle_setting(SubtitleSettings subtitle_setting) {
+      this.subtitle_setting = subtitle_setting;
+      return this;
+    }
+
     @Override
     public AnchorLinkmicUserSettings build() {
       return new AnchorLinkmicUserSettings(this, super.buildUnknownFields());
@@ -561,6 +582,9 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
       if (!Objects.equals(value.allow_guest_apply_during_cohost, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(20, value.allow_guest_apply_during_cohost);
       }
+      if (!Objects.equals(value.subtitle_setting, null)) {
+        result += SubtitleSettings.ADAPTER.encodedSizeWithTag(21, value.subtitle_setting);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -587,6 +611,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
       if (!Objects.equals(value.allow_live_notice_of_suggested, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 18, value.allow_live_notice_of_suggested);
       if (!Objects.equals(value.allow_guest_request_during_cohost, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 19, value.allow_guest_request_during_cohost);
       if (!Objects.equals(value.allow_guest_apply_during_cohost, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 20, value.allow_guest_apply_during_cohost);
+      if (!Objects.equals(value.subtitle_setting, null)) SubtitleSettings.ADAPTER.encodeWithTag(writer, 21, value.subtitle_setting);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -594,6 +619,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
     public void encode(ReverseProtoWriter writer, AnchorLinkmicUserSettings value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.subtitle_setting, null)) SubtitleSettings.ADAPTER.encodeWithTag(writer, 21, value.subtitle_setting);
       if (!Objects.equals(value.allow_guest_apply_during_cohost, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 20, value.allow_guest_apply_during_cohost);
       if (!Objects.equals(value.allow_guest_request_during_cohost, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 19, value.allow_guest_request_during_cohost);
       if (!Objects.equals(value.allow_live_notice_of_suggested, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 18, value.allow_live_notice_of_suggested);
@@ -642,6 +668,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
           case 18: builder.allow_live_notice_of_suggested(ProtoAdapter.BOOL.decode(reader)); break;
           case 19: builder.allow_guest_request_during_cohost(ProtoAdapter.BOOL.decode(reader)); break;
           case 20: builder.allow_guest_apply_during_cohost(ProtoAdapter.BOOL.decode(reader)); break;
+          case 21: builder.subtitle_setting(SubtitleSettings.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -654,6 +681,7 @@ public final class AnchorLinkmicUserSettings extends Message<AnchorLinkmicUserSe
     @Override
     public AnchorLinkmicUserSettings redact(AnchorLinkmicUserSettings value) {
       Builder builder = value.newBuilder();
+      if (builder.subtitle_setting != null) builder.subtitle_setting = SubtitleSettings.ADAPTER.redact(builder.subtitle_setting);
       builder.clearUnknownFields();
       return builder.build();
     }

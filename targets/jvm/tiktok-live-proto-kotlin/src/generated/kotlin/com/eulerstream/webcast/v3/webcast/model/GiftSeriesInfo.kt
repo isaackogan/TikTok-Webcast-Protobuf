@@ -7,6 +7,7 @@
 
 package com.eulerstream.webcast.v3.webcast.model
 
+import com.eulerstream.webcast.v3.webcast.model.base.ImageModel
 import com.squareup.wire.FieldEncoding
 import com.squareup.wire.Message
 import com.squareup.wire.ProtoAdapter
@@ -48,6 +49,46 @@ public class GiftSeriesInfo(
     schemaIndex = 2,
   )
   public val enabled: Boolean = false,
+  @field:WireField(
+    tag = 5,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "containerBackground",
+    schemaIndex = 3,
+  )
+  public val container_background: ImageModel? = null,
+  @field:WireField(
+    tag = 6,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "sendGiftButtonColor",
+    schemaIndex = 4,
+  )
+  public val send_gift_button_color: String = "",
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "pointingBackTriColor",
+    schemaIndex = 5,
+  )
+  public val pointing_back_tri_color: String = "",
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "seriesNameColor",
+    schemaIndex = 6,
+  )
+  public val series_name_color: String = "",
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#INT64",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "endTimeSec",
+    schemaIndex = 7,
+  )
+  public val end_time_sec: Long = 0L,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<GiftSeriesInfo, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -72,6 +113,11 @@ public class GiftSeriesInfo(
     if (series_name != other.series_name) return false
     if (gift_ids != other.gift_ids) return false
     if (enabled != other.enabled) return false
+    if (container_background != other.container_background) return false
+    if (send_gift_button_color != other.send_gift_button_color) return false
+    if (pointing_back_tri_color != other.pointing_back_tri_color) return false
+    if (series_name_color != other.series_name_color) return false
+    if (end_time_sec != other.end_time_sec) return false
     return true
   }
 
@@ -82,6 +128,11 @@ public class GiftSeriesInfo(
       result = result * 37 + series_name.hashCode()
       result = result * 37 + gift_ids.hashCode()
       result = result * 37 + enabled.hashCode()
+      result = result * 37 + (container_background?.hashCode() ?: 0)
+      result = result * 37 + send_gift_button_color.hashCode()
+      result = result * 37 + pointing_back_tri_color.hashCode()
+      result = result * 37 + series_name_color.hashCode()
+      result = result * 37 + end_time_sec.hashCode()
       super.hashCode = result
     }
     return result
@@ -92,6 +143,11 @@ public class GiftSeriesInfo(
     result += """series_name=${sanitize(series_name)}"""
     if (gift_ids.isNotEmpty()) result += """gift_ids=$gift_ids"""
     result += """enabled=$enabled"""
+    if (container_background != null) result += """container_background=$container_background"""
+    result += """send_gift_button_color=${sanitize(send_gift_button_color)}"""
+    result += """pointing_back_tri_color=${sanitize(pointing_back_tri_color)}"""
+    result += """series_name_color=${sanitize(series_name_color)}"""
+    result += """end_time_sec=$end_time_sec"""
     return result.joinToString(prefix = "GiftSeriesInfo{", separator = ", ", postfix = "}")
   }
 
@@ -99,8 +155,13 @@ public class GiftSeriesInfo(
     series_name: String = this.series_name,
     gift_ids: List<Long> = this.gift_ids,
     enabled: Boolean = this.enabled,
+    container_background: ImageModel? = this.container_background,
+    send_gift_button_color: String = this.send_gift_button_color,
+    pointing_back_tri_color: String = this.pointing_back_tri_color,
+    series_name_color: String = this.series_name_color,
+    end_time_sec: Long = this.end_time_sec,
     unknownFields: ByteString = this.unknownFields,
-  ): GiftSeriesInfo = GiftSeriesInfo(series_name, gift_ids, enabled, unknownFields)
+  ): GiftSeriesInfo = GiftSeriesInfo(series_name, gift_ids, enabled, container_background, send_gift_button_color, pointing_back_tri_color, series_name_color, end_time_sec, unknownFields)
 
   public companion object {
     @JvmField
@@ -121,6 +182,21 @@ public class GiftSeriesInfo(
         if (value.enabled != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(4, value.enabled)
         }
+        if (value.container_background != null) {
+          size += ImageModel.ADAPTER.encodedSizeWithTag(5, value.container_background)
+        }
+        if (value.send_gift_button_color != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(6, value.send_gift_button_color)
+        }
+        if (value.pointing_back_tri_color != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.pointing_back_tri_color)
+        }
+        if (value.series_name_color != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(8, value.series_name_color)
+        }
+        if (value.end_time_sec != 0L) {
+          size += ProtoAdapter.INT64.encodedSizeWithTag(9, value.end_time_sec)
+        }
         return size
       }
 
@@ -132,11 +208,41 @@ public class GiftSeriesInfo(
         if (value.enabled != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.enabled)
         }
+        if (value.container_background != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 5, value.container_background)
+        }
+        if (value.send_gift_button_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.send_gift_button_color)
+        }
+        if (value.pointing_back_tri_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.pointing_back_tri_color)
+        }
+        if (value.series_name_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 8, value.series_name_color)
+        }
+        if (value.end_time_sec != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_sec)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: GiftSeriesInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.end_time_sec != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_sec)
+        }
+        if (value.series_name_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 8, value.series_name_color)
+        }
+        if (value.pointing_back_tri_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.pointing_back_tri_color)
+        }
+        if (value.send_gift_button_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.send_gift_button_color)
+        }
+        if (value.container_background != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 5, value.container_background)
+        }
         if (value.enabled != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.enabled)
         }
@@ -150,6 +256,11 @@ public class GiftSeriesInfo(
         var series_name: String = ""
         var gift_ids: MutableList<Long>? = null
         var enabled: Boolean = false
+        var container_background: ImageModel? = null
+        var send_gift_button_color: String = ""
+        var pointing_back_tri_color: String = ""
+        var series_name_color: String = ""
+        var end_time_sec: Long = 0L
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             2 -> series_name = ProtoAdapter.STRING.decode(reader)
@@ -164,6 +275,11 @@ public class GiftSeriesInfo(
               gift_ids!!.add(ProtoAdapter.INT64.decode(reader))
             }
             4 -> enabled = ProtoAdapter.BOOL.decode(reader)
+            5 -> container_background = ImageModel.ADAPTER.decode(reader)
+            6 -> send_gift_button_color = ProtoAdapter.STRING.decode(reader)
+            7 -> pointing_back_tri_color = ProtoAdapter.STRING.decode(reader)
+            8 -> series_name_color = ProtoAdapter.STRING.decode(reader)
+            9 -> end_time_sec = ProtoAdapter.INT64.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -171,11 +287,17 @@ public class GiftSeriesInfo(
           series_name = series_name,
           gift_ids = gift_ids ?: listOf(),
           enabled = enabled,
+          container_background = container_background,
+          send_gift_button_color = send_gift_button_color,
+          pointing_back_tri_color = pointing_back_tri_color,
+          series_name_color = series_name_color,
+          end_time_sec = end_time_sec,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: GiftSeriesInfo): GiftSeriesInfo = value.copy(
+        container_background = value.container_background?.let(ImageModel.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

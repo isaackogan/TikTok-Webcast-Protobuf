@@ -13,6 +13,7 @@ import com.squareup.wire.Syntax;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Boolean;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -80,13 +81,22 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
   )
   public final long enigma_score;
 
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "isEnigma"
+  )
+  public final boolean is_enigma;
+
   public BattleUserArmy(long user_id, long score, String nickname, ImageModel avatar_thumb,
-      long diamond_score, String user_id_str, long enigma_score) {
-    this(user_id, score, nickname, avatar_thumb, diamond_score, user_id_str, enigma_score, ByteString.EMPTY);
+      long diamond_score, String user_id_str, long enigma_score, boolean is_enigma) {
+    this(user_id, score, nickname, avatar_thumb, diamond_score, user_id_str, enigma_score, is_enigma, ByteString.EMPTY);
   }
 
   public BattleUserArmy(long user_id, long score, String nickname, ImageModel avatar_thumb,
-      long diamond_score, String user_id_str, long enigma_score, ByteString unknownFields) {
+      long diamond_score, String user_id_str, long enigma_score, boolean is_enigma,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.user_id = user_id;
     this.score = score;
@@ -101,6 +111,7 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
     }
     this.user_id_str = user_id_str;
     this.enigma_score = enigma_score;
+    this.is_enigma = is_enigma;
   }
 
   @Override
@@ -113,6 +124,7 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
     builder.diamond_score = diamond_score;
     builder.user_id_str = user_id_str;
     builder.enigma_score = enigma_score;
+    builder.is_enigma = is_enigma;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -129,7 +141,8 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
         && Internal.equals(avatar_thumb, o.avatar_thumb)
         && Internal.equals(diamond_score, o.diamond_score)
         && Internal.equals(user_id_str, o.user_id_str)
-        && Internal.equals(enigma_score, o.enigma_score);
+        && Internal.equals(enigma_score, o.enigma_score)
+        && Internal.equals(is_enigma, o.is_enigma);
   }
 
   @Override
@@ -144,6 +157,7 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
       result = result * 37 + Long.hashCode(diamond_score);
       result = result * 37 + (user_id_str != null ? user_id_str.hashCode() : 0);
       result = result * 37 + Long.hashCode(enigma_score);
+      result = result * 37 + Boolean.hashCode(is_enigma);
       super.hashCode = result;
     }
     return result;
@@ -159,6 +173,7 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
     builder.append(", diamond_score=").append(diamond_score);
     if (user_id_str != null) builder.append(", user_id_str=").append(Internal.sanitize(user_id_str));
     builder.append(", enigma_score=").append(enigma_score);
+    builder.append(", is_enigma=").append(is_enigma);
     return builder.replace(0, 2, "BattleUserArmy{").append('}').toString();
   }
 
@@ -177,6 +192,8 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
 
     public long enigma_score;
 
+    public boolean is_enigma;
+
     public Builder() {
       user_id = 0L;
       score = 0L;
@@ -184,6 +201,7 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
       diamond_score = 0L;
       user_id_str = "";
       enigma_score = 0L;
+      is_enigma = false;
     }
 
     public Builder user_id(long user_id) {
@@ -221,9 +239,14 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
       return this;
     }
 
+    public Builder is_enigma(boolean is_enigma) {
+      this.is_enigma = is_enigma;
+      return this;
+    }
+
     @Override
     public BattleUserArmy build() {
-      return new BattleUserArmy(user_id, score, nickname, avatar_thumb, diamond_score, user_id_str, enigma_score, super.buildUnknownFields());
+      return new BattleUserArmy(user_id, score, nickname, avatar_thumb, diamond_score, user_id_str, enigma_score, is_enigma, super.buildUnknownFields());
     }
   }
 
@@ -256,6 +279,9 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
       if (!Objects.equals(value.enigma_score, 0L)) {
         result += ProtoAdapter.INT64.encodedSizeWithTag(7, value.enigma_score);
       }
+      if (!Objects.equals(value.is_enigma, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(8, value.is_enigma);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -269,12 +295,14 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
       if (!Objects.equals(value.diamond_score, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.diamond_score);
       if (!Objects.equals(value.user_id_str, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.user_id_str);
       if (!Objects.equals(value.enigma_score, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 7, value.enigma_score);
+      if (!Objects.equals(value.is_enigma, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_enigma);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, BattleUserArmy value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.is_enigma, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_enigma);
       if (!Objects.equals(value.enigma_score, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 7, value.enigma_score);
       if (!Objects.equals(value.user_id_str, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.user_id_str);
       if (!Objects.equals(value.diamond_score, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.diamond_score);
@@ -297,6 +325,7 @@ public final class BattleUserArmy extends Message<BattleUserArmy, BattleUserArmy
           case 5: builder.diamond_score(ProtoAdapter.INT64.decode(reader)); break;
           case 6: builder.user_id_str(ProtoAdapter.STRING.decode(reader)); break;
           case 7: builder.enigma_score(ProtoAdapter.INT64.decode(reader)); break;
+          case 8: builder.is_enigma(ProtoAdapter.BOOL.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

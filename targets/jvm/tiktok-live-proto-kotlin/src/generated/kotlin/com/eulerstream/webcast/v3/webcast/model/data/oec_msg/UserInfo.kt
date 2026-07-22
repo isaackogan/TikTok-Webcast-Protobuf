@@ -62,14 +62,6 @@ public class UserInfo(
     schemaIndex = 3,
   )
   public val is_winner: Boolean = false,
-  @field:WireField(
-    tag = 5,
-    adapter = "com.squareup.wire.ProtoAdapter#STRING",
-    label = WireField.Label.OMIT_IDENTITY,
-    jsonName = "userIdStr",
-    schemaIndex = 4,
-  )
-  public val user_id_str: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<UserInfo, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -86,7 +78,6 @@ public class UserInfo(
     if (nick_name != other.nick_name) return false
     if (avatar != other.avatar) return false
     if (is_winner != other.is_winner) return false
-    if (user_id_str != other.user_id_str) return false
     return true
   }
 
@@ -98,7 +89,6 @@ public class UserInfo(
       result = result * 37 + nick_name.hashCode()
       result = result * 37 + (avatar?.hashCode() ?: 0)
       result = result * 37 + is_winner.hashCode()
-      result = result * 37 + user_id_str.hashCode()
       super.hashCode = result
     }
     return result
@@ -110,7 +100,6 @@ public class UserInfo(
     result += """nick_name=${sanitize(nick_name)}"""
     if (avatar != null) result += """avatar=$avatar"""
     result += """is_winner=$is_winner"""
-    result += """user_id_str=${sanitize(user_id_str)}"""
     return result.joinToString(prefix = "UserInfo{", separator = ", ", postfix = "}")
   }
 
@@ -119,9 +108,8 @@ public class UserInfo(
     nick_name: String = this.nick_name,
     avatar: ImageModel? = this.avatar,
     is_winner: Boolean = this.is_winner,
-    user_id_str: String = this.user_id_str,
     unknownFields: ByteString = this.unknownFields,
-  ): UserInfo = UserInfo(user_id, nick_name, avatar, is_winner, user_id_str, unknownFields)
+  ): UserInfo = UserInfo(user_id, nick_name, avatar, is_winner, unknownFields)
 
   public companion object {
     @JvmField
@@ -147,9 +135,6 @@ public class UserInfo(
         if (value.is_winner != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(4, value.is_winner)
         }
-        if (value.user_id_str != "") {
-          size += ProtoAdapter.STRING.encodedSizeWithTag(5, value.user_id_str)
-        }
         return size
       }
 
@@ -166,17 +151,11 @@ public class UserInfo(
         if (value.is_winner != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.is_winner)
         }
-        if (value.user_id_str != "") {
-          ProtoAdapter.STRING.encodeWithTag(writer, 5, value.user_id_str)
-        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: UserInfo) {
         writer.writeBytes(value.unknownFields)
-        if (value.user_id_str != "") {
-          ProtoAdapter.STRING.encodeWithTag(writer, 5, value.user_id_str)
-        }
         if (value.is_winner != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.is_winner)
         }
@@ -196,14 +175,12 @@ public class UserInfo(
         var nick_name: String = ""
         var avatar: ImageModel? = null
         var is_winner: Boolean = false
-        var user_id_str: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> user_id = ProtoAdapter.INT64.decode(reader)
             2 -> nick_name = ProtoAdapter.STRING.decode(reader)
             3 -> avatar = ImageModel.ADAPTER.decode(reader)
             4 -> is_winner = ProtoAdapter.BOOL.decode(reader)
-            5 -> user_id_str = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -212,7 +189,6 @@ public class UserInfo(
           nick_name = nick_name,
           avatar = avatar,
           is_winner = is_winner,
-          user_id_str = user_id_str,
           unknownFields = unknownFields
         )
       }
