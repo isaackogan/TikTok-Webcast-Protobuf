@@ -427,6 +427,7 @@ message JoinGroupBizContent {
   chatroom.model.interact.RivalsGameTag game_tag = 9;
   string new_user_education = 11;
   map<int64, chatroom.model.interact.CohostABInfo> ab_infos = 12;
+  int32 matched_preference_tag = 13;
   JoinGroupMessageExtra join_group_msg_extra = 101;
 }
 
@@ -533,6 +534,8 @@ message PermitJoinGroupBizContent {
 
   linkmic.common.SourceType source_type = 2;
   bool skip_cancel_match = 3;
+  int32 matched_preference_tag = 4;
+  QuickCohostInviteeUserInfo quick_cohost_invitee_user_info = 5;
 }
 
 message PermitJoinGroupContent {
@@ -547,6 +550,11 @@ message PermitJoinGroupContent {
   repeated string linked_user_ui_positions = 7;
   int32 permit_group_type = 8;
   linkmic.common.LayoutData cross_room_layout = 9;
+}
+
+message QuickCohostInviteeUserInfo {
+  model.base.ImageModel avatar_thumb = 1;
+  string nickname = 2;
 }
 
 message RivalExtra {

@@ -27,6 +27,7 @@ message AnchorLinkmicUserSettings {
   bool allow_live_notice_of_suggested = 18;
   bool allow_guest_request_during_cohost = 19;
   bool allow_guest_apply_during_cohost = 20;
+  .webcast.chatroom.model.interact.SubtitleSettings subtitle_setting = 21;
 }
 
 message BattleInfo {

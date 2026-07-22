@@ -90,6 +90,7 @@ message BattleUserArmy {
   int64 diamond_score = 5;
   string user_id_str = 6;
   int64 enigma_score = 7;
+  bool is_enigma = 8;
 }
 
 message BattleUserInfoWrapper {

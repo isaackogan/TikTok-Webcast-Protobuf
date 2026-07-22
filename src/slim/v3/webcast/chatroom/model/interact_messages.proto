@@ -154,12 +154,15 @@ message RandomMatchContent {
   int64 source_type = 2;
   int64 paired_time = 3;
   repeated UserGroup paired_group_list = 4;
+  int32 matched_preference_tag = 20;
 }
 
 message RandomMatchContent_UserInfo {
   int64 user_id = 1;
   int64 room_id = 2;
   int32 invitation_role_type = 3;
+  .webcast.model.base.ImageModel avatar_thumb = 4;
+  string nickname = 5;
 }
 
 message RivalsGameTag {
@@ -176,6 +179,15 @@ message SecondDegreeRelationContent {
 message SimilarInterestContent {
   int64 content_id = 1;
   string display_text = 2;
+}
+
+message SubtitleSettings {
+  int32 has_right = 1;
+  int32 temporary_ban = 2;
+  int32 enable = 3;
+  int64 expire_date = 4;
+  string target_language = 5;
+  string label_text = 6;
 }
 
 message TagV2 {

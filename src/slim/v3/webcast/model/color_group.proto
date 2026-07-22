@@ -58,6 +58,9 @@ message Gift {
   string gift_struct_hash = 125;
   SchemeInfo scheme_info = 126;
   GiftSeriesInfo series_info = 127;
+  ColorPickerInfo color_picker_info = 128;
+  MusicGiftInfo music_info = 140;
+  base.ImageModel gift_bottom_right_label_icon = 141;
   string strategy_event = 201;
 }
 

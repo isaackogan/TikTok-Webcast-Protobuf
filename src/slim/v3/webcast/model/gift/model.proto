@@ -53,6 +53,9 @@ message GiftColorInfo {
   int64 color_effect_id = 6;
   bool is_default = 7;
   int64 color_image_size = 8;
+  repeated string color_reason = 9;
+  string color_name_english = 10;
+  string gift_describe = 11;
 }
 
 message GiftEffectCrossScreenStickerSpec {
@@ -79,6 +82,12 @@ message GiftEffectSpecs {
   GiftEffectLynxSpec lynx = 2;
   GiftEffectPrefabSpec prefab = 3;
   GiftEffectSerialSpec serial_spec = 4;
+  GiftEffectStreamSpec stream_effect_spec = 5;
+}
+
+message GiftEffectStreamSpec {
+  int64 basic_asset_id = 1;
+  repeated int64 extra_asset_ids = 2;
 }
 
 message GiftPanelBeaconBubble {

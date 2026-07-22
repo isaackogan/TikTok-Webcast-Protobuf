@@ -13,9 +13,9 @@ import "webcast/model/base/emoji.proto";
 import "webcast/model/base/messages.proto";
 import "webcast/model/base/user.proto";
 import "webcast/model/base/user_2.proto";
+import "webcast/model/color_group.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/model/data/multi_guest_play.proto";
-import "webcast/model/gift.proto";
 import "webcast/model/gift/assets.proto";
 import "webcast/model/gift/model.proto";
 import "webcast/model/gift/model_asset_bundle.proto";
@@ -477,6 +477,11 @@ message GoalData {
   map<int64, Progress> goal_progress = 2;
 }
 
+message GuideMessageFrequencyRule {
+  int64 room_show_count = 1;
+  int64 day_show_count = 2;
+}
+
 message HourlyRankRewardInfo {
   int64 user_id = 1;
   int64 asset_id = 2;
@@ -851,6 +856,9 @@ message TagItem {
   int64 tag_value = 3;
   int32 display_location = 4;
   map<string, string> event_tracking_fields = 5;
+  string biz_name = 6;
+  bool disable_count_frequency_control = 10;
+  bool disable_crm_click = 11;
 }
 
 message TeamUsersInfo {
@@ -898,6 +906,8 @@ message Topic {
 
   im.PublicAreaMessageCommon_CreatorSuccessInfo_Topic_DisplayLocation display_location = 7;
   map<string, string> event_tracking_fields = 8;
+  string biz_name = 9;
+  bool disable_count_frequency_control = 10;
 }
 
 message TriggerCondition {
@@ -1324,6 +1334,7 @@ message WebcastGuideMessage {
   int64 duration = 5;
   int64 display_style = 6;
   string scene = 7;
+  GuideMessageFrequencyRule frequency_rule = 8;
 }
 
 message WebcastHourlyRankRewardMessage {

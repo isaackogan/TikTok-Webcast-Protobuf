@@ -6,6 +6,7 @@ import "webcast/model/base/messages.proto";
 import "webcast/model/base/user.proto";
 import "webcast/model/data/messages.proto";
 import "webcast/model/gift/assets.proto";
+import "webcast/model/gift/model.proto";
 
 message ActivityRewardInfo {
   base.ImageModel badge = 1;
@@ -30,6 +31,12 @@ message AnchorLevel {
   base.ImageModel profile_dialog_bg_back = 11;
   base.ImageModel stage_level = 12;
   base.ImageModel small_icon = 13;
+}
+
+message AudioResource {
+  string audio_url = 1;
+  string lyrics_url = 2;
+  int64 snippet_id = 3;
 }
 
 message AuthenticationInfo {
@@ -64,6 +71,15 @@ message BorderInfo {
   string name = 11;
   string description = 12;
   bool is_taller_avatar_background = 13;
+}
+
+message ColorGroup {
+  string group_name = 1;
+  repeated gift.model.GiftColorInfo color_infos = 2;
+}
+
+message ColorPickerInfo {
+  repeated ColorGroup groups = 1;
 }
 
 message CrossScreenEffectInfo {
@@ -124,6 +140,11 @@ message GiftSeriesInfo {
   string series_name = 2;
   repeated int64 gift_ids = 3;
   bool enabled = 4;
+  base.ImageModel container_background = 5;
+  string send_gift_button_color = 6;
+  string pointing_back_tri_color = 7;
+  string series_name_color = 8;
+  int64 end_time_sec = 9;
 }
 
 message GiftSkin {
@@ -200,6 +221,14 @@ message LiveEventInfo {
 
 message LynxCrossScreenEffectInfo {
   repeated int64 effect_ids = 4;
+}
+
+message MusicGiftInfo {
+  string artist_name = 1;
+  AudioResource resource = 2;
+  int64 song_id = 3;
+  int64 mood_id = 4;
+  string song_name = 5;
 }
 
 message RandomGiftBubble {

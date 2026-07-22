@@ -215,7 +215,6 @@ message UserInfo {
   string nick_name = 2;
   base.ImageModel avatar = 3;
   bool is_winner = 4;
-  string user_id_str = 5;
 }
 
 message VoucherItem {

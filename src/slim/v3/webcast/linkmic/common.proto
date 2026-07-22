@@ -276,6 +276,7 @@ message CohostTypeLayoutExtra {
   bool local_layout_only = 4;
   int32 is_enlarge_mode = 5;
   bool disable_match_component = 6;
+  int32 rematch_spot_id = 7;
 }
 
 message CohostTypeLayoutNonSeiExtra {
@@ -284,6 +285,7 @@ message CohostTypeLayoutNonSeiExtra {
 message CohostTypeSpotExtra {
   bool is_enlarged = 1;
   int32 content_type = 2;
+  int32 pre_enlarge_spot_id = 3;
 }
 
 message CohostTypeSpotNonSeiExtra {
