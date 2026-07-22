@@ -55,8 +55,8 @@ publishing {
                 url.set("https://github.com/isaackogan/TikTok-Webcast-Protobuf")
                 licenses {
                     license {
-                        name.set("MIT")
-                        url.set("https://opensource.org/licenses/MIT")
+                        name.set("AGPL-3.0-only")
+                        url.set("https://github.com/isaackogan/TikTok-Webcast-Protobuf/blob/main/LICENSE")
                     }
                 }
                 developers {

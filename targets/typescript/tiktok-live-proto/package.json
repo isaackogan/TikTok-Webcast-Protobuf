@@ -2,7 +2,7 @@
   "name": "tiktok-live-proto",
   "version": "0.2.3",
   "description": "Clean-room TypeScript bindings for the TikTok Webcast Protobuf schema.",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "repository": {
     "url": "https://github.com/isaackogan/TikTok-Webcast-Protobuf"
