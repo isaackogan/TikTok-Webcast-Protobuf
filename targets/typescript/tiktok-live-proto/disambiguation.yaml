@@ -33,11 +33,13 @@ v3:
   webcast/model/message/messages.ts:
     AnchorInfo: MessageAnchorInfo
     CompetitionInitiateInfo: MessageCompetitionInitiateInfo
+    FlashSaleEnhancementInfo: MessageFlashSaleEnhancementInfo
     FontStyle: MessageFontStyle
     MatchInfo: MessageMatchInfo
     OptPairInfo: MessageOptPairInfo
     ReserveInfo: MessageReserveInfo
     SponsorshipInfo: MessageSponsorshipInfo
+    UserInfo: MessageUserInfo
 
   webcast/model/base/emoji.ts:
     EmoteWithIndex: EmojiEmoteWithIndex
