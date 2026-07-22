@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-proto-full-types",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Types-only TypeScript declarations for the full TikTok Webcast Protobuf schema (no wire codec, no field numbers).",
   "license": "AGPL-3.0-only",
   "type": "module",
