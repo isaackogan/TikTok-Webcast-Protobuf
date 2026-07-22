@@ -27,6 +27,7 @@ __all__ = (
     "RivalsGameTag",
     "SecondDegreeRelationContent",
     "SimilarInterestContent",
+    "SubtitleSettings",
     "TagV2",
     "TeamInfo",
     "TeamUser",
@@ -534,6 +535,10 @@ class RandomMatchContent(betterproto2.Message):
         4, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
+    matched_preference_tag: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        20, betterproto2.TYPE_INT32
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.model.interact", "RandomMatchContent", RandomMatchContent
@@ -552,6 +557,14 @@ class RandomMatchContentUserInfo(betterproto2.Message):
 
     invitation_role_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         3, betterproto2.TYPE_INT32
+    )
+
+    avatar_thumb: "___model__base__.ImageModel | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    nickname: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
     )
 
 
@@ -613,6 +626,38 @@ class SimilarInterestContent(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.chatroom.model.interact", "SimilarInterestContent", SimilarInterestContent
+)
+
+
+@dataclass(eq=False, repr=False)
+class SubtitleSettings(betterproto2.Message):
+    has_right: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    temporary_ban: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    enable: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT32)
+    )
+
+    expire_date: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+    target_language: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    label_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.chatroom.model.interact", "SubtitleSettings", SubtitleSettings
 )
 
 

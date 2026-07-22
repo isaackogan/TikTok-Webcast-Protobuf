@@ -70,6 +70,7 @@ __all__ = (
     "PublicAreaMessageCommonCreatorSuccessInfoTopicDisplayLocation",
     "PublicAreaMessageCommonPortraitInfoUserMetricsUserMetricsType",
     "PushHeader",
+    "QuickCohostInviteeUserInfo",
     "RankTextMessageRankTestMessageScene",
     "RivalExtra",
     "RivalGuestExtra",
@@ -956,6 +957,10 @@ class JoinGroupBizContent(betterproto2.Message):
         )
     )
 
+    matched_preference_tag: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        13, betterproto2.TYPE_INT32
+    )
+
     join_group_msg_extra: "JoinGroupMessageExtra | None" = betterproto2.field(
         101, betterproto2.TYPE_MESSAGE, optional=True
     )
@@ -1324,6 +1329,14 @@ class PermitJoinGroupBizContent(betterproto2.Message):
 
     skip_cancel_match: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
 
+    matched_preference_tag: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT32
+    )
+
+    quick_cohost_invitee_user_info: "QuickCohostInviteeUserInfo | None" = (
+        betterproto2.field(5, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.im", "PermitJoinGroupBizContent", PermitJoinGroupBizContent
@@ -1390,6 +1403,22 @@ class PushHeader(betterproto2.Message):
 
 
 default_message_pool.register_message("webcast.im", "PushHeader", PushHeader)
+
+
+@dataclass(eq=False, repr=False)
+class QuickCohostInviteeUserInfo(betterproto2.Message):
+    avatar_thumb: "_model__base__.ImageModel | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    nickname: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.im", "QuickCohostInviteeUserInfo", QuickCohostInviteeUserInfo
+)
 
 
 @dataclass(eq=False, repr=False)

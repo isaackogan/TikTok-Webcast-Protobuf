@@ -607,6 +607,10 @@ class CohostTypeLayoutExtra(betterproto2.Message):
 
     disable_match_component: "bool" = betterproto2.field(6, betterproto2.TYPE_BOOL)
 
+    rematch_spot_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        7, betterproto2.TYPE_INT32
+    )
+
 
 default_message_pool.register_message(
     "webcast.linkmic.common", "CohostTypeLayoutExtra", CohostTypeLayoutExtra
@@ -629,6 +633,10 @@ class CohostTypeSpotExtra(betterproto2.Message):
 
     content_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(2, betterproto2.TYPE_INT32)
+    )
+
+    pre_enlarge_spot_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT32
     )
 
 

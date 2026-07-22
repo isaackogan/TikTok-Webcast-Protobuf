@@ -776,10 +776,6 @@ class UserInfo(betterproto2.Message):
 
     is_winner: "bool" = betterproto2.field(4, betterproto2.TYPE_BOOL)
 
-    user_id_str: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
-        5, betterproto2.TYPE_STRING
-    )
-
 
 default_message_pool.register_message(
     "webcast.model.data.oec_msg", "UserInfo", UserInfo

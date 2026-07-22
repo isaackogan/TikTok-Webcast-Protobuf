@@ -301,6 +301,8 @@ class BattleUserArmy(betterproto2.Message):
         betterproto2.field(7, betterproto2.TYPE_INT64)
     )
 
+    is_enigma: "bool" = betterproto2.field(8, betterproto2.TYPE_BOOL)
+
 
 default_message_pool.register_message(
     "webcast.model.message.battle", "BattleUserArmy", BattleUserArmy

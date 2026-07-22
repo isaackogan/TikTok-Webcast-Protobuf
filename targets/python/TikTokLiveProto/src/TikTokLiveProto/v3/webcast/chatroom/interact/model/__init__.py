@@ -95,6 +95,10 @@ class AnchorLinkmicUserSettings(betterproto2.Message):
         20, betterproto2.TYPE_BOOL
     )
 
+    subtitle_setting: "__model__interact__.SubtitleSettings | None" = (
+        betterproto2.field(21, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.interact.model",

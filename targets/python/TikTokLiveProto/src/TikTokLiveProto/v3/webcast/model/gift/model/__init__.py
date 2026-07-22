@@ -19,6 +19,7 @@ __all__ = (
     "GiftEffectPrefabSpec",
     "GiftEffectSerialSpec",
     "GiftEffectSpecs",
+    "GiftEffectStreamSpec",
     "GiftPanelBeaconBubble",
     "GiftResource",
     "LiveStreamGoal",
@@ -77,6 +78,10 @@ class AssetBundle(betterproto2.Message):
 
     prefab_bundle: "PrefabBundle | None" = betterproto2.field(
         2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    stream_effect_spec: "GiftEffectStreamSpec | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -213,6 +218,18 @@ class GiftColorInfo(betterproto2.Message):
         8, betterproto2.TYPE_INT64
     )
 
+    color_reason: "list[typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING, repeated=True
+    )
+
+    color_name_english: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
+    gift_describe: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.gift.model", "GiftColorInfo", GiftColorInfo
@@ -335,9 +352,29 @@ class GiftEffectSpecs(betterproto2.Message):
         4, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    stream_effect_spec: "GiftEffectStreamSpec | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.gift.model", "GiftEffectSpecs", GiftEffectSpecs
+)
+
+
+@dataclass(eq=False, repr=False)
+class GiftEffectStreamSpec(betterproto2.Message):
+    basic_asset_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    extra_asset_ids: "list[typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]]" = betterproto2.field(
+        2, betterproto2.TYPE_INT64, repeated=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.gift.model", "GiftEffectStreamSpec", GiftEffectStreamSpec
 )
 
 

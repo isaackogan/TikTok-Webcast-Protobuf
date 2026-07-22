@@ -63,6 +63,7 @@ __all__ = (
     "GiftInfo",
     "GiftMonitorInfo",
     "GoalData",
+    "GuideMessageFrequencyRule",
     "HourlyRankRewardInfo",
     "Img",
     "InteractiveGiftInfo",
@@ -1700,6 +1701,22 @@ default_message_pool.register_message("webcast.model.message", "GoalData", GoalD
 
 
 @dataclass(eq=False, repr=False)
+class GuideMessageFrequencyRule(betterproto2.Message):
+    room_show_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    day_show_count: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "GuideMessageFrequencyRule", GuideMessageFrequencyRule
+)
+
+
+@dataclass(eq=False, repr=False)
 class HourlyRankRewardInfo(betterproto2.Message):
     user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(1, betterproto2.TYPE_INT64)
@@ -3097,6 +3114,16 @@ class TagItem(betterproto2.Message):
         ),
     )
 
+    biz_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    disable_count_frequency_control: "bool" = betterproto2.field(
+        10, betterproto2.TYPE_BOOL
+    )
+
+    disable_crm_click: "bool" = betterproto2.field(11, betterproto2.TYPE_BOOL)
+
 
 default_message_pool.register_message("webcast.model.message", "TagItem", TagItem)
 
@@ -3233,6 +3260,14 @@ class Topic(betterproto2.Message):
         map_meta=betterproto2.map_meta(
             betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
         ),
+    )
+
+    biz_name: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+    disable_count_frequency_control: "bool" = betterproto2.field(
+        10, betterproto2.TYPE_BOOL
     )
 
 
@@ -4643,6 +4678,10 @@ class WebcastGuideMessage(betterproto2.Message):
 
     scene: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         7, betterproto2.TYPE_STRING
+    )
+
+    frequency_rule: "GuideMessageFrequencyRule | None" = betterproto2.field(
+        8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
