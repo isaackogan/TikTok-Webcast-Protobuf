@@ -59,6 +59,8 @@ message AuctionWinnerPopup {
   string payment_expire_timestamp = 5;
   base.ImageModel product_img = 6;
   string schema = 7;
+  int32 popup_page_style = 8;
+  string lynx_popup_info = 9;
 }
 
 message BagIndex {
@@ -81,6 +83,8 @@ message CommerceInfo {
   PopupWindowInfo popup_window_info = 3;
   map<int64, VoucherItem> voucher_info = 4;
   AuctionInfo auction_info = 5;
+  int32 lynx_type = 6;
+  string lynx_info = 7;
 }
 
 message DispersionParam {

@@ -64,6 +64,13 @@ message GiftEffectCrossScreenStickerSpec {
   map<int64, int32> reaction_asset_ids = 3;
 }
 
+message GiftEffectLiveGenSpec {
+  string resource_uri = 1;
+  string md5 = 2;
+  int64 fallback_asset_id = 3;
+  int64 face_detection_asset_id = 4;
+}
+
 message GiftEffectLynxSpec {
   repeated int64 asset_ids = 1;
 }
@@ -83,6 +90,7 @@ message GiftEffectSpecs {
   GiftEffectPrefabSpec prefab = 3;
   GiftEffectSerialSpec serial_spec = 4;
   GiftEffectStreamSpec stream_effect_spec = 5;
+  GiftEffectLiveGenSpec live_gen_effect_spec = 6;
 }
 
 message GiftEffectStreamSpec {

@@ -24,6 +24,8 @@ message EcommerceEntrance {
   ShowcaseEntranceInfo showcase_entrance_info = 5;
 
   model.data.User_EcommerceEntrance_ViewVersion view_version = 6;
+  string avatar_background_color = 7;
+  int32 avatar_style_version = 8;
 }
 
 message PerceptionFeedbackOption {
@@ -53,6 +55,17 @@ message ShopEntranceInfo {
   int32 rate_display_style = 9;
   bool show_rate_not_applicable = 10;
   repeated SellingPoint selling_point = 11;
+  TopRatedInfo top_rated_info = 12;
+}
+
+message ShopThemeColor {
+  string light = 1;
+  string dark = 2;
+}
+
+message ShopThemedImage {
+  shared.ShopLabelImage light = 1;
+  shared.ShopLabelImage dark = 2;
 }
 
 message ShowResult {
@@ -79,6 +92,7 @@ message StoreIdentityLabel {
   string identity_label_text_color_dark = 8;
   string shop_explanation_page_schema = 9;
   string shop_identity_label_key = 10;
+  ShopThemedImage identity_image_logo = 11;
 }
 
 message StoreLabel {
@@ -93,4 +107,19 @@ message StoreOfficialLabel {
 
   model.data.User_EcommerceEntrance_ShopEntranceInfo_StoreLabel_StoreBrandLabelType label_type = 3;
   string label_type_str = 4;
+}
+
+message TopRatedInfo {
+  bool is_top_rated = 1;
+  TopRatedStyle top_rated_style = 2;
+  string schema = 3;
+}
+
+message TopRatedStyle {
+  string text = 1;
+  ShopThemeColor text_color = 2;
+  ShopThemeColor background_color = 3;
+  ShopThemeColor overlay_text_color = 4;
+  ShopThemeColor overlay_background_color = 5;
+  string long_text = 6;
 }

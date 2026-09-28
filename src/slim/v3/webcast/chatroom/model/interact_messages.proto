@@ -43,6 +43,9 @@ message CohostABInfo {
   bool is_match_playbook_enabled = 3;
   bool is_cohost_during_multiguest_enabled = 4;
   bool is_match_playbook_optimisation_enabled = 5;
+  bool is_match_playbook_usability_enabled = 6;
+  bool is_match_playbook_reminder_enabled = 7;
+  bool is_match_goofy_effect_enabled = 8;
 }
 
 message CohostABTest {

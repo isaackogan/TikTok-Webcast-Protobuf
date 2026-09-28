@@ -94,6 +94,7 @@ message User {
   repeated BadgeStruct badge_list = 64;
   repeated int64 mint_type_label = 65;
   FansClubInfo fans_club_info = 66;
+  AvatarHashInfo avatar_hash_info = 67;
 
   bool deprecated19 = 1001;
   bool allow_find_by_contacts = 1002;

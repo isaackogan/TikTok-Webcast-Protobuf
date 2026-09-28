@@ -20,6 +20,10 @@ message GoalReward {
   int32 top_n = 2;
   bool has_sticker = 3;
   int32 audit_status = 4;
+  string reward_direct_message = 5;
+  string reward_template_id = 6;
+  int32 reward_source = 7;
+  bool is_hit_opt_ab = 8;
 }
 
 message GoalStats {

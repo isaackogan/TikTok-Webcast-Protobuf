@@ -16,4 +16,5 @@ message WebcastAccessRecallMessage {
   .webcast.model.message.common.Text notice = 6;
   .webcast.model.message.common.Text content = 7;
   .webcast.model.message.PunishEventInfo punish_info = 8;
+  int64 end_time_v2 = 9;
 }

@@ -62,6 +62,8 @@ message PermitBizContent {
   int64 link_type_permission = 7;
   bool is_full_position_pre_approved = 8;
   bool is_quick_call_auto_approved = 9;
+  int32 mg_match_type = 10;
+  int32 linked_sub_reason = 11;
 }
 
 message ReplyBizContent {

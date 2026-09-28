@@ -12,6 +12,9 @@ message BaseProtoMessage {
   int64 offset = 5;
   bool is_history = 6;
   int32 sample_flag = 7;
+  int32 method_id = 8;
+  string group_key = 9;
+  string group_scene = 10;
 }
 
 message CommonMessageData {

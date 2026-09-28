@@ -73,6 +73,10 @@ message AffiliatedInfo {
   map<string, string> sticker_track_param = 10;
 }
 
+message AnchorLeftCardRefundNotice {
+  int64 anchor_id = 1;
+}
+
 message AnchorPair {
   int64 source_anchor_id = 1;
   int64 target_anchor_id = 2;
@@ -302,6 +306,13 @@ message CardObtainGuide {
   int32 not_in_use = 1;
 }
 
+message CohostInviteStateNotifyContent {
+  int64 rival_user_id = 1;
+  int64 rival_room_id = 2;
+  int64 group_channel_id = 3;
+  int32 reason = 4;
+}
+
 message CohostListChangeContent {
   repeated chatroom.model.interact.CohostListUser users = 1;
 }
@@ -512,6 +523,7 @@ message LinkMicAudienceInviteGuide {
   base.user.User user = 3;
   int32 display_strategy = 4;
   string linkmic_audience_invite_notice_reason = 5;
+  string linker_session_id = 6;
 }
 
 message LinkMicAudienceNoticeText {
@@ -567,6 +579,7 @@ message LinkmicAudienceApplyGuide {
   string trigger_type = 7;
   string request_id = 8;
   string linkmic_id = 9;
+  string linker_session_id = 10;
 }
 
 message LinkmicAudienceInviteGroupChatMemberGuide {
@@ -596,6 +609,20 @@ message MessageDisplayInfo {
 
 message MessageEntity {
   WebcastRoomNotifyMessage notify = 1;
+}
+
+message MusicAwardNotice {
+  common.Text display_content = 1;
+  int64 to_anchor_id = 2;
+  bool is_rewarded = 3;
+}
+
+message MusicEffectNotice {
+  int32 effect_tier = 1;
+  int64 to_anchor_id = 2;
+  int64 from_user_id = 3;
+  int64 gift_id = 4;
+  int64 gift_price = 5;
 }
 
 message NotifyHighlightContent {
@@ -649,6 +676,7 @@ message PollBasicInfo {
   int64 time_remain = 10;
   int64 poll_index = 11;
   int64 template_id = 12;
+  int32 business_scene = 13;
 }
 
 message PollEndContent {
@@ -937,6 +965,12 @@ message UseExtraTimeCard {
   common.Text display_content = 3;
 }
 
+message UseMusicCard {
+  live.match.MusicCardInfo card_info = 1;
+  int64 anchor_id = 2;
+  common.Text display_content = 3;
+}
+
 message UsePotionCard {
   live.match.PotionCardInfo card_info = 1;
   int64 anchor_id = 2;
@@ -1036,6 +1070,7 @@ message UserPlayInfo {
   int64 target_score = 5;
 
   data.multi_guest_play.PlayUserTag user_tag = 6;
+  int64 play_round_id = 7;
 }
 
 message ValidRanks {
@@ -1335,6 +1370,7 @@ message WebcastGuideMessage {
   int64 display_style = 6;
   string scene = 7;
   GuideMessageFrequencyRule frequency_rule = 8;
+  int64 stream_time = 9;
 }
 
 message WebcastHourlyRankRewardMessage {
@@ -1397,6 +1433,7 @@ message WebcastLinkMessage {
   CohostListChangeContent cohost_list_change_content = 21;
   LinkerMediaChangeContent media_change_content = 22;
   linker.LinkerAcceptNoticeContent reply_accept_notice_content = 23;
+  CohostInviteStateNotifyContent cohost_invite_state_notify_content = 24;
   LinkerSysKickOutContent sys_kick_out_content = 101;
   LinkmicUserToastContent user_toast_content = 102;
   string extra = 200;
@@ -1429,6 +1466,7 @@ message WebcastLinkMicArmies {
   live.match.HighScoreControlCfg fuzzy_display_config_v2 = 19;
   live.match.BattleEffectInfos effect_infos = 20;
   live.match.EnigmaBattleExtraInfo enigma_battle_extra_info = 21;
+  int32 multiplier_type = 22;
 }
 
 message WebcastLinkMicBattle {
@@ -1485,6 +1523,11 @@ message WebcastLinkMicBattleItemCard {
   UseTop3Card use_top3_card = 14;
   UseVaultGloveCard use_vault_glove_card = 15;
   int32 award_reason = 16;
+  UseMusicCard use_music_card = 17;
+  MusicAwardNotice music_award_notice = 18;
+  MusicEffectNotice music_effect_notice = 19;
+  map<int64, live.match.EffectingCardQueue> card_queue_map = 20;
+  AnchorLeftCardRefundNotice anchor_left_card_refund_notice = 21;
 }
 
 message WebcastLinkMicBattlePunishFinish {
@@ -1657,6 +1700,7 @@ message WebcastMemberMessage {
   WaveAlgorithmData wave_algorithm_data = 34;
 
   im.HitABStatus hit_ab_status = 35;
+  string drawer_live_type = 36;
 }
 
 message WebcastMsgDetectMessage {

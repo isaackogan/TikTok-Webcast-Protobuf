@@ -54,6 +54,7 @@ message BattleSetting {
 
   data.MatchGameplayOption gameplay_option = 14;
   live.match.GiftModeMetaV2 gift_mode_meta_v2 = 15;
+  live.match.GoofyEffectInfo goofy_effect_info = 16;
 }
 
 message BattleTaskSettle {
@@ -64,7 +65,7 @@ message BattleTaskSettle {
 }
 
 message BattleTaskStart {
-  live.match.BattleBonusConfig config = 1;
+  live.match.BattleBonusConfig battle_bonus_config = 1;
 }
 
 message BattleTaskUpdate {

@@ -10,6 +10,11 @@ message ArrowConfig {
   ImageModel icon = 1;
 }
 
+message AvatarHashInfo {
+  int32 avatar_hash_type = 1;
+  string avatar_hash = 2;
+}
+
 message BadgeStruct {
 
   data.BadgeDisplayType display_type = 1;

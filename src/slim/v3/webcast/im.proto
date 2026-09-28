@@ -428,6 +428,7 @@ message JoinGroupBizContent {
   string new_user_education = 11;
   map<int64, chatroom.model.interact.CohostABInfo> ab_infos = 12;
   int32 matched_preference_tag = 13;
+  string join_session_id = 14;
   JoinGroupMessageExtra join_group_msg_extra = 101;
 }
 
@@ -474,6 +475,7 @@ message JoinRoomDirectContent {
   linkmic.common.LayoutState layout = 4;
   repeated linkmic.common.SpotInfo spot_list = 5;
   repeated linkmic.common.PosIdentity ui_pos = 6;
+  string joiner_linker_session_id = 7;
 }
 
 message JustDanceExtra {
@@ -536,6 +538,8 @@ message PermitJoinGroupBizContent {
   bool skip_cancel_match = 3;
   int32 matched_preference_tag = 4;
   QuickCohostInviteeUserInfo quick_cohost_invitee_user_info = 5;
+  map<string, string> invitee_trace = 6;
+  string join_session_id = 7;
 }
 
 message PermitJoinGroupContent {
@@ -626,4 +630,5 @@ message WebcastLinkStateMessage {
   repeated linkmic.common.SpotInfo spot_list = 14;
   repeated int64 audio_muted_remote_channels = 15;
   int32 linker_mode = 16;
+  linkmic.common.LinkStateMultiGuestBizExtra multi_guest_biz_info = 17;
 }

@@ -10,6 +10,26 @@ message ControlChaosInfo {
   int32 action_type = 3;
 }
 
+message GameInteractionEffectInfo {
+  string instruction_icon_url = 1;
+  GameInteractionText instruction_name = 2;
+  GameInteractionText instruction_desc = 3;
+  GameInteractionText effect_type_name = 4;
+  string effect_mode = 5;
+  GameInteractionText effect_mode_name = 6;
+  string instruction = 7;
+  string effect_id = 8;
+  string effect_version = 9;
+  int32 protocol_version = 10;
+  string gift_id = 11;
+  int32 effect_type = 12;
+}
+
+message GameInteractionText {
+  string default_pattern = 1;
+  string key = 2;
+}
+
 message GameTricksShortcut {
   repeated HotKey hot_keys = 1;
 }
@@ -37,11 +57,15 @@ message GiftPickExtraGameInteraction {
 }
 
 message GiftPickExtraGameInteractionExternal {
+  GameInteractionEffectInfo effect_info = 1;
 }
 
 message GiftPickExtraGameInteractionStorage {
   string instruction = 1;
   string instruction_desc_key = 2;
+  int32 protocol_version = 3;
+  string effect_id = 4;
+  string effect_version = 8;
 }
 
 message GiftPickExtraGameTricks {
@@ -97,6 +121,7 @@ message ProfileExtraGameInteractionExternal {
 message ProfileExtraGameInteractionStorage {
   string game_id = 1;
   string template_id = 2;
+  string mode = 3;
 }
 
 message ProfileExtraGameTricks {

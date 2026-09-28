@@ -50,4 +50,5 @@ message PunishEventInfo {
   int64 end_time = 8;
   string violation_uid_str = 9;
   string show_reason = 10;
+  int64 end_time_v2 = 11;
 }

@@ -172,6 +172,26 @@ message CriticalStrikeCardInfo {
   string to_anchor_id_str = 13;
 }
 
+message EffectingCardQueue {
+  int32 queue_type = 1;
+  repeated int32 valid_card_types = 2;
+  repeated EffectingCardQueueItem card_queue = 3;
+  int64 queue_version = 4;
+}
+
+message EffectingCardQueueItem {
+  CriticalStrikeCardInfo critical_strike_cards = 1;
+  SmokeCardInfo smoke_cards = 2;
+  ExtraTimeCardInfo extra_time_cards = 3;
+  SpecialEffectCardInfo special_effect_cards = 4;
+  PotionCardInfo potion_cards = 5;
+  WaveCardInfo wave_cards = 6;
+  Top2CardInfo top2_cards = 7;
+  Top3CardInfo top3_cards = 8;
+  VaultGloveCardInfo vault_gloves_cards = 9;
+  MusicCardInfo music_cards = 11;
+}
+
 message EnigmaBattleExtraInfo {
   bool has_started = 1;
   bool is_gift_from_enigma = 2;
@@ -213,6 +233,11 @@ message GiftModeMetaV2 {
   map<int64, AnchorGiftModeMetaMap> anchor_gift_mode_meta_by_type = 1;
 }
 
+message GoofyEffectInfo {
+  int64 specific_resource_id = 1;
+  bool is_random_effect = 2;
+}
+
 message HighScoreControlCfg {
   bool normal_control_applied = 1;
   int64 threshold = 2;
@@ -237,6 +262,8 @@ message MatchInvitePanelConfig {
   .webcast.model.message.common.Text header_text_dark_mode = 2;
   .webcast.model.message.common.Text desc_text = 3;
   .webcast.model.message.common.Text desc_text_dark_mode = 4;
+  base.ImageModel desc_icon = 5;
+  base.ImageModel desc_icon_dark_mode = 6;
 }
 
 message MatchOpeningAnimationConfig {
@@ -272,6 +299,15 @@ message MatchTitleBarDisplayRule {
 
 message MatchTitleBarTrigger {
   int32 type = 1;
+}
+
+message MusicCardInfo {
+  CommonCardInfo common = 1;
+  int64 award_start_time_sec = 2;
+  int64 multiple = 3;
+  int64 critical_strike_rate_low = 4;
+  int64 critical_strike_rate_high = 5;
+  int32 detection_result = 6;
 }
 
 message PlaybookBizExtra {
