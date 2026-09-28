@@ -21,6 +21,7 @@ export interface WebcastAccessRecallMessage {
   notice: Text | undefined;
   content: Text | undefined;
   punishInfo: PunishEventInfo | undefined;
+  endTimeV2: string;
 }
 
 function createBaseWebcastAccessRecallMessage(): WebcastAccessRecallMessage {
@@ -33,6 +34,7 @@ function createBaseWebcastAccessRecallMessage(): WebcastAccessRecallMessage {
     notice: undefined,
     content: undefined,
     punishInfo: undefined,
+    endTimeV2: "0",
   };
 }
 
@@ -61,6 +63,9 @@ export const WebcastAccessRecallMessage: MessageFns<WebcastAccessRecallMessage> 
     }
     if (message.punishInfo !== undefined) {
       PunishEventInfo.encode(message.punishInfo, writer.uint32(66).fork()).join();
+    }
+    if (message.endTimeV2 !== "0") {
+      writer.uint32(72).int64(message.endTimeV2);
     }
     return writer;
   },
@@ -134,6 +139,14 @@ export const WebcastAccessRecallMessage: MessageFns<WebcastAccessRecallMessage> 
           }
 
           message.punishInfo = PunishEventInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.endTimeV2 = reader.int64().toString();
           continue;
         }
       }

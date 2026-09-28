@@ -106,6 +106,7 @@ import {
   BattleUserInfo,
   CommunityHeartMeInfo,
   CriticalStrikeCardInfo,
+  EffectingCardQueue,
   EnigmaBattleExtraInfo,
   EnigmaBattleSetting,
   ExtraTimeCardInfo,
@@ -113,6 +114,7 @@ import {
   LeagueScoreInfo,
   MatchPunishExtraInfo,
   MatchThemeDisplayResource,
+  MusicCardInfo,
   PotionCardInfo,
   SmokeCardInfo,
   SpecialEffectCardInfo,
@@ -193,6 +195,10 @@ export interface AffiliatedInfo {
 export interface AffiliatedInfo_StickerTrackParamEntry {
   key: string;
   value: string;
+}
+
+export interface AnchorLeftCardRefundNotice {
+  anchorId: string;
 }
 
 export interface AnchorPair {
@@ -438,6 +444,13 @@ export interface CardObtainGuide {
   notInUse: number;
 }
 
+export interface CohostInviteStateNotifyContent {
+  rivalUserId: string;
+  rivalRoomId: string;
+  groupChannelId: string;
+  reason: number;
+}
+
 export interface CohostListChangeContent {
   users: CohostListUser[];
 }
@@ -650,6 +663,7 @@ export interface LinkMicAudienceInviteGuide {
   user: User | undefined;
   displayStrategy: number;
   linkmicAudienceInviteNoticeReason: string;
+  linkerSessionId: string;
 }
 
 export interface LinkMicAudienceNoticeText {
@@ -708,6 +722,7 @@ export interface LinkmicAudienceApplyGuide {
   triggerType: string;
   requestId: string;
   linkmicId: string;
+  linkerSessionId: string;
 }
 
 export interface LinkmicAudienceInviteGroupChatMemberGuide {
@@ -737,6 +752,20 @@ export interface MessageDisplayInfo {
 
 export interface MessageEntity {
   notify: WebcastRoomNotifyMessage | undefined;
+}
+
+export interface MusicAwardNotice {
+  displayContent: Text | undefined;
+  toAnchorId: string;
+  isRewarded: boolean;
+}
+
+export interface MusicEffectNotice {
+  effectTier: number;
+  toAnchorId: string;
+  fromUserId: string;
+  giftId: string;
+  giftPrice: string;
 }
 
 export interface NotifyHighlightContent {
@@ -787,6 +816,7 @@ export interface PollBasicInfo {
   timeRemain: string;
   pollIndex: string;
   templateId: string;
+  businessScene: number;
 }
 
 export interface PollEndContent {
@@ -1076,6 +1106,12 @@ export interface UseExtraTimeCard {
   displayContent: Text | undefined;
 }
 
+export interface UseMusicCard {
+  cardInfo: MusicCardInfo | undefined;
+  anchorId: string;
+  displayContent: Text | undefined;
+}
+
 export interface UsePotionCard {
   cardInfo: PotionCardInfo | undefined;
   anchorId: string;
@@ -1177,6 +1213,7 @@ export interface UserPlayInfo {
   rank: number;
   targetScore: string;
   userTag: PlayUserTag;
+  playRoundId: string;
 }
 
 export interface ValidRanks {
@@ -1446,6 +1483,7 @@ export interface WebcastGuideMessage {
   displayStyle: string;
   scene: string;
   frequencyRule: GuideMessageFrequencyRule | undefined;
+  streamTime: string;
 }
 
 export interface WebcastHourlyRankRewardMessage {
@@ -1502,6 +1540,7 @@ export interface WebcastLinkMessage {
   cohostListChangeContent: CohostListChangeContent | undefined;
   mediaChangeContent: LinkerMediaChangeContent | undefined;
   replyAcceptNoticeContent: LinkerAcceptNoticeContent | undefined;
+  cohostInviteStateNotifyContent: CohostInviteStateNotifyContent | undefined;
   sysKickOutContent: LinkerSysKickOutContent | undefined;
   userToastContent: LinkmicUserToastContent | undefined;
   extra: string;
@@ -1532,6 +1571,7 @@ export interface WebcastLinkMicArmies {
   fuzzyDisplayConfigV2: HighScoreControlCfg | undefined;
   effectInfos: BattleEffectInfos | undefined;
   enigmaBattleExtraInfo: EnigmaBattleExtraInfo | undefined;
+  multiplierType: number;
 }
 
 export interface WebcastLinkMicArmies_ArmiesEntry {
@@ -1618,6 +1658,16 @@ export interface WebcastLinkMicBattleItemCard {
   useTop3Card: UseTop3Card | undefined;
   useVaultGloveCard: UseVaultGloveCard | undefined;
   awardReason: number;
+  useMusicCard: UseMusicCard | undefined;
+  musicAwardNotice: MusicAwardNotice | undefined;
+  musicEffectNotice: MusicEffectNotice | undefined;
+  cardQueueMap: { [key: string]: EffectingCardQueue };
+  anchorLeftCardRefundNotice: AnchorLeftCardRefundNotice | undefined;
+}
+
+export interface WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+  key: string;
+  value: EffectingCardQueue | undefined;
 }
 
 export interface WebcastLinkMicBattlePunishFinish {
@@ -1758,6 +1808,7 @@ export interface WebcastMemberMessage {
   showWave: string;
   waveAlgorithmData: WaveAlgorithmData | undefined;
   hitAbStatus: HitABStatus;
+  drawerLiveType: string;
 }
 
 export interface WebcastMemberMessage_AdminPermissionsEntry {
@@ -2383,6 +2434,43 @@ export const AffiliatedInfo_StickerTrackParamEntry: MessageFns<AffiliatedInfo_St
           }
 
           message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAnchorLeftCardRefundNotice(): AnchorLeftCardRefundNotice {
+  return { anchorId: "0" };
+}
+
+export const AnchorLeftCardRefundNotice: MessageFns<AnchorLeftCardRefundNotice> = {
+  encode(message: AnchorLeftCardRefundNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.anchorId !== "0") {
+      writer.uint32(8).int64(message.anchorId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorLeftCardRefundNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorLeftCardRefundNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
           continue;
         }
       }
@@ -4924,6 +5012,76 @@ export const CardObtainGuide: MessageFns<CardObtainGuide> = {
   },
 };
 
+function createBaseCohostInviteStateNotifyContent(): CohostInviteStateNotifyContent {
+  return { rivalUserId: "0", rivalRoomId: "0", groupChannelId: "0", reason: 0 };
+}
+
+export const CohostInviteStateNotifyContent: MessageFns<CohostInviteStateNotifyContent> = {
+  encode(message: CohostInviteStateNotifyContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rivalUserId !== "0") {
+      writer.uint32(8).int64(message.rivalUserId);
+    }
+    if (message.rivalRoomId !== "0") {
+      writer.uint32(16).int64(message.rivalRoomId);
+    }
+    if (message.groupChannelId !== "0") {
+      writer.uint32(24).int64(message.groupChannelId);
+    }
+    if (message.reason !== 0) {
+      writer.uint32(32).int32(message.reason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CohostInviteStateNotifyContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCohostInviteStateNotifyContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.rivalUserId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.rivalRoomId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.groupChannelId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.reason = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCohostListChangeContent(): CohostListChangeContent {
   return { users: [] };
 }
@@ -7081,6 +7239,7 @@ function createBaseLinkMicAudienceInviteGuide(): LinkMicAudienceInviteGuide {
     user: undefined,
     displayStrategy: 0,
     linkmicAudienceInviteNoticeReason: "",
+    linkerSessionId: "",
   };
 }
 
@@ -7100,6 +7259,9 @@ export const LinkMicAudienceInviteGuide: MessageFns<LinkMicAudienceInviteGuide> 
     }
     if (message.linkmicAudienceInviteNoticeReason !== "") {
       writer.uint32(42).string(message.linkmicAudienceInviteNoticeReason);
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(50).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -7149,6 +7311,14 @@ export const LinkMicAudienceInviteGuide: MessageFns<LinkMicAudienceInviteGuide> 
           }
 
           message.linkmicAudienceInviteNoticeReason = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }
@@ -7618,6 +7788,7 @@ function createBaseLinkmicAudienceApplyGuide(): LinkmicAudienceApplyGuide {
     triggerType: "",
     requestId: "",
     linkmicId: "",
+    linkerSessionId: "",
   };
 }
 
@@ -7649,6 +7820,9 @@ export const LinkmicAudienceApplyGuide: MessageFns<LinkmicAudienceApplyGuide> = 
     }
     if (message.linkmicId !== "") {
       writer.uint32(74).string(message.linkmicId);
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(82).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -7730,6 +7904,14 @@ export const LinkmicAudienceApplyGuide: MessageFns<LinkmicAudienceApplyGuide> = 
           }
 
           message.linkmicId = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }
@@ -8026,6 +8208,146 @@ export const MessageEntity: MessageFns<MessageEntity> = {
           }
 
           message.notify = WebcastRoomNotifyMessage.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMusicAwardNotice(): MusicAwardNotice {
+  return { displayContent: undefined, toAnchorId: "0", isRewarded: false };
+}
+
+export const MusicAwardNotice: MessageFns<MusicAwardNotice> = {
+  encode(message: MusicAwardNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.displayContent !== undefined) {
+      Text.encode(message.displayContent, writer.uint32(10).fork()).join();
+    }
+    if (message.toAnchorId !== "0") {
+      writer.uint32(16).int64(message.toAnchorId);
+    }
+    if (message.isRewarded !== false) {
+      writer.uint32(24).bool(message.isRewarded);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MusicAwardNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMusicAwardNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.displayContent = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toAnchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isRewarded = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMusicEffectNotice(): MusicEffectNotice {
+  return { effectTier: 0, toAnchorId: "0", fromUserId: "0", giftId: "0", giftPrice: "0" };
+}
+
+export const MusicEffectNotice: MessageFns<MusicEffectNotice> = {
+  encode(message: MusicEffectNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.effectTier !== 0) {
+      writer.uint32(8).int32(message.effectTier);
+    }
+    if (message.toAnchorId !== "0") {
+      writer.uint32(16).int64(message.toAnchorId);
+    }
+    if (message.fromUserId !== "0") {
+      writer.uint32(24).int64(message.fromUserId);
+    }
+    if (message.giftId !== "0") {
+      writer.uint32(32).int64(message.giftId);
+    }
+    if (message.giftPrice !== "0") {
+      writer.uint32(40).int64(message.giftPrice);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MusicEffectNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMusicEffectNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.effectTier = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toAnchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fromUserId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.giftId = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.giftPrice = reader.int64().toString();
           continue;
         }
       }
@@ -8402,6 +8724,7 @@ function createBasePollBasicInfo(): PollBasicInfo {
     timeRemain: "0",
     pollIndex: "0",
     templateId: "0",
+    businessScene: 0,
   };
 }
 
@@ -8442,6 +8765,9 @@ export const PollBasicInfo: MessageFns<PollBasicInfo> = {
     }
     if (message.templateId !== "0") {
       writer.uint32(96).int64(message.templateId);
+    }
+    if (message.businessScene !== 0) {
+      writer.uint32(104).int32(message.businessScene);
     }
     return writer;
   },
@@ -8547,6 +8873,14 @@ export const PollBasicInfo: MessageFns<PollBasicInfo> = {
           }
 
           message.templateId = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.businessScene = reader.int32();
           continue;
         }
       }
@@ -11563,6 +11897,65 @@ export const UseExtraTimeCard: MessageFns<UseExtraTimeCard> = {
   },
 };
 
+function createBaseUseMusicCard(): UseMusicCard {
+  return { cardInfo: undefined, anchorId: "0", displayContent: undefined };
+}
+
+export const UseMusicCard: MessageFns<UseMusicCard> = {
+  encode(message: UseMusicCard, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.cardInfo !== undefined) {
+      MusicCardInfo.encode(message.cardInfo, writer.uint32(10).fork()).join();
+    }
+    if (message.anchorId !== "0") {
+      writer.uint32(16).int64(message.anchorId);
+    }
+    if (message.displayContent !== undefined) {
+      Text.encode(message.displayContent, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UseMusicCard {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUseMusicCard();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.cardInfo = MusicCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.displayContent = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUsePotionCard(): UsePotionCard {
   return { cardInfo: undefined, anchorId: "0", displayContent: undefined };
 }
@@ -12530,7 +12923,7 @@ export const UserModelPredictionData_ModelPredictionDataEntry: MessageFns<
 };
 
 function createBaseUserPlayInfo(): UserPlayInfo {
-  return { playId: "0", playScene: 0, score: "0", rank: 0, targetScore: "0", userTag: 0 };
+  return { playId: "0", playScene: 0, score: "0", rank: 0, targetScore: "0", userTag: 0, playRoundId: "0" };
 }
 
 export const UserPlayInfo: MessageFns<UserPlayInfo> = {
@@ -12552,6 +12945,9 @@ export const UserPlayInfo: MessageFns<UserPlayInfo> = {
     }
     if (message.userTag !== 0) {
       writer.uint32(48).int32(message.userTag);
+    }
+    if (message.playRoundId !== "0") {
+      writer.uint32(56).int64(message.playRoundId);
     }
     return writer;
   },
@@ -12609,6 +13005,14 @@ export const UserPlayInfo: MessageFns<UserPlayInfo> = {
           }
 
           message.userTag = reader.int32() as any;
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.playRoundId = reader.int64().toString();
           continue;
         }
       }
@@ -15568,6 +15972,7 @@ function createBaseWebcastGuideMessage(): WebcastGuideMessage {
     displayStyle: "0",
     scene: "",
     frequencyRule: undefined,
+    streamTime: "0",
   };
 }
 
@@ -15596,6 +16001,9 @@ export const WebcastGuideMessage: MessageFns<WebcastGuideMessage> = {
     }
     if (message.frequencyRule !== undefined) {
       GuideMessageFrequencyRule.encode(message.frequencyRule, writer.uint32(66).fork()).join();
+    }
+    if (message.streamTime !== "0") {
+      writer.uint32(72).int64(message.streamTime);
     }
     return writer;
   },
@@ -15669,6 +16077,14 @@ export const WebcastGuideMessage: MessageFns<WebcastGuideMessage> = {
           }
 
           message.frequencyRule = GuideMessageFrequencyRule.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.streamTime = reader.int64().toString();
           continue;
         }
       }
@@ -16045,6 +16461,7 @@ function createBaseWebcastLinkMessage(): WebcastLinkMessage {
     cohostListChangeContent: undefined,
     mediaChangeContent: undefined,
     replyAcceptNoticeContent: undefined,
+    cohostInviteStateNotifyContent: undefined,
     sysKickOutContent: undefined,
     userToastContent: undefined,
     extra: "",
@@ -16124,6 +16541,9 @@ export const WebcastLinkMessage: MessageFns<WebcastLinkMessage> = {
     }
     if (message.replyAcceptNoticeContent !== undefined) {
       LinkerAcceptNoticeContent.encode(message.replyAcceptNoticeContent, writer.uint32(186).fork()).join();
+    }
+    if (message.cohostInviteStateNotifyContent !== undefined) {
+      CohostInviteStateNotifyContent.encode(message.cohostInviteStateNotifyContent, writer.uint32(194).fork()).join();
     }
     if (message.sysKickOutContent !== undefined) {
       LinkerSysKickOutContent.encode(message.sysKickOutContent, writer.uint32(810).fork()).join();
@@ -16337,6 +16757,14 @@ export const WebcastLinkMessage: MessageFns<WebcastLinkMessage> = {
           message.replyAcceptNoticeContent = LinkerAcceptNoticeContent.decode(reader, reader.uint32());
           continue;
         }
+        case 24: {
+          if (tag !== 194) {
+            break;
+          }
+
+          message.cohostInviteStateNotifyContent = CohostInviteStateNotifyContent.decode(reader, reader.uint32());
+          continue;
+        }
         case 101: {
           if (tag !== 810) {
             break;
@@ -16418,6 +16846,7 @@ function createBaseWebcastLinkMicArmies(): WebcastLinkMicArmies {
     fuzzyDisplayConfigV2: undefined,
     effectInfos: undefined,
     enigmaBattleExtraInfo: undefined,
+    multiplierType: 0,
   };
 }
 
@@ -16485,6 +16914,9 @@ export const WebcastLinkMicArmies: MessageFns<WebcastLinkMicArmies> = {
     }
     if (message.enigmaBattleExtraInfo !== undefined) {
       EnigmaBattleExtraInfo.encode(message.enigmaBattleExtraInfo, writer.uint32(170).fork()).join();
+    }
+    if (message.multiplierType !== 0) {
+      writer.uint32(176).int32(message.multiplierType);
     }
     return writer;
   },
@@ -16665,6 +17097,14 @@ export const WebcastLinkMicArmies: MessageFns<WebcastLinkMicArmies> = {
           }
 
           message.enigmaBattleExtraInfo = EnigmaBattleExtraInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.multiplierType = reader.int32();
           continue;
         }
       }
@@ -17432,6 +17872,11 @@ function createBaseWebcastLinkMicBattleItemCard(): WebcastLinkMicBattleItemCard 
     useTop3Card: undefined,
     useVaultGloveCard: undefined,
     awardReason: 0,
+    useMusicCard: undefined,
+    musicAwardNotice: undefined,
+    musicEffectNotice: undefined,
+    cardQueueMap: {},
+    anchorLeftCardRefundNotice: undefined,
   };
 }
 
@@ -17484,6 +17929,22 @@ export const WebcastLinkMicBattleItemCard: MessageFns<WebcastLinkMicBattleItemCa
     }
     if (message.awardReason !== 0) {
       writer.uint32(128).int32(message.awardReason);
+    }
+    if (message.useMusicCard !== undefined) {
+      UseMusicCard.encode(message.useMusicCard, writer.uint32(138).fork()).join();
+    }
+    if (message.musicAwardNotice !== undefined) {
+      MusicAwardNotice.encode(message.musicAwardNotice, writer.uint32(146).fork()).join();
+    }
+    if (message.musicEffectNotice !== undefined) {
+      MusicEffectNotice.encode(message.musicEffectNotice, writer.uint32(154).fork()).join();
+    }
+    globalThis.Object.entries(message.cardQueueMap).forEach(([key, value]: [string, EffectingCardQueue]) => {
+      WebcastLinkMicBattleItemCard_CardQueueMapEntry.encode({ key: key as any, value }, writer.uint32(162).fork())
+        .join();
+    });
+    if (message.anchorLeftCardRefundNotice !== undefined) {
+      AnchorLeftCardRefundNotice.encode(message.anchorLeftCardRefundNotice, writer.uint32(170).fork()).join();
     }
     return writer;
   },
@@ -17621,6 +18082,102 @@ export const WebcastLinkMicBattleItemCard: MessageFns<WebcastLinkMicBattleItemCa
           }
 
           message.awardReason = reader.int32();
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.useMusicCard = UseMusicCard.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.musicAwardNotice = MusicAwardNotice.decode(reader, reader.uint32());
+          continue;
+        }
+        case 19: {
+          if (tag !== 154) {
+            break;
+          }
+
+          message.musicEffectNotice = MusicEffectNotice.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          const entry20 = WebcastLinkMicBattleItemCard_CardQueueMapEntry.decode(reader, reader.uint32());
+          if (entry20.value !== undefined) {
+            message.cardQueueMap[entry20.key] = entry20.value;
+          }
+          continue;
+        }
+        case 21: {
+          if (tag !== 170) {
+            break;
+          }
+
+          message.anchorLeftCardRefundNotice = AnchorLeftCardRefundNotice.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastLinkMicBattleItemCard_CardQueueMapEntry(): WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+  return { key: "0", value: undefined };
+}
+
+export const WebcastLinkMicBattleItemCard_CardQueueMapEntry: MessageFns<
+  WebcastLinkMicBattleItemCard_CardQueueMapEntry
+> = {
+  encode(
+    message: WebcastLinkMicBattleItemCard_CardQueueMapEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      EffectingCardQueue.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastLinkMicBattleItemCard_CardQueueMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = EffectingCardQueue.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -18820,6 +19377,7 @@ function createBaseWebcastMemberMessage(): WebcastMemberMessage {
     showWave: "0",
     waveAlgorithmData: undefined,
     hitAbStatus: 0,
+    drawerLiveType: "",
   };
 }
 
@@ -18929,6 +19487,9 @@ export const WebcastMemberMessage: MessageFns<WebcastMemberMessage> = {
     }
     if (message.hitAbStatus !== 0) {
       writer.uint32(280).int32(message.hitAbStatus);
+    }
+    if (message.drawerLiveType !== "") {
+      writer.uint32(290).string(message.drawerLiveType);
     }
     return writer;
   },
@@ -19221,6 +19782,14 @@ export const WebcastMemberMessage: MessageFns<WebcastMemberMessage> = {
           }
 
           message.hitAbStatus = reader.int32() as any;
+          continue;
+        }
+        case 36: {
+          if (tag !== 290) {
+            break;
+          }
+
+          message.drawerLiveType = reader.string();
           continue;
         }
       }

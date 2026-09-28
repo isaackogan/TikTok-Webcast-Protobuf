@@ -70,6 +70,8 @@ export interface AuctionWinnerPopup {
   paymentExpireTimestamp: string;
   productImg: ImageModel | undefined;
   schema: string;
+  popupPageStyle: number;
+  lynxPopupInfo: string;
 }
 
 export interface BagIndex {
@@ -92,6 +94,8 @@ export interface CommerceInfo {
   popupWindowInfo: PopupWindowInfo | undefined;
   voucherInfo: { [key: string]: VoucherItem };
   auctionInfo: AuctionInfo | undefined;
+  lynxType: number;
+  lynxInfo: string;
 }
 
 export interface CommerceInfo_ProductInfoEntry {
@@ -832,6 +836,8 @@ function createBaseAuctionWinnerPopup(): AuctionWinnerPopup {
     paymentExpireTimestamp: "",
     productImg: undefined,
     schema: "",
+    popupPageStyle: 0,
+    lynxPopupInfo: "",
   };
 }
 
@@ -857,6 +863,12 @@ export const AuctionWinnerPopup: MessageFns<AuctionWinnerPopup> = {
     }
     if (message.schema !== "") {
       writer.uint32(58).string(message.schema);
+    }
+    if (message.popupPageStyle !== 0) {
+      writer.uint32(64).int32(message.popupPageStyle);
+    }
+    if (message.lynxPopupInfo !== "") {
+      writer.uint32(74).string(message.lynxPopupInfo);
     }
     return writer;
   },
@@ -922,6 +934,22 @@ export const AuctionWinnerPopup: MessageFns<AuctionWinnerPopup> = {
           }
 
           message.schema = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.popupPageStyle = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.lynxPopupInfo = reader.string();
           continue;
         }
       }
@@ -1086,6 +1114,8 @@ function createBaseCommerceInfo(): CommerceInfo {
     popupWindowInfo: undefined,
     voucherInfo: {},
     auctionInfo: undefined,
+    lynxType: 0,
+    lynxInfo: "",
   };
 }
 
@@ -1105,6 +1135,12 @@ export const CommerceInfo: MessageFns<CommerceInfo> = {
     });
     if (message.auctionInfo !== undefined) {
       AuctionInfo.encode(message.auctionInfo, writer.uint32(42).fork()).join();
+    }
+    if (message.lynxType !== 0) {
+      writer.uint32(48).int32(message.lynxType);
+    }
+    if (message.lynxInfo !== "") {
+      writer.uint32(58).string(message.lynxInfo);
     }
     return writer;
   },
@@ -1160,6 +1196,22 @@ export const CommerceInfo: MessageFns<CommerceInfo> = {
           }
 
           message.auctionInfo = AuctionInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.lynxType = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.lynxInfo = reader.string();
           continue;
         }
       }

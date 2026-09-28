@@ -197,6 +197,26 @@ export interface CriticalStrikeCardInfo {
   toAnchorIdStr: string;
 }
 
+export interface EffectingCardQueue {
+  queueType: number;
+  validCardTypes: number[];
+  cardQueue: EffectingCardQueueItem[];
+  queueVersion: string;
+}
+
+export interface EffectingCardQueueItem {
+  criticalStrikeCards: CriticalStrikeCardInfo | undefined;
+  smokeCards: SmokeCardInfo | undefined;
+  extraTimeCards: ExtraTimeCardInfo | undefined;
+  specialEffectCards: SpecialEffectCardInfo | undefined;
+  potionCards: PotionCardInfo | undefined;
+  waveCards: WaveCardInfo | undefined;
+  top2Cards: Top2CardInfo | undefined;
+  top3Cards: Top3CardInfo | undefined;
+  vaultGlovesCards: VaultGloveCardInfo | undefined;
+  musicCards: MusicCardInfo | undefined;
+}
+
 export interface EnigmaBattleExtraInfo {
   hasStarted: boolean;
   isGiftFromEnigma: boolean;
@@ -243,6 +263,11 @@ export interface GiftModeMetaV2_AnchorGiftModeMetaByTypeEntry {
   value: AnchorGiftModeMetaMap | undefined;
 }
 
+export interface GoofyEffectInfo {
+  specificResourceId: string;
+  isRandomEffect: boolean;
+}
+
 export interface HighScoreControlCfg {
   normalControlApplied: boolean;
   threshold: string;
@@ -267,6 +292,8 @@ export interface MatchInvitePanelConfig {
   headerTextDarkMode: Text | undefined;
   descText: Text | undefined;
   descTextDarkMode: Text | undefined;
+  descIcon: ImageModel | undefined;
+  descIconDarkMode: ImageModel | undefined;
 }
 
 export interface MatchOpeningAnimationConfig {
@@ -312,6 +339,15 @@ export interface MatchTitleBarDisplayRule {
 
 export interface MatchTitleBarTrigger {
   type: number;
+}
+
+export interface MusicCardInfo {
+  common: CommonCardInfo | undefined;
+  awardStartTimeSec: string;
+  multiple: string;
+  criticalStrikeRateLow: string;
+  criticalStrikeRateHigh: string;
+  detectionResult: number;
 }
 
 export interface PlaybookBizExtra {
@@ -2347,6 +2383,235 @@ export const CriticalStrikeCardInfo: MessageFns<CriticalStrikeCardInfo> = {
   },
 };
 
+function createBaseEffectingCardQueue(): EffectingCardQueue {
+  return { queueType: 0, validCardTypes: [], cardQueue: [], queueVersion: "0" };
+}
+
+export const EffectingCardQueue: MessageFns<EffectingCardQueue> = {
+  encode(message: EffectingCardQueue, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.queueType !== 0) {
+      writer.uint32(8).int32(message.queueType);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.validCardTypes) {
+      writer.int32(v);
+    }
+    writer.join();
+    for (const v of message.cardQueue) {
+      EffectingCardQueueItem.encode(v!, writer.uint32(26).fork()).join();
+    }
+    if (message.queueVersion !== "0") {
+      writer.uint32(32).int64(message.queueVersion);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EffectingCardQueue {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEffectingCardQueue();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.queueType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag === 16) {
+            message.validCardTypes.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 18) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.validCardTypes.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.cardQueue.push(EffectingCardQueueItem.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.queueVersion = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEffectingCardQueueItem(): EffectingCardQueueItem {
+  return {
+    criticalStrikeCards: undefined,
+    smokeCards: undefined,
+    extraTimeCards: undefined,
+    specialEffectCards: undefined,
+    potionCards: undefined,
+    waveCards: undefined,
+    top2Cards: undefined,
+    top3Cards: undefined,
+    vaultGlovesCards: undefined,
+    musicCards: undefined,
+  };
+}
+
+export const EffectingCardQueueItem: MessageFns<EffectingCardQueueItem> = {
+  encode(message: EffectingCardQueueItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.criticalStrikeCards !== undefined) {
+      CriticalStrikeCardInfo.encode(message.criticalStrikeCards, writer.uint32(10).fork()).join();
+    }
+    if (message.smokeCards !== undefined) {
+      SmokeCardInfo.encode(message.smokeCards, writer.uint32(18).fork()).join();
+    }
+    if (message.extraTimeCards !== undefined) {
+      ExtraTimeCardInfo.encode(message.extraTimeCards, writer.uint32(26).fork()).join();
+    }
+    if (message.specialEffectCards !== undefined) {
+      SpecialEffectCardInfo.encode(message.specialEffectCards, writer.uint32(34).fork()).join();
+    }
+    if (message.potionCards !== undefined) {
+      PotionCardInfo.encode(message.potionCards, writer.uint32(42).fork()).join();
+    }
+    if (message.waveCards !== undefined) {
+      WaveCardInfo.encode(message.waveCards, writer.uint32(50).fork()).join();
+    }
+    if (message.top2Cards !== undefined) {
+      Top2CardInfo.encode(message.top2Cards, writer.uint32(58).fork()).join();
+    }
+    if (message.top3Cards !== undefined) {
+      Top3CardInfo.encode(message.top3Cards, writer.uint32(66).fork()).join();
+    }
+    if (message.vaultGlovesCards !== undefined) {
+      VaultGloveCardInfo.encode(message.vaultGlovesCards, writer.uint32(74).fork()).join();
+    }
+    if (message.musicCards !== undefined) {
+      MusicCardInfo.encode(message.musicCards, writer.uint32(90).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EffectingCardQueueItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEffectingCardQueueItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.criticalStrikeCards = CriticalStrikeCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.smokeCards = SmokeCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.extraTimeCards = ExtraTimeCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.specialEffectCards = SpecialEffectCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.potionCards = PotionCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.waveCards = WaveCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.top2Cards = Top2CardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.top3Cards = Top3CardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.vaultGlovesCards = VaultGloveCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.musicCards = MusicCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseEnigmaBattleExtraInfo(): EnigmaBattleExtraInfo {
   return { hasStarted: false, isGiftFromEnigma: false };
 }
@@ -2842,6 +3107,54 @@ export const GiftModeMetaV2_AnchorGiftModeMetaByTypeEntry: MessageFns<GiftModeMe
   },
 };
 
+function createBaseGoofyEffectInfo(): GoofyEffectInfo {
+  return { specificResourceId: "0", isRandomEffect: false };
+}
+
+export const GoofyEffectInfo: MessageFns<GoofyEffectInfo> = {
+  encode(message: GoofyEffectInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.specificResourceId !== "0") {
+      writer.uint32(8).int64(message.specificResourceId);
+    }
+    if (message.isRandomEffect !== false) {
+      writer.uint32(16).bool(message.isRandomEffect);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GoofyEffectInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGoofyEffectInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.specificResourceId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.isRandomEffect = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseHighScoreControlCfg(): HighScoreControlCfg {
   return { normalControlApplied: false, threshold: "0", originDisplayToUserList: [] };
 }
@@ -3061,7 +3374,14 @@ export const LeagueScoreInfo: MessageFns<LeagueScoreInfo> = {
 };
 
 function createBaseMatchInvitePanelConfig(): MatchInvitePanelConfig {
-  return { headerText: undefined, headerTextDarkMode: undefined, descText: undefined, descTextDarkMode: undefined };
+  return {
+    headerText: undefined,
+    headerTextDarkMode: undefined,
+    descText: undefined,
+    descTextDarkMode: undefined,
+    descIcon: undefined,
+    descIconDarkMode: undefined,
+  };
 }
 
 export const MatchInvitePanelConfig: MessageFns<MatchInvitePanelConfig> = {
@@ -3077,6 +3397,12 @@ export const MatchInvitePanelConfig: MessageFns<MatchInvitePanelConfig> = {
     }
     if (message.descTextDarkMode !== undefined) {
       Text.encode(message.descTextDarkMode, writer.uint32(34).fork()).join();
+    }
+    if (message.descIcon !== undefined) {
+      ImageModel.encode(message.descIcon, writer.uint32(42).fork()).join();
+    }
+    if (message.descIconDarkMode !== undefined) {
+      ImageModel.encode(message.descIconDarkMode, writer.uint32(50).fork()).join();
     }
     return writer;
   },
@@ -3118,6 +3444,22 @@ export const MatchInvitePanelConfig: MessageFns<MatchInvitePanelConfig> = {
           }
 
           message.descTextDarkMode = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.descIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.descIconDarkMode = ImageModel.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -3567,6 +3909,105 @@ export const MatchTitleBarTrigger: MessageFns<MatchTitleBarTrigger> = {
           }
 
           message.type = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMusicCardInfo(): MusicCardInfo {
+  return {
+    common: undefined,
+    awardStartTimeSec: "0",
+    multiple: "0",
+    criticalStrikeRateLow: "0",
+    criticalStrikeRateHigh: "0",
+    detectionResult: 0,
+  };
+}
+
+export const MusicCardInfo: MessageFns<MusicCardInfo> = {
+  encode(message: MusicCardInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonCardInfo.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.awardStartTimeSec !== "0") {
+      writer.uint32(16).int64(message.awardStartTimeSec);
+    }
+    if (message.multiple !== "0") {
+      writer.uint32(24).int64(message.multiple);
+    }
+    if (message.criticalStrikeRateLow !== "0") {
+      writer.uint32(32).int64(message.criticalStrikeRateLow);
+    }
+    if (message.criticalStrikeRateHigh !== "0") {
+      writer.uint32(40).int64(message.criticalStrikeRateHigh);
+    }
+    if (message.detectionResult !== 0) {
+      writer.uint32(48).int32(message.detectionResult);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MusicCardInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMusicCardInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.awardStartTimeSec = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.multiple = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.criticalStrikeRateLow = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.criticalStrikeRateHigh = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.detectionResult = reader.int32();
           continue;
         }
       }

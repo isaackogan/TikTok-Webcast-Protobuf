@@ -66,6 +66,8 @@ export interface PermitBizContent {
   linkTypePermission: string;
   isFullPositionPreApproved: boolean;
   isQuickCallAutoApproved: boolean;
+  mgMatchType: number;
+  linkedSubReason: number;
 }
 
 export interface ReplyBizContent {
@@ -474,6 +476,8 @@ function createBasePermitBizContent(): PermitBizContent {
     linkTypePermission: "0",
     isFullPositionPreApproved: false,
     isQuickCallAutoApproved: false,
+    mgMatchType: 0,
+    linkedSubReason: 0,
   };
 }
 
@@ -505,6 +509,12 @@ export const PermitBizContent: MessageFns<PermitBizContent> = {
     }
     if (message.isQuickCallAutoApproved !== false) {
       writer.uint32(72).bool(message.isQuickCallAutoApproved);
+    }
+    if (message.mgMatchType !== 0) {
+      writer.uint32(80).int32(message.mgMatchType);
+    }
+    if (message.linkedSubReason !== 0) {
+      writer.uint32(88).int32(message.linkedSubReason);
     }
     return writer;
   },
@@ -586,6 +596,22 @@ export const PermitBizContent: MessageFns<PermitBizContent> = {
           }
 
           message.isQuickCallAutoApproved = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.mgMatchType = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.linkedSubReason = reader.int32();
           continue;
         }
       }

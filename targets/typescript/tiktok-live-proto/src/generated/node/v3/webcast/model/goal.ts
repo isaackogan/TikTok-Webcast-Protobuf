@@ -27,6 +27,10 @@ export interface GoalReward {
   topN: number;
   hasSticker: boolean;
   auditStatus: number;
+  rewardDirectMessage: string;
+  rewardTemplateId: string;
+  rewardSource: number;
+  isHitOptAb: boolean;
 }
 
 export interface GoalStats {
@@ -177,7 +181,16 @@ export const GoalPinInfo: MessageFns<GoalPinInfo> = {
 };
 
 function createBaseGoalReward(): GoalReward {
-  return { rewardContent: "", topN: 0, hasSticker: false, auditStatus: 0 };
+  return {
+    rewardContent: "",
+    topN: 0,
+    hasSticker: false,
+    auditStatus: 0,
+    rewardDirectMessage: "",
+    rewardTemplateId: "",
+    rewardSource: 0,
+    isHitOptAb: false,
+  };
 }
 
 export const GoalReward: MessageFns<GoalReward> = {
@@ -193,6 +206,18 @@ export const GoalReward: MessageFns<GoalReward> = {
     }
     if (message.auditStatus !== 0) {
       writer.uint32(32).int32(message.auditStatus);
+    }
+    if (message.rewardDirectMessage !== "") {
+      writer.uint32(42).string(message.rewardDirectMessage);
+    }
+    if (message.rewardTemplateId !== "") {
+      writer.uint32(50).string(message.rewardTemplateId);
+    }
+    if (message.rewardSource !== 0) {
+      writer.uint32(56).int32(message.rewardSource);
+    }
+    if (message.isHitOptAb !== false) {
+      writer.uint32(64).bool(message.isHitOptAb);
     }
     return writer;
   },
@@ -234,6 +259,38 @@ export const GoalReward: MessageFns<GoalReward> = {
           }
 
           message.auditStatus = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.rewardDirectMessage = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.rewardTemplateId = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.rewardSource = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.isHitOptAb = reader.bool();
           continue;
         }
       }

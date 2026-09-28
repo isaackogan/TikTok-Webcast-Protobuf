@@ -85,6 +85,13 @@ export interface GiftEffectCrossScreenStickerSpec_ReactionAssetIdsEntry {
   value: number;
 }
 
+export interface GiftEffectLiveGenSpec {
+  resourceUri: string;
+  md5: string;
+  fallbackAssetId: string;
+  faceDetectionAssetId: string;
+}
+
 export interface GiftEffectLynxSpec {
   assetIds: string[];
 }
@@ -104,6 +111,7 @@ export interface GiftEffectSpecs {
   prefab: GiftEffectPrefabSpec | undefined;
   serialSpec: GiftEffectSerialSpec | undefined;
   streamEffectSpec: GiftEffectStreamSpec | undefined;
+  liveGenEffectSpec: GiftEffectLiveGenSpec | undefined;
 }
 
 export interface GiftEffectStreamSpec {
@@ -985,6 +993,76 @@ export const GiftEffectCrossScreenStickerSpec_ReactionAssetIdsEntry: MessageFns<
   },
 };
 
+function createBaseGiftEffectLiveGenSpec(): GiftEffectLiveGenSpec {
+  return { resourceUri: "", md5: "", fallbackAssetId: "0", faceDetectionAssetId: "0" };
+}
+
+export const GiftEffectLiveGenSpec: MessageFns<GiftEffectLiveGenSpec> = {
+  encode(message: GiftEffectLiveGenSpec, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.resourceUri !== "") {
+      writer.uint32(10).string(message.resourceUri);
+    }
+    if (message.md5 !== "") {
+      writer.uint32(18).string(message.md5);
+    }
+    if (message.fallbackAssetId !== "0") {
+      writer.uint32(24).int64(message.fallbackAssetId);
+    }
+    if (message.faceDetectionAssetId !== "0") {
+      writer.uint32(32).int64(message.faceDetectionAssetId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GiftEffectLiveGenSpec {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGiftEffectLiveGenSpec();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.resourceUri = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.md5 = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fallbackAssetId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.faceDetectionAssetId = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGiftEffectLynxSpec(): GiftEffectLynxSpec {
   return { assetIds: [] };
 }
@@ -1150,6 +1228,7 @@ function createBaseGiftEffectSpecs(): GiftEffectSpecs {
     prefab: undefined,
     serialSpec: undefined,
     streamEffectSpec: undefined,
+    liveGenEffectSpec: undefined,
   };
 }
 
@@ -1169,6 +1248,9 @@ export const GiftEffectSpecs: MessageFns<GiftEffectSpecs> = {
     }
     if (message.streamEffectSpec !== undefined) {
       GiftEffectStreamSpec.encode(message.streamEffectSpec, writer.uint32(42).fork()).join();
+    }
+    if (message.liveGenEffectSpec !== undefined) {
+      GiftEffectLiveGenSpec.encode(message.liveGenEffectSpec, writer.uint32(50).fork()).join();
     }
     return writer;
   },
@@ -1218,6 +1300,14 @@ export const GiftEffectSpecs: MessageFns<GiftEffectSpecs> = {
           }
 
           message.streamEffectSpec = GiftEffectStreamSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.liveGenEffectSpec = GiftEffectLiveGenSpec.decode(reader, reader.uint32());
           continue;
         }
       }

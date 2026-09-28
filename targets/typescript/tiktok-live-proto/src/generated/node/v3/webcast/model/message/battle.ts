@@ -17,7 +17,14 @@ import {
   IceShowdownSetting,
   MatchGameplayOption,
 } from "../data/messages.js";
-import { BattleBonusConfig, BattlePrompt, BattleUserInfo, GiftModeMeta, GiftModeMetaV2 } from "../live_match.js";
+import {
+  BattleBonusConfig,
+  BattlePrompt,
+  BattleUserInfo,
+  GiftModeMeta,
+  GiftModeMetaV2,
+  GoofyEffectInfo,
+} from "../live_match.js";
 
 export const protobufPackage = "webcast.model.message.battle";
 
@@ -59,6 +66,7 @@ export interface BattleSetting {
   iceShowdownSetting: IceShowdownSetting;
   gameplayOption: MatchGameplayOption;
   giftModeMetaV2: GiftModeMetaV2 | undefined;
+  goofyEffectInfo: GoofyEffectInfo | undefined;
 }
 
 export interface BattleTaskSettle {
@@ -68,7 +76,7 @@ export interface BattleTaskSettle {
 }
 
 export interface BattleTaskStart {
-  config: BattleBonusConfig | undefined;
+  battleBonusConfig: BattleBonusConfig | undefined;
 }
 
 export interface BattleTaskUpdate {
@@ -355,6 +363,7 @@ function createBaseBattleSetting(): BattleSetting {
     iceShowdownSetting: 0,
     gameplayOption: 0,
     giftModeMetaV2: undefined,
+    goofyEffectInfo: undefined,
   };
 }
 
@@ -404,6 +413,9 @@ export const BattleSetting: MessageFns<BattleSetting> = {
     }
     if (message.giftModeMetaV2 !== undefined) {
       GiftModeMetaV2.encode(message.giftModeMetaV2, writer.uint32(122).fork()).join();
+    }
+    if (message.goofyEffectInfo !== undefined) {
+      GoofyEffectInfo.encode(message.goofyEffectInfo, writer.uint32(130).fork()).join();
     }
     return writer;
   },
@@ -535,6 +547,14 @@ export const BattleSetting: MessageFns<BattleSetting> = {
           message.giftModeMetaV2 = GiftModeMetaV2.decode(reader, reader.uint32());
           continue;
         }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+
+          message.goofyEffectInfo = GoofyEffectInfo.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -605,13 +625,13 @@ export const BattleTaskSettle: MessageFns<BattleTaskSettle> = {
 };
 
 function createBaseBattleTaskStart(): BattleTaskStart {
-  return { config: undefined };
+  return { battleBonusConfig: undefined };
 }
 
 export const BattleTaskStart: MessageFns<BattleTaskStart> = {
   encode(message: BattleTaskStart, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.config !== undefined) {
-      BattleBonusConfig.encode(message.config, writer.uint32(10).fork()).join();
+    if (message.battleBonusConfig !== undefined) {
+      BattleBonusConfig.encode(message.battleBonusConfig, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -628,7 +648,7 @@ export const BattleTaskStart: MessageFns<BattleTaskStart> = {
             break;
           }
 
-          message.config = BattleBonusConfig.decode(reader, reader.uint32());
+          message.battleBonusConfig = BattleBonusConfig.decode(reader, reader.uint32());
           continue;
         }
       }

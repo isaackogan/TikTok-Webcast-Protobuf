@@ -18,6 +18,9 @@ export interface BaseProtoMessage {
   offset: string;
   isHistory: boolean;
   sampleFlag: number;
+  methodId: number;
+  groupKey: string;
+  groupScene: string;
 }
 
 export interface CommonMessageData {
@@ -89,6 +92,9 @@ function createBaseBaseProtoMessage(): BaseProtoMessage {
     offset: "0",
     isHistory: false,
     sampleFlag: 0,
+    methodId: 0,
+    groupKey: "",
+    groupScene: "",
   };
 }
 
@@ -114,6 +120,15 @@ export const BaseProtoMessage: MessageFns<BaseProtoMessage> = {
     }
     if (message.sampleFlag !== 0) {
       writer.uint32(56).int32(message.sampleFlag);
+    }
+    if (message.methodId !== 0) {
+      writer.uint32(64).int32(message.methodId);
+    }
+    if (message.groupKey !== "") {
+      writer.uint32(74).string(message.groupKey);
+    }
+    if (message.groupScene !== "") {
+      writer.uint32(82).string(message.groupScene);
     }
     return writer;
   },
@@ -179,6 +194,30 @@ export const BaseProtoMessage: MessageFns<BaseProtoMessage> = {
           }
 
           message.sampleFlag = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.methodId = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.groupKey = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.groupScene = reader.string();
           continue;
         }
       }

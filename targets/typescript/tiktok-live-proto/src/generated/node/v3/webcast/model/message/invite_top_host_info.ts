@@ -53,6 +53,7 @@ export interface PunishEventInfo {
   endTime: string;
   violationUidStr: string;
   showReason: string;
+  endTimeV2: string;
 }
 
 function createBaseInviteTopHostInfo(): InviteTopHostInfo {
@@ -392,6 +393,7 @@ function createBasePunishEventInfo(): PunishEventInfo {
     endTime: "0",
     violationUidStr: "",
     showReason: "",
+    endTimeV2: "0",
   };
 }
 
@@ -426,6 +428,9 @@ export const PunishEventInfo: MessageFns<PunishEventInfo> = {
     }
     if (message.showReason !== "") {
       writer.uint32(82).string(message.showReason);
+    }
+    if (message.endTimeV2 !== "0") {
+      writer.uint32(88).int64(message.endTimeV2);
     }
     return writer;
   },
@@ -515,6 +520,14 @@ export const PunishEventInfo: MessageFns<PunishEventInfo> = {
           }
 
           message.showReason = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.endTimeV2 = reader.int64().toString();
           continue;
         }
       }

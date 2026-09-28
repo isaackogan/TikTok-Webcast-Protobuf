@@ -48,6 +48,18 @@ export interface TraceInfo {
   operateTime: string;
   arrivalTime: string;
   sendTime: string;
+  traceTimeMap: { [key: string]: string };
+  daInfo: { [key: string]: string };
+}
+
+export interface TraceInfo_TraceTimeMapEntry {
+  key: string;
+  value: string;
+}
+
+export interface TraceInfo_DaInfoEntry {
+  key: string;
+  value: string;
 }
 
 export interface WebcastOecLiveShoppingMessage {
@@ -73,6 +85,7 @@ export interface WebcastOecLiveShoppingMessage {
   anchorPinCardResetType: number;
   voucher: Voucher | undefined;
   oecLiveShoppingMessageV2: OecLiveShoppingMessageV2 | undefined;
+  messageInfo: string;
 }
 
 function createBaseHotTag(): HotTag {
@@ -283,7 +296,7 @@ export const PopProduct: MessageFns<PopProduct> = {
 };
 
 function createBaseTraceInfo(): TraceInfo {
-  return { operateTime: "0", arrivalTime: "0", sendTime: "0" };
+  return { operateTime: "0", arrivalTime: "0", sendTime: "0", traceTimeMap: {}, daInfo: {} };
 }
 
 export const TraceInfo: MessageFns<TraceInfo> = {
@@ -297,6 +310,12 @@ export const TraceInfo: MessageFns<TraceInfo> = {
     if (message.sendTime !== "0") {
       writer.uint32(24).int64(message.sendTime);
     }
+    globalThis.Object.entries(message.traceTimeMap).forEach(([key, value]: [string, string]) => {
+      TraceInfo_TraceTimeMapEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+    });
+    globalThis.Object.entries(message.daInfo).forEach(([key, value]: [string, string]) => {
+      TraceInfo_DaInfoEntry.encode({ key: key as any, value }, writer.uint32(90).fork()).join();
+    });
     return writer;
   },
 
@@ -329,6 +348,124 @@ export const TraceInfo: MessageFns<TraceInfo> = {
           }
 
           message.sendTime = reader.int64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          const entry10 = TraceInfo_TraceTimeMapEntry.decode(reader, reader.uint32());
+          if (entry10.value !== undefined) {
+            message.traceTimeMap[entry10.key] = entry10.value;
+          }
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          const entry11 = TraceInfo_DaInfoEntry.decode(reader, reader.uint32());
+          if (entry11.value !== undefined) {
+            message.daInfo[entry11.key] = entry11.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTraceInfo_TraceTimeMapEntry(): TraceInfo_TraceTimeMapEntry {
+  return { key: "", value: "0" };
+}
+
+export const TraceInfo_TraceTimeMapEntry: MessageFns<TraceInfo_TraceTimeMapEntry> = {
+  encode(message: TraceInfo_TraceTimeMapEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "0") {
+      writer.uint32(16).int64(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TraceInfo_TraceTimeMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTraceInfo_TraceTimeMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTraceInfo_DaInfoEntry(): TraceInfo_DaInfoEntry {
+  return { key: "", value: "" };
+}
+
+export const TraceInfo_DaInfoEntry: MessageFns<TraceInfo_DaInfoEntry> = {
+  encode(message: TraceInfo_DaInfoEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TraceInfo_DaInfoEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTraceInfo_DaInfoEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -365,6 +502,7 @@ function createBaseWebcastOecLiveShoppingMessage(): WebcastOecLiveShoppingMessag
     anchorPinCardResetType: 0,
     voucher: undefined,
     oecLiveShoppingMessageV2: undefined,
+    messageInfo: "",
   };
 }
 
@@ -435,6 +573,9 @@ export const WebcastOecLiveShoppingMessage: MessageFns<WebcastOecLiveShoppingMes
     }
     if (message.oecLiveShoppingMessageV2 !== undefined) {
       OecLiveShoppingMessageV2.encode(message.oecLiveShoppingMessageV2, writer.uint32(802).fork()).join();
+    }
+    if (message.messageInfo !== "") {
+      writer.uint32(1602).string(message.messageInfo);
     }
     return writer;
   },
@@ -620,6 +761,14 @@ export const WebcastOecLiveShoppingMessage: MessageFns<WebcastOecLiveShoppingMes
           }
 
           message.oecLiveShoppingMessageV2 = OecLiveShoppingMessageV2.decode(reader, reader.uint32());
+          continue;
+        }
+        case 200: {
+          if (tag !== 1602) {
+            break;
+          }
+
+          message.messageInfo = reader.string();
           continue;
         }
       }

@@ -39,6 +39,8 @@ export interface EcommerceEntrance {
   shopEntranceInfo: ShopEntranceInfo | undefined;
   showcaseEntranceInfo: ShowcaseEntranceInfo | undefined;
   viewVersion: UserEcommerceEntranceViewVersion;
+  avatarBackgroundColor: string;
+  avatarStyleVersion: number;
 }
 
 export interface PerceptionFeedbackOption {
@@ -67,6 +69,17 @@ export interface ShopEntranceInfo {
   rateDisplayStyle: number;
   showRateNotApplicable: boolean;
   sellingPoint: SellingPoint[];
+  topRatedInfo: TopRatedInfo | undefined;
+}
+
+export interface ShopThemeColor {
+  light: string;
+  dark: string;
+}
+
+export interface ShopThemedImage {
+  light: ShopLabelImage | undefined;
+  dark: ShopLabelImage | undefined;
 }
 
 export interface ShowResult {
@@ -92,6 +105,7 @@ export interface StoreIdentityLabel {
   identityLabelTextColorDark: string;
   shopExplanationPageSchema: string;
   shopIdentityLabelKey: string;
+  identityImageLogo: ShopThemedImage | undefined;
 }
 
 export interface StoreLabel {
@@ -105,6 +119,21 @@ export interface StoreOfficialLabel {
   labelImageDark: ShopLabelImage | undefined;
   labelType: UserEcommerceEntranceShopEntranceInfoStoreLabelStoreBrandLabelType;
   labelTypeStr: string;
+}
+
+export interface TopRatedInfo {
+  isTopRated: boolean;
+  topRatedStyle: TopRatedStyle | undefined;
+  schema: string;
+}
+
+export interface TopRatedStyle {
+  text: string;
+  textColor: ShopThemeColor | undefined;
+  backgroundColor: ShopThemeColor | undefined;
+  overlayTextColor: ShopThemeColor | undefined;
+  overlayBackgroundColor: ShopThemeColor | undefined;
+  longText: string;
 }
 
 function createBaseDisplayControl(): DisplayControl {
@@ -236,6 +265,8 @@ function createBaseEcommerceEntrance(): EcommerceEntrance {
     shopEntranceInfo: undefined,
     showcaseEntranceInfo: undefined,
     viewVersion: 0,
+    avatarBackgroundColor: "",
+    avatarStyleVersion: 0,
   };
 }
 
@@ -258,6 +289,12 @@ export const EcommerceEntrance: MessageFns<EcommerceEntrance> = {
     }
     if (message.viewVersion !== 0) {
       writer.uint32(48).int32(message.viewVersion);
+    }
+    if (message.avatarBackgroundColor !== "") {
+      writer.uint32(58).string(message.avatarBackgroundColor);
+    }
+    if (message.avatarStyleVersion !== 0) {
+      writer.uint32(64).int32(message.avatarStyleVersion);
     }
     return writer;
   },
@@ -315,6 +352,22 @@ export const EcommerceEntrance: MessageFns<EcommerceEntrance> = {
           }
 
           message.viewVersion = reader.int32() as any;
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.avatarBackgroundColor = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.avatarStyleVersion = reader.int32();
           continue;
         }
       }
@@ -473,6 +526,7 @@ function createBaseShopEntranceInfo(): ShopEntranceInfo {
     rateDisplayStyle: 0,
     showRateNotApplicable: false,
     sellingPoint: [],
+    topRatedInfo: undefined,
   };
 }
 
@@ -510,6 +564,9 @@ export const ShopEntranceInfo: MessageFns<ShopEntranceInfo> = {
     }
     for (const v of message.sellingPoint) {
       SellingPoint.encode(v!, writer.uint32(90).fork()).join();
+    }
+    if (message.topRatedInfo !== undefined) {
+      TopRatedInfo.encode(message.topRatedInfo, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -607,6 +664,110 @@ export const ShopEntranceInfo: MessageFns<ShopEntranceInfo> = {
           }
 
           message.sellingPoint.push(SellingPoint.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.topRatedInfo = TopRatedInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseShopThemeColor(): ShopThemeColor {
+  return { light: "", dark: "" };
+}
+
+export const ShopThemeColor: MessageFns<ShopThemeColor> = {
+  encode(message: ShopThemeColor, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.light !== "") {
+      writer.uint32(10).string(message.light);
+    }
+    if (message.dark !== "") {
+      writer.uint32(18).string(message.dark);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ShopThemeColor {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShopThemeColor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.light = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.dark = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseShopThemedImage(): ShopThemedImage {
+  return { light: undefined, dark: undefined };
+}
+
+export const ShopThemedImage: MessageFns<ShopThemedImage> = {
+  encode(message: ShopThemedImage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.light !== undefined) {
+      ShopLabelImage.encode(message.light, writer.uint32(10).fork()).join();
+    }
+    if (message.dark !== undefined) {
+      ShopLabelImage.encode(message.dark, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ShopThemedImage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShopThemedImage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.light = ShopLabelImage.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.dark = ShopLabelImage.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -749,6 +910,7 @@ function createBaseStoreIdentityLabel(): StoreIdentityLabel {
     identityLabelTextColorDark: "",
     shopExplanationPageSchema: "",
     shopIdentityLabelKey: "",
+    identityImageLogo: undefined,
   };
 }
 
@@ -783,6 +945,9 @@ export const StoreIdentityLabel: MessageFns<StoreIdentityLabel> = {
     }
     if (message.shopIdentityLabelKey !== "") {
       writer.uint32(82).string(message.shopIdentityLabelKey);
+    }
+    if (message.identityImageLogo !== undefined) {
+      ShopThemedImage.encode(message.identityImageLogo, writer.uint32(90).fork()).join();
     }
     return writer;
   },
@@ -872,6 +1037,14 @@ export const StoreIdentityLabel: MessageFns<StoreIdentityLabel> = {
           }
 
           message.shopIdentityLabelKey = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.identityImageLogo = ShopThemedImage.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1001,6 +1174,164 @@ export const StoreOfficialLabel: MessageFns<StoreOfficialLabel> = {
           }
 
           message.labelTypeStr = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTopRatedInfo(): TopRatedInfo {
+  return { isTopRated: false, topRatedStyle: undefined, schema: "" };
+}
+
+export const TopRatedInfo: MessageFns<TopRatedInfo> = {
+  encode(message: TopRatedInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isTopRated !== false) {
+      writer.uint32(8).bool(message.isTopRated);
+    }
+    if (message.topRatedStyle !== undefined) {
+      TopRatedStyle.encode(message.topRatedStyle, writer.uint32(18).fork()).join();
+    }
+    if (message.schema !== "") {
+      writer.uint32(26).string(message.schema);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TopRatedInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTopRatedInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isTopRated = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.topRatedStyle = TopRatedStyle.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTopRatedStyle(): TopRatedStyle {
+  return {
+    text: "",
+    textColor: undefined,
+    backgroundColor: undefined,
+    overlayTextColor: undefined,
+    overlayBackgroundColor: undefined,
+    longText: "",
+  };
+}
+
+export const TopRatedStyle: MessageFns<TopRatedStyle> = {
+  encode(message: TopRatedStyle, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.text !== "") {
+      writer.uint32(10).string(message.text);
+    }
+    if (message.textColor !== undefined) {
+      ShopThemeColor.encode(message.textColor, writer.uint32(18).fork()).join();
+    }
+    if (message.backgroundColor !== undefined) {
+      ShopThemeColor.encode(message.backgroundColor, writer.uint32(26).fork()).join();
+    }
+    if (message.overlayTextColor !== undefined) {
+      ShopThemeColor.encode(message.overlayTextColor, writer.uint32(34).fork()).join();
+    }
+    if (message.overlayBackgroundColor !== undefined) {
+      ShopThemeColor.encode(message.overlayBackgroundColor, writer.uint32(42).fork()).join();
+    }
+    if (message.longText !== "") {
+      writer.uint32(50).string(message.longText);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TopRatedStyle {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTopRatedStyle();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.text = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.textColor = ShopThemeColor.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.backgroundColor = ShopThemeColor.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.overlayTextColor = ShopThemeColor.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.overlayBackgroundColor = ShopThemeColor.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.longText = reader.string();
           continue;
         }
       }

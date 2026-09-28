@@ -58,6 +58,9 @@ export interface CohostABInfo {
   isMatchPlaybookEnabled: boolean;
   isCohostDuringMultiguestEnabled: boolean;
   isMatchPlaybookOptimisationEnabled: boolean;
+  isMatchPlaybookUsabilityEnabled: boolean;
+  isMatchPlaybookReminderEnabled: boolean;
+  isMatchGoofyEffectEnabled: boolean;
 }
 
 export interface CohostABTest {
@@ -586,6 +589,9 @@ function createBaseCohostABInfo(): CohostABInfo {
     isMatchPlaybookEnabled: false,
     isCohostDuringMultiguestEnabled: false,
     isMatchPlaybookOptimisationEnabled: false,
+    isMatchPlaybookUsabilityEnabled: false,
+    isMatchPlaybookReminderEnabled: false,
+    isMatchGoofyEffectEnabled: false,
   };
 }
 
@@ -605,6 +611,15 @@ export const CohostABInfo: MessageFns<CohostABInfo> = {
     }
     if (message.isMatchPlaybookOptimisationEnabled !== false) {
       writer.uint32(40).bool(message.isMatchPlaybookOptimisationEnabled);
+    }
+    if (message.isMatchPlaybookUsabilityEnabled !== false) {
+      writer.uint32(48).bool(message.isMatchPlaybookUsabilityEnabled);
+    }
+    if (message.isMatchPlaybookReminderEnabled !== false) {
+      writer.uint32(56).bool(message.isMatchPlaybookReminderEnabled);
+    }
+    if (message.isMatchGoofyEffectEnabled !== false) {
+      writer.uint32(64).bool(message.isMatchGoofyEffectEnabled);
     }
     return writer;
   },
@@ -654,6 +669,30 @@ export const CohostABInfo: MessageFns<CohostABInfo> = {
           }
 
           message.isMatchPlaybookOptimisationEnabled = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.isMatchPlaybookUsabilityEnabled = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.isMatchPlaybookReminderEnabled = reader.bool();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.isMatchGoofyEffectEnabled = reader.bool();
           continue;
         }
       }

@@ -28,6 +28,11 @@ export interface ArrowConfig {
   icon: ImageModel | undefined;
 }
 
+export interface AvatarHashInfo {
+  avatarHashType: number;
+  avatarHash: string;
+}
+
 export interface BadgeStruct {
   displayType: BadgeDisplayType;
   priorityType: BadgePriorityType;
@@ -283,6 +288,54 @@ export const ArrowConfig: MessageFns<ArrowConfig> = {
           }
 
           message.icon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAvatarHashInfo(): AvatarHashInfo {
+  return { avatarHashType: 0, avatarHash: "" };
+}
+
+export const AvatarHashInfo: MessageFns<AvatarHashInfo> = {
+  encode(message: AvatarHashInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.avatarHashType !== 0) {
+      writer.uint32(8).int32(message.avatarHashType);
+    }
+    if (message.avatarHash !== "") {
+      writer.uint32(18).string(message.avatarHash);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AvatarHashInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAvatarHashInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.avatarHashType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.avatarHash = reader.string();
           continue;
         }
       }

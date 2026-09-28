@@ -283,6 +283,11 @@ export interface BackGroundImageState {
   stickerId: string;
 }
 
+export interface BackgroundImageInfo {
+  infoType: number;
+  imageInfo: string;
+}
+
 export interface CohostMode {
   isTakeTheStageV2Supported: boolean;
   highestTakeTheStageVersionSupported: string;
@@ -300,6 +305,7 @@ export interface CohostTypeLayoutExtra {
   isEnlargeMode: number;
   disableMatchComponent: boolean;
   rematchSpotId: number;
+  screenShareUserId: string;
 }
 
 export interface CohostTypeLayoutNonSeiExtra {
@@ -374,6 +380,10 @@ export interface LayoutState {
 export interface LinkEnvelopeMessagePayload {
   messageType: number;
   resolutionDemandPayload: ResolutionDemandPayload | undefined;
+}
+
+export interface LinkStateMultiGuestBizExtra {
+  backgroundImageInfo: BackgroundImageInfo | undefined;
 }
 
 export interface LinkUserIdentity {
@@ -722,6 +732,54 @@ export const BackGroundImageState: MessageFns<BackGroundImageState> = {
   },
 };
 
+function createBaseBackgroundImageInfo(): BackgroundImageInfo {
+  return { infoType: 0, imageInfo: "" };
+}
+
+export const BackgroundImageInfo: MessageFns<BackgroundImageInfo> = {
+  encode(message: BackgroundImageInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.infoType !== 0) {
+      writer.uint32(8).int32(message.infoType);
+    }
+    if (message.imageInfo !== "") {
+      writer.uint32(18).string(message.imageInfo);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BackgroundImageInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBackgroundImageInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.infoType = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.imageInfo = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCohostMode(): CohostMode {
   return { isTakeTheStageV2Supported: false, highestTakeTheStageVersionSupported: "0" };
 }
@@ -816,6 +874,7 @@ function createBaseCohostTypeLayoutExtra(): CohostTypeLayoutExtra {
     isEnlargeMode: 0,
     disableMatchComponent: false,
     rematchSpotId: 0,
+    screenShareUserId: "0",
   };
 }
 
@@ -841,6 +900,9 @@ export const CohostTypeLayoutExtra: MessageFns<CohostTypeLayoutExtra> = {
     }
     if (message.rematchSpotId !== 0) {
       writer.uint32(56).int32(message.rematchSpotId);
+    }
+    if (message.screenShareUserId !== "0") {
+      writer.uint32(64).int64(message.screenShareUserId);
     }
     return writer;
   },
@@ -906,6 +968,14 @@ export const CohostTypeLayoutExtra: MessageFns<CohostTypeLayoutExtra> = {
           }
 
           message.rematchSpotId = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.screenShareUserId = reader.int64().toString();
           continue;
         }
       }
@@ -1680,6 +1750,43 @@ export const LinkEnvelopeMessagePayload: MessageFns<LinkEnvelopeMessagePayload> 
           }
 
           message.resolutionDemandPayload = ResolutionDemandPayload.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLinkStateMultiGuestBizExtra(): LinkStateMultiGuestBizExtra {
+  return { backgroundImageInfo: undefined };
+}
+
+export const LinkStateMultiGuestBizExtra: MessageFns<LinkStateMultiGuestBizExtra> = {
+  encode(message: LinkStateMultiGuestBizExtra, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.backgroundImageInfo !== undefined) {
+      BackgroundImageInfo.encode(message.backgroundImageInfo, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LinkStateMultiGuestBizExtra {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLinkStateMultiGuestBizExtra();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.backgroundImageInfo = BackgroundImageInfo.decode(reader, reader.uint32());
           continue;
         }
       }

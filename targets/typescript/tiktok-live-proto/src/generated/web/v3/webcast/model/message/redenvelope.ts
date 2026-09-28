@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { EnvelopeEnigmaInfo } from "../../envelope.js";
+import { EnvelopeEnigmaInfo, EnvelopeGift, EnvelopeRewardPool } from "../../envelope_model.js";
 import { CommonMessageData } from "../../shared/message.js";
 import { ImageModel } from "../base/messages.js";
 import { EnvelopeBusinessType, EnvelopeDisplay, EnvelopeFollowShowStatus } from "../data/messages.js";
@@ -31,6 +31,8 @@ export interface MessageRedEnvelopInfo {
   voteCount: number;
   senderEnigmaInfo: EnvelopeEnigmaInfo | undefined;
   superFanCount: number;
+  rewardPool: EnvelopeRewardPool | undefined;
+  giftInfos: EnvelopeGift[];
 }
 
 export interface WebcastEnvelopeMessage {
@@ -58,6 +60,8 @@ function createBaseMessageRedEnvelopInfo(): MessageRedEnvelopInfo {
     voteCount: 0,
     senderEnigmaInfo: undefined,
     superFanCount: 0,
+    rewardPool: undefined,
+    giftInfos: [],
   };
 }
 
@@ -110,6 +114,12 @@ export const MessageRedEnvelopInfo: MessageFns<MessageRedEnvelopInfo> = {
     }
     if (message.superFanCount !== 0) {
       writer.uint32(128).int32(message.superFanCount);
+    }
+    if (message.rewardPool !== undefined) {
+      EnvelopeRewardPool.encode(message.rewardPool, writer.uint32(138).fork()).join();
+    }
+    for (const v of message.giftInfos) {
+      EnvelopeGift.encode(v!, writer.uint32(146).fork()).join();
     }
     return writer;
   },
@@ -247,6 +257,22 @@ export const MessageRedEnvelopInfo: MessageFns<MessageRedEnvelopInfo> = {
           }
 
           message.superFanCount = reader.int32();
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.rewardPool = EnvelopeRewardPool.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.giftInfos.push(EnvelopeGift.decode(reader, reader.uint32()));
           continue;
         }
       }
