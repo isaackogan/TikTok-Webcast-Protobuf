@@ -41,6 +41,20 @@ export interface EmoteWithIndex {
   emote: EmoteModel | undefined;
 }
 
+export interface EnhancementText {
+  type: number;
+  placeholderInfo: PlaceholderInfo[];
+}
+
+export interface EnhancementTextInfo {
+  enhancementTexts: EnhancementText[];
+}
+
+export interface PlaceholderInfo {
+  placeholder: string;
+  value: string;
+}
+
 export interface RightLabel {
   backgroundColor: string;
   content: Text | undefined;
@@ -325,6 +339,139 @@ export const EmoteWithIndex: MessageFns<EmoteWithIndex> = {
           }
 
           message.emote = EmoteModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEnhancementText(): EnhancementText {
+  return { type: 0, placeholderInfo: [] };
+}
+
+export const EnhancementText: MessageFns<EnhancementText> = {
+  encode(message: EnhancementText, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    for (const v of message.placeholderInfo) {
+      PlaceholderInfo.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EnhancementText {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEnhancementText();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.placeholderInfo.push(PlaceholderInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEnhancementTextInfo(): EnhancementTextInfo {
+  return { enhancementTexts: [] };
+}
+
+export const EnhancementTextInfo: MessageFns<EnhancementTextInfo> = {
+  encode(message: EnhancementTextInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.enhancementTexts) {
+      EnhancementText.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EnhancementTextInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEnhancementTextInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.enhancementTexts.push(EnhancementText.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePlaceholderInfo(): PlaceholderInfo {
+  return { placeholder: "", value: "" };
+}
+
+export const PlaceholderInfo: MessageFns<PlaceholderInfo> = {
+  encode(message: PlaceholderInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.placeholder !== "") {
+      writer.uint32(10).string(message.placeholder);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PlaceholderInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePlaceholderInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.placeholder = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }

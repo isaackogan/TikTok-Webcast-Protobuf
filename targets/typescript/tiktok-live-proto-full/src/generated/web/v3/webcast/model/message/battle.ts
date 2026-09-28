@@ -120,6 +120,7 @@ export interface BattleUserArmy {
   diamondScore: string;
   userIdStr: string;
   enigmaScore: string;
+  isEnigma: boolean;
 }
 
 export interface ExemptStrategy {
@@ -1155,6 +1156,7 @@ function createBaseBattleUserArmy(): BattleUserArmy {
     diamondScore: "0",
     userIdStr: "",
     enigmaScore: "0",
+    isEnigma: false,
   };
 }
 
@@ -1180,6 +1182,9 @@ export const BattleUserArmy: MessageFns<BattleUserArmy> = {
     }
     if (message.enigmaScore !== "0") {
       writer.uint32(56).int64(message.enigmaScore);
+    }
+    if (message.isEnigma !== false) {
+      writer.uint32(64).bool(message.isEnigma);
     }
     return writer;
   },
@@ -1245,6 +1250,14 @@ export const BattleUserArmy: MessageFns<BattleUserArmy> = {
           }
 
           message.enigmaScore = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.isEnigma = reader.bool();
           continue;
         }
       }

@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { TPTuxImage } from "../../shared/anchor_info.js";
 import { ImageModel } from "../base/messages.js";
 
 export const protobufPackage = "webcast.model.data";
@@ -1408,6 +1409,50 @@ export enum WaveStatus {
   UNRECOGNIZED = -1,
 }
 
+export interface AIBeautyColorCorrectionSetting {
+  gamma: AIBeautyItem | undefined;
+  brightness: AIBeautyItem | undefined;
+  contrast: AIBeautyItem | undefined;
+  saturation: AIBeautyItem | undefined;
+  hueShift: AIBeautyItem | undefined;
+  opacity: AIBeautyItem | undefined;
+  addColor: AIBeautyItem | undefined;
+  mulColor: AIBeautyItem | undefined;
+}
+
+export interface AIBeautyItem {
+  value: number;
+}
+
+export interface AIBeautySetting {
+  smooth: AIBeautyItem | undefined;
+  contrast: AIBeautyItem | undefined;
+  tooth: AIBeautyItem | undefined;
+  contour: AIBeautyItem | undefined;
+  shape: AIBeautyItem | undefined;
+  eye: AIBeautyItem | undefined;
+  nose: AIBeautyItem | undefined;
+}
+
+export interface AIBeautySettingKV {
+  key: string;
+  value: number;
+}
+
+export interface AIBeautySugContent {
+  beautySetting: AIBeautySetting | undefined;
+  colorCorrectionSetting: AIBeautyColorCorrectionSetting | undefined;
+  suggestion: AIBeautySuggestion[];
+  errorCode: string;
+  beautySettingList: AIBeautySettingKV[];
+  colorCorrectoinSettingList: AIBeautySettingKV[];
+}
+
+export interface AIBeautySuggestion {
+  content: string[];
+  title: string;
+}
+
 export interface AILivePreviewHighlight {
   fragmentId: string;
   highlightUrl: string;
@@ -1416,6 +1461,7 @@ export interface AILivePreviewHighlight {
   expireTimestamp: string;
   resultKey: string;
   videoInfo: AILivePreviewHighlightVideoInfo | undefined;
+  videoType: number;
 }
 
 export interface AILivePreviewHighlightExtra {
@@ -1448,12 +1494,31 @@ export interface AILiveSummary {
   openAiSummary: number;
   aiLiveSummaryVersions: string;
   audienceSideTitleLanguage: string;
+  highlightRequired: boolean;
 }
 
 export interface AIScriptTipSwitch {
   value: number;
   valueV2: number;
   subType: number;
+}
+
+export interface AiCoachImMessageControlSignalData {
+  closeWorker: boolean;
+}
+
+export interface AiCoachImMessageData {
+  jumpSchemaData: AiCoachImMessageJumpSchemaData | undefined;
+  debugInfoData: AiCoachImMessageDebugInfoData | undefined;
+  controlSignalData: AiCoachImMessageControlSignalData | undefined;
+}
+
+export interface AiCoachImMessageDebugInfoData {
+  debugInfo: string;
+}
+
+export interface AiCoachImMessageJumpSchemaData {
+  jumpSchema: string;
 }
 
 export interface AnchorGrowLevelImMsg {
@@ -1505,6 +1570,16 @@ export interface BannerImageContent {
   contentColor: string;
 }
 
+export interface BubbleCondition {
+  type: number;
+  bagItemType: string;
+  bagItemId: string;
+  giftId: string;
+  resourceId: string;
+  uri: string;
+  giftEffectId: string;
+}
+
 export interface CardTag {
   key: string;
   icon: ImageModel | undefined;
@@ -1522,6 +1597,11 @@ export interface ColdStartStatData {
   viewerCount: number;
   status: number;
   stats: ColdStartStat[];
+}
+
+export interface Conditions {
+  giftPrice: string;
+  blockGiftIds: string[];
 }
 
 export interface DailyRankingStickerAutoShowSwitch {
@@ -1596,6 +1676,13 @@ export interface EffectStruct {
 export interface EnlargeSetting {
   landscapeView: number;
   portraitView: number;
+}
+
+export interface EntryData {
+  entryType: string;
+  conditions: Conditions | undefined;
+  schemaUrl: string;
+  bubbleCondition: BubbleCondition[];
 }
 
 export interface EventUserInfo {
@@ -1733,6 +1820,7 @@ export interface LiveFragmentAutoPostItemVisibility {
 
 export interface LiveFragmentAutoPostSwitch {
   value: number;
+  limited: number;
 }
 
 export interface LiveJourneyImMessage {
@@ -1770,6 +1858,13 @@ export interface MultiGuestPlayInfo {
 export interface MultiGuestPlayInfo_PlaySceneToConfigMapEntry {
   key: number;
   value: MultiGuestPlayConfig | undefined;
+}
+
+export interface MultiGuestShareRevenueSettingInfo {
+  valid: string;
+  version: string;
+  revenueSetting: string;
+  revenueSettingRatio: string;
 }
 
 export interface PaidEventPreview {
@@ -1872,6 +1967,7 @@ export interface RealtimeLiveCenterTips {
   suggestionRecordId: string;
   eventTrackParams: { [key: string]: string };
   title: string;
+  icon: string;
 }
 
 export interface RealtimeLiveCenterTips_EventTrackParamsEntry {
@@ -1888,6 +1984,7 @@ export interface RealtimeLiveCenterWhiteBoxIM {
   viewer: string;
   suggestionId: string;
   showText: string;
+  suggestionTemplateId: string;
 }
 
 export interface RealtimeLiveCenterWhiteBoxPreviewIM {
@@ -1936,6 +2033,63 @@ export interface SubSplitStatus {
   curPeriod: SubSplitPeriod;
 }
 
+export interface TPClickableText {
+  text: TPText | undefined;
+  actionType: string;
+  schema: string;
+  background: TouchPointBackground | undefined;
+  alignment: number;
+  jsb: string;
+}
+
+export interface TPCountDownConfig {
+  endTime: string;
+  backgroundColor: TouchPointColor | undefined;
+  padding: TouchPointPadding | undefined;
+  backgroundRadius: number;
+}
+
+export interface TPFormat {
+  color: string;
+  tuxFont: string;
+  weight: number;
+  fontSize: number;
+}
+
+export interface TPText {
+  key: string;
+  stringValue: string;
+  format: TPFormat | undefined;
+  pieces: TPTextPiece[];
+  extra: { [key: string]: string };
+}
+
+export interface TPText_ExtraEntry {
+  key: string;
+  value: string;
+}
+
+export interface TPTextPiece {
+  type: number;
+  format: TPFormat | undefined;
+  stringValue: string;
+  key: string;
+  clickSpan: TPClickableText[];
+  imageValue: TPTextPieceImage | undefined;
+  countdownConfig: TPCountDownConfig | undefined;
+}
+
+export interface TPTextPieceImage {
+  image: ImageModel | undefined;
+  tuxIcon: TPTuxIcon | undefined;
+}
+
+export interface TPTuxIcon {
+  tuxImage: TPTuxImage | undefined;
+  schema: string;
+  actionType: string;
+}
+
 export interface Task {
   key: string;
   title: string;
@@ -1947,12 +2101,28 @@ export interface TemplateEffectExtra {
   resourceId: string;
 }
 
+export interface TouchPointBackground {
+  color: TouchPointColor | undefined;
+  image: ImageModel | undefined;
+}
+
+export interface TouchPointColor {
+  light: string;
+  dark: string;
+}
+
+export interface TouchPointPadding {
+  horizontal: number;
+  vertical: number;
+}
+
 export interface TrafficDiagnose {
   title: string;
   body: string;
   type: number;
   viewerAdded: string;
   diagnoseParams: { [key: string]: string };
+  icon: string;
 }
 
 export interface TrafficDiagnose_DiagnoseParamsEntry {
@@ -1999,6 +2169,7 @@ export interface UserSetting {
   personaAlertSourceNoticeSwitch: PersonaAlertSourceNoticeSwitch | undefined;
   discordUploadStickerSwitch: DiscordUploadStickerSwitch | undefined;
   enlargeSetting: EnlargeSetting | undefined;
+  privateStatus: number;
 }
 
 export interface WhiteBoxData {
@@ -2015,6 +2186,472 @@ export interface WhiteBoxDataItem {
   isNow: boolean;
 }
 
+function createBaseAIBeautyColorCorrectionSetting(): AIBeautyColorCorrectionSetting {
+  return {
+    gamma: undefined,
+    brightness: undefined,
+    contrast: undefined,
+    saturation: undefined,
+    hueShift: undefined,
+    opacity: undefined,
+    addColor: undefined,
+    mulColor: undefined,
+  };
+}
+
+export const AIBeautyColorCorrectionSetting: MessageFns<AIBeautyColorCorrectionSetting> = {
+  encode(message: AIBeautyColorCorrectionSetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.gamma !== undefined) {
+      AIBeautyItem.encode(message.gamma, writer.uint32(10).fork()).join();
+    }
+    if (message.brightness !== undefined) {
+      AIBeautyItem.encode(message.brightness, writer.uint32(18).fork()).join();
+    }
+    if (message.contrast !== undefined) {
+      AIBeautyItem.encode(message.contrast, writer.uint32(26).fork()).join();
+    }
+    if (message.saturation !== undefined) {
+      AIBeautyItem.encode(message.saturation, writer.uint32(34).fork()).join();
+    }
+    if (message.hueShift !== undefined) {
+      AIBeautyItem.encode(message.hueShift, writer.uint32(42).fork()).join();
+    }
+    if (message.opacity !== undefined) {
+      AIBeautyItem.encode(message.opacity, writer.uint32(50).fork()).join();
+    }
+    if (message.addColor !== undefined) {
+      AIBeautyItem.encode(message.addColor, writer.uint32(58).fork()).join();
+    }
+    if (message.mulColor !== undefined) {
+      AIBeautyItem.encode(message.mulColor, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIBeautyColorCorrectionSetting {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIBeautyColorCorrectionSetting();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.gamma = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.brightness = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.contrast = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.saturation = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.hueShift = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.opacity = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.addColor = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.mulColor = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAIBeautyItem(): AIBeautyItem {
+  return { value: 0 };
+}
+
+export const AIBeautyItem: MessageFns<AIBeautyItem> = {
+  encode(message: AIBeautyItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.value !== 0) {
+      writer.uint32(9).double(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIBeautyItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIBeautyItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 9) {
+            break;
+          }
+
+          message.value = reader.double();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAIBeautySetting(): AIBeautySetting {
+  return {
+    smooth: undefined,
+    contrast: undefined,
+    tooth: undefined,
+    contour: undefined,
+    shape: undefined,
+    eye: undefined,
+    nose: undefined,
+  };
+}
+
+export const AIBeautySetting: MessageFns<AIBeautySetting> = {
+  encode(message: AIBeautySetting, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.smooth !== undefined) {
+      AIBeautyItem.encode(message.smooth, writer.uint32(10).fork()).join();
+    }
+    if (message.contrast !== undefined) {
+      AIBeautyItem.encode(message.contrast, writer.uint32(18).fork()).join();
+    }
+    if (message.tooth !== undefined) {
+      AIBeautyItem.encode(message.tooth, writer.uint32(26).fork()).join();
+    }
+    if (message.contour !== undefined) {
+      AIBeautyItem.encode(message.contour, writer.uint32(34).fork()).join();
+    }
+    if (message.shape !== undefined) {
+      AIBeautyItem.encode(message.shape, writer.uint32(42).fork()).join();
+    }
+    if (message.eye !== undefined) {
+      AIBeautyItem.encode(message.eye, writer.uint32(50).fork()).join();
+    }
+    if (message.nose !== undefined) {
+      AIBeautyItem.encode(message.nose, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIBeautySetting {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIBeautySetting();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.smooth = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.contrast = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.tooth = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.contour = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.shape = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.eye = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.nose = AIBeautyItem.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAIBeautySettingKV(): AIBeautySettingKV {
+  return { key: "", value: 0 };
+}
+
+export const AIBeautySettingKV: MessageFns<AIBeautySettingKV> = {
+  encode(message: AIBeautySettingKV, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== 0) {
+      writer.uint32(17).double(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIBeautySettingKV {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIBeautySettingKV();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 17) {
+            break;
+          }
+
+          message.value = reader.double();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAIBeautySugContent(): AIBeautySugContent {
+  return {
+    beautySetting: undefined,
+    colorCorrectionSetting: undefined,
+    suggestion: [],
+    errorCode: "0",
+    beautySettingList: [],
+    colorCorrectoinSettingList: [],
+  };
+}
+
+export const AIBeautySugContent: MessageFns<AIBeautySugContent> = {
+  encode(message: AIBeautySugContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.beautySetting !== undefined) {
+      AIBeautySetting.encode(message.beautySetting, writer.uint32(10).fork()).join();
+    }
+    if (message.colorCorrectionSetting !== undefined) {
+      AIBeautyColorCorrectionSetting.encode(message.colorCorrectionSetting, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.suggestion) {
+      AIBeautySuggestion.encode(v!, writer.uint32(26).fork()).join();
+    }
+    if (message.errorCode !== "0") {
+      writer.uint32(32).int64(message.errorCode);
+    }
+    for (const v of message.beautySettingList) {
+      AIBeautySettingKV.encode(v!, writer.uint32(42).fork()).join();
+    }
+    for (const v of message.colorCorrectoinSettingList) {
+      AIBeautySettingKV.encode(v!, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIBeautySugContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIBeautySugContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.beautySetting = AIBeautySetting.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.colorCorrectionSetting = AIBeautyColorCorrectionSetting.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.suggestion.push(AIBeautySuggestion.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.errorCode = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.beautySettingList.push(AIBeautySettingKV.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.colorCorrectoinSettingList.push(AIBeautySettingKV.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAIBeautySuggestion(): AIBeautySuggestion {
+  return { content: [], title: "" };
+}
+
+export const AIBeautySuggestion: MessageFns<AIBeautySuggestion> = {
+  encode(message: AIBeautySuggestion, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.content) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIBeautySuggestion {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIBeautySuggestion();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.content.push(reader.string());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseAILivePreviewHighlight(): AILivePreviewHighlight {
   return {
     fragmentId: "",
@@ -2024,6 +2661,7 @@ function createBaseAILivePreviewHighlight(): AILivePreviewHighlight {
     expireTimestamp: "0",
     resultKey: "",
     videoInfo: undefined,
+    videoType: 0,
   };
 }
 
@@ -2049,6 +2687,9 @@ export const AILivePreviewHighlight: MessageFns<AILivePreviewHighlight> = {
     }
     if (message.videoInfo !== undefined) {
       AILivePreviewHighlightVideoInfo.encode(message.videoInfo, writer.uint32(58).fork()).join();
+    }
+    if (message.videoType !== 0) {
+      writer.uint32(64).int32(message.videoType);
     }
     return writer;
   },
@@ -2114,6 +2755,14 @@ export const AILivePreviewHighlight: MessageFns<AILivePreviewHighlight> = {
           }
 
           message.videoInfo = AILivePreviewHighlightVideoInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.videoType = reader.int32();
           continue;
         }
       }
@@ -2359,6 +3008,7 @@ function createBaseAILiveSummary(): AILiveSummary {
     openAiSummary: 0,
     aiLiveSummaryVersions: "",
     audienceSideTitleLanguage: "",
+    highlightRequired: false,
   };
 }
 
@@ -2390,6 +3040,9 @@ export const AILiveSummary: MessageFns<AILiveSummary> = {
     }
     if (message.audienceSideTitleLanguage !== "") {
       writer.uint32(74).string(message.audienceSideTitleLanguage);
+    }
+    if (message.highlightRequired !== false) {
+      writer.uint32(80).bool(message.highlightRequired);
     }
     return writer;
   },
@@ -2473,6 +3126,14 @@ export const AILiveSummary: MessageFns<AILiveSummary> = {
           message.audienceSideTitleLanguage = reader.string();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.highlightRequired = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2530,6 +3191,176 @@ export const AIScriptTipSwitch: MessageFns<AIScriptTipSwitch> = {
           }
 
           message.subType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAiCoachImMessageControlSignalData(): AiCoachImMessageControlSignalData {
+  return { closeWorker: false };
+}
+
+export const AiCoachImMessageControlSignalData: MessageFns<AiCoachImMessageControlSignalData> = {
+  encode(message: AiCoachImMessageControlSignalData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.closeWorker !== false) {
+      writer.uint32(8).bool(message.closeWorker);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AiCoachImMessageControlSignalData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAiCoachImMessageControlSignalData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.closeWorker = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAiCoachImMessageData(): AiCoachImMessageData {
+  return { jumpSchemaData: undefined, debugInfoData: undefined, controlSignalData: undefined };
+}
+
+export const AiCoachImMessageData: MessageFns<AiCoachImMessageData> = {
+  encode(message: AiCoachImMessageData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.jumpSchemaData !== undefined) {
+      AiCoachImMessageJumpSchemaData.encode(message.jumpSchemaData, writer.uint32(10).fork()).join();
+    }
+    if (message.debugInfoData !== undefined) {
+      AiCoachImMessageDebugInfoData.encode(message.debugInfoData, writer.uint32(18).fork()).join();
+    }
+    if (message.controlSignalData !== undefined) {
+      AiCoachImMessageControlSignalData.encode(message.controlSignalData, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AiCoachImMessageData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAiCoachImMessageData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.jumpSchemaData = AiCoachImMessageJumpSchemaData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.debugInfoData = AiCoachImMessageDebugInfoData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.controlSignalData = AiCoachImMessageControlSignalData.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAiCoachImMessageDebugInfoData(): AiCoachImMessageDebugInfoData {
+  return { debugInfo: "" };
+}
+
+export const AiCoachImMessageDebugInfoData: MessageFns<AiCoachImMessageDebugInfoData> = {
+  encode(message: AiCoachImMessageDebugInfoData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.debugInfo !== "") {
+      writer.uint32(10).string(message.debugInfo);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AiCoachImMessageDebugInfoData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAiCoachImMessageDebugInfoData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.debugInfo = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAiCoachImMessageJumpSchemaData(): AiCoachImMessageJumpSchemaData {
+  return { jumpSchema: "" };
+}
+
+export const AiCoachImMessageJumpSchemaData: MessageFns<AiCoachImMessageJumpSchemaData> = {
+  encode(message: AiCoachImMessageJumpSchemaData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.jumpSchema !== "") {
+      writer.uint32(10).string(message.jumpSchema);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AiCoachImMessageJumpSchemaData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAiCoachImMessageJumpSchemaData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.jumpSchema = reader.string();
           continue;
         }
       }
@@ -3025,6 +3856,109 @@ export const BannerImageContent: MessageFns<BannerImageContent> = {
   },
 };
 
+function createBaseBubbleCondition(): BubbleCondition {
+  return { type: 0, bagItemType: "", bagItemId: "", giftId: "", resourceId: "", uri: "", giftEffectId: "" };
+}
+
+export const BubbleCondition: MessageFns<BubbleCondition> = {
+  encode(message: BubbleCondition, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.bagItemType !== "") {
+      writer.uint32(18).string(message.bagItemType);
+    }
+    if (message.bagItemId !== "") {
+      writer.uint32(26).string(message.bagItemId);
+    }
+    if (message.giftId !== "") {
+      writer.uint32(34).string(message.giftId);
+    }
+    if (message.resourceId !== "") {
+      writer.uint32(42).string(message.resourceId);
+    }
+    if (message.uri !== "") {
+      writer.uint32(50).string(message.uri);
+    }
+    if (message.giftEffectId !== "") {
+      writer.uint32(58).string(message.giftEffectId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BubbleCondition {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBubbleCondition();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bagItemType = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.bagItemId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.giftId = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.resourceId = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.uri = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.giftEffectId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCardTag(): CardTag {
   return { key: "", icon: undefined, text: "", textColor: "" };
 }
@@ -3202,6 +4136,66 @@ export const ColdStartStatData: MessageFns<ColdStartStatData> = {
 
           message.stats.push(ColdStartStat.decode(reader, reader.uint32()));
           continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseConditions(): Conditions {
+  return { giftPrice: "0", blockGiftIds: [] };
+}
+
+export const Conditions: MessageFns<Conditions> = {
+  encode(message: Conditions, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.giftPrice !== "0") {
+      writer.uint32(8).int64(message.giftPrice);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.blockGiftIds) {
+      writer.int64(v);
+    }
+    writer.join();
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Conditions {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseConditions();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.giftPrice = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag === 16) {
+            message.blockGiftIds.push(reader.int64().toString());
+
+            continue;
+          }
+
+          if (tag === 18) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.blockGiftIds.push(reader.int64().toString());
+            }
+
+            continue;
+          }
+
+          break;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4033,6 +5027,76 @@ export const EnlargeSetting: MessageFns<EnlargeSetting> = {
           }
 
           message.portraitView = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEntryData(): EntryData {
+  return { entryType: "0", conditions: undefined, schemaUrl: "", bubbleCondition: [] };
+}
+
+export const EntryData: MessageFns<EntryData> = {
+  encode(message: EntryData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.entryType !== "0") {
+      writer.uint32(8).int64(message.entryType);
+    }
+    if (message.conditions !== undefined) {
+      Conditions.encode(message.conditions, writer.uint32(18).fork()).join();
+    }
+    if (message.schemaUrl !== "") {
+      writer.uint32(26).string(message.schemaUrl);
+    }
+    for (const v of message.bubbleCondition) {
+      BubbleCondition.encode(v!, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EntryData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEntryData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.entryType = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.conditions = Conditions.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.schemaUrl = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.bubbleCondition.push(BubbleCondition.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -5366,13 +6430,16 @@ export const LiveFragmentAutoPostItemVisibility: MessageFns<LiveFragmentAutoPost
 };
 
 function createBaseLiveFragmentAutoPostSwitch(): LiveFragmentAutoPostSwitch {
-  return { value: 0 };
+  return { value: 0, limited: 0 };
 }
 
 export const LiveFragmentAutoPostSwitch: MessageFns<LiveFragmentAutoPostSwitch> = {
   encode(message: LiveFragmentAutoPostSwitch, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.value !== 0) {
       writer.uint32(8).int32(message.value);
+    }
+    if (message.limited !== 0) {
+      writer.uint32(16).int32(message.limited);
     }
     return writer;
   },
@@ -5390,6 +6457,14 @@ export const LiveFragmentAutoPostSwitch: MessageFns<LiveFragmentAutoPostSwitch> 
           }
 
           message.value = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limited = reader.int32();
           continue;
         }
       }
@@ -5757,6 +6832,76 @@ export const MultiGuestPlayInfo_PlaySceneToConfigMapEntry: MessageFns<MultiGuest
           }
 
           message.value = MultiGuestPlayConfig.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMultiGuestShareRevenueSettingInfo(): MultiGuestShareRevenueSettingInfo {
+  return { valid: "0", version: "0", revenueSetting: "0", revenueSettingRatio: "0" };
+}
+
+export const MultiGuestShareRevenueSettingInfo: MessageFns<MultiGuestShareRevenueSettingInfo> = {
+  encode(message: MultiGuestShareRevenueSettingInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.valid !== "0") {
+      writer.uint32(8).int64(message.valid);
+    }
+    if (message.version !== "0") {
+      writer.uint32(16).int64(message.version);
+    }
+    if (message.revenueSetting !== "0") {
+      writer.uint32(24).int64(message.revenueSetting);
+    }
+    if (message.revenueSettingRatio !== "0") {
+      writer.uint32(32).int64(message.revenueSettingRatio);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MultiGuestShareRevenueSettingInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMultiGuestShareRevenueSettingInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.valid = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.version = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.revenueSetting = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.revenueSettingRatio = reader.int64().toString();
           continue;
         }
       }
@@ -6651,6 +7796,7 @@ function createBaseRealtimeLiveCenterTips(): RealtimeLiveCenterTips {
     suggestionRecordId: "",
     eventTrackParams: {},
     title: "",
+    icon: "",
   };
 }
 
@@ -6694,6 +7840,9 @@ export const RealtimeLiveCenterTips: MessageFns<RealtimeLiveCenterTips> = {
     });
     if (message.title !== "") {
       writer.uint32(106).string(message.title);
+    }
+    if (message.icon !== "") {
+      writer.uint32(114).string(message.icon);
     }
     return writer;
   },
@@ -6812,6 +7961,14 @@ export const RealtimeLiveCenterTips: MessageFns<RealtimeLiveCenterTips> = {
           message.title = reader.string();
           continue;
         }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          message.icon = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -6922,7 +8079,7 @@ export const RealtimeLiveCenterTrafficToolInfoIM: MessageFns<RealtimeLiveCenterT
 };
 
 function createBaseRealtimeLiveCenterWhiteBoxIM(): RealtimeLiveCenterWhiteBoxIM {
-  return { viewer: "0", suggestionId: "", showText: "" };
+  return { viewer: "0", suggestionId: "", showText: "", suggestionTemplateId: "" };
 }
 
 export const RealtimeLiveCenterWhiteBoxIM: MessageFns<RealtimeLiveCenterWhiteBoxIM> = {
@@ -6935,6 +8092,9 @@ export const RealtimeLiveCenterWhiteBoxIM: MessageFns<RealtimeLiveCenterWhiteBox
     }
     if (message.showText !== "") {
       writer.uint32(26).string(message.showText);
+    }
+    if (message.suggestionTemplateId !== "") {
+      writer.uint32(34).string(message.suggestionTemplateId);
     }
     return writer;
   },
@@ -6968,6 +8128,14 @@ export const RealtimeLiveCenterWhiteBoxIM: MessageFns<RealtimeLiveCenterWhiteBox
           }
 
           message.showText = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.suggestionTemplateId = reader.string();
           continue;
         }
       }
@@ -7466,6 +8634,588 @@ export const SubSplitStatus: MessageFns<SubSplitStatus> = {
   },
 };
 
+function createBaseTPClickableText(): TPClickableText {
+  return { text: undefined, actionType: "0", schema: "", background: undefined, alignment: 0, jsb: "" };
+}
+
+export const TPClickableText: MessageFns<TPClickableText> = {
+  encode(message: TPClickableText, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.text !== undefined) {
+      TPText.encode(message.text, writer.uint32(10).fork()).join();
+    }
+    if (message.actionType !== "0") {
+      writer.uint32(16).int64(message.actionType);
+    }
+    if (message.schema !== "") {
+      writer.uint32(26).string(message.schema);
+    }
+    if (message.background !== undefined) {
+      TouchPointBackground.encode(message.background, writer.uint32(34).fork()).join();
+    }
+    if (message.alignment !== 0) {
+      writer.uint32(40).int32(message.alignment);
+    }
+    if (message.jsb !== "") {
+      writer.uint32(50).string(message.jsb);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPClickableText {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPClickableText();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.text = TPText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.actionType = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.background = TouchPointBackground.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.alignment = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.jsb = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPCountDownConfig(): TPCountDownConfig {
+  return { endTime: "0", backgroundColor: undefined, padding: undefined, backgroundRadius: 0 };
+}
+
+export const TPCountDownConfig: MessageFns<TPCountDownConfig> = {
+  encode(message: TPCountDownConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.endTime !== "0") {
+      writer.uint32(8).int64(message.endTime);
+    }
+    if (message.backgroundColor !== undefined) {
+      TouchPointColor.encode(message.backgroundColor, writer.uint32(18).fork()).join();
+    }
+    if (message.padding !== undefined) {
+      TouchPointPadding.encode(message.padding, writer.uint32(26).fork()).join();
+    }
+    if (message.backgroundRadius !== 0) {
+      writer.uint32(33).double(message.backgroundRadius);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPCountDownConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPCountDownConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.endTime = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.backgroundColor = TouchPointColor.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.padding = TouchPointPadding.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 33) {
+            break;
+          }
+
+          message.backgroundRadius = reader.double();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPFormat(): TPFormat {
+  return { color: "", tuxFont: "", weight: 0, fontSize: 0 };
+}
+
+export const TPFormat: MessageFns<TPFormat> = {
+  encode(message: TPFormat, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.color !== "") {
+      writer.uint32(10).string(message.color);
+    }
+    if (message.tuxFont !== "") {
+      writer.uint32(18).string(message.tuxFont);
+    }
+    if (message.weight !== 0) {
+      writer.uint32(24).int32(message.weight);
+    }
+    if (message.fontSize !== 0) {
+      writer.uint32(32).int32(message.fontSize);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPFormat {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPFormat();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.color = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tuxFont = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.weight = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.fontSize = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPText(): TPText {
+  return { key: "", stringValue: "", format: undefined, pieces: [], extra: {} };
+}
+
+export const TPText: MessageFns<TPText> = {
+  encode(message: TPText, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.stringValue !== "") {
+      writer.uint32(18).string(message.stringValue);
+    }
+    if (message.format !== undefined) {
+      TPFormat.encode(message.format, writer.uint32(26).fork()).join();
+    }
+    for (const v of message.pieces) {
+      TPTextPiece.encode(v!, writer.uint32(34).fork()).join();
+    }
+    globalThis.Object.entries(message.extra).forEach(([key, value]: [string, string]) => {
+      TPText_ExtraEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPText {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPText();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.stringValue = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.format = TPFormat.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.pieces.push(TPTextPiece.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          const entry10 = TPText_ExtraEntry.decode(reader, reader.uint32());
+          if (entry10.value !== undefined) {
+            message.extra[entry10.key] = entry10.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPText_ExtraEntry(): TPText_ExtraEntry {
+  return { key: "", value: "" };
+}
+
+export const TPText_ExtraEntry: MessageFns<TPText_ExtraEntry> = {
+  encode(message: TPText_ExtraEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPText_ExtraEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPText_ExtraEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPTextPiece(): TPTextPiece {
+  return {
+    type: 0,
+    format: undefined,
+    stringValue: "",
+    key: "",
+    clickSpan: [],
+    imageValue: undefined,
+    countdownConfig: undefined,
+  };
+}
+
+export const TPTextPiece: MessageFns<TPTextPiece> = {
+  encode(message: TPTextPiece, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.format !== undefined) {
+      TPFormat.encode(message.format, writer.uint32(18).fork()).join();
+    }
+    if (message.stringValue !== "") {
+      writer.uint32(26).string(message.stringValue);
+    }
+    if (message.key !== "") {
+      writer.uint32(34).string(message.key);
+    }
+    for (const v of message.clickSpan) {
+      TPClickableText.encode(v!, writer.uint32(50).fork()).join();
+    }
+    if (message.imageValue !== undefined) {
+      TPTextPieceImage.encode(message.imageValue, writer.uint32(58).fork()).join();
+    }
+    if (message.countdownConfig !== undefined) {
+      TPCountDownConfig.encode(message.countdownConfig, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPTextPiece {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPTextPiece();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.format = TPFormat.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.stringValue = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.clickSpan.push(TPClickableText.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.imageValue = TPTextPieceImage.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.countdownConfig = TPCountDownConfig.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPTextPieceImage(): TPTextPieceImage {
+  return { image: undefined, tuxIcon: undefined };
+}
+
+export const TPTextPieceImage: MessageFns<TPTextPieceImage> = {
+  encode(message: TPTextPieceImage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.image !== undefined) {
+      ImageModel.encode(message.image, writer.uint32(10).fork()).join();
+    }
+    if (message.tuxIcon !== undefined) {
+      TPTuxIcon.encode(message.tuxIcon, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPTextPieceImage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPTextPieceImage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.image = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tuxIcon = TPTuxIcon.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPTuxIcon(): TPTuxIcon {
+  return { tuxImage: undefined, schema: "", actionType: "0" };
+}
+
+export const TPTuxIcon: MessageFns<TPTuxIcon> = {
+  encode(message: TPTuxIcon, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.tuxImage !== undefined) {
+      TPTuxImage.encode(message.tuxImage, writer.uint32(10).fork()).join();
+    }
+    if (message.schema !== "") {
+      writer.uint32(18).string(message.schema);
+    }
+    if (message.actionType !== "0") {
+      writer.uint32(24).int64(message.actionType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPTuxIcon {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPTuxIcon();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tuxImage = TPTuxImage.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.actionType = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseTask(): Task {
   return { key: "", title: "", currentNum: "0", targetNum: "0" };
 }
@@ -7573,8 +9323,152 @@ export const TemplateEffectExtra: MessageFns<TemplateEffectExtra> = {
   },
 };
 
+function createBaseTouchPointBackground(): TouchPointBackground {
+  return { color: undefined, image: undefined };
+}
+
+export const TouchPointBackground: MessageFns<TouchPointBackground> = {
+  encode(message: TouchPointBackground, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.color !== undefined) {
+      TouchPointColor.encode(message.color, writer.uint32(10).fork()).join();
+    }
+    if (message.image !== undefined) {
+      ImageModel.encode(message.image, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TouchPointBackground {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTouchPointBackground();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.color = TouchPointColor.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.image = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTouchPointColor(): TouchPointColor {
+  return { light: "", dark: "" };
+}
+
+export const TouchPointColor: MessageFns<TouchPointColor> = {
+  encode(message: TouchPointColor, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.light !== "") {
+      writer.uint32(10).string(message.light);
+    }
+    if (message.dark !== "") {
+      writer.uint32(18).string(message.dark);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TouchPointColor {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTouchPointColor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.light = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.dark = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTouchPointPadding(): TouchPointPadding {
+  return { horizontal: 0, vertical: 0 };
+}
+
+export const TouchPointPadding: MessageFns<TouchPointPadding> = {
+  encode(message: TouchPointPadding, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.horizontal !== 0) {
+      writer.uint32(8).int32(message.horizontal);
+    }
+    if (message.vertical !== 0) {
+      writer.uint32(16).int32(message.vertical);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TouchPointPadding {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTouchPointPadding();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.horizontal = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.vertical = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseTrafficDiagnose(): TrafficDiagnose {
-  return { title: "", body: "", type: 0, viewerAdded: "0", diagnoseParams: {} };
+  return { title: "", body: "", type: 0, viewerAdded: "0", diagnoseParams: {}, icon: "" };
 }
 
 export const TrafficDiagnose: MessageFns<TrafficDiagnose> = {
@@ -7594,6 +9488,9 @@ export const TrafficDiagnose: MessageFns<TrafficDiagnose> = {
     globalThis.Object.entries(message.diagnoseParams).forEach(([key, value]: [string, string]) => {
       TrafficDiagnose_DiagnoseParamsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
     });
+    if (message.icon !== "") {
+      writer.uint32(50).string(message.icon);
+    }
     return writer;
   },
 
@@ -7645,6 +9542,14 @@ export const TrafficDiagnose: MessageFns<TrafficDiagnose> = {
           if (entry5.value !== undefined) {
             message.diagnoseParams[entry5.key] = entry5.value;
           }
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.icon = reader.string();
           continue;
         }
       }
@@ -7908,6 +9813,7 @@ function createBaseUserSetting(): UserSetting {
     personaAlertSourceNoticeSwitch: undefined,
     discordUploadStickerSwitch: undefined,
     enlargeSetting: undefined,
+    privateStatus: 0,
   };
 }
 
@@ -7983,6 +9889,9 @@ export const UserSetting: MessageFns<UserSetting> = {
     }
     if (message.enlargeSetting !== undefined) {
       EnlargeSetting.encode(message.enlargeSetting, writer.uint32(946).fork()).join();
+    }
+    if (message.privateStatus !== 0) {
+      writer.uint32(952).int32(message.privateStatus);
     }
     return writer;
   },
@@ -8169,6 +10078,14 @@ export const UserSetting: MessageFns<UserSetting> = {
           }
 
           message.enlargeSetting = EnlargeSetting.decode(reader, reader.uint32());
+          continue;
+        }
+        case 119: {
+          if (tag !== 952) {
+            break;
+          }
+
+          message.privateStatus = reader.int32();
           continue;
         }
       }

@@ -7,17 +7,18 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { AssetsModel } from "./assets.js";
-import { PrefabBundle } from "./model.js";
+import { GiftEffectStreamSpec, PrefabBundle } from "./model.js";
 
 export const protobufPackage = "webcast.model.gift.model";
 
 export interface AssetBundle {
   assets: AssetsModel[];
   prefabBundle: PrefabBundle | undefined;
+  streamEffectSpec: GiftEffectStreamSpec | undefined;
 }
 
 function createBaseAssetBundle(): AssetBundle {
-  return { assets: [], prefabBundle: undefined };
+  return { assets: [], prefabBundle: undefined, streamEffectSpec: undefined };
 }
 
 export const AssetBundle: MessageFns<AssetBundle> = {
@@ -27,6 +28,9 @@ export const AssetBundle: MessageFns<AssetBundle> = {
     }
     if (message.prefabBundle !== undefined) {
       PrefabBundle.encode(message.prefabBundle, writer.uint32(18).fork()).join();
+    }
+    if (message.streamEffectSpec !== undefined) {
+      GiftEffectStreamSpec.encode(message.streamEffectSpec, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -52,6 +56,14 @@ export const AssetBundle: MessageFns<AssetBundle> = {
           }
 
           message.prefabBundle = PrefabBundle.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.streamEffectSpec = GiftEffectStreamSpec.decode(reader, reader.uint32());
           continue;
         }
       }

@@ -6,7 +6,6 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { EnvelopeEnigmaInfo } from "../envelope.js";
 import { ToolBarManagement } from "../message_proto.js";
 import { ImageModel } from "./base/messages.js";
 import { PrivilegeLogExtra } from "./base/user.js";
@@ -26,6 +25,7 @@ import {
   UserFansClubFansClubDataUserFansClubStatus,
 } from "./data/messages.js";
 import { AssetsModel } from "./gift/assets.js";
+import { GiftColorInfo } from "./gift/model.js";
 import { AnchorLevelPermission } from "./live/messages.js";
 
 export const protobufPackage = "webcast.model";
@@ -61,6 +61,12 @@ export interface AnchorLevel {
   profileDialogBgBack: ImageModel | undefined;
   stageLevel: ImageModel | undefined;
   smallIcon: ImageModel | undefined;
+}
+
+export interface AudioResource {
+  audioUrl: string;
+  lyricsUrl: string;
+  snippetId: string;
 }
 
 export interface AudioStruct {
@@ -150,6 +156,8 @@ export interface Board {
   smbReviewId: string;
   smbReviewInterceptionReasons: string[];
   previewBgColor: string;
+  dslVersion: string;
+  minCompatibleDslVersion: string;
 }
 
 export interface BoardItem {
@@ -167,6 +175,10 @@ export interface BoardItem {
   matting: boolean;
   draggable: boolean;
   boardItemLayout: BoardItemLayout | undefined;
+  canvasPosition: BoardItemPosition | undefined;
+  canvasItemLayout: BoardItemLayout | undefined;
+  editorMode: number;
+  overlayImage: ImageContent | undefined;
 }
 
 export interface BoardItemContent {
@@ -194,6 +206,7 @@ export interface BoardItemPosition {
   y: string;
   percentageX: string;
   percentageY: string;
+  renderOrder: number;
 }
 
 export interface BoardItemStyle {
@@ -233,12 +246,23 @@ export interface BorderInfo {
   descStarlingKey: string;
   name: string;
   description: string;
+  isTallerAvatarBackground: boolean;
 }
 
 export interface ColorBackground {
   color: string;
   radius: number;
   padding: EdgeInsets | undefined;
+  radiusV2: MeasureSpec | undefined;
+}
+
+export interface ColorGroup {
+  groupName: string;
+  colorInfos: GiftColorInfo[];
+}
+
+export interface ColorPickerInfo {
+  groups: ColorGroup[];
 }
 
 export interface Creator {
@@ -293,6 +317,7 @@ export interface EdgeInsets {
   right: number;
   bottom: number;
   left: number;
+  mode: number;
 }
 
 export interface FansClubData {
@@ -323,6 +348,8 @@ export interface FlowSpec {
   overflow: boolean;
   width: SizeSpec | undefined;
   height: SizeSpec | undefined;
+  interItemSpacingV2: MeasureSpec | undefined;
+  rowSpacingV2: MeasureSpec | undefined;
 }
 
 export interface FullyCustomizedSetting {
@@ -391,6 +418,11 @@ export interface GiftSeriesInfo {
   seriesName: string;
   giftIds: string[];
   enabled: boolean;
+  containerBackground: ImageModel | undefined;
+  sendGiftButtonColor: string;
+  pointingBackTriColor: string;
+  seriesNameColor: string;
+  endTimeSec: string;
 }
 
 export interface GiftSkin {
@@ -513,6 +545,14 @@ export interface MeasureSpec {
   value: number;
 }
 
+export interface MusicGiftInfo {
+  artistName: string;
+  resource: AudioResource | undefined;
+  songId: string;
+  moodId: string;
+  songName: string;
+}
+
 export interface OrganizationModel {
   name: string;
   desc: string;
@@ -528,6 +568,9 @@ export interface Paragraph {
   maxCharLimit: string;
   styleRef: string;
   editable: boolean;
+  rowIndex: number;
+  notEditable: boolean;
+  placeholder: string;
 }
 
 export interface ParagraphLayout {
@@ -543,21 +586,6 @@ export interface ParagraphLayout {
 export interface PollVoteLimit {
   limitType: PollVoteLimitType;
   voteCountLimit: string;
-}
-
-export interface PortalInfo {
-  id: string;
-  idc: string;
-  sendAtSecond: number;
-  ddlSecond: number;
-  envelopeDiamonds: number;
-  portalDiamonds: number;
-  senderDisplayId: string;
-  senderId: string;
-  senderAvatar: ImageModel | undefined;
-  transCount: number;
-  touchCount: number;
-  senderEnigmaInfo: EnvelopeEnigmaInfo | undefined;
 }
 
 export interface PortalTransTarget {
@@ -608,6 +636,8 @@ export interface RichTextContent {
   styles: RichTextStyle[];
   paragraphs: Paragraph[];
   itemStyleRef: string;
+  artTextStyleId: string;
+  colorThemeId: string;
 }
 
 export interface RichTextStyle {
@@ -627,6 +657,8 @@ export interface RichTextStyle {
   imageBackground: ImageBackground | undefined;
   lineSpacing: number;
   inlineBackground: ColorBackground | undefined;
+  placeholderColor: string;
+  letterSpacing: number;
 }
 
 export interface RoomAuthMessage {
@@ -715,6 +747,8 @@ export interface RoomAuthStatus {
   viewerwishes: string;
   commentmention: string;
   enigmawhisper: string;
+  friendrankswitch: number;
+  musicgiftentrance: string;
 }
 
 export interface RoomDecoration {
@@ -847,6 +881,7 @@ export interface SourcePB {
   industryName: string;
   promptVersion: string;
   aigcModelVersion: string;
+  generateVersion: string;
 }
 
 export interface StarCommentPermissionSwitch {
@@ -1290,6 +1325,65 @@ export const AnchorLevel: MessageFns<AnchorLevel> = {
           }
 
           message.smallIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAudioResource(): AudioResource {
+  return { audioUrl: "", lyricsUrl: "", snippetId: "0" };
+}
+
+export const AudioResource: MessageFns<AudioResource> = {
+  encode(message: AudioResource, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.audioUrl !== "") {
+      writer.uint32(10).string(message.audioUrl);
+    }
+    if (message.lyricsUrl !== "") {
+      writer.uint32(18).string(message.lyricsUrl);
+    }
+    if (message.snippetId !== "0") {
+      writer.uint32(24).int64(message.snippetId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AudioResource {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAudioResource();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.audioUrl = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.lyricsUrl = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.snippetId = reader.int64().toString();
           continue;
         }
       }
@@ -2103,6 +2197,8 @@ function createBaseBoard(): Board {
     smbReviewId: "0",
     smbReviewInterceptionReasons: [],
     previewBgColor: "",
+    dslVersion: "0",
+    minCompatibleDslVersion: "0",
   };
 }
 
@@ -2152,6 +2248,12 @@ export const Board: MessageFns<Board> = {
     }
     if (message.previewBgColor !== "") {
       writer.uint32(130).string(message.previewBgColor);
+    }
+    if (message.dslVersion !== "0") {
+      writer.uint32(136).int64(message.dslVersion);
+    }
+    if (message.minCompatibleDslVersion !== "0") {
+      writer.uint32(144).int64(message.minCompatibleDslVersion);
     }
     return writer;
   },
@@ -2283,6 +2385,22 @@ export const Board: MessageFns<Board> = {
           message.previewBgColor = reader.string();
           continue;
         }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.dslVersion = reader.int64().toString();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.minCompatibleDslVersion = reader.int64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2309,6 +2427,10 @@ function createBaseBoardItem(): BoardItem {
     matting: false,
     draggable: false,
     boardItemLayout: undefined,
+    canvasPosition: undefined,
+    canvasItemLayout: undefined,
+    editorMode: 0,
+    overlayImage: undefined,
   };
 }
 
@@ -2355,6 +2477,18 @@ export const BoardItem: MessageFns<BoardItem> = {
     }
     if (message.boardItemLayout !== undefined) {
       BoardItemLayout.encode(message.boardItemLayout, writer.uint32(122).fork()).join();
+    }
+    if (message.canvasPosition !== undefined) {
+      BoardItemPosition.encode(message.canvasPosition, writer.uint32(130).fork()).join();
+    }
+    if (message.canvasItemLayout !== undefined) {
+      BoardItemLayout.encode(message.canvasItemLayout, writer.uint32(138).fork()).join();
+    }
+    if (message.editorMode !== 0) {
+      writer.uint32(144).int32(message.editorMode);
+    }
+    if (message.overlayImage !== undefined) {
+      ImageContent.encode(message.overlayImage, writer.uint32(154).fork()).join();
     }
     return writer;
   },
@@ -2476,6 +2610,38 @@ export const BoardItem: MessageFns<BoardItem> = {
           }
 
           message.boardItemLayout = BoardItemLayout.decode(reader, reader.uint32());
+          continue;
+        }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+
+          message.canvasPosition = BoardItemPosition.decode(reader, reader.uint32());
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.canvasItemLayout = BoardItemLayout.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.editorMode = reader.int32();
+          continue;
+        }
+        case 19: {
+          if (tag !== 154) {
+            break;
+          }
+
+          message.overlayImage = ImageContent.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -2706,7 +2872,7 @@ export const BoardItemLayout: MessageFns<BoardItemLayout> = {
 };
 
 function createBaseBoardItemPosition(): BoardItemPosition {
-  return { x: "0", y: "0", percentageX: "0", percentageY: "0" };
+  return { x: "0", y: "0", percentageX: "0", percentageY: "0", renderOrder: 0 };
 }
 
 export const BoardItemPosition: MessageFns<BoardItemPosition> = {
@@ -2722,6 +2888,9 @@ export const BoardItemPosition: MessageFns<BoardItemPosition> = {
     }
     if (message.percentageY !== "0") {
       writer.uint32(32).int64(message.percentageY);
+    }
+    if (message.renderOrder !== 0) {
+      writer.uint32(40).int32(message.renderOrder);
     }
     return writer;
   },
@@ -2763,6 +2932,14 @@ export const BoardItemPosition: MessageFns<BoardItemPosition> = {
           }
 
           message.percentageY = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.renderOrder = reader.int32();
           continue;
         }
       }
@@ -3040,6 +3217,7 @@ function createBaseBorderInfo(): BorderInfo {
     descStarlingKey: "",
     name: "",
     description: "",
+    isTallerAvatarBackground: false,
   };
 }
 
@@ -3080,6 +3258,9 @@ export const BorderInfo: MessageFns<BorderInfo> = {
     }
     if (message.description !== "") {
       writer.uint32(98).string(message.description);
+    }
+    if (message.isTallerAvatarBackground !== false) {
+      writer.uint32(104).bool(message.isTallerAvatarBackground);
     }
     return writer;
   },
@@ -3187,6 +3368,14 @@ export const BorderInfo: MessageFns<BorderInfo> = {
           message.description = reader.string();
           continue;
         }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.isTallerAvatarBackground = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3198,7 +3387,7 @@ export const BorderInfo: MessageFns<BorderInfo> = {
 };
 
 function createBaseColorBackground(): ColorBackground {
-  return { color: "", radius: 0, padding: undefined };
+  return { color: "", radius: 0, padding: undefined, radiusV2: undefined };
 }
 
 export const ColorBackground: MessageFns<ColorBackground> = {
@@ -3211,6 +3400,9 @@ export const ColorBackground: MessageFns<ColorBackground> = {
     }
     if (message.padding !== undefined) {
       EdgeInsets.encode(message.padding, writer.uint32(26).fork()).join();
+    }
+    if (message.radiusV2 !== undefined) {
+      MeasureSpec.encode(message.radiusV2, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -3244,6 +3436,99 @@ export const ColorBackground: MessageFns<ColorBackground> = {
           }
 
           message.padding = EdgeInsets.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.radiusV2 = MeasureSpec.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseColorGroup(): ColorGroup {
+  return { groupName: "", colorInfos: [] };
+}
+
+export const ColorGroup: MessageFns<ColorGroup> = {
+  encode(message: ColorGroup, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.groupName !== "") {
+      writer.uint32(10).string(message.groupName);
+    }
+    for (const v of message.colorInfos) {
+      GiftColorInfo.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ColorGroup {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseColorGroup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groupName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.colorInfos.push(GiftColorInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseColorPickerInfo(): ColorPickerInfo {
+  return { groups: [] };
+}
+
+export const ColorPickerInfo: MessageFns<ColorPickerInfo> = {
+  encode(message: ColorPickerInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.groups) {
+      ColorGroup.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ColorPickerInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseColorPickerInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groups.push(ColorGroup.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -3784,7 +4069,7 @@ export const DonationSticker: MessageFns<DonationSticker> = {
 };
 
 function createBaseEdgeInsets(): EdgeInsets {
-  return { top: 0, right: 0, bottom: 0, left: 0 };
+  return { top: 0, right: 0, bottom: 0, left: 0, mode: 0 };
 }
 
 export const EdgeInsets: MessageFns<EdgeInsets> = {
@@ -3800,6 +4085,9 @@ export const EdgeInsets: MessageFns<EdgeInsets> = {
     }
     if (message.left !== 0) {
       writer.uint32(37).float(message.left);
+    }
+    if (message.mode !== 0) {
+      writer.uint32(40).int32(message.mode);
     }
     return writer;
   },
@@ -3841,6 +4129,14 @@ export const EdgeInsets: MessageFns<EdgeInsets> = {
           }
 
           message.left = reader.float();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.mode = reader.int32();
           continue;
         }
       }
@@ -4066,6 +4362,8 @@ function createBaseFlowSpec(): FlowSpec {
     overflow: false,
     width: undefined,
     height: undefined,
+    interItemSpacingV2: undefined,
+    rowSpacingV2: undefined,
   };
 }
 
@@ -4094,6 +4392,12 @@ export const FlowSpec: MessageFns<FlowSpec> = {
     }
     if (message.height !== undefined) {
       SizeSpec.encode(message.height, writer.uint32(66).fork()).join();
+    }
+    if (message.interItemSpacingV2 !== undefined) {
+      MeasureSpec.encode(message.interItemSpacingV2, writer.uint32(74).fork()).join();
+    }
+    if (message.rowSpacingV2 !== undefined) {
+      MeasureSpec.encode(message.rowSpacingV2, writer.uint32(82).fork()).join();
     }
     return writer;
   },
@@ -4167,6 +4471,22 @@ export const FlowSpec: MessageFns<FlowSpec> = {
           }
 
           message.height = SizeSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.interItemSpacingV2 = MeasureSpec.decode(reader, reader.uint32());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.rowSpacingV2 = MeasureSpec.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -4831,7 +5151,16 @@ export const GiftRandomEffectInfo: MessageFns<GiftRandomEffectInfo> = {
 };
 
 function createBaseGiftSeriesInfo(): GiftSeriesInfo {
-  return { seriesName: "", giftIds: [], enabled: false };
+  return {
+    seriesName: "",
+    giftIds: [],
+    enabled: false,
+    containerBackground: undefined,
+    sendGiftButtonColor: "",
+    pointingBackTriColor: "",
+    seriesNameColor: "",
+    endTimeSec: "0",
+  };
 }
 
 export const GiftSeriesInfo: MessageFns<GiftSeriesInfo> = {
@@ -4846,6 +5175,21 @@ export const GiftSeriesInfo: MessageFns<GiftSeriesInfo> = {
     writer.join();
     if (message.enabled !== false) {
       writer.uint32(32).bool(message.enabled);
+    }
+    if (message.containerBackground !== undefined) {
+      ImageModel.encode(message.containerBackground, writer.uint32(42).fork()).join();
+    }
+    if (message.sendGiftButtonColor !== "") {
+      writer.uint32(50).string(message.sendGiftButtonColor);
+    }
+    if (message.pointingBackTriColor !== "") {
+      writer.uint32(58).string(message.pointingBackTriColor);
+    }
+    if (message.seriesNameColor !== "") {
+      writer.uint32(66).string(message.seriesNameColor);
+    }
+    if (message.endTimeSec !== "0") {
+      writer.uint32(72).int64(message.endTimeSec);
     }
     return writer;
   },
@@ -4889,6 +5233,46 @@ export const GiftSeriesInfo: MessageFns<GiftSeriesInfo> = {
           }
 
           message.enabled = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.containerBackground = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.sendGiftButtonColor = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.pointingBackTriColor = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.seriesNameColor = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.endTimeSec = reader.int64().toString();
           continue;
         }
       }
@@ -6147,6 +6531,87 @@ export const MeasureSpec: MessageFns<MeasureSpec> = {
   },
 };
 
+function createBaseMusicGiftInfo(): MusicGiftInfo {
+  return { artistName: "", resource: undefined, songId: "0", moodId: "0", songName: "" };
+}
+
+export const MusicGiftInfo: MessageFns<MusicGiftInfo> = {
+  encode(message: MusicGiftInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.artistName !== "") {
+      writer.uint32(10).string(message.artistName);
+    }
+    if (message.resource !== undefined) {
+      AudioResource.encode(message.resource, writer.uint32(18).fork()).join();
+    }
+    if (message.songId !== "0") {
+      writer.uint32(24).int64(message.songId);
+    }
+    if (message.moodId !== "0") {
+      writer.uint32(32).int64(message.moodId);
+    }
+    if (message.songName !== "") {
+      writer.uint32(42).string(message.songName);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MusicGiftInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMusicGiftInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.artistName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.resource = AudioResource.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.songId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.moodId = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.songName = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseOrganizationModel(): OrganizationModel {
   return { name: "", desc: "", webUrl: "", donationLink: "", icon: undefined, organizationId: "" };
 }
@@ -6240,7 +6705,16 @@ export const OrganizationModel: MessageFns<OrganizationModel> = {
 };
 
 function createBaseParagraph(): Paragraph {
-  return { paragraphId: "0", spans: [], maxCharLimit: "0", styleRef: "", editable: false };
+  return {
+    paragraphId: "0",
+    spans: [],
+    maxCharLimit: "0",
+    styleRef: "",
+    editable: false,
+    rowIndex: 0,
+    notEditable: false,
+    placeholder: "",
+  };
 }
 
 export const Paragraph: MessageFns<Paragraph> = {
@@ -6259,6 +6733,15 @@ export const Paragraph: MessageFns<Paragraph> = {
     }
     if (message.editable !== false) {
       writer.uint32(40).bool(message.editable);
+    }
+    if (message.rowIndex !== 0) {
+      writer.uint32(48).int32(message.rowIndex);
+    }
+    if (message.notEditable !== false) {
+      writer.uint32(56).bool(message.notEditable);
+    }
+    if (message.placeholder !== "") {
+      writer.uint32(66).string(message.placeholder);
     }
     return writer;
   },
@@ -6308,6 +6791,30 @@ export const Paragraph: MessageFns<Paragraph> = {
           }
 
           message.editable = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.rowIndex = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.notEditable = reader.bool();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.placeholder = reader.string();
           continue;
         }
       }
@@ -6467,177 +6974,6 @@ export const PollVoteLimit: MessageFns<PollVoteLimit> = {
           }
 
           message.voteCountLimit = reader.int64().toString();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBasePortalInfo(): PortalInfo {
-  return {
-    id: "",
-    idc: "",
-    sendAtSecond: 0,
-    ddlSecond: 0,
-    envelopeDiamonds: 0,
-    portalDiamonds: 0,
-    senderDisplayId: "",
-    senderId: "",
-    senderAvatar: undefined,
-    transCount: 0,
-    touchCount: 0,
-    senderEnigmaInfo: undefined,
-  };
-}
-
-export const PortalInfo: MessageFns<PortalInfo> = {
-  encode(message: PortalInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.idc !== "") {
-      writer.uint32(18).string(message.idc);
-    }
-    if (message.sendAtSecond !== 0) {
-      writer.uint32(24).int32(message.sendAtSecond);
-    }
-    if (message.ddlSecond !== 0) {
-      writer.uint32(32).int32(message.ddlSecond);
-    }
-    if (message.envelopeDiamonds !== 0) {
-      writer.uint32(40).int32(message.envelopeDiamonds);
-    }
-    if (message.portalDiamonds !== 0) {
-      writer.uint32(48).int32(message.portalDiamonds);
-    }
-    if (message.senderDisplayId !== "") {
-      writer.uint32(58).string(message.senderDisplayId);
-    }
-    if (message.senderId !== "") {
-      writer.uint32(66).string(message.senderId);
-    }
-    if (message.senderAvatar !== undefined) {
-      ImageModel.encode(message.senderAvatar, writer.uint32(74).fork()).join();
-    }
-    if (message.transCount !== 0) {
-      writer.uint32(80).int32(message.transCount);
-    }
-    if (message.touchCount !== 0) {
-      writer.uint32(88).int32(message.touchCount);
-    }
-    if (message.senderEnigmaInfo !== undefined) {
-      EnvelopeEnigmaInfo.encode(message.senderEnigmaInfo, writer.uint32(98).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): PortalInfo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePortalInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.idc = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.sendAtSecond = reader.int32();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.ddlSecond = reader.int32();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.envelopeDiamonds = reader.int32();
-          continue;
-        }
-        case 6: {
-          if (tag !== 48) {
-            break;
-          }
-
-          message.portalDiamonds = reader.int32();
-          continue;
-        }
-        case 7: {
-          if (tag !== 58) {
-            break;
-          }
-
-          message.senderDisplayId = reader.string();
-          continue;
-        }
-        case 8: {
-          if (tag !== 66) {
-            break;
-          }
-
-          message.senderId = reader.string();
-          continue;
-        }
-        case 9: {
-          if (tag !== 74) {
-            break;
-          }
-
-          message.senderAvatar = ImageModel.decode(reader, reader.uint32());
-          continue;
-        }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-
-          message.transCount = reader.int32();
-          continue;
-        }
-        case 11: {
-          if (tag !== 88) {
-            break;
-          }
-
-          message.touchCount = reader.int32();
-          continue;
-        }
-        case 12: {
-          if (tag !== 98) {
-            break;
-          }
-
-          message.senderEnigmaInfo = EnvelopeEnigmaInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -7117,7 +7453,7 @@ export const RecommendReason: MessageFns<RecommendReason> = {
 };
 
 function createBaseRichTextContent(): RichTextContent {
-  return { styles: [], paragraphs: [], itemStyleRef: "" };
+  return { styles: [], paragraphs: [], itemStyleRef: "", artTextStyleId: "", colorThemeId: "" };
 }
 
 export const RichTextContent: MessageFns<RichTextContent> = {
@@ -7130,6 +7466,12 @@ export const RichTextContent: MessageFns<RichTextContent> = {
     }
     if (message.itemStyleRef !== "") {
       writer.uint32(26).string(message.itemStyleRef);
+    }
+    if (message.artTextStyleId !== "") {
+      writer.uint32(34).string(message.artTextStyleId);
+    }
+    if (message.colorThemeId !== "") {
+      writer.uint32(42).string(message.colorThemeId);
     }
     return writer;
   },
@@ -7165,6 +7507,22 @@ export const RichTextContent: MessageFns<RichTextContent> = {
           message.itemStyleRef = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.artTextStyleId = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.colorThemeId = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7193,6 +7551,8 @@ function createBaseRichTextStyle(): RichTextStyle {
     imageBackground: undefined,
     lineSpacing: 0,
     inlineBackground: undefined,
+    placeholderColor: "",
+    letterSpacing: 0,
   };
 }
 
@@ -7245,6 +7605,12 @@ export const RichTextStyle: MessageFns<RichTextStyle> = {
     }
     if (message.inlineBackground !== undefined) {
       ColorBackground.encode(message.inlineBackground, writer.uint32(130).fork()).join();
+    }
+    if (message.placeholderColor !== "") {
+      writer.uint32(138).string(message.placeholderColor);
+    }
+    if (message.letterSpacing !== 0) {
+      writer.uint32(149).float(message.letterSpacing);
     }
     return writer;
   },
@@ -7382,6 +7748,22 @@ export const RichTextStyle: MessageFns<RichTextStyle> = {
           }
 
           message.inlineBackground = ColorBackground.decode(reader, reader.uint32());
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.placeholderColor = reader.string();
+          continue;
+        }
+        case 18: {
+          if (tag !== 149) {
+            break;
+          }
+
+          message.letterSpacing = reader.float();
           continue;
         }
       }
@@ -7600,6 +7982,8 @@ function createBaseRoomAuthStatus(): RoomAuthStatus {
     viewerwishes: "0",
     commentmention: "0",
     enigmawhisper: "0",
+    friendrankswitch: 0,
+    musicgiftentrance: "0",
   };
 }
 
@@ -7817,6 +8201,12 @@ export const RoomAuthStatus: MessageFns<RoomAuthStatus> = {
     }
     if (message.enigmawhisper !== "0") {
       writer.uint32(1064).int64(message.enigmawhisper);
+    }
+    if (message.friendrankswitch !== 0) {
+      writer.uint32(1072).int32(message.friendrankswitch);
+    }
+    if (message.musicgiftentrance !== "0") {
+      writer.uint32(1080).int64(message.musicgiftentrance);
     }
     return writer;
   },
@@ -8394,6 +8784,22 @@ export const RoomAuthStatus: MessageFns<RoomAuthStatus> = {
           }
 
           message.enigmawhisper = reader.int64().toString();
+          continue;
+        }
+        case 134: {
+          if (tag !== 1072) {
+            break;
+          }
+
+          message.friendrankswitch = reader.int32();
+          continue;
+        }
+        case 135: {
+          if (tag !== 1080) {
+            break;
+          }
+
+          message.musicgiftentrance = reader.int64().toString();
           continue;
         }
       }
@@ -9770,6 +10176,7 @@ function createBaseSourcePB(): SourcePB {
     industryName: "",
     promptVersion: "",
     aigcModelVersion: "",
+    generateVersion: "",
   };
 }
 
@@ -9795,6 +10202,9 @@ export const SourcePB: MessageFns<SourcePB> = {
     }
     if (message.aigcModelVersion !== "") {
       writer.uint32(58).string(message.aigcModelVersion);
+    }
+    if (message.generateVersion !== "") {
+      writer.uint32(66).string(message.generateVersion);
     }
     return writer;
   },
@@ -9860,6 +10270,14 @@ export const SourcePB: MessageFns<SourcePB> = {
           }
 
           message.aigcModelVersion = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.generateVersion = reader.string();
           continue;
         }
       }

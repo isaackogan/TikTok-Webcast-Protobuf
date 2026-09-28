@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { TimerDetailAntidirtStatus, TimerDetailAuditStatus, TimerStatus } from "../model/data/messages.js";
-import { TimerDetailAuditInfo } from "./api_audit_info_2.js";
+import { TimerDetailAuditInfo } from "./api_audit_info.js";
 
 export const protobufPackage = "webcast.chatroom.api";
 

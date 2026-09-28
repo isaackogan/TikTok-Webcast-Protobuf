@@ -18,6 +18,7 @@ import {
   LinkmicGuestUser,
   MultiGuestLayoutInfo,
   MultiGuestPlayInfo,
+  MultiGuestShareRevenueSettingInfo,
   RandomMatchInfo,
 } from "./data/messages.js";
 import { MultiGuestPermissionInfo, RoomHostMultiGuestPermissionInfo } from "./live_interact/multilive_model.js";
@@ -62,6 +63,7 @@ export interface MultiLiveUserApplyPermission {
   multiGuestDisableVideoLinkmic: string;
   multiGuestApplyAutoApprove: string;
   multiGuestResetPointAfterLeave: string;
+  multiGuestDisableGuestOpenCamera: string;
 }
 
 export interface MultiLiveUserApplySettings {
@@ -95,6 +97,9 @@ export interface MultiLiveUserApplySettings {
   hangoutCardTagList: CardTag[];
   backgroundStickerId: string;
   mgEnterActionInfo: MGEnterActionInfo | undefined;
+  multiGuestShareRevenueSettingInfo: MultiGuestShareRevenueSettingInfo | undefined;
+  multiGuestEnableRevenueRatio: string;
+  isMultiGuestHighActiveAnchor: boolean;
 }
 
 export interface MultiLiveUserApplySettings_ExtraInfoEntry {
@@ -421,6 +426,7 @@ function createBaseMultiLiveUserApplyPermission(): MultiLiveUserApplyPermission 
     multiGuestDisableVideoLinkmic: "0",
     multiGuestApplyAutoApprove: "0",
     multiGuestResetPointAfterLeave: "0",
+    multiGuestDisableGuestOpenCamera: "0",
   };
 }
 
@@ -452,6 +458,9 @@ export const MultiLiveUserApplyPermission: MessageFns<MultiLiveUserApplyPermissi
     }
     if (message.multiGuestResetPointAfterLeave !== "0") {
       writer.uint32(72).int64(message.multiGuestResetPointAfterLeave);
+    }
+    if (message.multiGuestDisableGuestOpenCamera !== "0") {
+      writer.uint32(80).int64(message.multiGuestDisableGuestOpenCamera);
     }
     return writer;
   },
@@ -535,6 +544,14 @@ export const MultiLiveUserApplyPermission: MessageFns<MultiLiveUserApplyPermissi
           message.multiGuestResetPointAfterLeave = reader.int64().toString();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.multiGuestDisableGuestOpenCamera = reader.int64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -577,6 +594,9 @@ function createBaseMultiLiveUserApplySettings(): MultiLiveUserApplySettings {
     hangoutCardTagList: [],
     backgroundStickerId: "",
     mgEnterActionInfo: undefined,
+    multiGuestShareRevenueSettingInfo: undefined,
+    multiGuestEnableRevenueRatio: "0",
+    isMultiGuestHighActiveAnchor: false,
   };
 }
 
@@ -675,6 +695,16 @@ export const MultiLiveUserApplySettings: MessageFns<MultiLiveUserApplySettings> 
     }
     if (message.mgEnterActionInfo !== undefined) {
       MGEnterActionInfo.encode(message.mgEnterActionInfo, writer.uint32(410).fork()).join();
+    }
+    if (message.multiGuestShareRevenueSettingInfo !== undefined) {
+      MultiGuestShareRevenueSettingInfo.encode(message.multiGuestShareRevenueSettingInfo, writer.uint32(418).fork())
+        .join();
+    }
+    if (message.multiGuestEnableRevenueRatio !== "0") {
+      writer.uint32(424).int64(message.multiGuestEnableRevenueRatio);
+    }
+    if (message.isMultiGuestHighActiveAnchor !== false) {
+      writer.uint32(432).bool(message.isMultiGuestHighActiveAnchor);
     }
     return writer;
   },
@@ -930,6 +960,30 @@ export const MultiLiveUserApplySettings: MessageFns<MultiLiveUserApplySettings> 
           }
 
           message.mgEnterActionInfo = MGEnterActionInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.multiGuestShareRevenueSettingInfo = MultiGuestShareRevenueSettingInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 53: {
+          if (tag !== 424) {
+            break;
+          }
+
+          message.multiGuestEnableRevenueRatio = reader.int64().toString();
+          continue;
+        }
+        case 54: {
+          if (tag !== 432) {
+            break;
+          }
+
+          message.isMultiGuestHighActiveAnchor = reader.bool();
           continue;
         }
       }

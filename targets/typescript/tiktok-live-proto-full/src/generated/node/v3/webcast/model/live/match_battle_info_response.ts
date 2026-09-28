@@ -11,6 +11,7 @@ import { BattleDisplayConfig, BattleResult, BattleUserArmies } from "../message/
 import { BattleSetting } from "../message/battle_setting.js";
 import {
   AnchorMatchSettings,
+  BattleABTestSetting,
   BattleComboInfo,
   BattleEffectInfos,
   BattleFeatureFlags,
@@ -25,7 +26,9 @@ import {
   HighScoreControlCfg,
   IceShowdownInfo,
   LeagueScoreInfo,
+  MatchThemeDisplayResource,
   TeamMatchCampaign,
+  VirtualTicketEnvelopeInfoList,
 } from "./match.js";
 
 export const protobufPackage = "webcast.model.live.match";
@@ -59,6 +62,9 @@ export interface BattleInfoResponse {
   enigmaBattleExtraInfo: EnigmaBattleExtraInfo | undefined;
   anchorMatchSettings: { [key: string]: AnchorMatchSettings };
   battleFeatureFlags: BattleFeatureFlags | undefined;
+  matchThemeDisplayResource: MatchThemeDisplayResource | undefined;
+  teamVirtualTicketEnvelopes: { [key: string]: VirtualTicketEnvelopeInfoList };
+  abTestSetting: BattleABTestSetting[];
 }
 
 export interface BattleInfoResponse_ArmiesEntry {
@@ -121,6 +127,11 @@ export interface BattleInfoResponse_AnchorMatchSettingsEntry {
   value: AnchorMatchSettings | undefined;
 }
 
+export interface BattleInfoResponse_TeamVirtualTicketEnvelopesEntry {
+  key: string;
+  value: VirtualTicketEnvelopeInfoList | undefined;
+}
+
 function createBaseBattleInfoResponse(): BattleInfoResponse {
   return {
     channelId: "0",
@@ -151,6 +162,9 @@ function createBaseBattleInfoResponse(): BattleInfoResponse {
     enigmaBattleExtraInfo: undefined,
     anchorMatchSettings: {},
     battleFeatureFlags: undefined,
+    matchThemeDisplayResource: undefined,
+    teamVirtualTicketEnvelopes: {},
+    abTestSetting: [],
   };
 }
 
@@ -239,6 +253,18 @@ export const BattleInfoResponse: MessageFns<BattleInfoResponse> = {
     });
     if (message.battleFeatureFlags !== undefined) {
       BattleFeatureFlags.encode(message.battleFeatureFlags, writer.uint32(234).fork()).join();
+    }
+    if (message.matchThemeDisplayResource !== undefined) {
+      MatchThemeDisplayResource.encode(message.matchThemeDisplayResource, writer.uint32(242).fork()).join();
+    }
+    globalThis.Object.entries(message.teamVirtualTicketEnvelopes).forEach(
+      ([key, value]: [string, VirtualTicketEnvelopeInfoList]) => {
+        BattleInfoResponse_TeamVirtualTicketEnvelopesEntry.encode({ key: key as any, value }, writer.uint32(250).fork())
+          .join();
+      },
+    );
+    for (const v of message.abTestSetting) {
+      BattleABTestSetting.encode(v!, writer.uint32(258).fork()).join();
     }
     return writer;
   },
@@ -508,6 +534,33 @@ export const BattleInfoResponse: MessageFns<BattleInfoResponse> = {
           }
 
           message.battleFeatureFlags = BattleFeatureFlags.decode(reader, reader.uint32());
+          continue;
+        }
+        case 30: {
+          if (tag !== 242) {
+            break;
+          }
+
+          message.matchThemeDisplayResource = MatchThemeDisplayResource.decode(reader, reader.uint32());
+          continue;
+        }
+        case 31: {
+          if (tag !== 250) {
+            break;
+          }
+
+          const entry31 = BattleInfoResponse_TeamVirtualTicketEnvelopesEntry.decode(reader, reader.uint32());
+          if (entry31.value !== undefined) {
+            message.teamVirtualTicketEnvelopes[entry31.key] = entry31.value;
+          }
+          continue;
+        }
+        case 32: {
+          if (tag !== 258) {
+            break;
+          }
+
+          message.abTestSetting.push(BattleABTestSetting.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -1090,6 +1143,59 @@ export const BattleInfoResponse_AnchorMatchSettingsEntry: MessageFns<BattleInfoR
           }
 
           message.value = AnchorMatchSettings.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleInfoResponse_TeamVirtualTicketEnvelopesEntry(): BattleInfoResponse_TeamVirtualTicketEnvelopesEntry {
+  return { key: "0", value: undefined };
+}
+
+export const BattleInfoResponse_TeamVirtualTicketEnvelopesEntry: MessageFns<
+  BattleInfoResponse_TeamVirtualTicketEnvelopesEntry
+> = {
+  encode(
+    message: BattleInfoResponse_TeamVirtualTicketEnvelopesEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      VirtualTicketEnvelopeInfoList.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleInfoResponse_TeamVirtualTicketEnvelopesEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleInfoResponse_TeamVirtualTicketEnvelopesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VirtualTicketEnvelopeInfoList.decode(reader, reader.uint32());
           continue;
         }
       }

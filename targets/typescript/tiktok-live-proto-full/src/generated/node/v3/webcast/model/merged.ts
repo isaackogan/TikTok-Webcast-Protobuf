@@ -6,7 +6,6 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { CommonMessageData } from "../shared/message.js";
 import { EmoteModel } from "./base/emoji.js";
 import { ImageModel } from "./base/messages.js";
 import { User } from "./base/user_2.js";
@@ -17,6 +16,7 @@ import {
   AccompanimentStruct,
   AudioStruct,
   BatchGiftInfo,
+  ColorPickerInfo,
   CrossScreenEffectInfo,
   GiftBoxInfo,
   GiftLockInfo,
@@ -28,8 +28,7 @@ import {
   GiftText,
   LynxCrossScreenEffectInfo,
   LyricStruct,
-  PortalInfo,
-  PortalTransTarget,
+  MusicGiftInfo,
   SchemeInfo,
   UGGiftStructInfo,
 } from "./messages.js";
@@ -87,6 +86,9 @@ export interface Gift {
   giftStructHash: string;
   schemeInfo: SchemeInfo | undefined;
   seriesInfo: GiftSeriesInfo | undefined;
+  colorPickerInfo: ColorPickerInfo | undefined;
+  musicInfo: MusicGiftInfo | undefined;
+  giftBottomRightLabelIcon: ImageModel | undefined;
   strategyEvent: string;
 }
 
@@ -209,14 +211,8 @@ export interface TopFrameSummary {
   schema: string;
   showList: ShowInfo[];
   idStr: string;
-}
-
-export interface WebcastEnvelopePortalMessage {
-  common: CommonMessageData | undefined;
-  portalInfo: PortalInfo | undefined;
-  portalTransTarget: PortalTransTarget | undefined;
-  portalView: number;
-  portalDisplay: number;
+  isPreRecorded: boolean;
+  preRecordedBadgeText: string;
 }
 
 function createBaseGift(): Gift {
@@ -271,6 +267,9 @@ function createBaseGift(): Gift {
     giftStructHash: "",
     schemeInfo: undefined,
     seriesInfo: undefined,
+    colorPickerInfo: undefined,
+    musicInfo: undefined,
+    giftBottomRightLabelIcon: undefined,
     strategyEvent: "",
   };
 }
@@ -428,6 +427,15 @@ export const Gift: MessageFns<Gift> = {
     }
     if (message.seriesInfo !== undefined) {
       GiftSeriesInfo.encode(message.seriesInfo, writer.uint32(1018).fork()).join();
+    }
+    if (message.colorPickerInfo !== undefined) {
+      ColorPickerInfo.encode(message.colorPickerInfo, writer.uint32(1026).fork()).join();
+    }
+    if (message.musicInfo !== undefined) {
+      MusicGiftInfo.encode(message.musicInfo, writer.uint32(1122).fork()).join();
+    }
+    if (message.giftBottomRightLabelIcon !== undefined) {
+      ImageModel.encode(message.giftBottomRightLabelIcon, writer.uint32(1130).fork()).join();
     }
     if (message.strategyEvent !== "") {
       writer.uint32(1610).string(message.strategyEvent);
@@ -859,6 +867,30 @@ export const Gift: MessageFns<Gift> = {
           }
 
           message.seriesInfo = GiftSeriesInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 128: {
+          if (tag !== 1026) {
+            break;
+          }
+
+          message.colorPickerInfo = ColorPickerInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 140: {
+          if (tag !== 1122) {
+            break;
+          }
+
+          message.musicInfo = MusicGiftInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 141: {
+          if (tag !== 1130) {
+            break;
+          }
+
+          message.giftBottomRightLabelIcon = ImageModel.decode(reader, reader.uint32());
           continue;
         }
         case 201: {
@@ -2131,7 +2163,7 @@ export const TopFanTicket: MessageFns<TopFanTicket> = {
 };
 
 function createBaseTopFrameSummary(): TopFrameSummary {
-  return { id: "0", title: "", schema: "", showList: [], idStr: "" };
+  return { id: "0", title: "", schema: "", showList: [], idStr: "", isPreRecorded: false, preRecordedBadgeText: "" };
 }
 
 export const TopFrameSummary: MessageFns<TopFrameSummary> = {
@@ -2150,6 +2182,12 @@ export const TopFrameSummary: MessageFns<TopFrameSummary> = {
     }
     if (message.idStr !== "") {
       writer.uint32(42).string(message.idStr);
+    }
+    if (message.isPreRecorded !== false) {
+      writer.uint32(48).bool(message.isPreRecorded);
+    }
+    if (message.preRecordedBadgeText !== "") {
+      writer.uint32(58).string(message.preRecordedBadgeText);
     }
     return writer;
   },
@@ -2201,85 +2239,20 @@ export const TopFrameSummary: MessageFns<TopFrameSummary> = {
           message.idStr = reader.string();
           continue;
         }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseWebcastEnvelopePortalMessage(): WebcastEnvelopePortalMessage {
-  return { common: undefined, portalInfo: undefined, portalTransTarget: undefined, portalView: 0, portalDisplay: 0 };
-}
-
-export const WebcastEnvelopePortalMessage: MessageFns<WebcastEnvelopePortalMessage> = {
-  encode(message: WebcastEnvelopePortalMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.common !== undefined) {
-      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
-    }
-    if (message.portalInfo !== undefined) {
-      PortalInfo.encode(message.portalInfo, writer.uint32(18).fork()).join();
-    }
-    if (message.portalTransTarget !== undefined) {
-      PortalTransTarget.encode(message.portalTransTarget, writer.uint32(26).fork()).join();
-    }
-    if (message.portalView !== 0) {
-      writer.uint32(32).int32(message.portalView);
-    }
-    if (message.portalDisplay !== 0) {
-      writer.uint32(40).int32(message.portalDisplay);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): WebcastEnvelopePortalMessage {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseWebcastEnvelopePortalMessage();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
+        case 6: {
+          if (tag !== 48) {
             break;
           }
 
-          message.common = CommonMessageData.decode(reader, reader.uint32());
+          message.isPreRecorded = reader.bool();
           continue;
         }
-        case 2: {
-          if (tag !== 18) {
+        case 7: {
+          if (tag !== 58) {
             break;
           }
 
-          message.portalInfo = PortalInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.portalTransTarget = PortalTransTarget.decode(reader, reader.uint32());
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.portalView = reader.int32();
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.portalDisplay = reader.int32();
+          message.preRecordedBadgeText = reader.string();
           continue;
         }
       }

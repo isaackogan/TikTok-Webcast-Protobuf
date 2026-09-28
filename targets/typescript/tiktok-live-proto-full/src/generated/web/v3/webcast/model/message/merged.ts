@@ -64,7 +64,9 @@ import {
   WalletLiveRewardsRatioImMsgType,
   WhisperMessageContentEncoding,
 } from "../../im.js";
+import { LayoutData } from "../../linkmic/common.js";
 import { DisplayControl, RankUserEnigmaInfo } from "../../message_proto.js";
+import { MinuteGameGameplay } from "../../minute_game_model.js";
 import { CommonMessageData } from "../../shared/message.js";
 import { EmoteWithIndex as EmoteWithIndex1, RightLabel } from "../../shared/messages.js";
 import { CommentTag, MemberMessageAction } from "../../synthetic_enums.js";
@@ -101,8 +103,9 @@ import {
   PlayTogetherMember,
 } from "../game.js";
 import { AssetsModel } from "../gift/assets.js";
-import { FlyingMicResources, LynxGiftExtra, MatchInfo } from "../gift/model.js";
+import { FlyingMicResources, LynxGiftExtra, MatchInfo, SecondaryEffectInfo } from "../gift/model.js";
 import { AssetBundle } from "../gift/model_asset_bundle.js";
+import { GiftEffect } from "../gift/model_gift_effect.js";
 import { GoodyBagBaseInfo, GoodyBagSkin, GoodyBagWinnerInfo } from "../goody_bag.js";
 import { MultiLiveUpdateUserSettingContent } from "../linksetting.js";
 import {
@@ -113,11 +116,13 @@ import {
   BattleFeatureFlags,
   BattleTeamResult,
   BattleTeamUserArmies,
+  EffectingCardQueue,
   EnigmaBattleExtraInfo,
   EnigmaBattleSetting,
   HighScoreControlCfg,
   LeagueScoreInfo,
   MatchPunishExtraInfo,
+  MatchThemeDisplayResource,
   TeamMatchCampaign,
 } from "../live/match.js";
 import { Room } from "../live/merged.js";
@@ -169,6 +174,7 @@ import { LinkerMicIdxUpdateContent } from "./linker/mic_update.js";
 import { LinkerReplyContent } from "./linker/reply_message.js";
 import {
   ActionButton,
+  AnchorLeftCardRefundNotice,
   AnimationData,
   AudienceCancelContent,
   AudienceRejectContent,
@@ -199,6 +205,7 @@ import {
   CapsuleBizParamsNewAnchorEffect,
   CapsuleBizParamsRandomGift,
   CardObtainGuide,
+  CohostInviteStateNotifyContent,
   CohostListChangeContent,
   CommentLabelScore,
   CommentQualityScore,
@@ -212,6 +219,7 @@ import {
   GalleryGoalData,
   GalleryMiddleTouchMessage,
   GetUnclaimedPoints,
+  GiftGalleryMessageGiftInfo,
   GiftIMPriority,
   GiftMonitorInfo,
   LinkerCloseContent,
@@ -225,6 +233,8 @@ import {
   LinkmicUserToastContent,
   MessageDisplayInfo,
   MultiLangContent,
+  MusicAwardNotice,
+  MusicEffectNotice,
   NewFansData,
   OperationInfo,
   PersonalisedGift,
@@ -253,6 +263,7 @@ import {
   UnifiedGoalData,
   UseCriticalStrikeCard,
   UseExtraTimeCard,
+  UseMusicCard,
   UsePotionCard,
   UserFanTicket,
   UserInteractionInfo,
@@ -445,6 +456,10 @@ export interface PublicAreaMessageCommon {
   dynamicDisplayText: Text | undefined;
 }
 
+export interface TimedPropData {
+  giftMessage: WebcastGiftMessage | undefined;
+}
+
 export interface Topic {
   topicActionType: TopicActionType;
   topicText: Text | undefined;
@@ -454,6 +469,8 @@ export interface Topic {
   tagType: TagType;
   displayLocation: PublicAreaMessageCommonCreatorSuccessInfoTopicDisplayLocation;
   eventTrackingFields: { [key: string]: string };
+  bizName: string;
+  disableCountFrequencyControl: boolean;
 }
 
 export interface Topic_EventTrackingFieldsEntry {
@@ -648,6 +665,7 @@ export interface WebcastCompetitionMessage {
   beansBomb: BeansBomb | undefined;
   beansArtifacts: BeansArtifacts | undefined;
   beansAvatar: BeansAvatar | undefined;
+  crossRoomLayout: LayoutData | undefined;
 }
 
 export interface WebcastEsportsScoreBoardUpdateMessage {
@@ -723,12 +741,30 @@ export interface WebcastGameRevenueTipsMessage {
   showDurationOutapp: string;
   buttonText: Text | undefined;
   titleText: Text | undefined;
+  extra: { [key: string]: string };
   common: CommonMessageData | undefined;
+}
+
+export interface WebcastGameRevenueTipsMessage_ExtraEntry {
+  key: string;
+  value: string;
 }
 
 export interface WebcastGameServerFeatureMessage {
   common: CommonMessageData | undefined;
   allFeatures: GameServerFeature[];
+}
+
+export interface WebcastGiftGalleryMessage {
+  common: CommonMessageData | undefined;
+  giftInfo: GiftGalleryMessageGiftInfo | undefined;
+  user: User | undefined;
+  toUser: User | undefined;
+  msgType: number;
+  allSponsored: boolean;
+  priority: GiftIMPriority | undefined;
+  logId: string;
+  publicAreaMsgCommon: PublicAreaMessageCommon | undefined;
 }
 
 export interface WebcastGiftMessage {
@@ -785,6 +821,10 @@ export interface WebcastGiftMessage {
   isAssetBundleGift: boolean;
   assetBundle: AssetBundle | undefined;
   effectExtra: string;
+  secondaryEffectInfo: SecondaryEffectInfo | undefined;
+  giftVariantId: number;
+  shinyCardUnlockToken: string;
+  giftEffect: GiftEffect | undefined;
 }
 
 export interface WebcastGoodyBagMessage {
@@ -844,6 +884,7 @@ export interface WebcastLinkMessage {
   cohostListChangeContent: CohostListChangeContent | undefined;
   mediaChangeContent: LinkerMediaChangeContent | undefined;
   replyAcceptNoticeContent: LinkerAcceptNoticeContent | undefined;
+  cohostInviteStateNotifyContent: CohostInviteStateNotifyContent | undefined;
   sysKickOutContent: LinkerSysKickOutContent | undefined;
   userToastContent: LinkmicUserToastContent | undefined;
   extra: string;
@@ -874,6 +915,7 @@ export interface WebcastLinkMicArmies {
   fuzzyDisplayConfigV2: HighScoreControlCfg | undefined;
   effectInfos: BattleEffectInfos | undefined;
   enigmaBattleExtraInfo: EnigmaBattleExtraInfo | undefined;
+  multiplierType: number;
 }
 
 export interface WebcastLinkMicArmies_ArmiesEntry {
@@ -908,6 +950,9 @@ export interface WebcastLinkMicBattle {
   enigmaBattleSetting: EnigmaBattleSetting | undefined;
   anchorMatchSettings: { [key: string]: AnchorMatchSettings };
   battleFeatureFlags: BattleFeatureFlags | undefined;
+  crossRoomLayout: LayoutData | undefined;
+  trackingExtra: { [key: string]: string };
+  matchThemeDisplayResource: MatchThemeDisplayResource | undefined;
 }
 
 export interface WebcastLinkMicBattle_BattleResultEntry {
@@ -935,6 +980,11 @@ export interface WebcastLinkMicBattle_AnchorMatchSettingsEntry {
   value: AnchorMatchSettings | undefined;
 }
 
+export interface WebcastLinkMicBattle_TrackingExtraEntry {
+  key: string;
+  value: string;
+}
+
 export interface WebcastLinkMicBattleItemCard {
   common: CommonMessageData | undefined;
   battleId: string;
@@ -952,6 +1002,16 @@ export interface WebcastLinkMicBattleItemCard {
   useTop3Card: UseTop3Card | undefined;
   useVaultGloveCard: UseVaultGloveCard | undefined;
   awardReason: number;
+  useMusicCard: UseMusicCard | undefined;
+  musicAwardNotice: MusicAwardNotice | undefined;
+  musicEffectNotice: MusicEffectNotice | undefined;
+  cardQueueMap: { [key: string]: EffectingCardQueue };
+  anchorLeftCardRefundNotice: AnchorLeftCardRefundNotice | undefined;
+}
+
+export interface WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+  key: string;
+  value: EffectingCardQueue | undefined;
 }
 
 export interface WebcastLinkMicBattlePunishFinish {
@@ -1043,6 +1103,7 @@ export interface WebcastMemberMessage {
   showWave: string;
   waveAlgorithmData: WaveAlgorithmData | undefined;
   hitAbStatus: HitABStatus;
+  drawerLiveType: string;
 }
 
 export interface WebcastMemberMessage_AdminPermissionsEntry {
@@ -1054,6 +1115,13 @@ export interface WebcastMiddleTouchMessage {
   common: CommonMessageData | undefined;
   actionData: UnifyBaseActionData | undefined;
   extra: MiddleTouchExtra | undefined;
+}
+
+export interface WebcastMinuteGameUpdateMessage {
+  common: CommonMessageData | undefined;
+  updateType: number;
+  gameplay: MinuteGameGameplay | undefined;
+  timedPropData: TimedPropData | undefined;
 }
 
 export interface WebcastPartnershipDropsUpdateMessage {
@@ -1095,6 +1163,7 @@ export interface WebcastRankTextMessage {
   content: Text | undefined;
   rankType: ProfitRankType;
   userEnigmaInfo: RankUserEnigmaInfo | undefined;
+  publicAreaMsgCommon: PublicAreaMessageCommon | undefined;
 }
 
 export interface WebcastRankUpdateMessage {
@@ -3142,6 +3211,43 @@ export const PublicAreaMessageCommon: MessageFns<PublicAreaMessageCommon> = {
   },
 };
 
+function createBaseTimedPropData(): TimedPropData {
+  return { giftMessage: undefined };
+}
+
+export const TimedPropData: MessageFns<TimedPropData> = {
+  encode(message: TimedPropData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.giftMessage !== undefined) {
+      WebcastGiftMessage.encode(message.giftMessage, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TimedPropData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTimedPropData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.giftMessage = WebcastGiftMessage.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseTopic(): Topic {
   return {
     topicActionType: 0,
@@ -3152,6 +3258,8 @@ function createBaseTopic(): Topic {
     tagType: 0,
     displayLocation: 0,
     eventTrackingFields: {},
+    bizName: "",
+    disableCountFrequencyControl: false,
   };
 }
 
@@ -3181,6 +3289,12 @@ export const Topic: MessageFns<Topic> = {
     globalThis.Object.entries(message.eventTrackingFields).forEach(([key, value]: [string, string]) => {
       Topic_EventTrackingFieldsEntry.encode({ key: key as any, value }, writer.uint32(66).fork()).join();
     });
+    if (message.bizName !== "") {
+      writer.uint32(74).string(message.bizName);
+    }
+    if (message.disableCountFrequencyControl !== false) {
+      writer.uint32(80).bool(message.disableCountFrequencyControl);
+    }
     return writer;
   },
 
@@ -3256,6 +3370,22 @@ export const Topic: MessageFns<Topic> = {
           if (entry8.value !== undefined) {
             message.eventTrackingFields[entry8.key] = entry8.value;
           }
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.bizName = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.disableCountFrequencyControl = reader.bool();
           continue;
         }
       }
@@ -5293,6 +5423,7 @@ function createBaseWebcastCompetitionMessage(): WebcastCompetitionMessage {
     beansBomb: undefined,
     beansArtifacts: undefined,
     beansAvatar: undefined,
+    crossRoomLayout: undefined,
   };
 }
 
@@ -5339,6 +5470,9 @@ export const WebcastCompetitionMessage: MessageFns<WebcastCompetitionMessage> = 
     }
     if (message.beansAvatar !== undefined) {
       BeansAvatar.encode(message.beansAvatar, writer.uint32(882).fork()).join();
+    }
+    if (message.crossRoomLayout !== undefined) {
+      LayoutData.encode(message.crossRoomLayout, writer.uint32(1602).fork()).join();
     }
     return writer;
   },
@@ -5460,6 +5594,14 @@ export const WebcastCompetitionMessage: MessageFns<WebcastCompetitionMessage> = 
           }
 
           message.beansAvatar = BeansAvatar.decode(reader, reader.uint32());
+          continue;
+        }
+        case 200: {
+          if (tag !== 1602) {
+            break;
+          }
+
+          message.crossRoomLayout = LayoutData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -6144,6 +6286,7 @@ function createBaseWebcastGameRevenueTipsMessage(): WebcastGameRevenueTipsMessag
     showDurationOutapp: "0",
     buttonText: undefined,
     titleText: undefined,
+    extra: {},
     common: undefined,
   };
 }
@@ -6177,6 +6320,9 @@ export const WebcastGameRevenueTipsMessage: MessageFns<WebcastGameRevenueTipsMes
     if (message.titleText !== undefined) {
       Text.encode(message.titleText, writer.uint32(74).fork()).join();
     }
+    globalThis.Object.entries(message.extra).forEach(([key, value]: [string, string]) => {
+      WebcastGameRevenueTipsMessage_ExtraEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+    });
     if (message.common !== undefined) {
       CommonMessageData.encode(message.common, writer.uint32(802).fork()).join();
     }
@@ -6262,12 +6408,71 @@ export const WebcastGameRevenueTipsMessage: MessageFns<WebcastGameRevenueTipsMes
           message.titleText = Text.decode(reader, reader.uint32());
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          const entry10 = WebcastGameRevenueTipsMessage_ExtraEntry.decode(reader, reader.uint32());
+          if (entry10.value !== undefined) {
+            message.extra[entry10.key] = entry10.value;
+          }
+          continue;
+        }
         case 100: {
           if (tag !== 802) {
             break;
           }
 
           message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastGameRevenueTipsMessage_ExtraEntry(): WebcastGameRevenueTipsMessage_ExtraEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastGameRevenueTipsMessage_ExtraEntry: MessageFns<WebcastGameRevenueTipsMessage_ExtraEntry> = {
+  encode(message: WebcastGameRevenueTipsMessage_ExtraEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastGameRevenueTipsMessage_ExtraEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastGameRevenueTipsMessage_ExtraEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -6316,6 +6521,141 @@ export const WebcastGameServerFeatureMessage: MessageFns<WebcastGameServerFeatur
           }
 
           message.allFeatures.push(GameServerFeature.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastGiftGalleryMessage(): WebcastGiftGalleryMessage {
+  return {
+    common: undefined,
+    giftInfo: undefined,
+    user: undefined,
+    toUser: undefined,
+    msgType: 0,
+    allSponsored: false,
+    priority: undefined,
+    logId: "",
+    publicAreaMsgCommon: undefined,
+  };
+}
+
+export const WebcastGiftGalleryMessage: MessageFns<WebcastGiftGalleryMessage> = {
+  encode(message: WebcastGiftGalleryMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.giftInfo !== undefined) {
+      GiftGalleryMessageGiftInfo.encode(message.giftInfo, writer.uint32(18).fork()).join();
+    }
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(26).fork()).join();
+    }
+    if (message.toUser !== undefined) {
+      User.encode(message.toUser, writer.uint32(34).fork()).join();
+    }
+    if (message.msgType !== 0) {
+      writer.uint32(40).int32(message.msgType);
+    }
+    if (message.allSponsored !== false) {
+      writer.uint32(168).bool(message.allSponsored);
+    }
+    if (message.priority !== undefined) {
+      GiftIMPriority.encode(message.priority, writer.uint32(410).fork()).join();
+    }
+    if (message.logId !== "") {
+      writer.uint32(418).string(message.logId);
+    }
+    if (message.publicAreaMsgCommon !== undefined) {
+      PublicAreaMessageCommon.encode(message.publicAreaMsgCommon, writer.uint32(426).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastGiftGalleryMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastGiftGalleryMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.giftInfo = GiftGalleryMessageGiftInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.toUser = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.msgType = reader.int32();
+          continue;
+        }
+        case 21: {
+          if (tag !== 168) {
+            break;
+          }
+
+          message.allSponsored = reader.bool();
+          continue;
+        }
+        case 51: {
+          if (tag !== 410) {
+            break;
+          }
+
+          message.priority = GiftIMPriority.decode(reader, reader.uint32());
+          continue;
+        }
+        case 52: {
+          if (tag !== 418) {
+            break;
+          }
+
+          message.logId = reader.string();
+          continue;
+        }
+        case 53: {
+          if (tag !== 426) {
+            break;
+          }
+
+          message.publicAreaMsgCommon = PublicAreaMessageCommon.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -6383,6 +6723,10 @@ function createBaseWebcastGiftMessage(): WebcastGiftMessage {
     isAssetBundleGift: false,
     assetBundle: undefined,
     effectExtra: "",
+    secondaryEffectInfo: undefined,
+    giftVariantId: 0,
+    shinyCardUnlockToken: "",
+    giftEffect: undefined,
   };
 }
 
@@ -6546,6 +6890,18 @@ export const WebcastGiftMessage: MessageFns<WebcastGiftMessage> = {
     }
     if (message.effectExtra !== "") {
       writer.uint32(426).string(message.effectExtra);
+    }
+    if (message.secondaryEffectInfo !== undefined) {
+      SecondaryEffectInfo.encode(message.secondaryEffectInfo, writer.uint32(434).fork()).join();
+    }
+    if (message.giftVariantId !== 0) {
+      writer.uint32(440).int32(message.giftVariantId);
+    }
+    if (message.shinyCardUnlockToken !== "") {
+      writer.uint32(450).string(message.shinyCardUnlockToken);
+    }
+    if (message.giftEffect !== undefined) {
+      GiftEffect.encode(message.giftEffect, writer.uint32(802).fork()).join();
     }
     return writer;
   },
@@ -6981,6 +7337,38 @@ export const WebcastGiftMessage: MessageFns<WebcastGiftMessage> = {
           message.effectExtra = reader.string();
           continue;
         }
+        case 54: {
+          if (tag !== 434) {
+            break;
+          }
+
+          message.secondaryEffectInfo = SecondaryEffectInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 55: {
+          if (tag !== 440) {
+            break;
+          }
+
+          message.giftVariantId = reader.int32();
+          continue;
+        }
+        case 56: {
+          if (tag !== 450) {
+            break;
+          }
+
+          message.shinyCardUnlockToken = reader.string();
+          continue;
+        }
+        case 100: {
+          if (tag !== 802) {
+            break;
+          }
+
+          message.giftEffect = GiftEffect.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7364,6 +7752,7 @@ function createBaseWebcastLinkMessage(): WebcastLinkMessage {
     cohostListChangeContent: undefined,
     mediaChangeContent: undefined,
     replyAcceptNoticeContent: undefined,
+    cohostInviteStateNotifyContent: undefined,
     sysKickOutContent: undefined,
     userToastContent: undefined,
     extra: "",
@@ -7443,6 +7832,9 @@ export const WebcastLinkMessage: MessageFns<WebcastLinkMessage> = {
     }
     if (message.replyAcceptNoticeContent !== undefined) {
       LinkerAcceptNoticeContent.encode(message.replyAcceptNoticeContent, writer.uint32(186).fork()).join();
+    }
+    if (message.cohostInviteStateNotifyContent !== undefined) {
+      CohostInviteStateNotifyContent.encode(message.cohostInviteStateNotifyContent, writer.uint32(194).fork()).join();
     }
     if (message.sysKickOutContent !== undefined) {
       LinkerSysKickOutContent.encode(message.sysKickOutContent, writer.uint32(810).fork()).join();
@@ -7656,6 +8048,14 @@ export const WebcastLinkMessage: MessageFns<WebcastLinkMessage> = {
           message.replyAcceptNoticeContent = LinkerAcceptNoticeContent.decode(reader, reader.uint32());
           continue;
         }
+        case 24: {
+          if (tag !== 194) {
+            break;
+          }
+
+          message.cohostInviteStateNotifyContent = CohostInviteStateNotifyContent.decode(reader, reader.uint32());
+          continue;
+        }
         case 101: {
           if (tag !== 810) {
             break;
@@ -7737,6 +8137,7 @@ function createBaseWebcastLinkMicArmies(): WebcastLinkMicArmies {
     fuzzyDisplayConfigV2: undefined,
     effectInfos: undefined,
     enigmaBattleExtraInfo: undefined,
+    multiplierType: 0,
   };
 }
 
@@ -7804,6 +8205,9 @@ export const WebcastLinkMicArmies: MessageFns<WebcastLinkMicArmies> = {
     }
     if (message.enigmaBattleExtraInfo !== undefined) {
       EnigmaBattleExtraInfo.encode(message.enigmaBattleExtraInfo, writer.uint32(170).fork()).join();
+    }
+    if (message.multiplierType !== 0) {
+      writer.uint32(176).int32(message.multiplierType);
     }
     return writer;
   },
@@ -7986,6 +8390,14 @@ export const WebcastLinkMicArmies: MessageFns<WebcastLinkMicArmies> = {
           message.enigmaBattleExtraInfo = EnigmaBattleExtraInfo.decode(reader, reader.uint32());
           continue;
         }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.multiplierType = reader.int32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -8072,6 +8484,9 @@ function createBaseWebcastLinkMicBattle(): WebcastLinkMicBattle {
     enigmaBattleSetting: undefined,
     anchorMatchSettings: {},
     battleFeatureFlags: undefined,
+    crossRoomLayout: undefined,
+    trackingExtra: {},
+    matchThemeDisplayResource: undefined,
   };
 }
 
@@ -8155,6 +8570,15 @@ export const WebcastLinkMicBattle: MessageFns<WebcastLinkMicBattle> = {
     });
     if (message.battleFeatureFlags !== undefined) {
       BattleFeatureFlags.encode(message.battleFeatureFlags, writer.uint32(218).fork()).join();
+    }
+    if (message.crossRoomLayout !== undefined) {
+      LayoutData.encode(message.crossRoomLayout, writer.uint32(226).fork()).join();
+    }
+    globalThis.Object.entries(message.trackingExtra).forEach(([key, value]: [string, string]) => {
+      WebcastLinkMicBattle_TrackingExtraEntry.encode({ key: key as any, value }, writer.uint32(234).fork()).join();
+    });
+    if (message.matchThemeDisplayResource !== undefined) {
+      MatchThemeDisplayResource.encode(message.matchThemeDisplayResource, writer.uint32(242).fork()).join();
     }
     return writer;
   },
@@ -8387,6 +8811,33 @@ export const WebcastLinkMicBattle: MessageFns<WebcastLinkMicBattle> = {
           }
 
           message.battleFeatureFlags = BattleFeatureFlags.decode(reader, reader.uint32());
+          continue;
+        }
+        case 28: {
+          if (tag !== 226) {
+            break;
+          }
+
+          message.crossRoomLayout = LayoutData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 29: {
+          if (tag !== 234) {
+            break;
+          }
+
+          const entry29 = WebcastLinkMicBattle_TrackingExtraEntry.decode(reader, reader.uint32());
+          if (entry29.value !== undefined) {
+            message.trackingExtra[entry29.key] = entry29.value;
+          }
+          continue;
+        }
+        case 30: {
+          if (tag !== 242) {
+            break;
+          }
+
+          message.matchThemeDisplayResource = MatchThemeDisplayResource.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -8646,6 +9097,54 @@ export const WebcastLinkMicBattle_AnchorMatchSettingsEntry: MessageFns<WebcastLi
     },
   };
 
+function createBaseWebcastLinkMicBattle_TrackingExtraEntry(): WebcastLinkMicBattle_TrackingExtraEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastLinkMicBattle_TrackingExtraEntry: MessageFns<WebcastLinkMicBattle_TrackingExtraEntry> = {
+  encode(message: WebcastLinkMicBattle_TrackingExtraEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastLinkMicBattle_TrackingExtraEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastLinkMicBattle_TrackingExtraEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastLinkMicBattleItemCard(): WebcastLinkMicBattleItemCard {
   return {
     common: undefined,
@@ -8664,6 +9163,11 @@ function createBaseWebcastLinkMicBattleItemCard(): WebcastLinkMicBattleItemCard 
     useTop3Card: undefined,
     useVaultGloveCard: undefined,
     awardReason: 0,
+    useMusicCard: undefined,
+    musicAwardNotice: undefined,
+    musicEffectNotice: undefined,
+    cardQueueMap: {},
+    anchorLeftCardRefundNotice: undefined,
   };
 }
 
@@ -8716,6 +9220,22 @@ export const WebcastLinkMicBattleItemCard: MessageFns<WebcastLinkMicBattleItemCa
     }
     if (message.awardReason !== 0) {
       writer.uint32(128).int32(message.awardReason);
+    }
+    if (message.useMusicCard !== undefined) {
+      UseMusicCard.encode(message.useMusicCard, writer.uint32(138).fork()).join();
+    }
+    if (message.musicAwardNotice !== undefined) {
+      MusicAwardNotice.encode(message.musicAwardNotice, writer.uint32(146).fork()).join();
+    }
+    if (message.musicEffectNotice !== undefined) {
+      MusicEffectNotice.encode(message.musicEffectNotice, writer.uint32(154).fork()).join();
+    }
+    globalThis.Object.entries(message.cardQueueMap).forEach(([key, value]: [string, EffectingCardQueue]) => {
+      WebcastLinkMicBattleItemCard_CardQueueMapEntry.encode({ key: key as any, value }, writer.uint32(162).fork())
+        .join();
+    });
+    if (message.anchorLeftCardRefundNotice !== undefined) {
+      AnchorLeftCardRefundNotice.encode(message.anchorLeftCardRefundNotice, writer.uint32(170).fork()).join();
     }
     return writer;
   },
@@ -8853,6 +9373,102 @@ export const WebcastLinkMicBattleItemCard: MessageFns<WebcastLinkMicBattleItemCa
           }
 
           message.awardReason = reader.int32();
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.useMusicCard = UseMusicCard.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.musicAwardNotice = MusicAwardNotice.decode(reader, reader.uint32());
+          continue;
+        }
+        case 19: {
+          if (tag !== 154) {
+            break;
+          }
+
+          message.musicEffectNotice = MusicEffectNotice.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          const entry20 = WebcastLinkMicBattleItemCard_CardQueueMapEntry.decode(reader, reader.uint32());
+          if (entry20.value !== undefined) {
+            message.cardQueueMap[entry20.key] = entry20.value;
+          }
+          continue;
+        }
+        case 21: {
+          if (tag !== 170) {
+            break;
+          }
+
+          message.anchorLeftCardRefundNotice = AnchorLeftCardRefundNotice.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastLinkMicBattleItemCard_CardQueueMapEntry(): WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+  return { key: "0", value: undefined };
+}
+
+export const WebcastLinkMicBattleItemCard_CardQueueMapEntry: MessageFns<
+  WebcastLinkMicBattleItemCard_CardQueueMapEntry
+> = {
+  encode(
+    message: WebcastLinkMicBattleItemCard_CardQueueMapEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      EffectingCardQueue.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastLinkMicBattleItemCard_CardQueueMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = EffectingCardQueue.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -9476,6 +10092,7 @@ function createBaseWebcastMemberMessage(): WebcastMemberMessage {
     showWave: "0",
     waveAlgorithmData: undefined,
     hitAbStatus: 0,
+    drawerLiveType: "",
   };
 }
 
@@ -9585,6 +10202,9 @@ export const WebcastMemberMessage: MessageFns<WebcastMemberMessage> = {
     }
     if (message.hitAbStatus !== 0) {
       writer.uint32(280).int32(message.hitAbStatus);
+    }
+    if (message.drawerLiveType !== "") {
+      writer.uint32(290).string(message.drawerLiveType);
     }
     return writer;
   },
@@ -9879,6 +10499,14 @@ export const WebcastMemberMessage: MessageFns<WebcastMemberMessage> = {
           message.hitAbStatus = reader.int32() as any;
           continue;
         }
+        case 36: {
+          if (tag !== 290) {
+            break;
+          }
+
+          message.drawerLiveType = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -9984,6 +10612,76 @@ export const WebcastMiddleTouchMessage: MessageFns<WebcastMiddleTouchMessage> = 
           }
 
           message.extra = MiddleTouchExtra.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastMinuteGameUpdateMessage(): WebcastMinuteGameUpdateMessage {
+  return { common: undefined, updateType: 0, gameplay: undefined, timedPropData: undefined };
+}
+
+export const WebcastMinuteGameUpdateMessage: MessageFns<WebcastMinuteGameUpdateMessage> = {
+  encode(message: WebcastMinuteGameUpdateMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.updateType !== 0) {
+      writer.uint32(16).int32(message.updateType);
+    }
+    if (message.gameplay !== undefined) {
+      MinuteGameGameplay.encode(message.gameplay, writer.uint32(26).fork()).join();
+    }
+    if (message.timedPropData !== undefined) {
+      TimedPropData.encode(message.timedPropData, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastMinuteGameUpdateMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastMinuteGameUpdateMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.updateType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.gameplay = MinuteGameGameplay.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.timedPropData = TimedPropData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -10284,6 +10982,7 @@ function createBaseWebcastRankTextMessage(): WebcastRankTextMessage {
     content: undefined,
     rankType: 0,
     userEnigmaInfo: undefined,
+    publicAreaMsgCommon: undefined,
   };
 }
 
@@ -10321,6 +11020,9 @@ export const WebcastRankTextMessage: MessageFns<WebcastRankTextMessage> = {
     }
     if (message.userEnigmaInfo !== undefined) {
       RankUserEnigmaInfo.encode(message.userEnigmaInfo, writer.uint32(90).fork()).join();
+    }
+    if (message.publicAreaMsgCommon !== undefined) {
+      PublicAreaMessageCommon.encode(message.publicAreaMsgCommon, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -10418,6 +11120,14 @@ export const WebcastRankTextMessage: MessageFns<WebcastRankTextMessage> = {
           }
 
           message.userEnigmaInfo = RankUserEnigmaInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.publicAreaMsgCommon = PublicAreaMessageCommon.decode(reader, reader.uint32());
           continue;
         }
       }

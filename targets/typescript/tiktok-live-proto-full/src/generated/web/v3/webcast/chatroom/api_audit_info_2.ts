@@ -6,21 +6,21 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { TimerDetailAuditTaskType } from "../model/data/messages.js";
+import { AuditTaskType } from "../model/data/messages.js";
 
 export const protobufPackage = "webcast.chatroom.api";
 
-export interface TimerDetailAuditInfo {
+export interface EmoteModelAuditInfo {
   violationId: string;
-  taskType: TimerDetailAuditTaskType;
+  taskType: AuditTaskType;
 }
 
-function createBaseTimerDetailAuditInfo(): TimerDetailAuditInfo {
+function createBaseEmoteModelAuditInfo(): EmoteModelAuditInfo {
   return { violationId: "0", taskType: 0 };
 }
 
-export const TimerDetailAuditInfo: MessageFns<TimerDetailAuditInfo> = {
-  encode(message: TimerDetailAuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const EmoteModelAuditInfo: MessageFns<EmoteModelAuditInfo> = {
+  encode(message: EmoteModelAuditInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.violationId !== "0") {
       writer.uint32(8).int64(message.violationId);
     }
@@ -30,10 +30,10 @@ export const TimerDetailAuditInfo: MessageFns<TimerDetailAuditInfo> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): TimerDetailAuditInfo {
+  decode(input: BinaryReader | Uint8Array, length?: number): EmoteModelAuditInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTimerDetailAuditInfo();
+    const message = createBaseEmoteModelAuditInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

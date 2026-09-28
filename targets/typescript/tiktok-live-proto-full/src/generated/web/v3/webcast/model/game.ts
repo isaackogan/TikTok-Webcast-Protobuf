@@ -111,6 +111,7 @@ export interface GameLiveFragment {
   postByScene: number;
   isPosted: boolean;
   itemIdStr: string;
+  businessExtra: string;
 }
 
 export interface GameServerFeature {
@@ -247,6 +248,12 @@ export interface LiveGoalReward {
   rewardUsers: LiveStreamGoalContributor[];
   startTime: string;
   endTime: string;
+  goalIdStr: string;
+  templateId: string;
+  rewardDirectMessage: string;
+  source: number;
+  isHitOptAb: boolean;
+  finishStatus: number;
 }
 
 export interface LiveGoalRewardCondition {
@@ -346,6 +353,7 @@ export interface WebcastAccessRecallMessage {
   notice: Text | undefined;
   content: Text | undefined;
   punishInfo: PunishEventInfo | undefined;
+  endTimeV2: string;
 }
 
 function createBaseAutocutLogInfo(): AutocutLogInfo {
@@ -907,6 +915,7 @@ function createBaseGameLiveFragment(): GameLiveFragment {
     postByScene: 0,
     isPosted: false,
     itemIdStr: "",
+    businessExtra: "",
   };
 }
 
@@ -1019,6 +1028,9 @@ export const GameLiveFragment: MessageFns<GameLiveFragment> = {
     }
     if (message.itemIdStr !== "") {
       writer.uint32(290).string(message.itemIdStr);
+    }
+    if (message.businessExtra !== "") {
+      writer.uint32(306).string(message.businessExtra);
     }
     return writer;
   },
@@ -1316,6 +1328,14 @@ export const GameLiveFragment: MessageFns<GameLiveFragment> = {
           }
 
           message.itemIdStr = reader.string();
+          continue;
+        }
+        case 38: {
+          if (tag !== 306) {
+            break;
+          }
+
+          message.businessExtra = reader.string();
           continue;
         }
       }
@@ -2643,6 +2663,12 @@ function createBaseLiveGoalReward(): LiveGoalReward {
     rewardUsers: [],
     startTime: "0",
     endTime: "0",
+    goalIdStr: "",
+    templateId: "",
+    rewardDirectMessage: "",
+    source: 0,
+    isHitOptAb: false,
+    finishStatus: 0,
   };
 }
 
@@ -2668,6 +2694,24 @@ export const LiveGoalReward: MessageFns<LiveGoalReward> = {
     }
     if (message.endTime !== "0") {
       writer.uint32(56).int64(message.endTime);
+    }
+    if (message.goalIdStr !== "") {
+      writer.uint32(66).string(message.goalIdStr);
+    }
+    if (message.templateId !== "") {
+      writer.uint32(74).string(message.templateId);
+    }
+    if (message.rewardDirectMessage !== "") {
+      writer.uint32(82).string(message.rewardDirectMessage);
+    }
+    if (message.source !== 0) {
+      writer.uint32(88).int32(message.source);
+    }
+    if (message.isHitOptAb !== false) {
+      writer.uint32(96).bool(message.isHitOptAb);
+    }
+    if (message.finishStatus !== 0) {
+      writer.uint32(104).int32(message.finishStatus);
     }
     return writer;
   },
@@ -2733,6 +2777,54 @@ export const LiveGoalReward: MessageFns<LiveGoalReward> = {
           }
 
           message.endTime = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.goalIdStr = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.templateId = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.rewardDirectMessage = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.source = reader.int32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.isHitOptAb = reader.bool();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.finishStatus = reader.int32();
           continue;
         }
       }
@@ -3731,6 +3823,7 @@ function createBaseWebcastAccessRecallMessage(): WebcastAccessRecallMessage {
     notice: undefined,
     content: undefined,
     punishInfo: undefined,
+    endTimeV2: "0",
   };
 }
 
@@ -3759,6 +3852,9 @@ export const WebcastAccessRecallMessage: MessageFns<WebcastAccessRecallMessage> 
     }
     if (message.punishInfo !== undefined) {
       PunishEventInfo.encode(message.punishInfo, writer.uint32(66).fork()).join();
+    }
+    if (message.endTimeV2 !== "0") {
+      writer.uint32(72).int64(message.endTimeV2);
     }
     return writer;
   },
@@ -3832,6 +3928,14 @@ export const WebcastAccessRecallMessage: MessageFns<WebcastAccessRecallMessage> 
           }
 
           message.punishInfo = PunishEventInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.endTimeV2 = reader.int64().toString();
           continue;
         }
       }

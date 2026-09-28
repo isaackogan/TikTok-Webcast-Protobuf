@@ -14,6 +14,7 @@ import {
   LinkUserType,
   MultiGuestOutsideRoomInviteSource,
 } from "../../model/data/messages.js";
+import { LinkmicShareRevenueSettingStruct } from "./interact_messages.js";
 import { MultiLiveAnchorPanelSettings } from "./multilive.js";
 
 export const protobufPackage = "webcast.chatroom.model.multiguestv3";
@@ -35,12 +36,14 @@ export interface InviteBizContent {
   operatorLinkAdminType: LinkMicUserAdminType;
   inviteeUserInfo: User | undefined;
   shareRevenueSetting: LinkmicShareRevenueSetting;
+  shareRevenueSettingStruct: LinkmicShareRevenueSettingStruct | undefined;
 }
 
 export interface JoinDirectBizContent {
   replyImMsgId: string;
   outsideRoomInviteSource: MultiGuestOutsideRoomInviteSource;
   isFullPositionPreApproved: boolean;
+  mgSourceRole: number;
 }
 
 export interface MultiLiveContent {
@@ -63,6 +66,8 @@ export interface PermitBizContent {
   linkTypePermission: string;
   isFullPositionPreApproved: boolean;
   isQuickCallAutoApproved: boolean;
+  mgMatchType: number;
+  linkedSubReason: number;
 }
 
 export interface ReplyBizContent {
@@ -176,6 +181,7 @@ function createBaseInviteBizContent(): InviteBizContent {
     operatorLinkAdminType: 0,
     inviteeUserInfo: undefined,
     shareRevenueSetting: 0,
+    shareRevenueSettingStruct: undefined,
   };
 }
 
@@ -198,6 +204,9 @@ export const InviteBizContent: MessageFns<InviteBizContent> = {
     }
     if (message.shareRevenueSetting !== 0) {
       writer.uint32(48).int32(message.shareRevenueSetting);
+    }
+    if (message.shareRevenueSettingStruct !== undefined) {
+      LinkmicShareRevenueSettingStruct.encode(message.shareRevenueSettingStruct, writer.uint32(58).fork()).join();
     }
     return writer;
   },
@@ -257,6 +266,14 @@ export const InviteBizContent: MessageFns<InviteBizContent> = {
           message.shareRevenueSetting = reader.int32() as any;
           continue;
         }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.shareRevenueSettingStruct = LinkmicShareRevenueSettingStruct.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -268,7 +285,7 @@ export const InviteBizContent: MessageFns<InviteBizContent> = {
 };
 
 function createBaseJoinDirectBizContent(): JoinDirectBizContent {
-  return { replyImMsgId: "0", outsideRoomInviteSource: 0, isFullPositionPreApproved: false };
+  return { replyImMsgId: "0", outsideRoomInviteSource: 0, isFullPositionPreApproved: false, mgSourceRole: 0 };
 }
 
 export const JoinDirectBizContent: MessageFns<JoinDirectBizContent> = {
@@ -281,6 +298,9 @@ export const JoinDirectBizContent: MessageFns<JoinDirectBizContent> = {
     }
     if (message.isFullPositionPreApproved !== false) {
       writer.uint32(24).bool(message.isFullPositionPreApproved);
+    }
+    if (message.mgSourceRole !== 0) {
+      writer.uint32(32).int32(message.mgSourceRole);
     }
     return writer;
   },
@@ -314,6 +334,14 @@ export const JoinDirectBizContent: MessageFns<JoinDirectBizContent> = {
           }
 
           message.isFullPositionPreApproved = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.mgSourceRole = reader.int32();
           continue;
         }
       }
@@ -448,6 +476,8 @@ function createBasePermitBizContent(): PermitBizContent {
     linkTypePermission: "0",
     isFullPositionPreApproved: false,
     isQuickCallAutoApproved: false,
+    mgMatchType: 0,
+    linkedSubReason: 0,
   };
 }
 
@@ -479,6 +509,12 @@ export const PermitBizContent: MessageFns<PermitBizContent> = {
     }
     if (message.isQuickCallAutoApproved !== false) {
       writer.uint32(72).bool(message.isQuickCallAutoApproved);
+    }
+    if (message.mgMatchType !== 0) {
+      writer.uint32(80).int32(message.mgMatchType);
+    }
+    if (message.linkedSubReason !== 0) {
+      writer.uint32(88).int32(message.linkedSubReason);
     }
     return writer;
   },
@@ -560,6 +596,22 @@ export const PermitBizContent: MessageFns<PermitBizContent> = {
           }
 
           message.isQuickCallAutoApproved = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.mgMatchType = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.linkedSubReason = reader.int32();
           continue;
         }
       }

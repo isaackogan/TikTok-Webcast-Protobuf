@@ -27,6 +27,16 @@ export interface ShopLabelImage {
   color: string;
 }
 
+export interface TPSize {
+  width: number;
+  height: number;
+}
+
+export interface TPTuxImage {
+  protocol: string;
+  size: TPSize | undefined;
+}
+
 function createBaseFollowInfo(): FollowInfo {
   return { followingCount: "0", followerCount: "0", followStatus: "0", pushStatus: "0" };
 }
@@ -199,6 +209,102 @@ export const ShopLabelImage: MessageFns<ShopLabelImage> = {
           }
 
           message.color = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPSize(): TPSize {
+  return { width: 0, height: 0 };
+}
+
+export const TPSize: MessageFns<TPSize> = {
+  encode(message: TPSize, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.width !== 0) {
+      writer.uint32(8).int32(message.width);
+    }
+    if (message.height !== 0) {
+      writer.uint32(16).int32(message.height);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPSize {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPSize();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.width = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.height = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTPTuxImage(): TPTuxImage {
+  return { protocol: "", size: undefined };
+}
+
+export const TPTuxImage: MessageFns<TPTuxImage> = {
+  encode(message: TPTuxImage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.protocol !== "") {
+      writer.uint32(10).string(message.protocol);
+    }
+    if (message.size !== undefined) {
+      TPSize.encode(message.size, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TPTuxImage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTPTuxImage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.protocol = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.size = TPSize.decode(reader, reader.uint32());
           continue;
         }
       }

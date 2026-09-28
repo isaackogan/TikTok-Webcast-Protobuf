@@ -10,12 +10,23 @@ import { VideoMetaInfo } from "../../replay_proto.js";
 import { ImageModel } from "../base/messages.js";
 import { FansClubInfo, OwnRoom, SubscribeInfo } from "../base/user.js";
 import { AILiveSummary, PaidEventPaidType } from "../data/messages.js";
+import { RTCExtraInfo } from "../message/linkcore.js";
 
 export const protobufPackage = "webcast.model.live";
+
+export interface AIAnchorAboutMeInfo {
+  content: string;
+  genLanguage: string;
+  resultKey: string;
+}
 
 export interface ASRSummary {
   id: string;
   summary: string;
+}
+
+export interface ActivityToggleInfo {
+  activityToggleText: string;
 }
 
 export interface AgeRestricted {
@@ -75,6 +86,7 @@ export interface BcToggleInfo {
   ecomBcToggle: number;
   bcToggleText: string;
   bcToggleShowInterval: number;
+  position: number;
 }
 
 export interface BoardUsingInfo {
@@ -98,12 +110,30 @@ export interface ChannelInfo {
   groupChannelId: string;
 }
 
+export interface CollaborativeLiveInfo {
+  isCollaborativeLive: boolean;
+  collaborationId: string;
+  showInfos: CollaborativeShowInfo[];
+  title: string;
+  entryRoomId: string;
+  entryAnchorId: string;
+  schema: string;
+}
+
+export interface CollaborativeShowInfo {
+  userId: string;
+  secUid: string;
+  nickname: string;
+  avatarThumb: ImageModel | undefined;
+}
+
 export interface CommerceStruct {
   commercePermission: number;
   oecLiveEnterRoomInitData: string;
   useAsyncLoad: boolean;
   productNum: string;
   useNewPromotion: number;
+  bottomButtonLayout: number;
 }
 
 export interface CommercialContentToggle {
@@ -115,6 +145,13 @@ export interface CommercialContentToggle {
 export interface ContentSpotlightRankInfo {
   score: string;
   scoreIcon: ImageModel | undefined;
+}
+
+export interface CreateLinkmicInfo {
+  channelId: string;
+  info: RTCExtraInfo | undefined;
+  selfLinkMicId: string;
+  isResume: number;
 }
 
 export interface CustomTab {
@@ -168,6 +205,17 @@ export interface EPIFeatureValue_StringFeatureEntry {
   value: string;
 }
 
+export interface EcommerceActivityInfo {
+  activityId: string;
+  activityStatus: number;
+  activityType: number;
+  mainTitle: SimpleText | undefined;
+  subTitle: SimpleText | undefined;
+  shareTitle: SimpleText | undefined;
+  activitySchema: string;
+  shareSchema: string;
+}
+
 export interface EcommerceRoomHeadTag {
   text: string;
   icon: ImageModel | undefined;
@@ -179,6 +227,10 @@ export interface EcommerceRoomTag {
   tagType: number;
   tagShowTime: string;
   daInfo: string;
+  tagIconLight: ImageModel | undefined;
+  tagIconDark: ImageModel | undefined;
+  shopRating: string;
+  sellingCount: string;
 }
 
 export interface EffectInfo {
@@ -198,6 +250,24 @@ export interface EnlargeViewInfo {
 export interface EnterNearByInfo {
   label: string;
   showNearbyMsgTag: boolean;
+  labelMatch: string;
+}
+
+export interface EnterRoomDecisionInfo {
+  decisionInfoList: EnterRoomDecisionInfoItem[];
+  displayDelay: string;
+  singleDisplayDuration: string;
+  enableDisappear: boolean;
+  isShow: boolean;
+}
+
+export interface EnterRoomDecisionInfoItem {
+  decisionId: string;
+  content: string;
+  tuxIconProtocol: string;
+  relatedToRepost: boolean;
+  hasExpireTime: boolean;
+  expireAt: string;
 }
 
 export interface EpiphronDecision {
@@ -239,6 +309,7 @@ export interface GiftSuspension {
   status: number;
   toast: string;
   endTime: string;
+  endTimeV2: string;
 }
 
 export interface GroupLiveMember {
@@ -274,6 +345,12 @@ export interface LikeIconInfo {
   defaultIcons: ImageModel[];
 }
 
+export interface LinkmicLayoutConfig {
+  cohostServerLayoutEnabled: boolean;
+  cohostEnlargeEnabled: boolean;
+  cohostMatchEnlargeEnabled: boolean;
+}
+
 export interface LiveCoreSDKData {
   pullData: PullData | undefined;
   pushData: PushData | undefined;
@@ -304,6 +381,11 @@ export interface LiveRecordConfig {
   hasFixedFloatingBall: boolean;
   maxRecordDuration: string;
   minStorageSize: string;
+}
+
+export interface LuminanceInfo {
+  topLuminance: number;
+  bottomLuminance: number;
 }
 
 export interface M2GuideInfo {
@@ -408,6 +490,7 @@ export interface Options {
   supportLowLatency: boolean;
   maxDrmLenientSize: string;
   maxDrmLenientSizeBackup: string;
+  forcedLowLatency: boolean;
 }
 
 export interface PaidContentInfo {
@@ -482,6 +565,10 @@ export interface PreviewItem {
 
 export interface PreviewProductCardInfo {
   recommendInfo: string;
+}
+
+export interface ProgrammedLiveRoomTagInfo {
+  content: string;
 }
 
 export interface PublicCommonDynamicText {
@@ -615,6 +702,11 @@ export interface SecondaryPageInfo {
   introduction: string;
 }
 
+export interface SimpleText {
+  text: string;
+  highlightText: string;
+}
+
 export interface Skin {
   account: SkinHostAccount | undefined;
   drawerEntrance: SkinDrawerEntrance | undefined;
@@ -649,6 +741,12 @@ export interface StrategyPlatformFeatures {
   floatFeatures: StrategyPlatformFeature[];
   stringFeatures: StrategyPlatformFeature[];
   boolFeatures: StrategyPlatformFeature[];
+}
+
+export interface StreamFeature {
+  featureName: string;
+  projectKey: string;
+  options: string;
 }
 
 export interface StreamSnapShot {
@@ -688,6 +786,9 @@ export interface StreamUrl {
   streamSizeWidth: string;
   streamSizeHeight: string;
   drmType: number;
+  streamLanguage: string;
+  defaultAudioTrackLang: string[];
+  mediaTrackEnable: boolean;
 }
 
 export interface StreamUrl_ResolutionNameEntry {
@@ -760,6 +861,77 @@ export interface TopFrameBannerLogo {
   uri: string;
 }
 
+export interface WatchReasonV2 {
+  reasons: WatchReasonV2Item[];
+}
+
+export interface WatchReasonV2Item {
+  type: number;
+  content: string;
+  tagIds: number[];
+  watchReasonIds: number[];
+  style: number;
+}
+
+function createBaseAIAnchorAboutMeInfo(): AIAnchorAboutMeInfo {
+  return { content: "", genLanguage: "", resultKey: "" };
+}
+
+export const AIAnchorAboutMeInfo: MessageFns<AIAnchorAboutMeInfo> = {
+  encode(message: AIAnchorAboutMeInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.content !== "") {
+      writer.uint32(10).string(message.content);
+    }
+    if (message.genLanguage !== "") {
+      writer.uint32(18).string(message.genLanguage);
+    }
+    if (message.resultKey !== "") {
+      writer.uint32(26).string(message.resultKey);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AIAnchorAboutMeInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAIAnchorAboutMeInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.genLanguage = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.resultKey = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseASRSummary(): ASRSummary {
   return { id: "0", summary: "" };
 }
@@ -796,6 +968,43 @@ export const ASRSummary: MessageFns<ASRSummary> = {
           }
 
           message.summary = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseActivityToggleInfo(): ActivityToggleInfo {
+  return { activityToggleText: "" };
+}
+
+export const ActivityToggleInfo: MessageFns<ActivityToggleInfo> = {
+  encode(message: ActivityToggleInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.activityToggleText !== "") {
+      writer.uint32(10).string(message.activityToggleText);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ActivityToggleInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseActivityToggleInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.activityToggleText = reader.string();
           continue;
         }
       }
@@ -1391,7 +1600,7 @@ export const BALinkStruct: MessageFns<BALinkStruct> = {
 };
 
 function createBaseBcToggleInfo(): BcToggleInfo {
-  return { ecomBcToggle: 0, bcToggleText: "", bcToggleShowInterval: 0 };
+  return { ecomBcToggle: 0, bcToggleText: "", bcToggleShowInterval: 0, position: 0 };
 }
 
 export const BcToggleInfo: MessageFns<BcToggleInfo> = {
@@ -1404,6 +1613,9 @@ export const BcToggleInfo: MessageFns<BcToggleInfo> = {
     }
     if (message.bcToggleShowInterval !== 0) {
       writer.uint32(24).int32(message.bcToggleShowInterval);
+    }
+    if (message.position !== 0) {
+      writer.uint32(32).int32(message.position);
     }
     return writer;
   },
@@ -1437,6 +1649,14 @@ export const BcToggleInfo: MessageFns<BcToggleInfo> = {
           }
 
           message.bcToggleShowInterval = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.position = reader.int32();
           continue;
         }
       }
@@ -1659,6 +1879,187 @@ export const ChannelInfo: MessageFns<ChannelInfo> = {
   },
 };
 
+function createBaseCollaborativeLiveInfo(): CollaborativeLiveInfo {
+  return {
+    isCollaborativeLive: false,
+    collaborationId: "",
+    showInfos: [],
+    title: "",
+    entryRoomId: "0",
+    entryAnchorId: "0",
+    schema: "",
+  };
+}
+
+export const CollaborativeLiveInfo: MessageFns<CollaborativeLiveInfo> = {
+  encode(message: CollaborativeLiveInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.isCollaborativeLive !== false) {
+      writer.uint32(8).bool(message.isCollaborativeLive);
+    }
+    if (message.collaborationId !== "") {
+      writer.uint32(18).string(message.collaborationId);
+    }
+    for (const v of message.showInfos) {
+      CollaborativeShowInfo.encode(v!, writer.uint32(26).fork()).join();
+    }
+    if (message.title !== "") {
+      writer.uint32(34).string(message.title);
+    }
+    if (message.entryRoomId !== "0") {
+      writer.uint32(40).int64(message.entryRoomId);
+    }
+    if (message.entryAnchorId !== "0") {
+      writer.uint32(48).int64(message.entryAnchorId);
+    }
+    if (message.schema !== "") {
+      writer.uint32(58).string(message.schema);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollaborativeLiveInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollaborativeLiveInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isCollaborativeLive = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.collaborationId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.showInfos.push(CollaborativeShowInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.entryRoomId = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.entryAnchorId = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.schema = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollaborativeShowInfo(): CollaborativeShowInfo {
+  return { userId: "0", secUid: "", nickname: "", avatarThumb: undefined };
+}
+
+export const CollaborativeShowInfo: MessageFns<CollaborativeShowInfo> = {
+  encode(message: CollaborativeShowInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "0") {
+      writer.uint32(8).int64(message.userId);
+    }
+    if (message.secUid !== "") {
+      writer.uint32(18).string(message.secUid);
+    }
+    if (message.nickname !== "") {
+      writer.uint32(26).string(message.nickname);
+    }
+    if (message.avatarThumb !== undefined) {
+      ImageModel.encode(message.avatarThumb, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollaborativeShowInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollaborativeShowInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.secUid = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.nickname = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.avatarThumb = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCommerceStruct(): CommerceStruct {
   return {
     commercePermission: 0,
@@ -1666,6 +2067,7 @@ function createBaseCommerceStruct(): CommerceStruct {
     useAsyncLoad: false,
     productNum: "0",
     useNewPromotion: 0,
+    bottomButtonLayout: 0,
   };
 }
 
@@ -1685,6 +2087,9 @@ export const CommerceStruct: MessageFns<CommerceStruct> = {
     }
     if (message.useNewPromotion !== 0) {
       writer.uint32(40).int32(message.useNewPromotion);
+    }
+    if (message.bottomButtonLayout !== 0) {
+      writer.uint32(48).int32(message.bottomButtonLayout);
     }
     return writer;
   },
@@ -1734,6 +2139,14 @@ export const CommerceStruct: MessageFns<CommerceStruct> = {
           }
 
           message.useNewPromotion = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.bottomButtonLayout = reader.int32();
           continue;
         }
       }
@@ -1841,6 +2254,76 @@ export const ContentSpotlightRankInfo: MessageFns<ContentSpotlightRankInfo> = {
           }
 
           message.scoreIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateLinkmicInfo(): CreateLinkmicInfo {
+  return { channelId: "0", info: undefined, selfLinkMicId: "", isResume: 0 };
+}
+
+export const CreateLinkmicInfo: MessageFns<CreateLinkmicInfo> = {
+  encode(message: CreateLinkmicInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.channelId !== "0") {
+      writer.uint32(8).int64(message.channelId);
+    }
+    if (message.info !== undefined) {
+      RTCExtraInfo.encode(message.info, writer.uint32(18).fork()).join();
+    }
+    if (message.selfLinkMicId !== "") {
+      writer.uint32(26).string(message.selfLinkMicId);
+    }
+    if (message.isResume !== 0) {
+      writer.uint32(32).int32(message.isResume);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateLinkmicInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateLinkmicInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.channelId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.info = RTCExtraInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.selfLinkMicId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isResume = reader.int32();
           continue;
         }
       }
@@ -2367,6 +2850,129 @@ export const EPIFeatureValue_StringFeatureEntry: MessageFns<EPIFeatureValue_Stri
   },
 };
 
+function createBaseEcommerceActivityInfo(): EcommerceActivityInfo {
+  return {
+    activityId: "0",
+    activityStatus: 0,
+    activityType: 0,
+    mainTitle: undefined,
+    subTitle: undefined,
+    shareTitle: undefined,
+    activitySchema: "",
+    shareSchema: "",
+  };
+}
+
+export const EcommerceActivityInfo: MessageFns<EcommerceActivityInfo> = {
+  encode(message: EcommerceActivityInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.activityId !== "0") {
+      writer.uint32(8).int64(message.activityId);
+    }
+    if (message.activityStatus !== 0) {
+      writer.uint32(16).int32(message.activityStatus);
+    }
+    if (message.activityType !== 0) {
+      writer.uint32(24).int32(message.activityType);
+    }
+    if (message.mainTitle !== undefined) {
+      SimpleText.encode(message.mainTitle, writer.uint32(34).fork()).join();
+    }
+    if (message.subTitle !== undefined) {
+      SimpleText.encode(message.subTitle, writer.uint32(42).fork()).join();
+    }
+    if (message.shareTitle !== undefined) {
+      SimpleText.encode(message.shareTitle, writer.uint32(50).fork()).join();
+    }
+    if (message.activitySchema !== "") {
+      writer.uint32(58).string(message.activitySchema);
+    }
+    if (message.shareSchema !== "") {
+      writer.uint32(66).string(message.shareSchema);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EcommerceActivityInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEcommerceActivityInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.activityId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.activityStatus = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.activityType = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.mainTitle = SimpleText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.subTitle = SimpleText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.shareTitle = SimpleText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.activitySchema = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.shareSchema = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseEcommerceRoomHeadTag(): EcommerceRoomHeadTag {
   return { text: "", icon: undefined, daInfo: "" };
 }
@@ -2427,7 +3033,16 @@ export const EcommerceRoomHeadTag: MessageFns<EcommerceRoomHeadTag> = {
 };
 
 function createBaseEcommerceRoomTag(): EcommerceRoomTag {
-  return { tagName: "", tagType: 0, tagShowTime: "0", daInfo: "" };
+  return {
+    tagName: "",
+    tagType: 0,
+    tagShowTime: "0",
+    daInfo: "",
+    tagIconLight: undefined,
+    tagIconDark: undefined,
+    shopRating: "",
+    sellingCount: "",
+  };
 }
 
 export const EcommerceRoomTag: MessageFns<EcommerceRoomTag> = {
@@ -2443,6 +3058,18 @@ export const EcommerceRoomTag: MessageFns<EcommerceRoomTag> = {
     }
     if (message.daInfo !== "") {
       writer.uint32(34).string(message.daInfo);
+    }
+    if (message.tagIconLight !== undefined) {
+      ImageModel.encode(message.tagIconLight, writer.uint32(42).fork()).join();
+    }
+    if (message.tagIconDark !== undefined) {
+      ImageModel.encode(message.tagIconDark, writer.uint32(50).fork()).join();
+    }
+    if (message.shopRating !== "") {
+      writer.uint32(58).string(message.shopRating);
+    }
+    if (message.sellingCount !== "") {
+      writer.uint32(66).string(message.sellingCount);
     }
     return writer;
   },
@@ -2484,6 +3111,38 @@ export const EcommerceRoomTag: MessageFns<EcommerceRoomTag> = {
           }
 
           message.daInfo = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.tagIconLight = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.tagIconDark = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.shopRating = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.sellingCount = reader.string();
           continue;
         }
       }
@@ -2637,7 +3296,7 @@ export const EnlargeViewInfo: MessageFns<EnlargeViewInfo> = {
 };
 
 function createBaseEnterNearByInfo(): EnterNearByInfo {
-  return { label: "", showNearbyMsgTag: false };
+  return { label: "", showNearbyMsgTag: false, labelMatch: "" };
 }
 
 export const EnterNearByInfo: MessageFns<EnterNearByInfo> = {
@@ -2647,6 +3306,9 @@ export const EnterNearByInfo: MessageFns<EnterNearByInfo> = {
     }
     if (message.showNearbyMsgTag !== false) {
       writer.uint32(16).bool(message.showNearbyMsgTag);
+    }
+    if (message.labelMatch !== "") {
+      writer.uint32(26).string(message.labelMatch);
     }
     return writer;
   },
@@ -2672,6 +3334,194 @@ export const EnterNearByInfo: MessageFns<EnterNearByInfo> = {
           }
 
           message.showNearbyMsgTag = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.labelMatch = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEnterRoomDecisionInfo(): EnterRoomDecisionInfo {
+  return { decisionInfoList: [], displayDelay: "0", singleDisplayDuration: "0", enableDisappear: false, isShow: false };
+}
+
+export const EnterRoomDecisionInfo: MessageFns<EnterRoomDecisionInfo> = {
+  encode(message: EnterRoomDecisionInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.decisionInfoList) {
+      EnterRoomDecisionInfoItem.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.displayDelay !== "0") {
+      writer.uint32(16).int64(message.displayDelay);
+    }
+    if (message.singleDisplayDuration !== "0") {
+      writer.uint32(24).int64(message.singleDisplayDuration);
+    }
+    if (message.enableDisappear !== false) {
+      writer.uint32(32).bool(message.enableDisappear);
+    }
+    if (message.isShow !== false) {
+      writer.uint32(40).bool(message.isShow);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EnterRoomDecisionInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEnterRoomDecisionInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.decisionInfoList.push(EnterRoomDecisionInfoItem.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.displayDelay = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.singleDisplayDuration = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.enableDisappear = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.isShow = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEnterRoomDecisionInfoItem(): EnterRoomDecisionInfoItem {
+  return {
+    decisionId: "0",
+    content: "",
+    tuxIconProtocol: "",
+    relatedToRepost: false,
+    hasExpireTime: false,
+    expireAt: "0",
+  };
+}
+
+export const EnterRoomDecisionInfoItem: MessageFns<EnterRoomDecisionInfoItem> = {
+  encode(message: EnterRoomDecisionInfoItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.decisionId !== "0") {
+      writer.uint32(8).int64(message.decisionId);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.tuxIconProtocol !== "") {
+      writer.uint32(26).string(message.tuxIconProtocol);
+    }
+    if (message.relatedToRepost !== false) {
+      writer.uint32(32).bool(message.relatedToRepost);
+    }
+    if (message.hasExpireTime !== false) {
+      writer.uint32(40).bool(message.hasExpireTime);
+    }
+    if (message.expireAt !== "0") {
+      writer.uint32(48).int64(message.expireAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EnterRoomDecisionInfoItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEnterRoomDecisionInfoItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.decisionId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.tuxIconProtocol = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.relatedToRepost = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.hasExpireTime = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.expireAt = reader.int64().toString();
           continue;
         }
       }
@@ -3043,7 +3893,7 @@ export const FilterMsgRuleParamRandom: MessageFns<FilterMsgRuleParamRandom> = {
 };
 
 function createBaseGiftSuspension(): GiftSuspension {
-  return { status: 0, toast: "", endTime: "0" };
+  return { status: 0, toast: "", endTime: "0", endTimeV2: "0" };
 }
 
 export const GiftSuspension: MessageFns<GiftSuspension> = {
@@ -3056,6 +3906,9 @@ export const GiftSuspension: MessageFns<GiftSuspension> = {
     }
     if (message.endTime !== "0") {
       writer.uint32(24).int64(message.endTime);
+    }
+    if (message.endTimeV2 !== "0") {
+      writer.uint32(32).int64(message.endTimeV2);
     }
     return writer;
   },
@@ -3089,6 +3942,14 @@ export const GiftSuspension: MessageFns<GiftSuspension> = {
           }
 
           message.endTime = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.endTimeV2 = reader.int64().toString();
           continue;
         }
       }
@@ -3434,6 +4295,65 @@ export const LikeIconInfo: MessageFns<LikeIconInfo> = {
   },
 };
 
+function createBaseLinkmicLayoutConfig(): LinkmicLayoutConfig {
+  return { cohostServerLayoutEnabled: false, cohostEnlargeEnabled: false, cohostMatchEnlargeEnabled: false };
+}
+
+export const LinkmicLayoutConfig: MessageFns<LinkmicLayoutConfig> = {
+  encode(message: LinkmicLayoutConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.cohostServerLayoutEnabled !== false) {
+      writer.uint32(8).bool(message.cohostServerLayoutEnabled);
+    }
+    if (message.cohostEnlargeEnabled !== false) {
+      writer.uint32(16).bool(message.cohostEnlargeEnabled);
+    }
+    if (message.cohostMatchEnlargeEnabled !== false) {
+      writer.uint32(24).bool(message.cohostMatchEnlargeEnabled);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LinkmicLayoutConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLinkmicLayoutConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.cohostServerLayoutEnabled = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.cohostEnlargeEnabled = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.cohostMatchEnlargeEnabled = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseLiveCoreSDKData(): LiveCoreSDKData {
   return { pullData: undefined, pushData: undefined };
 }
@@ -3739,6 +4659,54 @@ export const LiveRecordConfig: MessageFns<LiveRecordConfig> = {
           }
 
           message.minStorageSize = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLuminanceInfo(): LuminanceInfo {
+  return { topLuminance: 0, bottomLuminance: 0 };
+}
+
+export const LuminanceInfo: MessageFns<LuminanceInfo> = {
+  encode(message: LuminanceInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.topLuminance !== 0) {
+      writer.uint32(13).float(message.topLuminance);
+    }
+    if (message.bottomLuminance !== 0) {
+      writer.uint32(21).float(message.bottomLuminance);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LuminanceInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLuminanceInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 13) {
+            break;
+          }
+
+          message.topLuminance = reader.float();
+          continue;
+        }
+        case 2: {
+          if (tag !== 21) {
+            break;
+          }
+
+          message.bottomLuminance = reader.float();
           continue;
         }
       }
@@ -4729,6 +5697,7 @@ function createBaseOptions(): Options {
     supportLowLatency: false,
     maxDrmLenientSize: "",
     maxDrmLenientSizeBackup: "",
+    forcedLowLatency: false,
   };
 }
 
@@ -4754,6 +5723,9 @@ export const Options: MessageFns<Options> = {
     }
     if (message.maxDrmLenientSizeBackup !== "") {
       writer.uint32(58).string(message.maxDrmLenientSizeBackup);
+    }
+    if (message.forcedLowLatency !== false) {
+      writer.uint32(64).bool(message.forcedLowLatency);
     }
     return writer;
   },
@@ -4819,6 +5791,14 @@ export const Options: MessageFns<Options> = {
           }
 
           message.maxDrmLenientSizeBackup = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.forcedLowLatency = reader.bool();
           continue;
         }
       }
@@ -5560,6 +6540,43 @@ export const PreviewProductCardInfo: MessageFns<PreviewProductCardInfo> = {
           }
 
           message.recommendInfo = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseProgrammedLiveRoomTagInfo(): ProgrammedLiveRoomTagInfo {
+  return { content: "" };
+}
+
+export const ProgrammedLiveRoomTagInfo: MessageFns<ProgrammedLiveRoomTagInfo> = {
+  encode(message: ProgrammedLiveRoomTagInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.content !== "") {
+      writer.uint32(10).string(message.content);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ProgrammedLiveRoomTagInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProgrammedLiveRoomTagInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.content = reader.string();
           continue;
         }
       }
@@ -6945,6 +7962,54 @@ export const SecondaryPageInfo: MessageFns<SecondaryPageInfo> = {
   },
 };
 
+function createBaseSimpleText(): SimpleText {
+  return { text: "", highlightText: "" };
+}
+
+export const SimpleText: MessageFns<SimpleText> = {
+  encode(message: SimpleText, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.text !== "") {
+      writer.uint32(10).string(message.text);
+    }
+    if (message.highlightText !== "") {
+      writer.uint32(18).string(message.highlightText);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SimpleText {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSimpleText();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.text = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.highlightText = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseSkin(): Skin {
   return { account: undefined, drawerEntrance: undefined, scene: "" };
 }
@@ -7299,6 +8364,65 @@ export const StrategyPlatformFeatures: MessageFns<StrategyPlatformFeatures> = {
   },
 };
 
+function createBaseStreamFeature(): StreamFeature {
+  return { featureName: "", projectKey: "", options: "" };
+}
+
+export const StreamFeature: MessageFns<StreamFeature> = {
+  encode(message: StreamFeature, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.featureName !== "") {
+      writer.uint32(10).string(message.featureName);
+    }
+    if (message.projectKey !== "") {
+      writer.uint32(18).string(message.projectKey);
+    }
+    if (message.options !== "") {
+      writer.uint32(26).string(message.options);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StreamFeature {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStreamFeature();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.featureName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.projectKey = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.options = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseStreamSnapShot(): StreamSnapShot {
   return { uri: "", urls: [], height: "0", width: "0", faceCenterX: "0", faceCenterY: "0" };
 }
@@ -7420,6 +8544,9 @@ function createBaseStreamUrl(): StreamUrl {
     streamSizeWidth: "0",
     streamSizeHeight: "0",
     drmType: 0,
+    streamLanguage: "",
+    defaultAudioTrackLang: [],
+    mediaTrackEnable: false,
   };
 }
 
@@ -7505,6 +8632,15 @@ export const StreamUrl: MessageFns<StreamUrl> = {
     }
     if (message.drmType !== 0) {
       writer.uint32(224).int32(message.drmType);
+    }
+    if (message.streamLanguage !== "") {
+      writer.uint32(234).string(message.streamLanguage);
+    }
+    for (const v of message.defaultAudioTrackLang) {
+      writer.uint32(250).string(v!);
+    }
+    if (message.mediaTrackEnable !== false) {
+      writer.uint32(256).bool(message.mediaTrackEnable);
     }
     return writer;
   },
@@ -7742,6 +8878,30 @@ export const StreamUrl: MessageFns<StreamUrl> = {
           }
 
           message.drmType = reader.int32();
+          continue;
+        }
+        case 29: {
+          if (tag !== 234) {
+            break;
+          }
+
+          message.streamLanguage = reader.string();
+          continue;
+        }
+        case 31: {
+          if (tag !== 250) {
+            break;
+          }
+
+          message.defaultAudioTrackLang.push(reader.string());
+          continue;
+        }
+        case 32: {
+          if (tag !== 256) {
+            break;
+          }
+
+          message.mediaTrackEnable = reader.bool();
           continue;
         }
       }
@@ -8453,6 +9613,148 @@ export const TopFrameBannerLogo: MessageFns<TopFrameBannerLogo> = {
           }
 
           message.uri = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWatchReasonV2(): WatchReasonV2 {
+  return { reasons: [] };
+}
+
+export const WatchReasonV2: MessageFns<WatchReasonV2> = {
+  encode(message: WatchReasonV2, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.reasons) {
+      WatchReasonV2Item.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WatchReasonV2 {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWatchReasonV2();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.reasons.push(WatchReasonV2Item.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWatchReasonV2Item(): WatchReasonV2Item {
+  return { type: 0, content: "", tagIds: [], watchReasonIds: [], style: 0 };
+}
+
+export const WatchReasonV2Item: MessageFns<WatchReasonV2Item> = {
+  encode(message: WatchReasonV2Item, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    writer.uint32(26).fork();
+    for (const v of message.tagIds) {
+      writer.int32(v);
+    }
+    writer.join();
+    writer.uint32(34).fork();
+    for (const v of message.watchReasonIds) {
+      writer.int32(v);
+    }
+    writer.join();
+    if (message.style !== 0) {
+      writer.uint32(40).int32(message.style);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WatchReasonV2Item {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWatchReasonV2Item();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag === 24) {
+            message.tagIds.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 26) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.tagIds.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 4: {
+          if (tag === 32) {
+            message.watchReasonIds.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 34) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.watchReasonIds.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.style = reader.int32();
           continue;
         }
       }

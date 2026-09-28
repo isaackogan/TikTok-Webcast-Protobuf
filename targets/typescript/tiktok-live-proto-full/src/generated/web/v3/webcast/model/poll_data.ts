@@ -38,6 +38,7 @@ export interface PollData {
   suggestedQuestionKey: string;
   isSuggestedQuestion: boolean;
   originalPollDurationMs: string;
+  businessScene: number;
 }
 
 function createBasePollData(): PollData {
@@ -65,6 +66,7 @@ function createBasePollData(): PollData {
     suggestedQuestionKey: "",
     isSuggestedQuestion: false,
     originalPollDurationMs: "0",
+    businessScene: 0,
   };
 }
 
@@ -138,6 +140,9 @@ export const PollData: MessageFns<PollData> = {
     }
     if (message.originalPollDurationMs !== "0") {
       writer.uint32(184).int64(message.originalPollDurationMs);
+    }
+    if (message.businessScene !== 0) {
+      writer.uint32(192).int32(message.businessScene);
     }
     return writer;
   },
@@ -331,6 +336,14 @@ export const PollData: MessageFns<PollData> = {
           }
 
           message.originalPollDurationMs = reader.int64().toString();
+          continue;
+        }
+        case 24: {
+          if (tag !== 192) {
+            break;
+          }
+
+          message.businessScene = reader.int32();
           continue;
         }
       }

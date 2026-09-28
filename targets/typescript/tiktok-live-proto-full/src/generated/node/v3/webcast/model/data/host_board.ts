@@ -26,6 +26,12 @@ export interface BoardCell {
   paramsData: Buffer;
 }
 
+export interface BoardInfo {
+  boardName: string;
+  boardDeleteTitle: string;
+  boardDeleteSubtitle: string;
+}
+
 export interface ClickAction {
   navigateToAppRoute: NavigateToAppRoute | undefined;
 }
@@ -49,6 +55,7 @@ export interface HostBoard {
   nonClippable: boolean;
   nonFoldable: boolean;
   nonDeletable: boolean;
+  boardInfo: BoardInfo | undefined;
 }
 
 export interface ImageStyle {
@@ -269,6 +276,65 @@ export const BoardCell: MessageFns<BoardCell> = {
   },
 };
 
+function createBaseBoardInfo(): BoardInfo {
+  return { boardName: "", boardDeleteTitle: "", boardDeleteSubtitle: "" };
+}
+
+export const BoardInfo: MessageFns<BoardInfo> = {
+  encode(message: BoardInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.boardName !== "") {
+      writer.uint32(10).string(message.boardName);
+    }
+    if (message.boardDeleteTitle !== "") {
+      writer.uint32(18).string(message.boardDeleteTitle);
+    }
+    if (message.boardDeleteSubtitle !== "") {
+      writer.uint32(26).string(message.boardDeleteSubtitle);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BoardInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBoardInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.boardName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.boardDeleteTitle = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.boardDeleteSubtitle = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseClickAction(): ClickAction {
   return { navigateToAppRoute: undefined };
 }
@@ -369,6 +435,7 @@ function createBaseHostBoard(): HostBoard {
     nonClippable: false,
     nonFoldable: false,
     nonDeletable: false,
+    boardInfo: undefined,
   };
 }
 
@@ -412,6 +479,9 @@ export const HostBoard: MessageFns<HostBoard> = {
     }
     if (message.nonDeletable !== false) {
       writer.uint32(104).bool(message.nonDeletable);
+    }
+    if (message.boardInfo !== undefined) {
+      BoardInfo.encode(message.boardInfo, writer.uint32(114).fork()).join();
     }
     return writer;
   },
@@ -525,6 +595,14 @@ export const HostBoard: MessageFns<HostBoard> = {
           }
 
           message.nonDeletable = reader.bool();
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          message.boardInfo = BoardInfo.decode(reader, reader.uint32());
           continue;
         }
       }

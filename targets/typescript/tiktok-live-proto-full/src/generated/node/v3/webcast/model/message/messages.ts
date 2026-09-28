@@ -6,10 +6,23 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { ActionButton as ActionButton2, LiveGoalParam, UserParam } from "../../../tikcast_api_creator_succ.js";
 import { SubInfo, SubQueue, SubTimerSticker, SubWaveImMsg } from "../../chatroom/api.js";
 import { RivalExtraInfo } from "../../chatroom/interact_model.js";
-import { CohostListUser, CohostTopic, TopicSessionStatus } from "../../chatroom/model/interact_messages.js";
-import { GroupPlayer, LinkerMediaChangeOperator, LinkMicAdContent, PosIdentity } from "../../linkmic/common.js";
+import {
+  CohostListUser,
+  CohostTopic,
+  GiftGalleryBadgeSection,
+  SubtitleSettings,
+  TopicSessionStatus,
+} from "../../chatroom/model/interact_messages.js";
+import {
+  GroupPlayer,
+  LayoutData,
+  LinkerMediaChangeOperator,
+  LinkMicAdContent,
+  PosIdentity,
+} from "../../linkmic/common.js";
 import {
   AnchorActivityTaskProgress,
   DisplayControl,
@@ -17,8 +30,9 @@ import {
   ResourceAttr,
 } from "../../message_proto.js";
 import { PerceptionSheetInfo } from "../../message_proto_perception_sheet_info.js";
+import { TPTuxImage } from "../../shared/anchor_info.js";
 import { CommonMessageData } from "../../shared/message.js";
-import { EmoteWithIndex, RightLabel } from "../../shared/messages.js";
+import { EmoteWithIndex, EnhancementTextInfo, RightLabel } from "../../shared/messages.js";
 import { ControlAction } from "../../synthetic_enums.js";
 import {
   QuizAnswerInfo,
@@ -37,11 +51,14 @@ import { EventCard, RealtimeReminderWordInfoMsg, ReqSong } from "../data/merged.
 import {
   ActionButtonType,
   AffiliatedInfoStickerShowScene,
+  AIBeautySugContent,
+  AiCoachImMessageData,
   AILiveSummary,
   AnchorGrowLevelImMsg,
   AnchorGrowLevelImMsgV2,
   ColdStartStatData,
   EnlargeScreenScene,
+  EntryData,
   EventUserInfo,
   FansTaskType,
   GiftTrayStyle,
@@ -69,6 +86,7 @@ import {
   StarCommentOption,
   TagType,
   TakeTheStageStatus,
+  TPText,
   UserIdentity,
   UserSetting,
   WhiteBoxData,
@@ -82,16 +100,19 @@ import {
   BattleComboInfo,
   BattleEffectInfos,
   BattleUserInfo,
+  CommunityHeartMeInfo,
   CriticalStrikeCardInfo,
   EnigmaBattleExtraInfo,
   ExtraTimeCardInfo,
   IceShowdownInfo,
+  MusicCardInfo,
   PotionCardInfo,
   SmokeCardInfo,
   SpecialEffectCardInfo,
   Top2CardInfo,
   Top3CardInfo,
   VaultGloveCardInfo,
+  VirtualTicketEnvelopeInfo,
   WaveCardInfo,
 } from "../live/match.js";
 import { SMBInfo } from "../live/messages.js";
@@ -209,6 +230,10 @@ export interface AnchorInfo {
   contributors: CompetitionContributorInfo[];
 }
 
+export interface AnchorLeftCardRefundNotice {
+  anchorId: string;
+}
+
 export interface AnchorPair {
   sourceAnchorId: string;
   targetAnchorId: string;
@@ -221,6 +246,7 @@ export interface AnchorReminderWordInfoMsg {
   messageKey: string;
   suggestionId: string;
   suggestionTemplateId: string;
+  excludedDisplayScenes: number[];
 }
 
 export interface AnchorToolModification {
@@ -452,6 +478,27 @@ export interface BarrageTypeUserGradeParam {
   user: User | undefined;
 }
 
+export interface BattleArtifact {
+  artifactType: number;
+  useVirtualTicket: BattleArtifactUseVirtualTicketInfo | undefined;
+  virtualTicketEnvelopeSendNotice: VirtualTicketEnvelopeInfo | undefined;
+  virtualTicketEnvelopeRushOutNotice: VirtualTicketEnvelopeRushOutNotice | undefined;
+}
+
+export interface BattleArtifactUseVirtualTicketInfo {
+  itemId: string;
+  ticketIcon: ImageModel | undefined;
+  fromUserId: string;
+  toUserId: string;
+  toRoomId: string;
+  count: string;
+  score: string;
+  comboCount: string;
+  comboScore: string;
+  comboEnd: boolean;
+  publicMessage: Text | undefined;
+}
+
 export interface BattleInviteeGiftPermission {
   userId: string;
   giftPermissionType: number;
@@ -531,6 +578,10 @@ export interface Billboard {
   uiType: number;
   sizeGuidanceConfig: BillboardSizeGuidanceConfig | undefined;
   keyMessageConfig: BillboardKeyMessageConfig | undefined;
+  auctionConfig: GroupConfig | undefined;
+  cSchema: string;
+  supportAutoSet: boolean;
+  triggerSource: number;
 }
 
 export interface BillboardDisplayResult {
@@ -605,6 +656,7 @@ export interface BubbleDecoration {
   decorationType: number;
   image: ImageModel | undefined;
   text: Text | undefined;
+  tpText: TPText | undefined;
 }
 
 export interface CampaignBannerDisplay {
@@ -643,6 +695,8 @@ export interface CapsuleBizParamsCohost {
   isFriend: boolean;
   subType: string;
   rivalVoteCount: string;
+  anchorClassLabel: GiftGalleryBadgeSection | undefined;
+  rivalClassLabel: GiftGalleryBadgeSection | undefined;
 }
 
 export interface CapsuleBizParamsCommentFlaggedPrompt {
@@ -741,12 +795,78 @@ export interface CohostInviteInfo_InviteeInfosEntry {
   value: string;
 }
 
+export interface CohostInviteStateNotifyContent {
+  rivalUserId: string;
+  rivalRoomId: string;
+  groupChannelId: string;
+  reason: number;
+}
+
 export interface CohostListChangeContent {
   users: CohostListUser[];
 }
 
 export interface CohostWithdrawInfo {
   anchorList: GroupPlayer[];
+}
+
+export interface CollabGiftActiveInfo {
+  startTime: string;
+  currentTime: string;
+  expireTime: string;
+  currentScore: string;
+  maxScore: string;
+  currentStage: string;
+  maxStage: string;
+  contributors: string[];
+}
+
+export interface CollabGiftBaseInfo {
+  collabSessionId: string;
+  triggerReceiverId: string;
+  triggerSenderId: string;
+  appId: string;
+  roomId: string;
+  triggerGiftId: string;
+  fuelGiftId: string;
+  liveId: string;
+}
+
+export interface CollabGiftContributor {
+  nickname: string;
+  avatarUrl: string;
+}
+
+export interface CollabGiftFinishInfo {
+  finishReason: number;
+}
+
+export interface CollabGiftFullInfo {
+  stages: { [key: string]: CollabGiftStage };
+  userInfo: { [key: string]: CollabGiftContributor };
+}
+
+export interface CollabGiftFullInfo_StagesEntry {
+  key: string;
+  value: CollabGiftStage | undefined;
+}
+
+export interface CollabGiftFullInfo_UserInfoEntry {
+  key: string;
+  value: CollabGiftContributor | undefined;
+}
+
+export interface CollabGiftStage {
+  score: string;
+  maxScore: string;
+  contributors: string[];
+  campaignBonusScore: string;
+}
+
+export interface CollabGiftUpdateInfo {
+  receiverId: string;
+  senderId: string;
+  previousStage: string;
 }
 
 export interface CommentLabelScore {
@@ -811,6 +931,26 @@ export interface Contributor {
   delta: string;
 }
 
+export interface CueMessageItem {
+  itemText: Text | undefined;
+  richParams: CueMessageRichParam[];
+}
+
+export interface CueMessageRichParam {
+  type: number;
+  image: ImageModel | undefined;
+  paramText: Text | undefined;
+  intervalTime: string;
+  intervalDay: string;
+  user: User | undefined;
+  badge: BadgeStruct | undefined;
+}
+
+export interface CuesMessage {
+  topText: Text | undefined;
+  items: CueMessageItem[];
+}
+
 export interface CustomActivityLiveRoomInfo {
   roomId: string;
   roomTitle: string;
@@ -828,11 +968,21 @@ export interface CustomActivityUserInfo {
 
 export interface CustomPayload {
   pollData: ShortTouchPollData | undefined;
+  giveawayData: GiveawayShortTouchData | undefined;
 }
 
 export interface DelayParam {
   minDelayMs: string;
   maxDelayMs: string;
+}
+
+export interface Denomination {
+  amountFormatted: string;
+  amountDelimited: string;
+  amount: string;
+  currencyCode: string;
+  currencySymbol: string;
+  amountKmbFormatted: string;
 }
 
 export interface Detail {
@@ -930,6 +1080,13 @@ export interface Extra {
   source: string;
 }
 
+export interface FansCommunityEventData {
+  upgradeData: UpgradeData | undefined;
+  redeemData: RedeemData | undefined;
+  homelandInteractData: HomelandInteractData | undefined;
+  homelandUnlockData: HomelandUnlockData | undefined;
+}
+
 export interface FeatureMeta {
   roleType: number;
   featureFeId: string;
@@ -949,6 +1106,8 @@ export interface FlashSaleAtmosphere {
   startTime: string;
   endTime: string;
   preheatTime: string;
+  enhancementInfo: FlashSaleEnhancementInfo | undefined;
+  pdpViewerCount: number;
 }
 
 export interface FlashSaleAtmosphereInfo {
@@ -961,10 +1120,17 @@ export interface FlashSaleAtmosphereInfo {
   creatorLimitType: number;
 }
 
+export interface FlashSaleEnhancementInfo {
+  stockShowStatus: number;
+  buyerInfos: UserInfo[];
+  enhancementTextInfo: EnhancementTextInfo | undefined;
+}
+
 export interface FlashSaleStock {
   activityStockStatus: number;
   activityStock: number;
   activityStockText: string;
+  totalStock: number;
 }
 
 export interface FlexImageModel {
@@ -1018,6 +1184,15 @@ export interface GameAiScriptAction {
   actionType: number;
 }
 
+export interface GameEffectModeChangeEvent {
+  gameId: string;
+  playId: string;
+  mode: string;
+  version: string;
+  modeNameKey: string;
+  status: number;
+}
+
 export interface GameInteractionEvent {
   interactionId: string;
   playId: string;
@@ -1027,11 +1202,45 @@ export interface GameInteractionEvent {
   instruction: string;
   count: number;
   triggerEncryptedId: string;
+  sourceType: number;
 }
 
 export interface GameInteractionMessageContent {
   userId: string;
   interactionEvent: GameInteractionEvent | undefined;
+  statusEvent: GameStatusEvent | undefined;
+  modeChangeEvent: GameEffectModeChangeEvent | undefined;
+}
+
+export interface GameInteractionMultiSourceEvent {
+  interactionId: string;
+  playId: string;
+  triggerAvatarUrl: string;
+  triggerNickName: string;
+  timestamp: string;
+  instruction: string;
+  count: number;
+  triggerEncryptedId: string;
+  sourceType: number;
+}
+
+export interface GameInteractionMultiSourceMessageContent {
+  userId: string;
+  interactionEvent: GameInteractionMultiSourceEvent | undefined;
+}
+
+export interface GameLiveGoalRewardMessageContent {
+  goalId: string;
+  anchorId: string;
+  roomId: string;
+  rewardContent: string;
+  userId: string;
+}
+
+export interface GameStatusEvent {
+  gameId: string;
+  playId: string;
+  status: number;
 }
 
 export interface GameTricksGiftInfo {
@@ -1097,6 +1306,19 @@ export interface GiveawayInfo {
   product: Product | undefined;
 }
 
+export interface GiveawayShortTouchData {
+  eventIdStr: string;
+  endStatus: number;
+  previewWinners: User[];
+  claimSchema: string;
+  claimMethod: number;
+  vgeo: number;
+  winnerUserIdList: string[];
+  prizeName: string;
+  rewardType: number;
+  validEndTime: string;
+}
+
 export interface GoalData {
   status: number;
   goalProgress: { [key: string]: Progress };
@@ -1114,6 +1336,83 @@ export interface GoodsOrder {
   orderId: string;
 }
 
+export interface GroupBuyConfig {
+  instanceId: string;
+  groupBuyPrice: string;
+  formattedGroupBuyPrice: string;
+  currencyregion: string;
+  requiredMemberCount: number;
+  title: string;
+  totalStock: string;
+  activityDurationMs: string;
+}
+
+export interface GroupBuyData {
+  groupBuyInstance: GroupBuyInstance | undefined;
+}
+
+export interface GroupBuyInstance {
+  instanceId: string;
+  currentGroupId: string;
+  promotionId: string;
+  groupBuyConfig: GroupBuyConfig | undefined;
+  promotionStatus: number;
+  remainingStock: string;
+  startTimeMs: string;
+  endTimeMs: string;
+  isPinned: boolean;
+  currentRoundGroupCount: string;
+  currentSuccessGroupCount: string;
+  itemSoldCount: string;
+  configEligible: boolean;
+  groupSummaryList: GroupSummary[];
+  currentGroupSummary: GroupSummary | undefined;
+  historyGroupSummaryList: GroupSummary[];
+}
+
+export interface GroupBuyMember {
+  userId: string;
+  userProfileImageUrl: string;
+  isCurrentUser: boolean;
+  userHandle: string;
+  userNickname: string;
+}
+
+export interface GroupConfig {
+  groupOneList: GroupLevelOne[];
+}
+
+export interface GroupLevelOne {
+  title: string;
+  type: number;
+  groupTwoList: GroupLevelTwo[];
+}
+
+export interface GroupLevelThree {
+  title: string;
+  desc: string;
+  type: number;
+  chosen: boolean;
+}
+
+export interface GroupLevelTwo {
+  title: string;
+  desc: string;
+  type: number;
+  chosen: boolean;
+  groupThreeList: GroupLevelThree[];
+}
+
+export interface GroupSummary {
+  groupId: string;
+  instanceId: string;
+  status: number;
+  requiredMemberCount: number;
+  currentCount: number;
+  endTimeMs: string;
+  members: GroupBuyMember[];
+}
+
 export interface GuestApplyInfo {
   applyStatus: number;
   applyTime: string;
@@ -1125,11 +1424,19 @@ export interface GuestApplyInfo {
   ownerNickName: string;
 }
 
+export interface GuideMessageFrequencyRule {
+  roomShowCount: string;
+  dayShowCount: string;
+}
+
 export interface GuidePageResource {
   texts: Text[];
   icons: ImageModel[];
   animations: ImageModel[];
   badges: BadgeStruct[];
+  buttonTexts: Text[];
+  iconStyleId: string;
+  actionType: string;
 }
 
 export interface GuideTarget {
@@ -1143,6 +1450,16 @@ export interface HeatUpdateContent {
   fromUserId: string;
   updatedHeat: string;
   updateSource: number;
+}
+
+export interface HomelandInteractData {
+  fromUser: User | undefined;
+  interactType: number;
+}
+
+export interface HomelandUnlockData {
+  level: string;
+  unlockSize: number;
 }
 
 export interface HostFeatureData {
@@ -1210,6 +1527,7 @@ export interface LinkMicAudienceInviteGuide {
   user: User | undefined;
   displayStrategy: number;
   linkmicAudienceInviteNoticeReason: string;
+  linkerSessionId: string;
 }
 
 export interface LinkMicAudienceNoticeText {
@@ -1284,6 +1602,7 @@ export interface LinkmicAudienceApplyGuide {
   triggerType: string;
   requestId: string;
   linkmicId: string;
+  linkerSessionId: string;
 }
 
 export interface LinkmicAudienceInviteGroupChatMemberGuide {
@@ -1390,6 +1709,20 @@ export interface MultiLangContent {
   content: string;
 }
 
+export interface MusicAwardNotice {
+  displayContent: Text | undefined;
+  toAnchorId: string;
+  isRewarded: boolean;
+}
+
+export interface MusicEffectNotice {
+  effectTier: number;
+  toAnchorId: string;
+  fromUserId: string;
+  giftId: string;
+  giftPrice: string;
+}
+
 export interface NewAnchorEffectParams {
   effectPanel: string;
   resourceId: string;
@@ -1436,12 +1769,22 @@ export interface OecLiveCreatorAction {
 
 export interface OecLiveCreatorMessageData {
   auctionConfig: AuctionConfigV2 | undefined;
+  slashData: SlashData | undefined;
+  groupBuyData: GroupBuyData | undefined;
 }
 
 export interface OecLiveCreatorMessageMeta {
   sourceOperateNs: string;
   serverSendNs: string;
   reason: string;
+  traceInfoMap: { [key: string]: string };
+  sourceOperateNsStr: string;
+  serverSendNsStr: string;
+}
+
+export interface OecLiveCreatorMessageMeta_TraceInfoMapEntry {
+  key: string;
+  value: string;
 }
 
 export interface OperationInfo {
@@ -1551,6 +1894,7 @@ export interface PollBasicInfo {
   timeRemain: string;
   pollIndex: string;
   templateId: string;
+  businessScene: number;
 }
 
 export interface PollEndContent {
@@ -1684,6 +2028,7 @@ export interface PunishEventInfo {
   endTime: string;
   violationUidStr: string;
   showReason: string;
+  endTimeV2: string;
 }
 
 export interface PurchaseProductInfo {
@@ -1769,6 +2114,22 @@ export interface RecommendComment {
   duration: string;
   recommendText: Text | undefined;
   tipsType: string;
+}
+
+export interface RecommendInfo {
+  clickRate: number;
+  clickConversionRate: number;
+  userCloseRate: number;
+}
+
+export interface RedeemData {
+  decorationId: string;
+  triggerAnimation: boolean;
+  triggerSystemMessage: boolean;
+  systemMessageDefaultPattern: string;
+  systemMessageTextKey: string;
+  systemMessageDecorationKey: string;
+  systemMessageUserName: string;
 }
 
 export interface RefreshLiveBagInfo {
@@ -1874,11 +2235,52 @@ export interface Sku {
   skuId: string;
 }
 
+export interface SlashConfig {
+  slashConfigId: string;
+}
+
+export interface SlashData {
+  slashConfig: SlashConfig | undefined;
+  slashSession: SlashSession | undefined;
+  extra: string;
+}
+
+export interface SlashParticipant {
+  userId: string;
+  oecUserId: string;
+  beforePrice: Denomination | undefined;
+  afterPrice: Denomination | undefined;
+  deductionAmount: Denomination | undefined;
+  avatarUrl: string;
+  userNickName: string;
+  userHandle: string;
+  versionTimestamp: string;
+}
+
+export interface SlashSession {
+  slashId: string;
+  slashType: number;
+  slashStatus: number;
+  startPrice: Denomination | undefined;
+  targetPrice: Denomination | undefined;
+  endTimeMs: string;
+  currentPrice: Denomination | undefined;
+  slashedAmount: Denomination | undefined;
+  nextDeductionAmount: Denomination | undefined;
+  participantList: SlashParticipant[];
+  participantCount: number;
+  unlockFloorPrice: boolean;
+  version: string;
+}
+
 export interface SpecialEffectNotice {
   score: string;
   fromUserId: string;
   toAnchorId: string;
   affectedAnchorPairs: AnchorPair[];
+  effectType: number;
+  communityHeartMeInfo: CommunityHeartMeInfo | undefined;
+  communityHeartMeInfoStr: string;
 }
 
 export interface SpecifiedDisplayText {
@@ -1952,6 +2354,10 @@ export interface StyleDictateParams {
   maxLine: string;
   maxWidth: string;
   businessType: string;
+  bubbleContentId: string;
+  pointingTargetType: string;
+  showTrailingArrow: boolean;
+  entryData: EntryData | undefined;
 }
 
 export interface SubGoalData {
@@ -1984,6 +2390,20 @@ export interface SubscriptionInfo {
   subscriptionType: number;
 }
 
+export interface SuggestionUIInfo {
+  title: string;
+  content: string;
+  icon: string;
+  detailTitle: string;
+  detailContent: string;
+  ctaName: string;
+  buttonClickActionType: number;
+  viewData: string;
+  countdown: string;
+  viewDuration: string;
+  suggestType: string;
+}
+
 export interface SurpriseSet {
   surpriseSetId: string;
   surpriseSetItem: LiveSurpriseSetItem[];
@@ -2006,19 +2426,20 @@ export interface SurpriseSetProperties {
   status: number;
 }
 
-export interface TPSize {
-  width: number;
-  height: number;
-}
-
-export interface TPTuxImage {
-  protocol: string;
-  size: TPSize | undefined;
-}
-
 export interface TagItem {
   tagType: TagType;
   tagText: Text | undefined;
+  tagValue: string;
+  displayLocation: number;
+  eventTrackingFields: { [key: string]: string };
+  bizName: string;
+  disableCountFrequencyControl: boolean;
+  disableCrmClick: boolean;
+}
+
+export interface TagItem_EventTrackingFieldsEntry {
+  key: string;
+  value: string;
 }
 
 export interface TaskCompleteData {
@@ -2093,6 +2514,18 @@ export interface UpdateShareRevenueContent {
   version: string;
 }
 
+export interface UpdateShareRevenueStructContent {
+  version: string;
+  shareRevenueValue: string;
+  shareRevenueRatio: string;
+}
+
+export interface UpgradeData {
+  level: string;
+  score: string;
+  eventTime: string;
+}
+
 export interface UseCriticalStrikeCard {
   cardInfo: CriticalStrikeCardInfo | undefined;
   anchorId: string;
@@ -2101,6 +2534,12 @@ export interface UseCriticalStrikeCard {
 
 export interface UseExtraTimeCard {
   cardInfo: ExtraTimeCardInfo | undefined;
+  anchorId: string;
+  displayContent: Text | undefined;
+}
+
+export interface UseMusicCard {
+  cardInfo: MusicCardInfo | undefined;
   anchorId: string;
   displayContent: Text | undefined;
 }
@@ -2122,6 +2561,9 @@ export interface UseSpecialEffectCard {
   anchorId: string;
   displayContent: Text | undefined;
   affectedAnchorPairs: AnchorPair[];
+  effectType: number;
+  communityHeartMeInfo: CommunityHeartMeInfo | undefined;
+  communityHeartMeInfoStr: string;
 }
 
 export interface UseTop2Card {
@@ -2162,6 +2604,12 @@ export interface UserAvatar {
   urlList: string[];
 }
 
+export interface UserBadge {
+  type: number;
+  badgeText: string;
+  badgeDetailText: string;
+}
+
 export interface UserCountdownInfo {
   countdownId: string;
   score: string;
@@ -2182,6 +2630,11 @@ export interface UserFanTicket {
   completionProgressPercent: number;
   topGuestRank: number;
   ticketUiStyleV2: string;
+}
+
+export interface UserInfo {
+  userId: string;
+  avatar: ImageModel | undefined;
 }
 
 export interface UserInteractionInfo {
@@ -2233,6 +2686,7 @@ export interface UserPlayInfo {
   rank: number;
   targetScore: string;
   userTag: PlayUserTag;
+  playRoundId: string;
 }
 
 export interface UserRankComparison {
@@ -2288,6 +2742,11 @@ export interface ViolationInfo {
   violationType: number;
 }
 
+export interface VirtualTicketEnvelopeRushOutNotice {
+  envelopeId: string;
+  actualEndTimeSec: string;
+}
+
 export interface Voucher {
   voucherTypeId: string;
   taskId: string;
@@ -2309,6 +2768,13 @@ export interface WaveAlgorithmData {
   predictScore: string;
   isRewatch: boolean;
   isFollow: boolean;
+}
+
+export interface WebcastAIBeautyResultMessage {
+  common: CommonMessageData | undefined;
+  status: number;
+  errorCode: string;
+  content: AIBeautySugContent | undefined;
 }
 
 export interface WebcastAILiveSummaryMessage {
@@ -2351,6 +2817,12 @@ export interface WebcastAgreeApplyGuideMessage {
   displayPosition: string;
   triggerType: string;
   requestId: string;
+}
+
+export interface WebcastAnchorAiCoachMessage {
+  common: CommonMessageData | undefined;
+  messageType: number;
+  messageData: AiCoachImMessageData | undefined;
 }
 
 export interface WebcastAnchorGetSubQuotaMessage {
@@ -2479,6 +2951,12 @@ export interface WebcastCaptionMessage {
   definite: boolean;
 }
 
+export interface WebcastCohostLayoutUpdateMessage {
+  common: CommonMessageData | undefined;
+  crossRoomLayout: LayoutData | undefined;
+  toastDisplayText: Text | undefined;
+}
+
 export interface WebcastCohostPlatformMessage {
   common: CommonMessageData | undefined;
   sourceType: string;
@@ -2505,6 +2983,17 @@ export interface WebcastCohostSettingsUpdateMessage_AnchorSettingsEntry {
   value: boolean;
 }
 
+export interface WebcastCohostSubtitleBanMessage {
+  common: CommonMessageData | undefined;
+  toastText: Text | undefined;
+  subtitleBanType: number;
+}
+
+export interface WebcastCohostSubtitleSettingMessage {
+  common: CommonMessageData | undefined;
+  settings: SubtitleSettings | undefined;
+}
+
 export interface WebcastCohostTopicMessage {
   common: CommonMessageData | undefined;
   action: number;
@@ -2514,12 +3003,29 @@ export interface WebcastCohostTopicMessage {
   sessionStatus: TopicSessionStatus | undefined;
 }
 
+export interface WebcastCohostTranslatePopUpMessage {
+  common: CommonMessageData | undefined;
+  title: Text | undefined;
+  content: Text | undefined;
+}
+
 export interface WebcastColdStartMessage {
   common: CommonMessageData | undefined;
   msgType: number;
   status: number;
   viewerCount: string;
   totalCount: string;
+}
+
+export interface WebcastCollabGiftMessage {
+  common: CommonMessageData | undefined;
+  baseInfo: CollabGiftBaseInfo | undefined;
+  activeInfo: CollabGiftActiveInfo | undefined;
+  fullInfo: CollabGiftFullInfo | undefined;
+  updateInfo: CollabGiftUpdateInfo | undefined;
+  effect: AssetsModel | undefined;
+  finishInfo: CollabGiftFinishInfo | undefined;
+  type: number;
 }
 
 export interface WebcastCommentTrayMessage {
@@ -2704,6 +3210,30 @@ export interface WebcastEventMessage {
   card: EventCard | undefined;
 }
 
+export interface WebcastFansCommunityMessage {
+  common: CommonMessageData | undefined;
+  user: User | undefined;
+  anchor: User | undefined;
+  icon: ImageModel | undefined;
+  text: Text | undefined;
+  eventType: number;
+  data: FansCommunityEventData | undefined;
+  guidanceType: number;
+  guidanceKey: string;
+  interactionParams: { [key: string]: string };
+  eventTrackParams: { [key: string]: string };
+}
+
+export interface WebcastFansCommunityMessage_InteractionParamsEntry {
+  key: string;
+  value: string;
+}
+
+export interface WebcastFansCommunityMessage_EventTrackParamsEntry {
+  key: string;
+  value: string;
+}
+
 export interface WebcastFeatureGuideMessage {
   common: CommonMessageData | undefined;
   schema: string;
@@ -2745,6 +3275,8 @@ export interface WebcastGameAiScriptMessage {
   buttonText: Text | undefined;
   titleText: Text | undefined;
   bizId: string;
+  isShowCues: boolean;
+  cueMessage: CuesMessage | undefined;
   common: CommonMessageData | undefined;
 }
 
@@ -2771,6 +3303,18 @@ export interface WebcastGameInteractionMessage {
   common: CommonMessageData | undefined;
   messageType: number;
   content: GameInteractionMessageContent | undefined;
+}
+
+export interface WebcastGameInteractionMultiSourceMessage {
+  common: CommonMessageData | undefined;
+  messageType: number;
+  content: GameInteractionMultiSourceMessageContent | undefined;
+}
+
+export interface WebcastGameLiveGoalRewardNotifyMessage {
+  common: CommonMessageData | undefined;
+  messageType: number;
+  content: GameLiveGoalRewardMessageContent | undefined;
 }
 
 export interface WebcastGameOCRPingMessage {
@@ -2828,17 +3372,6 @@ export interface WebcastGiftDynamicRestrictionMessage {
   dynamicRestriction: DynamicRestriction | undefined;
 }
 
-export interface WebcastGiftGalleryMessage {
-  common: CommonMessageData | undefined;
-  giftInfo: GiftGalleryMessageGiftInfo | undefined;
-  user: User | undefined;
-  toUser: User | undefined;
-  msgType: number;
-  allSponsored: boolean;
-  priority: GiftIMPriority | undefined;
-  logId: string;
-}
-
 export interface WebcastGiftGuideMessage {
   common: CommonMessageData | undefined;
   content: Text | undefined;
@@ -2859,6 +3392,10 @@ export interface WebcastGiftGuideMessage {
   subTriggerName: string;
   styleDictate: boolean;
   styleDictateParams: StyleDictateParams | undefined;
+  popUrl: string;
+  styleId: string;
+  guideMessageType: number;
+  recommendInfo: RecommendInfo | undefined;
 }
 
 export interface WebcastGiftNoticeMessage {
@@ -2944,6 +3481,8 @@ export interface WebcastGuideMessage {
   duration: string;
   displayStyle: string;
   scene: string;
+  frequencyRule: GuideMessageFrequencyRule | undefined;
+  streamTime: string;
 }
 
 export interface WebcastGuideTaskMessage {
@@ -3013,6 +3552,11 @@ export interface WebcastInteractionHubGoalMessage {
   newGiftInfo: Gift | undefined;
   hasNewGift: boolean;
   taskProgress: AnchorActivityTaskProgress | undefined;
+  hasButton: boolean;
+  actionButton: ActionButton2 | undefined;
+  liveGoalParam: LiveGoalParam | undefined;
+  userParam: UserParam | undefined;
+  frequencyControlKey: string;
 }
 
 export interface WebcastInteractiveEffectMessage {
@@ -3095,6 +3639,12 @@ export interface WebcastLinkMicAnchorGuideMessage {
   availableFriendNumber: number;
   groupChannelId: string;
   cohostFollowMessage: CohostFollowMessage | undefined;
+}
+
+export interface WebcastLinkMicBattleArtifactMessage {
+  common: CommonMessageData | undefined;
+  battleId: string;
+  artifacts: BattleArtifact[];
 }
 
 export interface WebcastLinkMicBattleVictoryLap {
@@ -3196,6 +3746,7 @@ export interface WebcastLinkmicAudienceNoticeMessage {
   noticeGuide: LinkMicAudienceInviteGuide | undefined;
   groupChatMemberInviteGuide: LinkmicAudienceInviteGroupChatMemberGuide | undefined;
   applyGuide: LinkmicAudienceApplyGuide | undefined;
+  mgMatchType: number;
 }
 
 export interface WebcastLiveCenterStatusBarMessage {
@@ -3298,6 +3849,7 @@ export interface WebcastMultiGuestGuideMessage {
   requestId: string;
   messageType: number;
   linkmicId: string;
+  linkerSessionId: string;
 }
 
 export interface WebcastMultiGuestHangoutLandingMessage {
@@ -3322,6 +3874,7 @@ export interface WebcastMultiGuestRandomMatchMessage {
   matchStatus: number;
   roomId: string;
   authorUser: User | undefined;
+  linkerSessionId: string;
 }
 
 export interface WebcastMultiGuestSuggestMessage {
@@ -3394,6 +3947,12 @@ export interface WebcastOECAuctionActionMessage {
   actionType: number;
   auctionConfig: AuctionConfig | undefined;
   timestamp: string;
+  auctionTrace: { [key: string]: string };
+}
+
+export interface WebcastOECAuctionActionMessage_AuctionTraceEntry {
+  key: string;
+  value: string;
 }
 
 export interface WebcastOECAuctionPaymentFailureMessage {
@@ -3496,6 +4055,7 @@ export interface WebcastOecLiveManagerMessage {
   violationInfo: ViolationInfo | undefined;
   auctionResult: AuctionResult | undefined;
   auctionActivityData: AuctionActivityData | undefined;
+  userBadges: UserBadge[];
 }
 
 export interface WebcastOecLiveRankMessage {
@@ -3754,6 +4314,24 @@ export interface WebcastRealtimeLiveCenterUpdateMessage {
   list: RealtimeLiveCenterDataUpdateMessageItemInfo[];
 }
 
+export interface WebcastRealtimeUnifiedEntranceMessage {
+  common: CommonMessageData | undefined;
+  suggestionId: string;
+  suggestionTemplateId: string;
+  scene: string;
+  context: string;
+  title: string;
+  icon: string;
+  ctaText: string;
+  ctaSchema: string;
+  subtitle: string;
+  tuxIconName: string;
+  messageKey: string;
+  targetModule: string;
+  suggestionUiInfo: SuggestionUIInfo | undefined;
+  excludedDisplayScenes: number[];
+}
+
 export interface WebcastRoomBottomMessage {
   common: CommonMessageData | undefined;
   color: string;
@@ -3836,6 +4414,12 @@ export interface WebcastSMBStateSync {
   smbInfo: SMBInfo | undefined;
 }
 
+export interface WebcastScorePerceptionMessage {
+  common: CommonMessageData | undefined;
+  scoreNow: string;
+  revokedPermissionCount: string;
+}
+
 export interface WebcastScreenChatMessage {
   common: CommonMessageData | undefined;
   user: User | undefined;
@@ -3877,6 +4461,14 @@ export interface WebcastSpecialPushMessage {
   actionContent: string;
   actionType: string;
   pushMessageDisplayTime: string;
+}
+
+export interface WebcastStageReactionMessage {
+  common: CommonMessageData | undefined;
+  senderUserId: string;
+  toUserId: string[];
+  reactionId: string[];
+  showTimeMs: string;
 }
 
 export interface WebcastStarCommentPushMessage {
@@ -3954,6 +4546,7 @@ export interface WebcastUpdateShareRevenueNoticeMessage {
   common: CommonMessageData | undefined;
   roomId: string;
   updateShanreRevenueContent: UpdateShareRevenueContent | undefined;
+  updateShareRevenueStructContent: UpdateShareRevenueStructContent | undefined;
 }
 
 export interface WebcastUpgradeMessage {
@@ -4901,6 +5494,43 @@ export const AnchorInfo: MessageFns<AnchorInfo> = {
   },
 };
 
+function createBaseAnchorLeftCardRefundNotice(): AnchorLeftCardRefundNotice {
+  return { anchorId: "0" };
+}
+
+export const AnchorLeftCardRefundNotice: MessageFns<AnchorLeftCardRefundNotice> = {
+  encode(message: AnchorLeftCardRefundNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.anchorId !== "0") {
+      writer.uint32(8).int64(message.anchorId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnchorLeftCardRefundNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnchorLeftCardRefundNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseAnchorPair(): AnchorPair {
   return { sourceAnchorId: "0", targetAnchorId: "0" };
 }
@@ -4950,7 +5580,15 @@ export const AnchorPair: MessageFns<AnchorPair> = {
 };
 
 function createBaseAnchorReminderWordInfoMsg(): AnchorReminderWordInfoMsg {
-  return { scene: "", title: undefined, content: "", messageKey: "", suggestionId: "", suggestionTemplateId: "" };
+  return {
+    scene: "",
+    title: undefined,
+    content: "",
+    messageKey: "",
+    suggestionId: "",
+    suggestionTemplateId: "",
+    excludedDisplayScenes: [],
+  };
 }
 
 export const AnchorReminderWordInfoMsg: MessageFns<AnchorReminderWordInfoMsg> = {
@@ -4973,6 +5611,11 @@ export const AnchorReminderWordInfoMsg: MessageFns<AnchorReminderWordInfoMsg> = 
     if (message.suggestionTemplateId !== "") {
       writer.uint32(50).string(message.suggestionTemplateId);
     }
+    writer.uint32(58).fork();
+    for (const v of message.excludedDisplayScenes) {
+      writer.int32(v);
+    }
+    writer.join();
     return writer;
   },
 
@@ -5030,6 +5673,24 @@ export const AnchorReminderWordInfoMsg: MessageFns<AnchorReminderWordInfoMsg> = 
 
           message.suggestionTemplateId = reader.string();
           continue;
+        }
+        case 7: {
+          if (tag === 56) {
+            message.excludedDisplayScenes.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 58) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.excludedDisplayScenes.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
         }
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -7472,6 +8133,244 @@ export const BarrageTypeUserGradeParam: MessageFns<BarrageTypeUserGradeParam> = 
   },
 };
 
+function createBaseBattleArtifact(): BattleArtifact {
+  return {
+    artifactType: 0,
+    useVirtualTicket: undefined,
+    virtualTicketEnvelopeSendNotice: undefined,
+    virtualTicketEnvelopeRushOutNotice: undefined,
+  };
+}
+
+export const BattleArtifact: MessageFns<BattleArtifact> = {
+  encode(message: BattleArtifact, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.artifactType !== 0) {
+      writer.uint32(8).int32(message.artifactType);
+    }
+    if (message.useVirtualTicket !== undefined) {
+      BattleArtifactUseVirtualTicketInfo.encode(message.useVirtualTicket, writer.uint32(82).fork()).join();
+    }
+    if (message.virtualTicketEnvelopeSendNotice !== undefined) {
+      VirtualTicketEnvelopeInfo.encode(message.virtualTicketEnvelopeSendNotice, writer.uint32(90).fork()).join();
+    }
+    if (message.virtualTicketEnvelopeRushOutNotice !== undefined) {
+      VirtualTicketEnvelopeRushOutNotice.encode(message.virtualTicketEnvelopeRushOutNotice, writer.uint32(98).fork())
+        .join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleArtifact {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleArtifact();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.artifactType = reader.int32();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.useVirtualTicket = BattleArtifactUseVirtualTicketInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.virtualTicketEnvelopeSendNotice = VirtualTicketEnvelopeInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.virtualTicketEnvelopeRushOutNotice = VirtualTicketEnvelopeRushOutNotice.decode(
+            reader,
+            reader.uint32(),
+          );
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBattleArtifactUseVirtualTicketInfo(): BattleArtifactUseVirtualTicketInfo {
+  return {
+    itemId: "0",
+    ticketIcon: undefined,
+    fromUserId: "0",
+    toUserId: "0",
+    toRoomId: "0",
+    count: "0",
+    score: "0",
+    comboCount: "0",
+    comboScore: "0",
+    comboEnd: false,
+    publicMessage: undefined,
+  };
+}
+
+export const BattleArtifactUseVirtualTicketInfo: MessageFns<BattleArtifactUseVirtualTicketInfo> = {
+  encode(message: BattleArtifactUseVirtualTicketInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.itemId !== "0") {
+      writer.uint32(8).int64(message.itemId);
+    }
+    if (message.ticketIcon !== undefined) {
+      ImageModel.encode(message.ticketIcon, writer.uint32(18).fork()).join();
+    }
+    if (message.fromUserId !== "0") {
+      writer.uint32(24).int64(message.fromUserId);
+    }
+    if (message.toUserId !== "0") {
+      writer.uint32(32).int64(message.toUserId);
+    }
+    if (message.toRoomId !== "0") {
+      writer.uint32(40).int64(message.toRoomId);
+    }
+    if (message.count !== "0") {
+      writer.uint32(48).int64(message.count);
+    }
+    if (message.score !== "0") {
+      writer.uint32(56).int64(message.score);
+    }
+    if (message.comboCount !== "0") {
+      writer.uint32(64).int64(message.comboCount);
+    }
+    if (message.comboScore !== "0") {
+      writer.uint32(72).int64(message.comboScore);
+    }
+    if (message.comboEnd !== false) {
+      writer.uint32(80).bool(message.comboEnd);
+    }
+    if (message.publicMessage !== undefined) {
+      Text.encode(message.publicMessage, writer.uint32(90).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BattleArtifactUseVirtualTicketInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBattleArtifactUseVirtualTicketInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.itemId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.ticketIcon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fromUserId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.toUserId = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.toRoomId = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.count = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.score = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.comboCount = reader.int64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.comboScore = reader.int64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.comboEnd = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.publicMessage = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseBattleInviteeGiftPermission(): BattleInviteeGiftPermission {
   return { userId: "0", giftPermissionType: 0 };
 }
@@ -8131,6 +9030,10 @@ function createBaseBillboard(): Billboard {
     uiType: 0,
     sizeGuidanceConfig: undefined,
     keyMessageConfig: undefined,
+    auctionConfig: undefined,
+    cSchema: "",
+    supportAutoSet: false,
+    triggerSource: 0,
   };
 }
 
@@ -8180,6 +9083,18 @@ export const Billboard: MessageFns<Billboard> = {
     }
     if (message.keyMessageConfig !== undefined) {
       BillboardKeyMessageConfig.encode(message.keyMessageConfig, writer.uint32(122).fork()).join();
+    }
+    if (message.auctionConfig !== undefined) {
+      GroupConfig.encode(message.auctionConfig, writer.uint32(138).fork()).join();
+    }
+    if (message.cSchema !== "") {
+      writer.uint32(146).string(message.cSchema);
+    }
+    if (message.supportAutoSet !== false) {
+      writer.uint32(152).bool(message.supportAutoSet);
+    }
+    if (message.triggerSource !== 0) {
+      writer.uint32(160).int32(message.triggerSource);
     }
     return writer;
   },
@@ -8309,6 +9224,38 @@ export const Billboard: MessageFns<Billboard> = {
           }
 
           message.keyMessageConfig = BillboardKeyMessageConfig.decode(reader, reader.uint32());
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.auctionConfig = GroupConfig.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.cSchema = reader.string();
+          continue;
+        }
+        case 19: {
+          if (tag !== 152) {
+            break;
+          }
+
+          message.supportAutoSet = reader.bool();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.triggerSource = reader.int32();
           continue;
         }
       }
@@ -9002,7 +9949,7 @@ export const BoostCard: MessageFns<BoostCard> = {
 };
 
 function createBaseBubbleDecoration(): BubbleDecoration {
-  return { decorationType: 0, image: undefined, text: undefined };
+  return { decorationType: 0, image: undefined, text: undefined, tpText: undefined };
 }
 
 export const BubbleDecoration: MessageFns<BubbleDecoration> = {
@@ -9015,6 +9962,9 @@ export const BubbleDecoration: MessageFns<BubbleDecoration> = {
     }
     if (message.text !== undefined) {
       Text.encode(message.text, writer.uint32(26).fork()).join();
+    }
+    if (message.tpText !== undefined) {
+      TPText.encode(message.tpText, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -9048,6 +9998,14 @@ export const BubbleDecoration: MessageFns<BubbleDecoration> = {
           }
 
           message.text = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.tpText = TPText.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -9319,6 +10277,8 @@ function createBaseCapsuleBizParamsCohost(): CapsuleBizParamsCohost {
     isFriend: false,
     subType: "",
     rivalVoteCount: "",
+    anchorClassLabel: undefined,
+    rivalClassLabel: undefined,
   };
 }
 
@@ -9356,6 +10316,12 @@ export const CapsuleBizParamsCohost: MessageFns<CapsuleBizParamsCohost> = {
     }
     if (message.rivalVoteCount !== "") {
       writer.uint32(90).string(message.rivalVoteCount);
+    }
+    if (message.anchorClassLabel !== undefined) {
+      GiftGalleryBadgeSection.encode(message.anchorClassLabel, writer.uint32(98).fork()).join();
+    }
+    if (message.rivalClassLabel !== undefined) {
+      GiftGalleryBadgeSection.encode(message.rivalClassLabel, writer.uint32(106).fork()).join();
     }
     return writer;
   },
@@ -9453,6 +10419,22 @@ export const CapsuleBizParamsCohost: MessageFns<CapsuleBizParamsCohost> = {
           }
 
           message.rivalVoteCount = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.anchorClassLabel = GiftGalleryBadgeSection.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.rivalClassLabel = GiftGalleryBadgeSection.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -10454,6 +11436,76 @@ export const CohostInviteInfo_InviteeInfosEntry: MessageFns<CohostInviteInfo_Inv
   },
 };
 
+function createBaseCohostInviteStateNotifyContent(): CohostInviteStateNotifyContent {
+  return { rivalUserId: "0", rivalRoomId: "0", groupChannelId: "0", reason: 0 };
+}
+
+export const CohostInviteStateNotifyContent: MessageFns<CohostInviteStateNotifyContent> = {
+  encode(message: CohostInviteStateNotifyContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rivalUserId !== "0") {
+      writer.uint32(8).int64(message.rivalUserId);
+    }
+    if (message.rivalRoomId !== "0") {
+      writer.uint32(16).int64(message.rivalRoomId);
+    }
+    if (message.groupChannelId !== "0") {
+      writer.uint32(24).int64(message.groupChannelId);
+    }
+    if (message.reason !== 0) {
+      writer.uint32(32).int32(message.reason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CohostInviteStateNotifyContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCohostInviteStateNotifyContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.rivalUserId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.rivalRoomId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.groupChannelId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.reason = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCohostListChangeContent(): CohostListChangeContent {
   return { users: [] };
 }
@@ -10516,6 +11568,616 @@ export const CohostWithdrawInfo: MessageFns<CohostWithdrawInfo> = {
           }
 
           message.anchorList.push(GroupPlayer.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftActiveInfo(): CollabGiftActiveInfo {
+  return {
+    startTime: "0",
+    currentTime: "0",
+    expireTime: "0",
+    currentScore: "0",
+    maxScore: "0",
+    currentStage: "0",
+    maxStage: "0",
+    contributors: [],
+  };
+}
+
+export const CollabGiftActiveInfo: MessageFns<CollabGiftActiveInfo> = {
+  encode(message: CollabGiftActiveInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.startTime !== "0") {
+      writer.uint32(8).int64(message.startTime);
+    }
+    if (message.currentTime !== "0") {
+      writer.uint32(16).int64(message.currentTime);
+    }
+    if (message.expireTime !== "0") {
+      writer.uint32(24).int64(message.expireTime);
+    }
+    if (message.currentScore !== "0") {
+      writer.uint32(32).int64(message.currentScore);
+    }
+    if (message.maxScore !== "0") {
+      writer.uint32(40).int64(message.maxScore);
+    }
+    if (message.currentStage !== "0") {
+      writer.uint32(48).int64(message.currentStage);
+    }
+    if (message.maxStage !== "0") {
+      writer.uint32(56).int64(message.maxStage);
+    }
+    for (const v of message.contributors) {
+      writer.uint32(66).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftActiveInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftActiveInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.startTime = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.currentTime = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.expireTime = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.currentScore = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.maxScore = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.currentStage = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.maxStage = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.contributors.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftBaseInfo(): CollabGiftBaseInfo {
+  return {
+    collabSessionId: "",
+    triggerReceiverId: "",
+    triggerSenderId: "",
+    appId: "0",
+    roomId: "0",
+    triggerGiftId: "0",
+    fuelGiftId: "0",
+    liveId: "0",
+  };
+}
+
+export const CollabGiftBaseInfo: MessageFns<CollabGiftBaseInfo> = {
+  encode(message: CollabGiftBaseInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.collabSessionId !== "") {
+      writer.uint32(10).string(message.collabSessionId);
+    }
+    if (message.triggerReceiverId !== "") {
+      writer.uint32(18).string(message.triggerReceiverId);
+    }
+    if (message.triggerSenderId !== "") {
+      writer.uint32(26).string(message.triggerSenderId);
+    }
+    if (message.appId !== "0") {
+      writer.uint32(32).int64(message.appId);
+    }
+    if (message.roomId !== "0") {
+      writer.uint32(40).int64(message.roomId);
+    }
+    if (message.triggerGiftId !== "0") {
+      writer.uint32(48).int64(message.triggerGiftId);
+    }
+    if (message.fuelGiftId !== "0") {
+      writer.uint32(56).int64(message.fuelGiftId);
+    }
+    if (message.liveId !== "0") {
+      writer.uint32(64).int64(message.liveId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftBaseInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftBaseInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.collabSessionId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.triggerReceiverId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.triggerSenderId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.appId = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.roomId = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.triggerGiftId = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.fuelGiftId = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.liveId = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftContributor(): CollabGiftContributor {
+  return { nickname: "", avatarUrl: "" };
+}
+
+export const CollabGiftContributor: MessageFns<CollabGiftContributor> = {
+  encode(message: CollabGiftContributor, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.nickname !== "") {
+      writer.uint32(10).string(message.nickname);
+    }
+    if (message.avatarUrl !== "") {
+      writer.uint32(18).string(message.avatarUrl);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftContributor {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftContributor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.nickname = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.avatarUrl = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftFinishInfo(): CollabGiftFinishInfo {
+  return { finishReason: 0 };
+}
+
+export const CollabGiftFinishInfo: MessageFns<CollabGiftFinishInfo> = {
+  encode(message: CollabGiftFinishInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.finishReason !== 0) {
+      writer.uint32(8).int32(message.finishReason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftFinishInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftFinishInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.finishReason = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftFullInfo(): CollabGiftFullInfo {
+  return { stages: {}, userInfo: {} };
+}
+
+export const CollabGiftFullInfo: MessageFns<CollabGiftFullInfo> = {
+  encode(message: CollabGiftFullInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.stages).forEach(([key, value]: [string, CollabGiftStage]) => {
+      CollabGiftFullInfo_StagesEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+    });
+    globalThis.Object.entries(message.userInfo).forEach(([key, value]: [string, CollabGiftContributor]) => {
+      CollabGiftFullInfo_UserInfoEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftFullInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftFullInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = CollabGiftFullInfo_StagesEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.stages[entry1.key] = entry1.value;
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = CollabGiftFullInfo_UserInfoEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.userInfo[entry2.key] = entry2.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftFullInfo_StagesEntry(): CollabGiftFullInfo_StagesEntry {
+  return { key: "0", value: undefined };
+}
+
+export const CollabGiftFullInfo_StagesEntry: MessageFns<CollabGiftFullInfo_StagesEntry> = {
+  encode(message: CollabGiftFullInfo_StagesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "0") {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== undefined) {
+      CollabGiftStage.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftFullInfo_StagesEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftFullInfo_StagesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = CollabGiftStage.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftFullInfo_UserInfoEntry(): CollabGiftFullInfo_UserInfoEntry {
+  return { key: "", value: undefined };
+}
+
+export const CollabGiftFullInfo_UserInfoEntry: MessageFns<CollabGiftFullInfo_UserInfoEntry> = {
+  encode(message: CollabGiftFullInfo_UserInfoEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      CollabGiftContributor.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftFullInfo_UserInfoEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftFullInfo_UserInfoEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = CollabGiftContributor.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftStage(): CollabGiftStage {
+  return { score: "0", maxScore: "0", contributors: [], campaignBonusScore: "0" };
+}
+
+export const CollabGiftStage: MessageFns<CollabGiftStage> = {
+  encode(message: CollabGiftStage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.score !== "0") {
+      writer.uint32(8).int64(message.score);
+    }
+    if (message.maxScore !== "0") {
+      writer.uint32(16).int64(message.maxScore);
+    }
+    for (const v of message.contributors) {
+      writer.uint32(26).string(v!);
+    }
+    if (message.campaignBonusScore !== "0") {
+      writer.uint32(32).int64(message.campaignBonusScore);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftStage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftStage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.score = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxScore = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.contributors.push(reader.string());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.campaignBonusScore = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCollabGiftUpdateInfo(): CollabGiftUpdateInfo {
+  return { receiverId: "", senderId: "", previousStage: "0" };
+}
+
+export const CollabGiftUpdateInfo: MessageFns<CollabGiftUpdateInfo> = {
+  encode(message: CollabGiftUpdateInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.receiverId !== "") {
+      writer.uint32(10).string(message.receiverId);
+    }
+    if (message.senderId !== "") {
+      writer.uint32(18).string(message.senderId);
+    }
+    if (message.previousStage !== "0") {
+      writer.uint32(24).int64(message.previousStage);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CollabGiftUpdateInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollabGiftUpdateInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.receiverId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.senderId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.previousStage = reader.int64().toString();
           continue;
         }
       }
@@ -11165,6 +12827,213 @@ export const Contributor: MessageFns<Contributor> = {
   },
 };
 
+function createBaseCueMessageItem(): CueMessageItem {
+  return { itemText: undefined, richParams: [] };
+}
+
+export const CueMessageItem: MessageFns<CueMessageItem> = {
+  encode(message: CueMessageItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.itemText !== undefined) {
+      Text.encode(message.itemText, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.richParams) {
+      CueMessageRichParam.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CueMessageItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCueMessageItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.itemText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.richParams.push(CueMessageRichParam.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCueMessageRichParam(): CueMessageRichParam {
+  return {
+    type: 0,
+    image: undefined,
+    paramText: undefined,
+    intervalTime: "0",
+    intervalDay: "0",
+    user: undefined,
+    badge: undefined,
+  };
+}
+
+export const CueMessageRichParam: MessageFns<CueMessageRichParam> = {
+  encode(message: CueMessageRichParam, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.image !== undefined) {
+      ImageModel.encode(message.image, writer.uint32(18).fork()).join();
+    }
+    if (message.paramText !== undefined) {
+      Text.encode(message.paramText, writer.uint32(26).fork()).join();
+    }
+    if (message.intervalTime !== "0") {
+      writer.uint32(32).int64(message.intervalTime);
+    }
+    if (message.intervalDay !== "0") {
+      writer.uint32(40).int64(message.intervalDay);
+    }
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(50).fork()).join();
+    }
+    if (message.badge !== undefined) {
+      BadgeStruct.encode(message.badge, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CueMessageRichParam {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCueMessageRichParam();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.image = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.paramText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.intervalTime = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.intervalDay = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.badge = BadgeStruct.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCuesMessage(): CuesMessage {
+  return { topText: undefined, items: [] };
+}
+
+export const CuesMessage: MessageFns<CuesMessage> = {
+  encode(message: CuesMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.topText !== undefined) {
+      Text.encode(message.topText, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.items) {
+      CueMessageItem.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CuesMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCuesMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.topText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.items.push(CueMessageItem.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseCustomActivityLiveRoomInfo(): CustomActivityLiveRoomInfo {
   return { roomId: "0", roomTitle: "" };
 }
@@ -11317,13 +13186,16 @@ export const CustomActivityUserInfo: MessageFns<CustomActivityUserInfo> = {
 };
 
 function createBaseCustomPayload(): CustomPayload {
-  return { pollData: undefined };
+  return { pollData: undefined, giveawayData: undefined };
 }
 
 export const CustomPayload: MessageFns<CustomPayload> = {
   encode(message: CustomPayload, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.pollData !== undefined) {
       ShortTouchPollData.encode(message.pollData, writer.uint32(10).fork()).join();
+    }
+    if (message.giveawayData !== undefined) {
+      GiveawayShortTouchData.encode(message.giveawayData, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -11341,6 +13213,14 @@ export const CustomPayload: MessageFns<CustomPayload> = {
           }
 
           message.pollData = ShortTouchPollData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.giveawayData = GiveawayShortTouchData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -11389,6 +13269,105 @@ export const DelayParam: MessageFns<DelayParam> = {
           }
 
           message.maxDelayMs = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDenomination(): Denomination {
+  return {
+    amountFormatted: "",
+    amountDelimited: "",
+    amount: "",
+    currencyCode: "",
+    currencySymbol: "",
+    amountKmbFormatted: "",
+  };
+}
+
+export const Denomination: MessageFns<Denomination> = {
+  encode(message: Denomination, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.amountFormatted !== "") {
+      writer.uint32(10).string(message.amountFormatted);
+    }
+    if (message.amountDelimited !== "") {
+      writer.uint32(18).string(message.amountDelimited);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    if (message.currencyCode !== "") {
+      writer.uint32(34).string(message.currencyCode);
+    }
+    if (message.currencySymbol !== "") {
+      writer.uint32(42).string(message.currencySymbol);
+    }
+    if (message.amountKmbFormatted !== "") {
+      writer.uint32(50).string(message.amountKmbFormatted);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Denomination {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDenomination();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.amountFormatted = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.amountDelimited = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.currencyCode = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.currencySymbol = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.amountKmbFormatted = reader.string();
           continue;
         }
       }
@@ -12401,6 +14380,81 @@ export const Extra: MessageFns<Extra> = {
   },
 };
 
+function createBaseFansCommunityEventData(): FansCommunityEventData {
+  return {
+    upgradeData: undefined,
+    redeemData: undefined,
+    homelandInteractData: undefined,
+    homelandUnlockData: undefined,
+  };
+}
+
+export const FansCommunityEventData: MessageFns<FansCommunityEventData> = {
+  encode(message: FansCommunityEventData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.upgradeData !== undefined) {
+      UpgradeData.encode(message.upgradeData, writer.uint32(10).fork()).join();
+    }
+    if (message.redeemData !== undefined) {
+      RedeemData.encode(message.redeemData, writer.uint32(18).fork()).join();
+    }
+    if (message.homelandInteractData !== undefined) {
+      HomelandInteractData.encode(message.homelandInteractData, writer.uint32(26).fork()).join();
+    }
+    if (message.homelandUnlockData !== undefined) {
+      HomelandUnlockData.encode(message.homelandUnlockData, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FansCommunityEventData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFansCommunityEventData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.upgradeData = UpgradeData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.redeemData = RedeemData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.homelandInteractData = HomelandInteractData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.homelandUnlockData = HomelandUnlockData.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseFeatureMeta(): FeatureMeta {
   return {
     roleType: 0,
@@ -12549,7 +14603,7 @@ export const FlareBoostedUsers: MessageFns<FlareBoostedUsers> = {
 };
 
 function createBaseFlashSaleAtmosphere(): FlashSaleAtmosphere {
-  return { status: 0, startTime: "0", endTime: "0", preheatTime: "0" };
+  return { status: 0, startTime: "0", endTime: "0", preheatTime: "0", enhancementInfo: undefined, pdpViewerCount: 0 };
 }
 
 export const FlashSaleAtmosphere: MessageFns<FlashSaleAtmosphere> = {
@@ -12565,6 +14619,12 @@ export const FlashSaleAtmosphere: MessageFns<FlashSaleAtmosphere> = {
     }
     if (message.preheatTime !== "0") {
       writer.uint32(32).int64(message.preheatTime);
+    }
+    if (message.enhancementInfo !== undefined) {
+      FlashSaleEnhancementInfo.encode(message.enhancementInfo, writer.uint32(42).fork()).join();
+    }
+    if (message.pdpViewerCount !== 0) {
+      writer.uint32(48).int32(message.pdpViewerCount);
     }
     return writer;
   },
@@ -12606,6 +14666,22 @@ export const FlashSaleAtmosphere: MessageFns<FlashSaleAtmosphere> = {
           }
 
           message.preheatTime = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.enhancementInfo = FlashSaleEnhancementInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.pdpViewerCount = reader.int32();
           continue;
         }
       }
@@ -12729,8 +14805,67 @@ export const FlashSaleAtmosphereInfo: MessageFns<FlashSaleAtmosphereInfo> = {
   },
 };
 
+function createBaseFlashSaleEnhancementInfo(): FlashSaleEnhancementInfo {
+  return { stockShowStatus: 0, buyerInfos: [], enhancementTextInfo: undefined };
+}
+
+export const FlashSaleEnhancementInfo: MessageFns<FlashSaleEnhancementInfo> = {
+  encode(message: FlashSaleEnhancementInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.stockShowStatus !== 0) {
+      writer.uint32(8).int32(message.stockShowStatus);
+    }
+    for (const v of message.buyerInfos) {
+      UserInfo.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.enhancementTextInfo !== undefined) {
+      EnhancementTextInfo.encode(message.enhancementTextInfo, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlashSaleEnhancementInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlashSaleEnhancementInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.stockShowStatus = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.buyerInfos.push(UserInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.enhancementTextInfo = EnhancementTextInfo.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseFlashSaleStock(): FlashSaleStock {
-  return { activityStockStatus: 0, activityStock: 0, activityStockText: "" };
+  return { activityStockStatus: 0, activityStock: 0, activityStockText: "", totalStock: 0 };
 }
 
 export const FlashSaleStock: MessageFns<FlashSaleStock> = {
@@ -12743,6 +14878,9 @@ export const FlashSaleStock: MessageFns<FlashSaleStock> = {
     }
     if (message.activityStockText !== "") {
       writer.uint32(26).string(message.activityStockText);
+    }
+    if (message.totalStock !== 0) {
+      writer.uint32(32).int32(message.totalStock);
     }
     return writer;
   },
@@ -12776,6 +14914,14 @@ export const FlashSaleStock: MessageFns<FlashSaleStock> = {
           }
 
           message.activityStockText = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.totalStock = reader.int32();
           continue;
         }
       }
@@ -13319,6 +15465,98 @@ export const GameAiScriptAction: MessageFns<GameAiScriptAction> = {
   },
 };
 
+function createBaseGameEffectModeChangeEvent(): GameEffectModeChangeEvent {
+  return { gameId: "", playId: "", mode: "", version: "0", modeNameKey: "", status: 0 };
+}
+
+export const GameEffectModeChangeEvent: MessageFns<GameEffectModeChangeEvent> = {
+  encode(message: GameEffectModeChangeEvent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.gameId !== "") {
+      writer.uint32(10).string(message.gameId);
+    }
+    if (message.playId !== "") {
+      writer.uint32(18).string(message.playId);
+    }
+    if (message.mode !== "") {
+      writer.uint32(26).string(message.mode);
+    }
+    if (message.version !== "0") {
+      writer.uint32(32).int64(message.version);
+    }
+    if (message.modeNameKey !== "") {
+      writer.uint32(42).string(message.modeNameKey);
+    }
+    if (message.status !== 0) {
+      writer.uint32(48).int32(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameEffectModeChangeEvent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameEffectModeChangeEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.gameId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.playId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.mode = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.version = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.modeNameKey = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGameInteractionEvent(): GameInteractionEvent {
   return {
     interactionId: "",
@@ -13329,6 +15567,7 @@ function createBaseGameInteractionEvent(): GameInteractionEvent {
     instruction: "",
     count: 0,
     triggerEncryptedId: "",
+    sourceType: 0,
   };
 }
 
@@ -13357,6 +15596,9 @@ export const GameInteractionEvent: MessageFns<GameInteractionEvent> = {
     }
     if (message.triggerEncryptedId !== "") {
       writer.uint32(66).string(message.triggerEncryptedId);
+    }
+    if (message.sourceType !== 0) {
+      writer.uint32(72).int32(message.sourceType);
     }
     return writer;
   },
@@ -13432,6 +15674,14 @@ export const GameInteractionEvent: MessageFns<GameInteractionEvent> = {
           message.triggerEncryptedId = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.sourceType = reader.int32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -13443,7 +15693,7 @@ export const GameInteractionEvent: MessageFns<GameInteractionEvent> = {
 };
 
 function createBaseGameInteractionMessageContent(): GameInteractionMessageContent {
-  return { userId: "0", interactionEvent: undefined };
+  return { userId: "0", interactionEvent: undefined, statusEvent: undefined, modeChangeEvent: undefined };
 }
 
 export const GameInteractionMessageContent: MessageFns<GameInteractionMessageContent> = {
@@ -13453,6 +15703,12 @@ export const GameInteractionMessageContent: MessageFns<GameInteractionMessageCon
     }
     if (message.interactionEvent !== undefined) {
       GameInteractionEvent.encode(message.interactionEvent, writer.uint32(18).fork()).join();
+    }
+    if (message.statusEvent !== undefined) {
+      GameStatusEvent.encode(message.statusEvent, writer.uint32(26).fork()).join();
+    }
+    if (message.modeChangeEvent !== undefined) {
+      GameEffectModeChangeEvent.encode(message.modeChangeEvent, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -13478,6 +15734,345 @@ export const GameInteractionMessageContent: MessageFns<GameInteractionMessageCon
           }
 
           message.interactionEvent = GameInteractionEvent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.statusEvent = GameStatusEvent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.modeChangeEvent = GameEffectModeChangeEvent.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGameInteractionMultiSourceEvent(): GameInteractionMultiSourceEvent {
+  return {
+    interactionId: "",
+    playId: "",
+    triggerAvatarUrl: "",
+    triggerNickName: "",
+    timestamp: "",
+    instruction: "",
+    count: 0,
+    triggerEncryptedId: "",
+    sourceType: 0,
+  };
+}
+
+export const GameInteractionMultiSourceEvent: MessageFns<GameInteractionMultiSourceEvent> = {
+  encode(message: GameInteractionMultiSourceEvent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.interactionId !== "") {
+      writer.uint32(10).string(message.interactionId);
+    }
+    if (message.playId !== "") {
+      writer.uint32(18).string(message.playId);
+    }
+    if (message.triggerAvatarUrl !== "") {
+      writer.uint32(26).string(message.triggerAvatarUrl);
+    }
+    if (message.triggerNickName !== "") {
+      writer.uint32(34).string(message.triggerNickName);
+    }
+    if (message.timestamp !== "") {
+      writer.uint32(42).string(message.timestamp);
+    }
+    if (message.instruction !== "") {
+      writer.uint32(50).string(message.instruction);
+    }
+    if (message.count !== 0) {
+      writer.uint32(56).int32(message.count);
+    }
+    if (message.triggerEncryptedId !== "") {
+      writer.uint32(66).string(message.triggerEncryptedId);
+    }
+    if (message.sourceType !== 0) {
+      writer.uint32(72).int32(message.sourceType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameInteractionMultiSourceEvent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameInteractionMultiSourceEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.interactionId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.playId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.triggerAvatarUrl = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.triggerNickName = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.timestamp = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.instruction = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.count = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.triggerEncryptedId = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.sourceType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGameInteractionMultiSourceMessageContent(): GameInteractionMultiSourceMessageContent {
+  return { userId: "0", interactionEvent: undefined };
+}
+
+export const GameInteractionMultiSourceMessageContent: MessageFns<GameInteractionMultiSourceMessageContent> = {
+  encode(message: GameInteractionMultiSourceMessageContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "0") {
+      writer.uint32(8).int64(message.userId);
+    }
+    if (message.interactionEvent !== undefined) {
+      GameInteractionMultiSourceEvent.encode(message.interactionEvent, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameInteractionMultiSourceMessageContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameInteractionMultiSourceMessageContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.interactionEvent = GameInteractionMultiSourceEvent.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGameLiveGoalRewardMessageContent(): GameLiveGoalRewardMessageContent {
+  return { goalId: "", anchorId: "", roomId: "", rewardContent: "", userId: "" };
+}
+
+export const GameLiveGoalRewardMessageContent: MessageFns<GameLiveGoalRewardMessageContent> = {
+  encode(message: GameLiveGoalRewardMessageContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.goalId !== "") {
+      writer.uint32(10).string(message.goalId);
+    }
+    if (message.anchorId !== "") {
+      writer.uint32(18).string(message.anchorId);
+    }
+    if (message.roomId !== "") {
+      writer.uint32(26).string(message.roomId);
+    }
+    if (message.rewardContent !== "") {
+      writer.uint32(34).string(message.rewardContent);
+    }
+    if (message.userId !== "") {
+      writer.uint32(42).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameLiveGoalRewardMessageContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameLiveGoalRewardMessageContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.goalId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.anchorId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.roomId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.rewardContent = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGameStatusEvent(): GameStatusEvent {
+  return { gameId: "", playId: "", status: 0 };
+}
+
+export const GameStatusEvent: MessageFns<GameStatusEvent> = {
+  encode(message: GameStatusEvent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.gameId !== "") {
+      writer.uint32(10).string(message.gameId);
+    }
+    if (message.playId !== "") {
+      writer.uint32(18).string(message.playId);
+    }
+    if (message.status !== 0) {
+      writer.uint32(24).int32(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameStatusEvent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameStatusEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.gameId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.playId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = reader.int32();
           continue;
         }
       }
@@ -14158,6 +16753,153 @@ export const GiveawayInfo: MessageFns<GiveawayInfo> = {
   },
 };
 
+function createBaseGiveawayShortTouchData(): GiveawayShortTouchData {
+  return {
+    eventIdStr: "",
+    endStatus: 0,
+    previewWinners: [],
+    claimSchema: "",
+    claimMethod: 0,
+    vgeo: 0,
+    winnerUserIdList: [],
+    prizeName: "",
+    rewardType: 0,
+    validEndTime: "0",
+  };
+}
+
+export const GiveawayShortTouchData: MessageFns<GiveawayShortTouchData> = {
+  encode(message: GiveawayShortTouchData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.eventIdStr !== "") {
+      writer.uint32(10).string(message.eventIdStr);
+    }
+    if (message.endStatus !== 0) {
+      writer.uint32(16).int32(message.endStatus);
+    }
+    for (const v of message.previewWinners) {
+      User.encode(v!, writer.uint32(26).fork()).join();
+    }
+    if (message.claimSchema !== "") {
+      writer.uint32(34).string(message.claimSchema);
+    }
+    if (message.claimMethod !== 0) {
+      writer.uint32(40).int32(message.claimMethod);
+    }
+    if (message.vgeo !== 0) {
+      writer.uint32(48).int32(message.vgeo);
+    }
+    for (const v of message.winnerUserIdList) {
+      writer.uint32(58).string(v!);
+    }
+    if (message.prizeName !== "") {
+      writer.uint32(66).string(message.prizeName);
+    }
+    if (message.rewardType !== 0) {
+      writer.uint32(72).int32(message.rewardType);
+    }
+    if (message.validEndTime !== "0") {
+      writer.uint32(80).int64(message.validEndTime);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GiveawayShortTouchData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGiveawayShortTouchData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.eventIdStr = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.endStatus = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.previewWinners.push(User.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.claimSchema = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.claimMethod = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.vgeo = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.winnerUserIdList.push(reader.string());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.prizeName = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.rewardType = reader.int32();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.validEndTime = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGoalData(): GoalData {
   return { status: 0, goalProgress: {} };
 }
@@ -14327,6 +17069,824 @@ export const GoodsOrder: MessageFns<GoodsOrder> = {
   },
 };
 
+function createBaseGroupBuyConfig(): GroupBuyConfig {
+  return {
+    instanceId: "",
+    groupBuyPrice: "",
+    formattedGroupBuyPrice: "",
+    currencyregion: "",
+    requiredMemberCount: 0,
+    title: "",
+    totalStock: "0",
+    activityDurationMs: "",
+  };
+}
+
+export const GroupBuyConfig: MessageFns<GroupBuyConfig> = {
+  encode(message: GroupBuyConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.instanceId !== "") {
+      writer.uint32(10).string(message.instanceId);
+    }
+    if (message.groupBuyPrice !== "") {
+      writer.uint32(18).string(message.groupBuyPrice);
+    }
+    if (message.formattedGroupBuyPrice !== "") {
+      writer.uint32(26).string(message.formattedGroupBuyPrice);
+    }
+    if (message.currencyregion !== "") {
+      writer.uint32(34).string(message.currencyregion);
+    }
+    if (message.requiredMemberCount !== 0) {
+      writer.uint32(40).int32(message.requiredMemberCount);
+    }
+    if (message.title !== "") {
+      writer.uint32(50).string(message.title);
+    }
+    if (message.totalStock !== "0") {
+      writer.uint32(56).int64(message.totalStock);
+    }
+    if (message.activityDurationMs !== "") {
+      writer.uint32(66).string(message.activityDurationMs);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupBuyConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupBuyConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.instanceId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.groupBuyPrice = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.formattedGroupBuyPrice = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.currencyregion = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.requiredMemberCount = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.totalStock = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.activityDurationMs = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupBuyData(): GroupBuyData {
+  return { groupBuyInstance: undefined };
+}
+
+export const GroupBuyData: MessageFns<GroupBuyData> = {
+  encode(message: GroupBuyData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.groupBuyInstance !== undefined) {
+      GroupBuyInstance.encode(message.groupBuyInstance, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupBuyData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupBuyData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groupBuyInstance = GroupBuyInstance.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupBuyInstance(): GroupBuyInstance {
+  return {
+    instanceId: "",
+    currentGroupId: "",
+    promotionId: "",
+    groupBuyConfig: undefined,
+    promotionStatus: 0,
+    remainingStock: "0",
+    startTimeMs: "",
+    endTimeMs: "",
+    isPinned: false,
+    currentRoundGroupCount: "0",
+    currentSuccessGroupCount: "0",
+    itemSoldCount: "0",
+    configEligible: false,
+    groupSummaryList: [],
+    currentGroupSummary: undefined,
+    historyGroupSummaryList: [],
+  };
+}
+
+export const GroupBuyInstance: MessageFns<GroupBuyInstance> = {
+  encode(message: GroupBuyInstance, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.instanceId !== "") {
+      writer.uint32(10).string(message.instanceId);
+    }
+    if (message.currentGroupId !== "") {
+      writer.uint32(18).string(message.currentGroupId);
+    }
+    if (message.promotionId !== "") {
+      writer.uint32(26).string(message.promotionId);
+    }
+    if (message.groupBuyConfig !== undefined) {
+      GroupBuyConfig.encode(message.groupBuyConfig, writer.uint32(34).fork()).join();
+    }
+    if (message.promotionStatus !== 0) {
+      writer.uint32(48).int32(message.promotionStatus);
+    }
+    if (message.remainingStock !== "0") {
+      writer.uint32(56).int64(message.remainingStock);
+    }
+    if (message.startTimeMs !== "") {
+      writer.uint32(66).string(message.startTimeMs);
+    }
+    if (message.endTimeMs !== "") {
+      writer.uint32(74).string(message.endTimeMs);
+    }
+    if (message.isPinned !== false) {
+      writer.uint32(80).bool(message.isPinned);
+    }
+    if (message.currentRoundGroupCount !== "0") {
+      writer.uint32(88).int64(message.currentRoundGroupCount);
+    }
+    if (message.currentSuccessGroupCount !== "0") {
+      writer.uint32(96).int64(message.currentSuccessGroupCount);
+    }
+    if (message.itemSoldCount !== "0") {
+      writer.uint32(104).int64(message.itemSoldCount);
+    }
+    if (message.configEligible !== false) {
+      writer.uint32(112).bool(message.configEligible);
+    }
+    for (const v of message.groupSummaryList) {
+      GroupSummary.encode(v!, writer.uint32(122).fork()).join();
+    }
+    if (message.currentGroupSummary !== undefined) {
+      GroupSummary.encode(message.currentGroupSummary, writer.uint32(130).fork()).join();
+    }
+    for (const v of message.historyGroupSummaryList) {
+      GroupSummary.encode(v!, writer.uint32(138).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupBuyInstance {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupBuyInstance();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.instanceId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.currentGroupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.promotionId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.groupBuyConfig = GroupBuyConfig.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.promotionStatus = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.remainingStock = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.startTimeMs = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.endTimeMs = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.isPinned = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.currentRoundGroupCount = reader.int64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.currentSuccessGroupCount = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.itemSoldCount = reader.int64().toString();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.configEligible = reader.bool();
+          continue;
+        }
+        case 15: {
+          if (tag !== 122) {
+            break;
+          }
+
+          message.groupSummaryList.push(GroupSummary.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+
+          message.currentGroupSummary = GroupSummary.decode(reader, reader.uint32());
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+
+          message.historyGroupSummaryList.push(GroupSummary.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupBuyMember(): GroupBuyMember {
+  return { userId: "", userProfileImageUrl: "", isCurrentUser: false, userHandle: "", userNickname: "" };
+}
+
+export const GroupBuyMember: MessageFns<GroupBuyMember> = {
+  encode(message: GroupBuyMember, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.userProfileImageUrl !== "") {
+      writer.uint32(18).string(message.userProfileImageUrl);
+    }
+    if (message.isCurrentUser !== false) {
+      writer.uint32(24).bool(message.isCurrentUser);
+    }
+    if (message.userHandle !== "") {
+      writer.uint32(34).string(message.userHandle);
+    }
+    if (message.userNickname !== "") {
+      writer.uint32(42).string(message.userNickname);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupBuyMember {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupBuyMember();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userProfileImageUrl = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isCurrentUser = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.userHandle = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.userNickname = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupConfig(): GroupConfig {
+  return { groupOneList: [] };
+}
+
+export const GroupConfig: MessageFns<GroupConfig> = {
+  encode(message: GroupConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.groupOneList) {
+      GroupLevelOne.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groupOneList.push(GroupLevelOne.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupLevelOne(): GroupLevelOne {
+  return { title: "", type: 0, groupTwoList: [] };
+}
+
+export const GroupLevelOne: MessageFns<GroupLevelOne> = {
+  encode(message: GroupLevelOne, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.type !== 0) {
+      writer.uint32(16).int32(message.type);
+    }
+    for (const v of message.groupTwoList) {
+      GroupLevelTwo.encode(v!, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupLevelOne {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupLevelOne();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.groupTwoList.push(GroupLevelTwo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupLevelThree(): GroupLevelThree {
+  return { title: "", desc: "", type: 0, chosen: false };
+}
+
+export const GroupLevelThree: MessageFns<GroupLevelThree> = {
+  encode(message: GroupLevelThree, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.desc !== "") {
+      writer.uint32(18).string(message.desc);
+    }
+    if (message.type !== 0) {
+      writer.uint32(24).int32(message.type);
+    }
+    if (message.chosen !== false) {
+      writer.uint32(32).bool(message.chosen);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupLevelThree {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupLevelThree();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.desc = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.chosen = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupLevelTwo(): GroupLevelTwo {
+  return { title: "", desc: "", type: 0, chosen: false, groupThreeList: [] };
+}
+
+export const GroupLevelTwo: MessageFns<GroupLevelTwo> = {
+  encode(message: GroupLevelTwo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.desc !== "") {
+      writer.uint32(18).string(message.desc);
+    }
+    if (message.type !== 0) {
+      writer.uint32(24).int32(message.type);
+    }
+    if (message.chosen !== false) {
+      writer.uint32(32).bool(message.chosen);
+    }
+    for (const v of message.groupThreeList) {
+      GroupLevelThree.encode(v!, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupLevelTwo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupLevelTwo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.desc = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.chosen = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.groupThreeList.push(GroupLevelThree.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGroupSummary(): GroupSummary {
+  return {
+    groupId: "",
+    instanceId: "",
+    status: 0,
+    requiredMemberCount: 0,
+    currentCount: 0,
+    endTimeMs: "",
+    members: [],
+  };
+}
+
+export const GroupSummary: MessageFns<GroupSummary> = {
+  encode(message: GroupSummary, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
+    }
+    if (message.instanceId !== "") {
+      writer.uint32(18).string(message.instanceId);
+    }
+    if (message.status !== 0) {
+      writer.uint32(24).int32(message.status);
+    }
+    if (message.requiredMemberCount !== 0) {
+      writer.uint32(32).int32(message.requiredMemberCount);
+    }
+    if (message.currentCount !== 0) {
+      writer.uint32(40).int32(message.currentCount);
+    }
+    if (message.endTimeMs !== "") {
+      writer.uint32(50).string(message.endTimeMs);
+    }
+    for (const v of message.members) {
+      GroupBuyMember.encode(v!, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GroupSummary {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGroupSummary();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.instanceId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.requiredMemberCount = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.currentCount = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.endTimeMs = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.members.push(GroupBuyMember.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGuestApplyInfo(): GuestApplyInfo {
   return {
     applyStatus: 0,
@@ -14450,8 +18010,56 @@ export const GuestApplyInfo: MessageFns<GuestApplyInfo> = {
   },
 };
 
+function createBaseGuideMessageFrequencyRule(): GuideMessageFrequencyRule {
+  return { roomShowCount: "0", dayShowCount: "0" };
+}
+
+export const GuideMessageFrequencyRule: MessageFns<GuideMessageFrequencyRule> = {
+  encode(message: GuideMessageFrequencyRule, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roomShowCount !== "0") {
+      writer.uint32(8).int64(message.roomShowCount);
+    }
+    if (message.dayShowCount !== "0") {
+      writer.uint32(16).int64(message.dayShowCount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GuideMessageFrequencyRule {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGuideMessageFrequencyRule();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.roomShowCount = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.dayShowCount = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseGuidePageResource(): GuidePageResource {
-  return { texts: [], icons: [], animations: [], badges: [] };
+  return { texts: [], icons: [], animations: [], badges: [], buttonTexts: [], iconStyleId: "0", actionType: "0" };
 }
 
 export const GuidePageResource: MessageFns<GuidePageResource> = {
@@ -14467,6 +18075,15 @@ export const GuidePageResource: MessageFns<GuidePageResource> = {
     }
     for (const v of message.badges) {
       BadgeStruct.encode(v!, writer.uint32(34).fork()).join();
+    }
+    for (const v of message.buttonTexts) {
+      Text.encode(v!, writer.uint32(42).fork()).join();
+    }
+    if (message.iconStyleId !== "0") {
+      writer.uint32(48).int64(message.iconStyleId);
+    }
+    if (message.actionType !== "0") {
+      writer.uint32(56).int64(message.actionType);
     }
     return writer;
   },
@@ -14508,6 +18125,30 @@ export const GuidePageResource: MessageFns<GuidePageResource> = {
           }
 
           message.badges.push(BadgeStruct.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.buttonTexts.push(Text.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.iconStyleId = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.actionType = reader.int64().toString();
           continue;
         }
       }
@@ -14637,6 +18278,102 @@ export const HeatUpdateContent: MessageFns<HeatUpdateContent> = {
           }
 
           message.updateSource = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseHomelandInteractData(): HomelandInteractData {
+  return { fromUser: undefined, interactType: 0 };
+}
+
+export const HomelandInteractData: MessageFns<HomelandInteractData> = {
+  encode(message: HomelandInteractData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.fromUser !== undefined) {
+      User.encode(message.fromUser, writer.uint32(10).fork()).join();
+    }
+    if (message.interactType !== 0) {
+      writer.uint32(16).int32(message.interactType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): HomelandInteractData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHomelandInteractData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fromUser = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.interactType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseHomelandUnlockData(): HomelandUnlockData {
+  return { level: "0", unlockSize: 0 };
+}
+
+export const HomelandUnlockData: MessageFns<HomelandUnlockData> = {
+  encode(message: HomelandUnlockData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.level !== "0") {
+      writer.uint32(8).int64(message.level);
+    }
+    if (message.unlockSize !== 0) {
+      writer.uint32(16).int32(message.unlockSize);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): HomelandUnlockData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHomelandUnlockData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.level = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.unlockSize = reader.int32();
           continue;
         }
       }
@@ -15245,6 +18982,7 @@ function createBaseLinkMicAudienceInviteGuide(): LinkMicAudienceInviteGuide {
     user: undefined,
     displayStrategy: 0,
     linkmicAudienceInviteNoticeReason: "",
+    linkerSessionId: "",
   };
 }
 
@@ -15264,6 +19002,9 @@ export const LinkMicAudienceInviteGuide: MessageFns<LinkMicAudienceInviteGuide> 
     }
     if (message.linkmicAudienceInviteNoticeReason !== "") {
       writer.uint32(42).string(message.linkmicAudienceInviteNoticeReason);
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(50).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -15313,6 +19054,14 @@ export const LinkMicAudienceInviteGuide: MessageFns<LinkMicAudienceInviteGuide> 
           }
 
           message.linkmicAudienceInviteNoticeReason = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }
@@ -15952,6 +19701,7 @@ function createBaseLinkmicAudienceApplyGuide(): LinkmicAudienceApplyGuide {
     triggerType: "",
     requestId: "",
     linkmicId: "",
+    linkerSessionId: "",
   };
 }
 
@@ -15983,6 +19733,9 @@ export const LinkmicAudienceApplyGuide: MessageFns<LinkmicAudienceApplyGuide> = 
     }
     if (message.linkmicId !== "") {
       writer.uint32(74).string(message.linkmicId);
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(82).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -16064,6 +19817,14 @@ export const LinkmicAudienceApplyGuide: MessageFns<LinkmicAudienceApplyGuide> = 
           }
 
           message.linkmicId = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }
@@ -17175,6 +20936,146 @@ export const MultiLangContent: MessageFns<MultiLangContent> = {
   },
 };
 
+function createBaseMusicAwardNotice(): MusicAwardNotice {
+  return { displayContent: undefined, toAnchorId: "0", isRewarded: false };
+}
+
+export const MusicAwardNotice: MessageFns<MusicAwardNotice> = {
+  encode(message: MusicAwardNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.displayContent !== undefined) {
+      Text.encode(message.displayContent, writer.uint32(10).fork()).join();
+    }
+    if (message.toAnchorId !== "0") {
+      writer.uint32(16).int64(message.toAnchorId);
+    }
+    if (message.isRewarded !== false) {
+      writer.uint32(24).bool(message.isRewarded);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MusicAwardNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMusicAwardNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.displayContent = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toAnchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isRewarded = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMusicEffectNotice(): MusicEffectNotice {
+  return { effectTier: 0, toAnchorId: "0", fromUserId: "0", giftId: "0", giftPrice: "0" };
+}
+
+export const MusicEffectNotice: MessageFns<MusicEffectNotice> = {
+  encode(message: MusicEffectNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.effectTier !== 0) {
+      writer.uint32(8).int32(message.effectTier);
+    }
+    if (message.toAnchorId !== "0") {
+      writer.uint32(16).int64(message.toAnchorId);
+    }
+    if (message.fromUserId !== "0") {
+      writer.uint32(24).int64(message.fromUserId);
+    }
+    if (message.giftId !== "0") {
+      writer.uint32(32).int64(message.giftId);
+    }
+    if (message.giftPrice !== "0") {
+      writer.uint32(40).int64(message.giftPrice);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MusicEffectNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMusicEffectNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.effectTier = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.toAnchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.fromUserId = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.giftId = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.giftPrice = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseNewAnchorEffectParams(): NewAnchorEffectParams {
   return { effectPanel: "", resourceId: "", categoryId: "", tabKey: "" };
 }
@@ -17621,13 +21522,19 @@ export const OecLiveCreatorAction: MessageFns<OecLiveCreatorAction> = {
 };
 
 function createBaseOecLiveCreatorMessageData(): OecLiveCreatorMessageData {
-  return { auctionConfig: undefined };
+  return { auctionConfig: undefined, slashData: undefined, groupBuyData: undefined };
 }
 
 export const OecLiveCreatorMessageData: MessageFns<OecLiveCreatorMessageData> = {
   encode(message: OecLiveCreatorMessageData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.auctionConfig !== undefined) {
       AuctionConfigV2.encode(message.auctionConfig, writer.uint32(18).fork()).join();
+    }
+    if (message.slashData !== undefined) {
+      SlashData.encode(message.slashData, writer.uint32(26).fork()).join();
+    }
+    if (message.groupBuyData !== undefined) {
+      GroupBuyData.encode(message.groupBuyData, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -17647,6 +21554,22 @@ export const OecLiveCreatorMessageData: MessageFns<OecLiveCreatorMessageData> = 
           message.auctionConfig = AuctionConfigV2.decode(reader, reader.uint32());
           continue;
         }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.slashData = SlashData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.groupBuyData = GroupBuyData.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -17658,7 +21581,14 @@ export const OecLiveCreatorMessageData: MessageFns<OecLiveCreatorMessageData> = 
 };
 
 function createBaseOecLiveCreatorMessageMeta(): OecLiveCreatorMessageMeta {
-  return { sourceOperateNs: "0", serverSendNs: "0", reason: "" };
+  return {
+    sourceOperateNs: "0",
+    serverSendNs: "0",
+    reason: "",
+    traceInfoMap: {},
+    sourceOperateNsStr: "",
+    serverSendNsStr: "",
+  };
 }
 
 export const OecLiveCreatorMessageMeta: MessageFns<OecLiveCreatorMessageMeta> = {
@@ -17671,6 +21601,15 @@ export const OecLiveCreatorMessageMeta: MessageFns<OecLiveCreatorMessageMeta> = 
     }
     if (message.reason !== "") {
       writer.uint32(26).string(message.reason);
+    }
+    globalThis.Object.entries(message.traceInfoMap).forEach(([key, value]: [string, string]) => {
+      OecLiveCreatorMessageMeta_TraceInfoMapEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+    });
+    if (message.sourceOperateNsStr !== "") {
+      writer.uint32(42).string(message.sourceOperateNsStr);
+    }
+    if (message.serverSendNsStr !== "") {
+      writer.uint32(50).string(message.serverSendNsStr);
     }
     return writer;
   },
@@ -17704,6 +21643,84 @@ export const OecLiveCreatorMessageMeta: MessageFns<OecLiveCreatorMessageMeta> = 
           }
 
           message.reason = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = OecLiveCreatorMessageMeta_TraceInfoMapEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.traceInfoMap[entry4.key] = entry4.value;
+          }
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.sourceOperateNsStr = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.serverSendNsStr = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseOecLiveCreatorMessageMeta_TraceInfoMapEntry(): OecLiveCreatorMessageMeta_TraceInfoMapEntry {
+  return { key: "", value: "" };
+}
+
+export const OecLiveCreatorMessageMeta_TraceInfoMapEntry: MessageFns<OecLiveCreatorMessageMeta_TraceInfoMapEntry> = {
+  encode(
+    message: OecLiveCreatorMessageMeta_TraceInfoMapEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): OecLiveCreatorMessageMeta_TraceInfoMapEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOecLiveCreatorMessageMeta_TraceInfoMapEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -18713,6 +22730,7 @@ function createBasePollBasicInfo(): PollBasicInfo {
     timeRemain: "0",
     pollIndex: "0",
     templateId: "0",
+    businessScene: 0,
   };
 }
 
@@ -18753,6 +22771,9 @@ export const PollBasicInfo: MessageFns<PollBasicInfo> = {
     }
     if (message.templateId !== "0") {
       writer.uint32(96).int64(message.templateId);
+    }
+    if (message.businessScene !== 0) {
+      writer.uint32(104).int32(message.businessScene);
     }
     return writer;
   },
@@ -18858,6 +22879,14 @@ export const PollBasicInfo: MessageFns<PollBasicInfo> = {
           }
 
           message.templateId = reader.int64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.businessScene = reader.int32();
           continue;
         }
       }
@@ -20062,6 +24091,7 @@ function createBasePunishEventInfo(): PunishEventInfo {
     endTime: "0",
     violationUidStr: "",
     showReason: "",
+    endTimeV2: "0",
   };
 }
 
@@ -20096,6 +24126,9 @@ export const PunishEventInfo: MessageFns<PunishEventInfo> = {
     }
     if (message.showReason !== "") {
       writer.uint32(82).string(message.showReason);
+    }
+    if (message.endTimeV2 !== "0") {
+      writer.uint32(88).int64(message.endTimeV2);
     }
     return writer;
   },
@@ -20185,6 +24218,14 @@ export const PunishEventInfo: MessageFns<PunishEventInfo> = {
           }
 
           message.showReason = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.endTimeV2 = reader.int64().toString();
           continue;
         }
       }
@@ -21087,6 +25128,176 @@ export const RecommendComment: MessageFns<RecommendComment> = {
           }
 
           message.tipsType = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRecommendInfo(): RecommendInfo {
+  return { clickRate: 0, clickConversionRate: 0, userCloseRate: 0 };
+}
+
+export const RecommendInfo: MessageFns<RecommendInfo> = {
+  encode(message: RecommendInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.clickRate !== 0) {
+      writer.uint32(9).double(message.clickRate);
+    }
+    if (message.clickConversionRate !== 0) {
+      writer.uint32(17).double(message.clickConversionRate);
+    }
+    if (message.userCloseRate !== 0) {
+      writer.uint32(25).double(message.userCloseRate);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RecommendInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecommendInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 9) {
+            break;
+          }
+
+          message.clickRate = reader.double();
+          continue;
+        }
+        case 2: {
+          if (tag !== 17) {
+            break;
+          }
+
+          message.clickConversionRate = reader.double();
+          continue;
+        }
+        case 3: {
+          if (tag !== 25) {
+            break;
+          }
+
+          message.userCloseRate = reader.double();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRedeemData(): RedeemData {
+  return {
+    decorationId: "0",
+    triggerAnimation: false,
+    triggerSystemMessage: false,
+    systemMessageDefaultPattern: "",
+    systemMessageTextKey: "",
+    systemMessageDecorationKey: "",
+    systemMessageUserName: "",
+  };
+}
+
+export const RedeemData: MessageFns<RedeemData> = {
+  encode(message: RedeemData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.decorationId !== "0") {
+      writer.uint32(8).int64(message.decorationId);
+    }
+    if (message.triggerAnimation !== false) {
+      writer.uint32(16).bool(message.triggerAnimation);
+    }
+    if (message.triggerSystemMessage !== false) {
+      writer.uint32(24).bool(message.triggerSystemMessage);
+    }
+    if (message.systemMessageDefaultPattern !== "") {
+      writer.uint32(34).string(message.systemMessageDefaultPattern);
+    }
+    if (message.systemMessageTextKey !== "") {
+      writer.uint32(42).string(message.systemMessageTextKey);
+    }
+    if (message.systemMessageDecorationKey !== "") {
+      writer.uint32(50).string(message.systemMessageDecorationKey);
+    }
+    if (message.systemMessageUserName !== "") {
+      writer.uint32(58).string(message.systemMessageUserName);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RedeemData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRedeemData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.decorationId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.triggerAnimation = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.triggerSystemMessage = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.systemMessageDefaultPattern = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.systemMessageTextKey = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.systemMessageDecorationKey = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.systemMessageUserName = reader.string();
           continue;
         }
       }
@@ -22133,8 +26344,430 @@ export const Sku: MessageFns<Sku> = {
   },
 };
 
+function createBaseSlashConfig(): SlashConfig {
+  return { slashConfigId: "" };
+}
+
+export const SlashConfig: MessageFns<SlashConfig> = {
+  encode(message: SlashConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.slashConfigId !== "") {
+      writer.uint32(10).string(message.slashConfigId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SlashConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSlashConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.slashConfigId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSlashData(): SlashData {
+  return { slashConfig: undefined, slashSession: undefined, extra: "" };
+}
+
+export const SlashData: MessageFns<SlashData> = {
+  encode(message: SlashData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.slashConfig !== undefined) {
+      SlashConfig.encode(message.slashConfig, writer.uint32(10).fork()).join();
+    }
+    if (message.slashSession !== undefined) {
+      SlashSession.encode(message.slashSession, writer.uint32(18).fork()).join();
+    }
+    if (message.extra !== "") {
+      writer.uint32(82).string(message.extra);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SlashData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSlashData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.slashConfig = SlashConfig.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.slashSession = SlashSession.decode(reader, reader.uint32());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.extra = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSlashParticipant(): SlashParticipant {
+  return {
+    userId: "",
+    oecUserId: "",
+    beforePrice: undefined,
+    afterPrice: undefined,
+    deductionAmount: undefined,
+    avatarUrl: "",
+    userNickName: "",
+    userHandle: "",
+    versionTimestamp: "",
+  };
+}
+
+export const SlashParticipant: MessageFns<SlashParticipant> = {
+  encode(message: SlashParticipant, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.oecUserId !== "") {
+      writer.uint32(18).string(message.oecUserId);
+    }
+    if (message.beforePrice !== undefined) {
+      Denomination.encode(message.beforePrice, writer.uint32(26).fork()).join();
+    }
+    if (message.afterPrice !== undefined) {
+      Denomination.encode(message.afterPrice, writer.uint32(34).fork()).join();
+    }
+    if (message.deductionAmount !== undefined) {
+      Denomination.encode(message.deductionAmount, writer.uint32(42).fork()).join();
+    }
+    if (message.avatarUrl !== "") {
+      writer.uint32(50).string(message.avatarUrl);
+    }
+    if (message.userNickName !== "") {
+      writer.uint32(58).string(message.userNickName);
+    }
+    if (message.userHandle !== "") {
+      writer.uint32(66).string(message.userHandle);
+    }
+    if (message.versionTimestamp !== "") {
+      writer.uint32(802).string(message.versionTimestamp);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SlashParticipant {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSlashParticipant();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.oecUserId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.beforePrice = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.afterPrice = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.deductionAmount = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.avatarUrl = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.userNickName = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.userHandle = reader.string();
+          continue;
+        }
+        case 100: {
+          if (tag !== 802) {
+            break;
+          }
+
+          message.versionTimestamp = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSlashSession(): SlashSession {
+  return {
+    slashId: "",
+    slashType: 0,
+    slashStatus: 0,
+    startPrice: undefined,
+    targetPrice: undefined,
+    endTimeMs: "",
+    currentPrice: undefined,
+    slashedAmount: undefined,
+    nextDeductionAmount: undefined,
+    participantList: [],
+    participantCount: 0,
+    unlockFloorPrice: false,
+    version: "",
+  };
+}
+
+export const SlashSession: MessageFns<SlashSession> = {
+  encode(message: SlashSession, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.slashId !== "") {
+      writer.uint32(10).string(message.slashId);
+    }
+    if (message.slashType !== 0) {
+      writer.uint32(16).int32(message.slashType);
+    }
+    if (message.slashStatus !== 0) {
+      writer.uint32(24).int32(message.slashStatus);
+    }
+    if (message.startPrice !== undefined) {
+      Denomination.encode(message.startPrice, writer.uint32(34).fork()).join();
+    }
+    if (message.targetPrice !== undefined) {
+      Denomination.encode(message.targetPrice, writer.uint32(42).fork()).join();
+    }
+    if (message.endTimeMs !== "") {
+      writer.uint32(50).string(message.endTimeMs);
+    }
+    if (message.currentPrice !== undefined) {
+      Denomination.encode(message.currentPrice, writer.uint32(250).fork()).join();
+    }
+    if (message.slashedAmount !== undefined) {
+      Denomination.encode(message.slashedAmount, writer.uint32(258).fork()).join();
+    }
+    if (message.nextDeductionAmount !== undefined) {
+      Denomination.encode(message.nextDeductionAmount, writer.uint32(266).fork()).join();
+    }
+    for (const v of message.participantList) {
+      SlashParticipant.encode(v!, writer.uint32(274).fork()).join();
+    }
+    if (message.participantCount !== 0) {
+      writer.uint32(280).int32(message.participantCount);
+    }
+    if (message.unlockFloorPrice !== false) {
+      writer.uint32(728).bool(message.unlockFloorPrice);
+    }
+    if (message.version !== "") {
+      writer.uint32(810).string(message.version);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SlashSession {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSlashSession();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.slashId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.slashType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.slashStatus = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.startPrice = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.targetPrice = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.endTimeMs = reader.string();
+          continue;
+        }
+        case 31: {
+          if (tag !== 250) {
+            break;
+          }
+
+          message.currentPrice = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 32: {
+          if (tag !== 258) {
+            break;
+          }
+
+          message.slashedAmount = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 33: {
+          if (tag !== 266) {
+            break;
+          }
+
+          message.nextDeductionAmount = Denomination.decode(reader, reader.uint32());
+          continue;
+        }
+        case 34: {
+          if (tag !== 274) {
+            break;
+          }
+
+          message.participantList.push(SlashParticipant.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 35: {
+          if (tag !== 280) {
+            break;
+          }
+
+          message.participantCount = reader.int32();
+          continue;
+        }
+        case 91: {
+          if (tag !== 728) {
+            break;
+          }
+
+          message.unlockFloorPrice = reader.bool();
+          continue;
+        }
+        case 101: {
+          if (tag !== 810) {
+            break;
+          }
+
+          message.version = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseSpecialEffectNotice(): SpecialEffectNotice {
-  return { score: "0", fromUserId: "0", toAnchorId: "0", affectedAnchorPairs: [] };
+  return {
+    score: "0",
+    fromUserId: "0",
+    toAnchorId: "0",
+    affectedAnchorPairs: [],
+    effectType: 0,
+    communityHeartMeInfo: undefined,
+    communityHeartMeInfoStr: "",
+  };
 }
 
 export const SpecialEffectNotice: MessageFns<SpecialEffectNotice> = {
@@ -22150,6 +26783,15 @@ export const SpecialEffectNotice: MessageFns<SpecialEffectNotice> = {
     }
     for (const v of message.affectedAnchorPairs) {
       AnchorPair.encode(v!, writer.uint32(34).fork()).join();
+    }
+    if (message.effectType !== 0) {
+      writer.uint32(40).int32(message.effectType);
+    }
+    if (message.communityHeartMeInfo !== undefined) {
+      CommunityHeartMeInfo.encode(message.communityHeartMeInfo, writer.uint32(50).fork()).join();
+    }
+    if (message.communityHeartMeInfoStr !== "") {
+      writer.uint32(58).string(message.communityHeartMeInfoStr);
     }
     return writer;
   },
@@ -22191,6 +26833,30 @@ export const SpecialEffectNotice: MessageFns<SpecialEffectNotice> = {
           }
 
           message.affectedAnchorPairs.push(AnchorPair.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.effectType = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.communityHeartMeInfo = CommunityHeartMeInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.communityHeartMeInfoStr = reader.string();
           continue;
         }
       }
@@ -22828,6 +27494,10 @@ function createBaseStyleDictateParams(): StyleDictateParams {
     maxLine: "0",
     maxWidth: "0",
     businessType: "",
+    bubbleContentId: "",
+    pointingTargetType: "",
+    showTrailingArrow: false,
+    entryData: undefined,
   };
 }
 
@@ -22865,6 +27535,18 @@ export const StyleDictateParams: MessageFns<StyleDictateParams> = {
     }
     if (message.businessType !== "") {
       writer.uint32(90).string(message.businessType);
+    }
+    if (message.bubbleContentId !== "") {
+      writer.uint32(98).string(message.bubbleContentId);
+    }
+    if (message.pointingTargetType !== "") {
+      writer.uint32(106).string(message.pointingTargetType);
+    }
+    if (message.showTrailingArrow !== false) {
+      writer.uint32(112).bool(message.showTrailingArrow);
+    }
+    if (message.entryData !== undefined) {
+      EntryData.encode(message.entryData, writer.uint32(122).fork()).join();
     }
     return writer;
   },
@@ -22962,6 +27644,38 @@ export const StyleDictateParams: MessageFns<StyleDictateParams> = {
           }
 
           message.businessType = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.bubbleContentId = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.pointingTargetType = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.showTrailingArrow = reader.bool();
+          continue;
+        }
+        case 15: {
+          if (tag !== 122) {
+            break;
+          }
+
+          message.entryData = EntryData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -23269,6 +27983,165 @@ export const SubscriptionInfo: MessageFns<SubscriptionInfo> = {
   },
 };
 
+function createBaseSuggestionUIInfo(): SuggestionUIInfo {
+  return {
+    title: "",
+    content: "",
+    icon: "",
+    detailTitle: "",
+    detailContent: "",
+    ctaName: "",
+    buttonClickActionType: 0,
+    viewData: "",
+    countdown: "0",
+    viewDuration: "0",
+    suggestType: "",
+  };
+}
+
+export const SuggestionUIInfo: MessageFns<SuggestionUIInfo> = {
+  encode(message: SuggestionUIInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.icon !== "") {
+      writer.uint32(26).string(message.icon);
+    }
+    if (message.detailTitle !== "") {
+      writer.uint32(34).string(message.detailTitle);
+    }
+    if (message.detailContent !== "") {
+      writer.uint32(42).string(message.detailContent);
+    }
+    if (message.ctaName !== "") {
+      writer.uint32(50).string(message.ctaName);
+    }
+    if (message.buttonClickActionType !== 0) {
+      writer.uint32(56).int32(message.buttonClickActionType);
+    }
+    if (message.viewData !== "") {
+      writer.uint32(66).string(message.viewData);
+    }
+    if (message.countdown !== "0") {
+      writer.uint32(72).int64(message.countdown);
+    }
+    if (message.viewDuration !== "0") {
+      writer.uint32(80).int64(message.viewDuration);
+    }
+    if (message.suggestType !== "") {
+      writer.uint32(90).string(message.suggestType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SuggestionUIInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSuggestionUIInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.icon = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.detailTitle = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.detailContent = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.ctaName = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.buttonClickActionType = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.viewData = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.countdown = reader.int64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.viewDuration = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.suggestType = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseSurpriseSet(): SurpriseSet {
   return {
     surpriseSetId: "",
@@ -23502,104 +28375,17 @@ export const SurpriseSetProperties: MessageFns<SurpriseSetProperties> = {
   },
 };
 
-function createBaseTPSize(): TPSize {
-  return { width: 0, height: 0 };
-}
-
-export const TPSize: MessageFns<TPSize> = {
-  encode(message: TPSize, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.width !== 0) {
-      writer.uint32(8).int32(message.width);
-    }
-    if (message.height !== 0) {
-      writer.uint32(16).int32(message.height);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): TPSize {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTPSize();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.width = reader.int32();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.height = reader.int32();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseTPTuxImage(): TPTuxImage {
-  return { protocol: "", size: undefined };
-}
-
-export const TPTuxImage: MessageFns<TPTuxImage> = {
-  encode(message: TPTuxImage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.protocol !== "") {
-      writer.uint32(10).string(message.protocol);
-    }
-    if (message.size !== undefined) {
-      TPSize.encode(message.size, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): TPTuxImage {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTPTuxImage();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.protocol = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.size = TPSize.decode(reader, reader.uint32());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseTagItem(): TagItem {
-  return { tagType: 0, tagText: undefined };
+  return {
+    tagType: 0,
+    tagText: undefined,
+    tagValue: "0",
+    displayLocation: 0,
+    eventTrackingFields: {},
+    bizName: "",
+    disableCountFrequencyControl: false,
+    disableCrmClick: false,
+  };
 }
 
 export const TagItem: MessageFns<TagItem> = {
@@ -23609,6 +28395,24 @@ export const TagItem: MessageFns<TagItem> = {
     }
     if (message.tagText !== undefined) {
       Text.encode(message.tagText, writer.uint32(18).fork()).join();
+    }
+    if (message.tagValue !== "0") {
+      writer.uint32(24).int64(message.tagValue);
+    }
+    if (message.displayLocation !== 0) {
+      writer.uint32(32).int32(message.displayLocation);
+    }
+    globalThis.Object.entries(message.eventTrackingFields).forEach(([key, value]: [string, string]) => {
+      TagItem_EventTrackingFieldsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+    });
+    if (message.bizName !== "") {
+      writer.uint32(50).string(message.bizName);
+    }
+    if (message.disableCountFrequencyControl !== false) {
+      writer.uint32(80).bool(message.disableCountFrequencyControl);
+    }
+    if (message.disableCrmClick !== false) {
+      writer.uint32(88).bool(message.disableCrmClick);
     }
     return writer;
   },
@@ -23634,6 +28438,105 @@ export const TagItem: MessageFns<TagItem> = {
           }
 
           message.tagText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.tagValue = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.displayLocation = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = TagItem_EventTrackingFieldsEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.eventTrackingFields[entry5.key] = entry5.value;
+          }
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.bizName = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.disableCountFrequencyControl = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.disableCrmClick = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTagItem_EventTrackingFieldsEntry(): TagItem_EventTrackingFieldsEntry {
+  return { key: "", value: "" };
+}
+
+export const TagItem_EventTrackingFieldsEntry: MessageFns<TagItem_EventTrackingFieldsEntry> = {
+  encode(message: TagItem_EventTrackingFieldsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TagItem_EventTrackingFieldsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTagItem_EventTrackingFieldsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -24372,6 +29275,124 @@ export const UpdateShareRevenueContent: MessageFns<UpdateShareRevenueContent> = 
   },
 };
 
+function createBaseUpdateShareRevenueStructContent(): UpdateShareRevenueStructContent {
+  return { version: "0", shareRevenueValue: "0", shareRevenueRatio: "0" };
+}
+
+export const UpdateShareRevenueStructContent: MessageFns<UpdateShareRevenueStructContent> = {
+  encode(message: UpdateShareRevenueStructContent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.version !== "0") {
+      writer.uint32(8).int64(message.version);
+    }
+    if (message.shareRevenueValue !== "0") {
+      writer.uint32(16).int64(message.shareRevenueValue);
+    }
+    if (message.shareRevenueRatio !== "0") {
+      writer.uint32(24).int64(message.shareRevenueRatio);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateShareRevenueStructContent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateShareRevenueStructContent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.version = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.shareRevenueValue = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.shareRevenueRatio = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpgradeData(): UpgradeData {
+  return { level: "0", score: "0", eventTime: "0" };
+}
+
+export const UpgradeData: MessageFns<UpgradeData> = {
+  encode(message: UpgradeData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.level !== "0") {
+      writer.uint32(8).int64(message.level);
+    }
+    if (message.score !== "0") {
+      writer.uint32(16).int64(message.score);
+    }
+    if (message.eventTime !== "0") {
+      writer.uint32(24).int64(message.eventTime);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpgradeData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpgradeData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.level = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.score = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.eventTime = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUseCriticalStrikeCard(): UseCriticalStrikeCard {
   return { cardInfo: undefined, anchorId: "0", displayContent: undefined };
 }
@@ -24462,6 +29483,65 @@ export const UseExtraTimeCard: MessageFns<UseExtraTimeCard> = {
           }
 
           message.cardInfo = ExtraTimeCardInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.anchorId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.displayContent = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUseMusicCard(): UseMusicCard {
+  return { cardInfo: undefined, anchorId: "0", displayContent: undefined };
+}
+
+export const UseMusicCard: MessageFns<UseMusicCard> = {
+  encode(message: UseMusicCard, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.cardInfo !== undefined) {
+      MusicCardInfo.encode(message.cardInfo, writer.uint32(10).fork()).join();
+    }
+    if (message.anchorId !== "0") {
+      writer.uint32(16).int64(message.anchorId);
+    }
+    if (message.displayContent !== undefined) {
+      Text.encode(message.displayContent, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UseMusicCard {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUseMusicCard();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.cardInfo = MusicCardInfo.decode(reader, reader.uint32());
           continue;
         }
         case 2: {
@@ -24609,7 +29689,15 @@ export const UseSmokeCard: MessageFns<UseSmokeCard> = {
 };
 
 function createBaseUseSpecialEffectCard(): UseSpecialEffectCard {
-  return { cardInfo: undefined, anchorId: "0", displayContent: undefined, affectedAnchorPairs: [] };
+  return {
+    cardInfo: undefined,
+    anchorId: "0",
+    displayContent: undefined,
+    affectedAnchorPairs: [],
+    effectType: 0,
+    communityHeartMeInfo: undefined,
+    communityHeartMeInfoStr: "",
+  };
 }
 
 export const UseSpecialEffectCard: MessageFns<UseSpecialEffectCard> = {
@@ -24625,6 +29713,15 @@ export const UseSpecialEffectCard: MessageFns<UseSpecialEffectCard> = {
     }
     for (const v of message.affectedAnchorPairs) {
       AnchorPair.encode(v!, writer.uint32(34).fork()).join();
+    }
+    if (message.effectType !== 0) {
+      writer.uint32(40).int32(message.effectType);
+    }
+    if (message.communityHeartMeInfo !== undefined) {
+      CommunityHeartMeInfo.encode(message.communityHeartMeInfo, writer.uint32(50).fork()).join();
+    }
+    if (message.communityHeartMeInfoStr !== "") {
+      writer.uint32(58).string(message.communityHeartMeInfoStr);
     }
     return writer;
   },
@@ -24666,6 +29763,30 @@ export const UseSpecialEffectCard: MessageFns<UseSpecialEffectCard> = {
           }
 
           message.affectedAnchorPairs.push(AnchorPair.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.effectType = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.communityHeartMeInfo = CommunityHeartMeInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.communityHeartMeInfoStr = reader.string();
           continue;
         }
       }
@@ -25054,6 +30175,65 @@ export const UserAvatar: MessageFns<UserAvatar> = {
   },
 };
 
+function createBaseUserBadge(): UserBadge {
+  return { type: 0, badgeText: "", badgeDetailText: "" };
+}
+
+export const UserBadge: MessageFns<UserBadge> = {
+  encode(message: UserBadge, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.type !== 0) {
+      writer.uint32(8).int32(message.type);
+    }
+    if (message.badgeText !== "") {
+      writer.uint32(18).string(message.badgeText);
+    }
+    if (message.badgeDetailText !== "") {
+      writer.uint32(26).string(message.badgeDetailText);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadge {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadge();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.type = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.badgeText = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.badgeDetailText = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUserCountdownInfo(): UserCountdownInfo {
   return { countdownId: "0", score: "0", targetScore: "0", completionProgressPercent: 0 };
 }
@@ -25283,6 +30463,54 @@ export const UserFanTicket: MessageFns<UserFanTicket> = {
           }
 
           message.ticketUiStyleV2 = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserInfo(): UserInfo {
+  return { userId: "0", avatar: undefined };
+}
+
+export const UserInfo: MessageFns<UserInfo> = {
+  encode(message: UserInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "0") {
+      writer.uint32(8).int64(message.userId);
+    }
+    if (message.avatar !== undefined) {
+      ImageModel.encode(message.avatar, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.userId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.avatar = ImageModel.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -25734,7 +30962,7 @@ export const UserOptOutState: MessageFns<UserOptOutState> = {
 };
 
 function createBaseUserPlayInfo(): UserPlayInfo {
-  return { playId: "0", playScene: 0, score: "0", rank: 0, targetScore: "0", userTag: 0 };
+  return { playId: "0", playScene: 0, score: "0", rank: 0, targetScore: "0", userTag: 0, playRoundId: "0" };
 }
 
 export const UserPlayInfo: MessageFns<UserPlayInfo> = {
@@ -25756,6 +30984,9 @@ export const UserPlayInfo: MessageFns<UserPlayInfo> = {
     }
     if (message.userTag !== 0) {
       writer.uint32(48).int32(message.userTag);
+    }
+    if (message.playRoundId !== "0") {
+      writer.uint32(56).int64(message.playRoundId);
     }
     return writer;
   },
@@ -25813,6 +31044,14 @@ export const UserPlayInfo: MessageFns<UserPlayInfo> = {
           }
 
           message.userTag = reader.int32() as any;
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.playRoundId = reader.int64().toString();
           continue;
         }
       }
@@ -26389,6 +31628,54 @@ export const ViolationInfo: MessageFns<ViolationInfo> = {
   },
 };
 
+function createBaseVirtualTicketEnvelopeRushOutNotice(): VirtualTicketEnvelopeRushOutNotice {
+  return { envelopeId: "0", actualEndTimeSec: "0" };
+}
+
+export const VirtualTicketEnvelopeRushOutNotice: MessageFns<VirtualTicketEnvelopeRushOutNotice> = {
+  encode(message: VirtualTicketEnvelopeRushOutNotice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.envelopeId !== "0") {
+      writer.uint32(8).int64(message.envelopeId);
+    }
+    if (message.actualEndTimeSec !== "0") {
+      writer.uint32(16).int64(message.actualEndTimeSec);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): VirtualTicketEnvelopeRushOutNotice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVirtualTicketEnvelopeRushOutNotice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.envelopeId = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.actualEndTimeSec = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseVoucher(): Voucher {
   return {
     voucherTypeId: "0",
@@ -26616,6 +31903,76 @@ export const WaveAlgorithmData: MessageFns<WaveAlgorithmData> = {
           }
 
           message.isFollow = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastAIBeautyResultMessage(): WebcastAIBeautyResultMessage {
+  return { common: undefined, status: 0, errorCode: "0", content: undefined };
+}
+
+export const WebcastAIBeautyResultMessage: MessageFns<WebcastAIBeautyResultMessage> = {
+  encode(message: WebcastAIBeautyResultMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.status !== 0) {
+      writer.uint32(16).int32(message.status);
+    }
+    if (message.errorCode !== "0") {
+      writer.uint32(24).int64(message.errorCode);
+    }
+    if (message.content !== undefined) {
+      AIBeautySugContent.encode(message.content, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastAIBeautyResultMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastAIBeautyResultMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.status = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.errorCode = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.content = AIBeautySugContent.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -27056,6 +32413,65 @@ export const WebcastAgreeApplyGuideMessage: MessageFns<WebcastAgreeApplyGuideMes
           }
 
           message.requestId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastAnchorAiCoachMessage(): WebcastAnchorAiCoachMessage {
+  return { common: undefined, messageType: 0, messageData: undefined };
+}
+
+export const WebcastAnchorAiCoachMessage: MessageFns<WebcastAnchorAiCoachMessage> = {
+  encode(message: WebcastAnchorAiCoachMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.messageType !== 0) {
+      writer.uint32(16).int32(message.messageType);
+    }
+    if (message.messageData !== undefined) {
+      AiCoachImMessageData.encode(message.messageData, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastAnchorAiCoachMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastAnchorAiCoachMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.messageType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.messageData = AiCoachImMessageData.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -28383,6 +33799,65 @@ export const WebcastCaptionMessage: MessageFns<WebcastCaptionMessage> = {
   },
 };
 
+function createBaseWebcastCohostLayoutUpdateMessage(): WebcastCohostLayoutUpdateMessage {
+  return { common: undefined, crossRoomLayout: undefined, toastDisplayText: undefined };
+}
+
+export const WebcastCohostLayoutUpdateMessage: MessageFns<WebcastCohostLayoutUpdateMessage> = {
+  encode(message: WebcastCohostLayoutUpdateMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.crossRoomLayout !== undefined) {
+      LayoutData.encode(message.crossRoomLayout, writer.uint32(18).fork()).join();
+    }
+    if (message.toastDisplayText !== undefined) {
+      Text.encode(message.toastDisplayText, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastCohostLayoutUpdateMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastCohostLayoutUpdateMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.crossRoomLayout = LayoutData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.toastDisplayText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastCohostPlatformMessage(): WebcastCohostPlatformMessage {
   return { common: undefined, sourceType: "0", actionType: 0, inviteInfo: undefined, withdrawInfo: undefined };
 }
@@ -28652,6 +34127,113 @@ export const WebcastCohostSettingsUpdateMessage_AnchorSettingsEntry: MessageFns<
   },
 };
 
+function createBaseWebcastCohostSubtitleBanMessage(): WebcastCohostSubtitleBanMessage {
+  return { common: undefined, toastText: undefined, subtitleBanType: 0 };
+}
+
+export const WebcastCohostSubtitleBanMessage: MessageFns<WebcastCohostSubtitleBanMessage> = {
+  encode(message: WebcastCohostSubtitleBanMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.toastText !== undefined) {
+      Text.encode(message.toastText, writer.uint32(18).fork()).join();
+    }
+    if (message.subtitleBanType !== 0) {
+      writer.uint32(24).int32(message.subtitleBanType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastCohostSubtitleBanMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastCohostSubtitleBanMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.toastText = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.subtitleBanType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastCohostSubtitleSettingMessage(): WebcastCohostSubtitleSettingMessage {
+  return { common: undefined, settings: undefined };
+}
+
+export const WebcastCohostSubtitleSettingMessage: MessageFns<WebcastCohostSubtitleSettingMessage> = {
+  encode(message: WebcastCohostSubtitleSettingMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.settings !== undefined) {
+      SubtitleSettings.encode(message.settings, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastCohostSubtitleSettingMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastCohostSubtitleSettingMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.settings = SubtitleSettings.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastCohostTopicMessage(): WebcastCohostTopicMessage {
   return {
     common: undefined,
@@ -28751,6 +34333,65 @@ export const WebcastCohostTopicMessage: MessageFns<WebcastCohostTopicMessage> = 
   },
 };
 
+function createBaseWebcastCohostTranslatePopUpMessage(): WebcastCohostTranslatePopUpMessage {
+  return { common: undefined, title: undefined, content: undefined };
+}
+
+export const WebcastCohostTranslatePopUpMessage: MessageFns<WebcastCohostTranslatePopUpMessage> = {
+  encode(message: WebcastCohostTranslatePopUpMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.title !== undefined) {
+      Text.encode(message.title, writer.uint32(18).fork()).join();
+    }
+    if (message.content !== undefined) {
+      Text.encode(message.content, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastCohostTranslatePopUpMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastCohostTranslatePopUpMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = Text.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastColdStartMessage(): WebcastColdStartMessage {
   return { common: undefined, msgType: 0, status: 0, viewerCount: "0", totalCount: "0" };
 }
@@ -28820,6 +34461,129 @@ export const WebcastColdStartMessage: MessageFns<WebcastColdStartMessage> = {
           }
 
           message.totalCount = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastCollabGiftMessage(): WebcastCollabGiftMessage {
+  return {
+    common: undefined,
+    baseInfo: undefined,
+    activeInfo: undefined,
+    fullInfo: undefined,
+    updateInfo: undefined,
+    effect: undefined,
+    finishInfo: undefined,
+    type: 0,
+  };
+}
+
+export const WebcastCollabGiftMessage: MessageFns<WebcastCollabGiftMessage> = {
+  encode(message: WebcastCollabGiftMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.baseInfo !== undefined) {
+      CollabGiftBaseInfo.encode(message.baseInfo, writer.uint32(18).fork()).join();
+    }
+    if (message.activeInfo !== undefined) {
+      CollabGiftActiveInfo.encode(message.activeInfo, writer.uint32(26).fork()).join();
+    }
+    if (message.fullInfo !== undefined) {
+      CollabGiftFullInfo.encode(message.fullInfo, writer.uint32(34).fork()).join();
+    }
+    if (message.updateInfo !== undefined) {
+      CollabGiftUpdateInfo.encode(message.updateInfo, writer.uint32(42).fork()).join();
+    }
+    if (message.effect !== undefined) {
+      AssetsModel.encode(message.effect, writer.uint32(50).fork()).join();
+    }
+    if (message.finishInfo !== undefined) {
+      CollabGiftFinishInfo.encode(message.finishInfo, writer.uint32(58).fork()).join();
+    }
+    if (message.type !== 0) {
+      writer.uint32(64).int32(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastCollabGiftMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastCollabGiftMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.baseInfo = CollabGiftBaseInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.activeInfo = CollabGiftActiveInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.fullInfo = CollabGiftFullInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.updateInfo = CollabGiftUpdateInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.effect = AssetsModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.finishInfo = CollabGiftFinishInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.type = reader.int32();
           continue;
         }
       }
@@ -30766,6 +36530,279 @@ export const WebcastEventMessage: MessageFns<WebcastEventMessage> = {
   },
 };
 
+function createBaseWebcastFansCommunityMessage(): WebcastFansCommunityMessage {
+  return {
+    common: undefined,
+    user: undefined,
+    anchor: undefined,
+    icon: undefined,
+    text: undefined,
+    eventType: 0,
+    data: undefined,
+    guidanceType: 0,
+    guidanceKey: "",
+    interactionParams: {},
+    eventTrackParams: {},
+  };
+}
+
+export const WebcastFansCommunityMessage: MessageFns<WebcastFansCommunityMessage> = {
+  encode(message: WebcastFansCommunityMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(18).fork()).join();
+    }
+    if (message.anchor !== undefined) {
+      User.encode(message.anchor, writer.uint32(26).fork()).join();
+    }
+    if (message.icon !== undefined) {
+      ImageModel.encode(message.icon, writer.uint32(34).fork()).join();
+    }
+    if (message.text !== undefined) {
+      Text.encode(message.text, writer.uint32(42).fork()).join();
+    }
+    if (message.eventType !== 0) {
+      writer.uint32(48).int32(message.eventType);
+    }
+    if (message.data !== undefined) {
+      FansCommunityEventData.encode(message.data, writer.uint32(58).fork()).join();
+    }
+    if (message.guidanceType !== 0) {
+      writer.uint32(64).int32(message.guidanceType);
+    }
+    if (message.guidanceKey !== "") {
+      writer.uint32(74).string(message.guidanceKey);
+    }
+    globalThis.Object.entries(message.interactionParams).forEach(([key, value]: [string, string]) => {
+      WebcastFansCommunityMessage_InteractionParamsEntry.encode({ key: key as any, value }, writer.uint32(802).fork())
+        .join();
+    });
+    globalThis.Object.entries(message.eventTrackParams).forEach(([key, value]: [string, string]) => {
+      WebcastFansCommunityMessage_EventTrackParamsEntry.encode({ key: key as any, value }, writer.uint32(810).fork())
+        .join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastFansCommunityMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastFansCommunityMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.anchor = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.icon = ImageModel.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.text = Text.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.eventType = reader.int32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.data = FansCommunityEventData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.guidanceType = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.guidanceKey = reader.string();
+          continue;
+        }
+        case 100: {
+          if (tag !== 802) {
+            break;
+          }
+
+          const entry100 = WebcastFansCommunityMessage_InteractionParamsEntry.decode(reader, reader.uint32());
+          if (entry100.value !== undefined) {
+            message.interactionParams[entry100.key] = entry100.value;
+          }
+          continue;
+        }
+        case 101: {
+          if (tag !== 810) {
+            break;
+          }
+
+          const entry101 = WebcastFansCommunityMessage_EventTrackParamsEntry.decode(reader, reader.uint32());
+          if (entry101.value !== undefined) {
+            message.eventTrackParams[entry101.key] = entry101.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastFansCommunityMessage_InteractionParamsEntry(): WebcastFansCommunityMessage_InteractionParamsEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastFansCommunityMessage_InteractionParamsEntry: MessageFns<
+  WebcastFansCommunityMessage_InteractionParamsEntry
+> = {
+  encode(
+    message: WebcastFansCommunityMessage_InteractionParamsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastFansCommunityMessage_InteractionParamsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastFansCommunityMessage_InteractionParamsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastFansCommunityMessage_EventTrackParamsEntry(): WebcastFansCommunityMessage_EventTrackParamsEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastFansCommunityMessage_EventTrackParamsEntry: MessageFns<
+  WebcastFansCommunityMessage_EventTrackParamsEntry
+> = {
+  encode(
+    message: WebcastFansCommunityMessage_EventTrackParamsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastFansCommunityMessage_EventTrackParamsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastFansCommunityMessage_EventTrackParamsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastFeatureGuideMessage(): WebcastFeatureGuideMessage {
   return { common: undefined, schema: "", stayDurationMs: "0", featureGuideType: 0, featureGuideTypeStr: "" };
 }
@@ -31110,6 +37147,8 @@ function createBaseWebcastGameAiScriptMessage(): WebcastGameAiScriptMessage {
     buttonText: undefined,
     titleText: undefined,
     bizId: "",
+    isShowCues: false,
+    cueMessage: undefined,
     common: undefined,
   };
 }
@@ -31142,6 +37181,12 @@ export const WebcastGameAiScriptMessage: MessageFns<WebcastGameAiScriptMessage> 
     }
     if (message.bizId !== "") {
       writer.uint32(74).string(message.bizId);
+    }
+    if (message.isShowCues !== false) {
+      writer.uint32(80).bool(message.isShowCues);
+    }
+    if (message.cueMessage !== undefined) {
+      CuesMessage.encode(message.cueMessage, writer.uint32(90).fork()).join();
     }
     if (message.common !== undefined) {
       CommonMessageData.encode(message.common, writer.uint32(802).fork()).join();
@@ -31226,6 +37271,22 @@ export const WebcastGameAiScriptMessage: MessageFns<WebcastGameAiScriptMessage> 
           }
 
           message.bizId = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.isShowCues = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.cueMessage = CuesMessage.decode(reader, reader.uint32());
           continue;
         }
         case 100: {
@@ -31498,6 +37559,124 @@ export const WebcastGameInteractionMessage: MessageFns<WebcastGameInteractionMes
           }
 
           message.content = GameInteractionMessageContent.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastGameInteractionMultiSourceMessage(): WebcastGameInteractionMultiSourceMessage {
+  return { common: undefined, messageType: 0, content: undefined };
+}
+
+export const WebcastGameInteractionMultiSourceMessage: MessageFns<WebcastGameInteractionMultiSourceMessage> = {
+  encode(message: WebcastGameInteractionMultiSourceMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.messageType !== 0) {
+      writer.uint32(16).int32(message.messageType);
+    }
+    if (message.content !== undefined) {
+      GameInteractionMultiSourceMessageContent.encode(message.content, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastGameInteractionMultiSourceMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastGameInteractionMultiSourceMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.messageType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = GameInteractionMultiSourceMessageContent.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastGameLiveGoalRewardNotifyMessage(): WebcastGameLiveGoalRewardNotifyMessage {
+  return { common: undefined, messageType: 0, content: undefined };
+}
+
+export const WebcastGameLiveGoalRewardNotifyMessage: MessageFns<WebcastGameLiveGoalRewardNotifyMessage> = {
+  encode(message: WebcastGameLiveGoalRewardNotifyMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.messageType !== 0) {
+      writer.uint32(16).int32(message.messageType);
+    }
+    if (message.content !== undefined) {
+      GameLiveGoalRewardMessageContent.encode(message.content, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastGameLiveGoalRewardNotifyMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastGameLiveGoalRewardNotifyMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.messageType = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = GameLiveGoalRewardMessageContent.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -32079,129 +38258,6 @@ export const WebcastGiftDynamicRestrictionMessage: MessageFns<WebcastGiftDynamic
   },
 };
 
-function createBaseWebcastGiftGalleryMessage(): WebcastGiftGalleryMessage {
-  return {
-    common: undefined,
-    giftInfo: undefined,
-    user: undefined,
-    toUser: undefined,
-    msgType: 0,
-    allSponsored: false,
-    priority: undefined,
-    logId: "",
-  };
-}
-
-export const WebcastGiftGalleryMessage: MessageFns<WebcastGiftGalleryMessage> = {
-  encode(message: WebcastGiftGalleryMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.common !== undefined) {
-      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
-    }
-    if (message.giftInfo !== undefined) {
-      GiftGalleryMessageGiftInfo.encode(message.giftInfo, writer.uint32(18).fork()).join();
-    }
-    if (message.user !== undefined) {
-      User.encode(message.user, writer.uint32(26).fork()).join();
-    }
-    if (message.toUser !== undefined) {
-      User.encode(message.toUser, writer.uint32(34).fork()).join();
-    }
-    if (message.msgType !== 0) {
-      writer.uint32(40).int32(message.msgType);
-    }
-    if (message.allSponsored !== false) {
-      writer.uint32(168).bool(message.allSponsored);
-    }
-    if (message.priority !== undefined) {
-      GiftIMPriority.encode(message.priority, writer.uint32(410).fork()).join();
-    }
-    if (message.logId !== "") {
-      writer.uint32(418).string(message.logId);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): WebcastGiftGalleryMessage {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseWebcastGiftGalleryMessage();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.common = CommonMessageData.decode(reader, reader.uint32());
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.giftInfo = GiftGalleryMessageGiftInfo.decode(reader, reader.uint32());
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.user = User.decode(reader, reader.uint32());
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.toUser = User.decode(reader, reader.uint32());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.msgType = reader.int32();
-          continue;
-        }
-        case 21: {
-          if (tag !== 168) {
-            break;
-          }
-
-          message.allSponsored = reader.bool();
-          continue;
-        }
-        case 51: {
-          if (tag !== 410) {
-            break;
-          }
-
-          message.priority = GiftIMPriority.decode(reader, reader.uint32());
-          continue;
-        }
-        case 52: {
-          if (tag !== 418) {
-            break;
-          }
-
-          message.logId = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseWebcastGiftGuideMessage(): WebcastGiftGuideMessage {
   return {
     common: undefined,
@@ -32223,6 +38279,10 @@ function createBaseWebcastGiftGuideMessage(): WebcastGiftGuideMessage {
     subTriggerName: "",
     styleDictate: false,
     styleDictateParams: undefined,
+    popUrl: "",
+    styleId: "0",
+    guideMessageType: 0,
+    recommendInfo: undefined,
   };
 }
 
@@ -32286,6 +38346,18 @@ export const WebcastGiftGuideMessage: MessageFns<WebcastGiftGuideMessage> = {
     }
     if (message.styleDictateParams !== undefined) {
       StyleDictateParams.encode(message.styleDictateParams, writer.uint32(154).fork()).join();
+    }
+    if (message.popUrl !== "") {
+      writer.uint32(162).string(message.popUrl);
+    }
+    if (message.styleId !== "0") {
+      writer.uint32(168).int64(message.styleId);
+    }
+    if (message.guideMessageType !== 0) {
+      writer.uint32(176).int32(message.guideMessageType);
+    }
+    if (message.recommendInfo !== undefined) {
+      RecommendInfo.encode(message.recommendInfo, writer.uint32(186).fork()).join();
     }
     return writer;
   },
@@ -32457,6 +38529,38 @@ export const WebcastGiftGuideMessage: MessageFns<WebcastGiftGuideMessage> = {
           }
 
           message.styleDictateParams = StyleDictateParams.decode(reader, reader.uint32());
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.popUrl = reader.string();
+          continue;
+        }
+        case 21: {
+          if (tag !== 168) {
+            break;
+          }
+
+          message.styleId = reader.int64().toString();
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.guideMessageType = reader.int32();
+          continue;
+        }
+        case 23: {
+          if (tag !== 186) {
+            break;
+          }
+
+          message.recommendInfo = RecommendInfo.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -33259,6 +39363,8 @@ function createBaseWebcastGuideMessage(): WebcastGuideMessage {
     duration: "0",
     displayStyle: "0",
     scene: "",
+    frequencyRule: undefined,
+    streamTime: "0",
   };
 }
 
@@ -33284,6 +39390,12 @@ export const WebcastGuideMessage: MessageFns<WebcastGuideMessage> = {
     }
     if (message.scene !== "") {
       writer.uint32(58).string(message.scene);
+    }
+    if (message.frequencyRule !== undefined) {
+      GuideMessageFrequencyRule.encode(message.frequencyRule, writer.uint32(66).fork()).join();
+    }
+    if (message.streamTime !== "0") {
+      writer.uint32(72).int64(message.streamTime);
     }
     return writer;
   },
@@ -33349,6 +39461,22 @@ export const WebcastGuideMessage: MessageFns<WebcastGuideMessage> = {
           }
 
           message.scene = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.frequencyRule = GuideMessageFrequencyRule.decode(reader, reader.uint32());
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.streamTime = reader.int64().toString();
           continue;
         }
       }
@@ -33984,6 +40112,11 @@ function createBaseWebcastInteractionHubGoalMessage(): WebcastInteractionHubGoal
     newGiftInfo: undefined,
     hasNewGift: false,
     taskProgress: undefined,
+    hasButton: false,
+    actionButton: undefined,
+    liveGoalParam: undefined,
+    userParam: undefined,
+    frequencyControlKey: "",
   };
 }
 
@@ -34012,6 +40145,21 @@ export const WebcastInteractionHubGoalMessage: MessageFns<WebcastInteractionHubG
     }
     if (message.taskProgress !== undefined) {
       AnchorActivityTaskProgress.encode(message.taskProgress, writer.uint32(66).fork()).join();
+    }
+    if (message.hasButton !== false) {
+      writer.uint32(80).bool(message.hasButton);
+    }
+    if (message.actionButton !== undefined) {
+      ActionButton2.encode(message.actionButton, writer.uint32(90).fork()).join();
+    }
+    if (message.liveGoalParam !== undefined) {
+      LiveGoalParam.encode(message.liveGoalParam, writer.uint32(98).fork()).join();
+    }
+    if (message.userParam !== undefined) {
+      UserParam.encode(message.userParam, writer.uint32(106).fork()).join();
+    }
+    if (message.frequencyControlKey !== "") {
+      writer.uint32(114).string(message.frequencyControlKey);
     }
     return writer;
   },
@@ -34085,6 +40233,46 @@ export const WebcastInteractionHubGoalMessage: MessageFns<WebcastInteractionHubG
           }
 
           message.taskProgress = AnchorActivityTaskProgress.decode(reader, reader.uint32());
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.hasButton = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.actionButton = ActionButton2.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.liveGoalParam = LiveGoalParam.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.userParam = UserParam.decode(reader, reader.uint32());
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          message.frequencyControlKey = reader.string();
           continue;
         }
       }
@@ -34942,6 +41130,65 @@ export const WebcastLinkMicAnchorGuideMessage: MessageFns<WebcastLinkMicAnchorGu
           }
 
           message.cohostFollowMessage = CohostFollowMessage.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastLinkMicBattleArtifactMessage(): WebcastLinkMicBattleArtifactMessage {
+  return { common: undefined, battleId: "0", artifacts: [] };
+}
+
+export const WebcastLinkMicBattleArtifactMessage: MessageFns<WebcastLinkMicBattleArtifactMessage> = {
+  encode(message: WebcastLinkMicBattleArtifactMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.battleId !== "0") {
+      writer.uint32(16).int64(message.battleId);
+    }
+    for (const v of message.artifacts) {
+      BattleArtifact.encode(v!, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastLinkMicBattleArtifactMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastLinkMicBattleArtifactMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.battleId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.artifacts.push(BattleArtifact.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -36015,6 +42262,7 @@ function createBaseWebcastLinkmicAudienceNoticeMessage(): WebcastLinkmicAudience
     noticeGuide: undefined,
     groupChatMemberInviteGuide: undefined,
     applyGuide: undefined,
+    mgMatchType: 0,
   };
 }
 
@@ -36038,6 +42286,9 @@ export const WebcastLinkmicAudienceNoticeMessage: MessageFns<WebcastLinkmicAudie
     }
     if (message.applyGuide !== undefined) {
       LinkmicAudienceApplyGuide.encode(message.applyGuide, writer.uint32(50).fork()).join();
+    }
+    if (message.mgMatchType !== 0) {
+      writer.uint32(56).int32(message.mgMatchType);
     }
     return writer;
   },
@@ -36098,6 +42349,14 @@ export const WebcastLinkmicAudienceNoticeMessage: MessageFns<WebcastLinkmicAudie
           }
 
           message.applyGuide = LinkmicAudienceApplyGuide.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.mgMatchType = reader.int32();
           continue;
         }
       }
@@ -37073,6 +43332,7 @@ function createBaseWebcastMultiGuestGuideMessage(): WebcastMultiGuestGuideMessag
     requestId: "",
     messageType: 0,
     linkmicId: "",
+    linkerSessionId: "",
   };
 }
 
@@ -37098,6 +43358,9 @@ export const WebcastMultiGuestGuideMessage: MessageFns<WebcastMultiGuestGuideMes
     }
     if (message.linkmicId !== "") {
       writer.uint32(58).string(message.linkmicId);
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(66).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -37163,6 +43426,14 @@ export const WebcastMultiGuestGuideMessage: MessageFns<WebcastMultiGuestGuideMes
           }
 
           message.linkmicId = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }
@@ -37357,7 +43628,7 @@ export const WebcastMultiGuestPreApproveMessage: MessageFns<WebcastMultiGuestPre
 };
 
 function createBaseWebcastMultiGuestRandomMatchMessage(): WebcastMultiGuestRandomMatchMessage {
-  return { common: undefined, matchStatus: 0, roomId: "0", authorUser: undefined };
+  return { common: undefined, matchStatus: 0, roomId: "0", authorUser: undefined, linkerSessionId: "" };
 }
 
 export const WebcastMultiGuestRandomMatchMessage: MessageFns<WebcastMultiGuestRandomMatchMessage> = {
@@ -37373,6 +43644,9 @@ export const WebcastMultiGuestRandomMatchMessage: MessageFns<WebcastMultiGuestRa
     }
     if (message.authorUser !== undefined) {
       User.encode(message.authorUser, writer.uint32(34).fork()).join();
+    }
+    if (message.linkerSessionId !== "") {
+      writer.uint32(42).string(message.linkerSessionId);
     }
     return writer;
   },
@@ -37414,6 +43688,14 @@ export const WebcastMultiGuestRandomMatchMessage: MessageFns<WebcastMultiGuestRa
           }
 
           message.authorUser = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.linkerSessionId = reader.string();
           continue;
         }
       }
@@ -38117,7 +44399,7 @@ export const WebcastOChannelUserMessage: MessageFns<WebcastOChannelUserMessage> 
 };
 
 function createBaseWebcastOECAuctionActionMessage(): WebcastOECAuctionActionMessage {
-  return { common: undefined, actionType: 0, auctionConfig: undefined, timestamp: "0" };
+  return { common: undefined, actionType: 0, auctionConfig: undefined, timestamp: "0", auctionTrace: {} };
 }
 
 export const WebcastOECAuctionActionMessage: MessageFns<WebcastOECAuctionActionMessage> = {
@@ -38134,6 +44416,10 @@ export const WebcastOECAuctionActionMessage: MessageFns<WebcastOECAuctionActionM
     if (message.timestamp !== "0") {
       writer.uint32(32).int64(message.timestamp);
     }
+    globalThis.Object.entries(message.auctionTrace).forEach(([key, value]: [string, string]) => {
+      WebcastOECAuctionActionMessage_AuctionTraceEntry.encode({ key: key as any, value }, writer.uint32(42).fork())
+        .join();
+    });
     return writer;
   },
 
@@ -38174,6 +44460,70 @@ export const WebcastOECAuctionActionMessage: MessageFns<WebcastOECAuctionActionM
           }
 
           message.timestamp = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          const entry5 = WebcastOECAuctionActionMessage_AuctionTraceEntry.decode(reader, reader.uint32());
+          if (entry5.value !== undefined) {
+            message.auctionTrace[entry5.key] = entry5.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastOECAuctionActionMessage_AuctionTraceEntry(): WebcastOECAuctionActionMessage_AuctionTraceEntry {
+  return { key: "", value: "" };
+}
+
+export const WebcastOECAuctionActionMessage_AuctionTraceEntry: MessageFns<
+  WebcastOECAuctionActionMessage_AuctionTraceEntry
+> = {
+  encode(
+    message: WebcastOECAuctionActionMessage_AuctionTraceEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastOECAuctionActionMessage_AuctionTraceEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastOECAuctionActionMessage_AuctionTraceEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
           continue;
         }
       }
@@ -39139,6 +45489,7 @@ function createBaseWebcastOecLiveManagerMessage(): WebcastOecLiveManagerMessage 
     violationInfo: undefined,
     auctionResult: undefined,
     auctionActivityData: undefined,
+    userBadges: [],
   };
 }
 
@@ -39170,6 +45521,9 @@ export const WebcastOecLiveManagerMessage: MessageFns<WebcastOecLiveManagerMessa
     }
     if (message.auctionActivityData !== undefined) {
       AuctionActivityData.encode(message.auctionActivityData, writer.uint32(90).fork()).join();
+    }
+    for (const v of message.userBadges) {
+      UserBadge.encode(v!, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -39251,6 +45605,14 @@ export const WebcastOecLiveManagerMessage: MessageFns<WebcastOecLiveManagerMessa
           }
 
           message.auctionActivityData = AuctionActivityData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.userBadges.push(UserBadge.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -41911,6 +48273,225 @@ export const WebcastRealtimeLiveCenterUpdateMessage: MessageFns<WebcastRealtimeL
   },
 };
 
+function createBaseWebcastRealtimeUnifiedEntranceMessage(): WebcastRealtimeUnifiedEntranceMessage {
+  return {
+    common: undefined,
+    suggestionId: "",
+    suggestionTemplateId: "",
+    scene: "",
+    context: "",
+    title: "",
+    icon: "",
+    ctaText: "",
+    ctaSchema: "",
+    subtitle: "",
+    tuxIconName: "",
+    messageKey: "",
+    targetModule: "",
+    suggestionUiInfo: undefined,
+    excludedDisplayScenes: [],
+  };
+}
+
+export const WebcastRealtimeUnifiedEntranceMessage: MessageFns<WebcastRealtimeUnifiedEntranceMessage> = {
+  encode(message: WebcastRealtimeUnifiedEntranceMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.suggestionId !== "") {
+      writer.uint32(18).string(message.suggestionId);
+    }
+    if (message.suggestionTemplateId !== "") {
+      writer.uint32(26).string(message.suggestionTemplateId);
+    }
+    if (message.scene !== "") {
+      writer.uint32(34).string(message.scene);
+    }
+    if (message.context !== "") {
+      writer.uint32(42).string(message.context);
+    }
+    if (message.title !== "") {
+      writer.uint32(50).string(message.title);
+    }
+    if (message.icon !== "") {
+      writer.uint32(58).string(message.icon);
+    }
+    if (message.ctaText !== "") {
+      writer.uint32(66).string(message.ctaText);
+    }
+    if (message.ctaSchema !== "") {
+      writer.uint32(74).string(message.ctaSchema);
+    }
+    if (message.subtitle !== "") {
+      writer.uint32(82).string(message.subtitle);
+    }
+    if (message.tuxIconName !== "") {
+      writer.uint32(90).string(message.tuxIconName);
+    }
+    if (message.messageKey !== "") {
+      writer.uint32(98).string(message.messageKey);
+    }
+    if (message.targetModule !== "") {
+      writer.uint32(106).string(message.targetModule);
+    }
+    if (message.suggestionUiInfo !== undefined) {
+      SuggestionUIInfo.encode(message.suggestionUiInfo, writer.uint32(114).fork()).join();
+    }
+    writer.uint32(122).fork();
+    for (const v of message.excludedDisplayScenes) {
+      writer.int32(v);
+    }
+    writer.join();
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastRealtimeUnifiedEntranceMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastRealtimeUnifiedEntranceMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.suggestionId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.suggestionTemplateId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.scene = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.context = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.icon = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.ctaText = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.ctaSchema = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.subtitle = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.tuxIconName = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.messageKey = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.targetModule = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          message.suggestionUiInfo = SuggestionUIInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 15: {
+          if (tag === 120) {
+            message.excludedDisplayScenes.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 122) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.excludedDisplayScenes.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastRoomBottomMessage(): WebcastRoomBottomMessage {
   return {
     common: undefined,
@@ -42804,6 +49385,65 @@ export const WebcastSMBStateSync: MessageFns<WebcastSMBStateSync> = {
   },
 };
 
+function createBaseWebcastScorePerceptionMessage(): WebcastScorePerceptionMessage {
+  return { common: undefined, scoreNow: "0", revokedPermissionCount: "0" };
+}
+
+export const WebcastScorePerceptionMessage: MessageFns<WebcastScorePerceptionMessage> = {
+  encode(message: WebcastScorePerceptionMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.scoreNow !== "0") {
+      writer.uint32(16).int64(message.scoreNow);
+    }
+    if (message.revokedPermissionCount !== "0") {
+      writer.uint32(24).int64(message.revokedPermissionCount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastScorePerceptionMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastScorePerceptionMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.scoreNow = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.revokedPermissionCount = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseWebcastScreenChatMessage(): WebcastScreenChatMessage {
   return {
     common: undefined,
@@ -43258,6 +49898,99 @@ export const WebcastSpecialPushMessage: MessageFns<WebcastSpecialPushMessage> = 
           }
 
           message.pushMessageDisplayTime = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseWebcastStageReactionMessage(): WebcastStageReactionMessage {
+  return { common: undefined, senderUserId: "0", toUserId: [], reactionId: [], showTimeMs: "0" };
+}
+
+export const WebcastStageReactionMessage: MessageFns<WebcastStageReactionMessage> = {
+  encode(message: WebcastStageReactionMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.common !== undefined) {
+      CommonMessageData.encode(message.common, writer.uint32(10).fork()).join();
+    }
+    if (message.senderUserId !== "0") {
+      writer.uint32(16).int64(message.senderUserId);
+    }
+    writer.uint32(26).fork();
+    for (const v of message.toUserId) {
+      writer.int64(v);
+    }
+    writer.join();
+    for (const v of message.reactionId) {
+      writer.uint32(34).string(v!);
+    }
+    if (message.showTimeMs !== "0") {
+      writer.uint32(40).int64(message.showTimeMs);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebcastStageReactionMessage {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebcastStageReactionMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.common = CommonMessageData.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.senderUserId = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag === 24) {
+            message.toUserId.push(reader.int64().toString());
+
+            continue;
+          }
+
+          if (tag === 26) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.toUserId.push(reader.int64().toString());
+            }
+
+            continue;
+          }
+
+          break;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.reactionId.push(reader.string());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.showTimeMs = reader.int64().toString();
           continue;
         }
       }
@@ -44005,7 +50738,12 @@ export const WebcastTrayMessage: MessageFns<WebcastTrayMessage> = {
 };
 
 function createBaseWebcastUpdateShareRevenueNoticeMessage(): WebcastUpdateShareRevenueNoticeMessage {
-  return { common: undefined, roomId: "0", updateShanreRevenueContent: undefined };
+  return {
+    common: undefined,
+    roomId: "0",
+    updateShanreRevenueContent: undefined,
+    updateShareRevenueStructContent: undefined,
+  };
 }
 
 export const WebcastUpdateShareRevenueNoticeMessage: MessageFns<WebcastUpdateShareRevenueNoticeMessage> = {
@@ -44018,6 +50756,9 @@ export const WebcastUpdateShareRevenueNoticeMessage: MessageFns<WebcastUpdateSha
     }
     if (message.updateShanreRevenueContent !== undefined) {
       UpdateShareRevenueContent.encode(message.updateShanreRevenueContent, writer.uint32(26).fork()).join();
+    }
+    if (message.updateShareRevenueStructContent !== undefined) {
+      UpdateShareRevenueStructContent.encode(message.updateShareRevenueStructContent, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -44051,6 +50792,14 @@ export const WebcastUpdateShareRevenueNoticeMessage: MessageFns<WebcastUpdateSha
           }
 
           message.updateShanreRevenueContent = UpdateShareRevenueContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.updateShareRevenueStructContent = UpdateShareRevenueStructContent.decode(reader, reader.uint32());
           continue;
         }
       }

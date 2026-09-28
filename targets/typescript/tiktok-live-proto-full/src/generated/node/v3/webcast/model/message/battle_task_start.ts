@@ -11,17 +11,17 @@ import { BattleBonusConfig } from "../live/match.js";
 export const protobufPackage = "webcast.model.message.battle";
 
 export interface BattleTaskStart {
-  config: BattleBonusConfig | undefined;
+  battleBonusConfig: BattleBonusConfig | undefined;
 }
 
 function createBaseBattleTaskStart(): BattleTaskStart {
-  return { config: undefined };
+  return { battleBonusConfig: undefined };
 }
 
 export const BattleTaskStart: MessageFns<BattleTaskStart> = {
   encode(message: BattleTaskStart, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.config !== undefined) {
-      BattleBonusConfig.encode(message.config, writer.uint32(10).fork()).join();
+    if (message.battleBonusConfig !== undefined) {
+      BattleBonusConfig.encode(message.battleBonusConfig, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -38,7 +38,7 @@ export const BattleTaskStart: MessageFns<BattleTaskStart> = {
             break;
           }
 
-          message.config = BattleBonusConfig.decode(reader, reader.uint32());
+          message.battleBonusConfig = BattleBonusConfig.decode(reader, reader.uint32());
           continue;
         }
       }

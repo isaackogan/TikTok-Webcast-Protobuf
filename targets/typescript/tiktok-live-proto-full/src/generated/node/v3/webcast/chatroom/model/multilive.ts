@@ -35,6 +35,7 @@ export interface MultiLiveAnchorPanelSettings {
   saveAsDefaultLayout: number;
   multiGuestAllowCohostInvitation: number;
   multiGuestAllowCohostInvitationOnce: number;
+  disableGuestOpenCamera: number;
 }
 
 function createBaseMultiLiveAnchorPanelSettings(): MultiLiveAnchorPanelSettings {
@@ -57,6 +58,7 @@ function createBaseMultiLiveAnchorPanelSettings(): MultiLiveAnchorPanelSettings 
     saveAsDefaultLayout: 0,
     multiGuestAllowCohostInvitation: 0,
     multiGuestAllowCohostInvitationOnce: 0,
+    disableGuestOpenCamera: 0,
   };
 }
 
@@ -115,6 +117,9 @@ export const MultiLiveAnchorPanelSettings: MessageFns<MultiLiveAnchorPanelSettin
     }
     if (message.multiGuestAllowCohostInvitationOnce !== 0) {
       writer.uint32(152).int32(message.multiGuestAllowCohostInvitationOnce);
+    }
+    if (message.disableGuestOpenCamera !== 0) {
+      writer.uint32(160).int32(message.disableGuestOpenCamera);
     }
     return writer;
   },
@@ -268,6 +273,14 @@ export const MultiLiveAnchorPanelSettings: MessageFns<MultiLiveAnchorPanelSettin
           }
 
           message.multiGuestAllowCohostInvitationOnce = reader.int32();
+          continue;
+        }
+        case 20: {
+          if (tag !== 160) {
+            break;
+          }
+
+          message.disableGuestOpenCamera = reader.int32();
           continue;
         }
       }

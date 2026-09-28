@@ -22,7 +22,15 @@ import {
   UserHonor,
 } from "../messages.js";
 import { ImageModel } from "./messages.js";
-import { BadgeStruct, ComboBadgeInfo, EnigmaInfo, FansClubInfo, OwnRoom, SubscribeInfo } from "./user.js";
+import {
+  AvatarHashInfo,
+  BadgeStruct,
+  ComboBadgeInfo,
+  EnigmaInfo,
+  FansClubInfo,
+  OwnRoom,
+  SubscribeInfo,
+} from "./user.js";
 
 export const protobufPackage = "webcast.model.base.user";
 
@@ -93,6 +101,7 @@ export interface User {
   badgeList: BadgeStruct[];
   mintTypeLabel: string[];
   fansClubInfo: FansClubInfo | undefined;
+  avatarHashInfo: AvatarHashInfo | undefined;
   deprecated19: boolean;
   allowFindByContacts: boolean;
   allowOthersDownloadVideo: boolean;
@@ -214,6 +223,7 @@ function createBaseUser(): User {
     badgeList: [],
     mintTypeLabel: [],
     fansClubInfo: undefined,
+    avatarHashInfo: undefined,
     deprecated19: false,
     allowFindByContacts: false,
     allowOthersDownloadVideo: false,
@@ -471,6 +481,9 @@ export const User: MessageFns<User> = {
     writer.join();
     if (message.fansClubInfo !== undefined) {
       FansClubInfo.encode(message.fansClubInfo, writer.uint32(530).fork()).join();
+    }
+    if (message.avatarHashInfo !== undefined) {
+      AvatarHashInfo.encode(message.avatarHashInfo, writer.uint32(538).fork()).join();
     }
     if (message.deprecated19 !== false) {
       writer.uint32(8008).bool(message.deprecated19);
@@ -1181,6 +1194,14 @@ export const User: MessageFns<User> = {
           }
 
           message.fansClubInfo = FansClubInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 67: {
+          if (tag !== 538) {
+            break;
+          }
+
+          message.avatarHashInfo = AvatarHashInfo.decode(reader, reader.uint32());
           continue;
         }
         case 1001: {

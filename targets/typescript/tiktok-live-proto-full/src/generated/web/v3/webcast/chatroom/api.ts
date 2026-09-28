@@ -160,6 +160,7 @@ export interface SubPinCard {
   extraInfo: SubPinCardExtra | undefined;
   highlightTextNum: string;
   icons: ImageModel[];
+  pinSource: number;
 }
 
 export interface SubPinCardExtra {
@@ -1512,6 +1513,7 @@ function createBaseSubPinCard(): SubPinCard {
     extraInfo: undefined,
     highlightTextNum: "0",
     icons: [],
+    pinSource: 0,
   };
 }
 
@@ -1555,6 +1557,9 @@ export const SubPinCard: MessageFns<SubPinCard> = {
     }
     for (const v of message.icons) {
       ImageModel.encode(v!, writer.uint32(106).fork()).join();
+    }
+    if (message.pinSource !== 0) {
+      writer.uint32(112).int32(message.pinSource);
     }
     return writer;
   },
@@ -1668,6 +1673,14 @@ export const SubPinCard: MessageFns<SubPinCard> = {
           }
 
           message.icons.push(ImageModel.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.pinSource = reader.int32();
           continue;
         }
       }

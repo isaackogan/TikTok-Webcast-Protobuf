@@ -14,6 +14,7 @@ import {
   JoinGroupDirectContent,
   JoinRoomDirectContent,
   LeaveJoinGroupContent,
+  LinkEnvelopeContent,
   LinkLayerMessageType,
   P2PGroupChangeContent,
   PermitJoinGroupContent,
@@ -68,6 +69,7 @@ export interface WebcastLinkLayerMessage {
   groupChangeContent: GroupChangeContent | undefined;
   joinGroupDirectContent: JoinGroupDirectContent | undefined;
   joinRoomDirectContent: JoinRoomDirectContent | undefined;
+  linkEnvelopeContent: LinkEnvelopeContent | undefined;
   businessContent: BusinessContent | undefined;
 }
 
@@ -103,6 +105,7 @@ function createBaseWebcastLinkLayerMessage(): WebcastLinkLayerMessage {
     groupChangeContent: undefined,
     joinGroupDirectContent: undefined,
     joinRoomDirectContent: undefined,
+    linkEnvelopeContent: undefined,
     businessContent: undefined,
   };
 }
@@ -198,6 +201,9 @@ export const WebcastLinkLayerMessage: MessageFns<WebcastLinkLayerMessage> = {
     }
     if (message.joinRoomDirectContent !== undefined) {
       JoinRoomDirectContent.encode(message.joinRoomDirectContent, writer.uint32(962).fork()).join();
+    }
+    if (message.linkEnvelopeContent !== undefined) {
+      LinkEnvelopeContent.encode(message.linkEnvelopeContent, writer.uint32(1202).fork()).join();
     }
     if (message.businessContent !== undefined) {
       BusinessContent.encode(message.businessContent, writer.uint32(1602).fork()).join();
@@ -450,6 +456,14 @@ export const WebcastLinkLayerMessage: MessageFns<WebcastLinkLayerMessage> = {
           }
 
           message.joinRoomDirectContent = JoinRoomDirectContent.decode(reader, reader.uint32());
+          continue;
+        }
+        case 150: {
+          if (tag !== 1202) {
+            break;
+          }
+
+          message.linkEnvelopeContent = LinkEnvelopeContent.decode(reader, reader.uint32());
           continue;
         }
         case 200: {

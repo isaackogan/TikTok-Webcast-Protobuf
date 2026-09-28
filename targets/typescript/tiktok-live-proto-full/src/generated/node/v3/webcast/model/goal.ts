@@ -26,6 +26,7 @@ export interface GalleryMiddleTouchInfo {
   galleryPeriod: string;
   region: string;
   showGalleryMidTouch: boolean;
+  roomEnterParams: RoomEnterParams | undefined;
 }
 
 export interface GiftInfo {
@@ -51,6 +52,10 @@ export interface GoalReward {
   topN: number;
   hasSticker: boolean;
   auditStatus: number;
+  rewardDirectMessage: string;
+  rewardTemplateId: string;
+  rewardSource: number;
+  isHitOptAb: boolean;
 }
 
 export interface GoalStats {
@@ -58,6 +63,10 @@ export interface GoalStats {
   totalContributor: string;
   comparison: GoalComparison | undefined;
   totalNewFans: string;
+}
+
+export interface RoomEnterParams {
+  sentGiftToGalleryLast6Months: boolean;
 }
 
 export interface SingleGiftLitUpInfo {
@@ -147,6 +156,7 @@ function createBaseGalleryMiddleTouchInfo(): GalleryMiddleTouchInfo {
     galleryPeriod: "0",
     region: "",
     showGalleryMidTouch: false,
+    roomEnterParams: undefined,
   };
 }
 
@@ -181,6 +191,9 @@ export const GalleryMiddleTouchInfo: MessageFns<GalleryMiddleTouchInfo> = {
     }
     if (message.showGalleryMidTouch !== false) {
       writer.uint32(80).bool(message.showGalleryMidTouch);
+    }
+    if (message.roomEnterParams !== undefined) {
+      RoomEnterParams.encode(message.roomEnterParams, writer.uint32(90).fork()).join();
     }
     return writer;
   },
@@ -270,6 +283,14 @@ export const GalleryMiddleTouchInfo: MessageFns<GalleryMiddleTouchInfo> = {
           }
 
           message.showGalleryMidTouch = reader.bool();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.roomEnterParams = RoomEnterParams.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -460,7 +481,16 @@ export const GoalPinInfo: MessageFns<GoalPinInfo> = {
 };
 
 function createBaseGoalReward(): GoalReward {
-  return { rewardContent: "", topN: 0, hasSticker: false, auditStatus: 0 };
+  return {
+    rewardContent: "",
+    topN: 0,
+    hasSticker: false,
+    auditStatus: 0,
+    rewardDirectMessage: "",
+    rewardTemplateId: "",
+    rewardSource: 0,
+    isHitOptAb: false,
+  };
 }
 
 export const GoalReward: MessageFns<GoalReward> = {
@@ -476,6 +506,18 @@ export const GoalReward: MessageFns<GoalReward> = {
     }
     if (message.auditStatus !== 0) {
       writer.uint32(32).int32(message.auditStatus);
+    }
+    if (message.rewardDirectMessage !== "") {
+      writer.uint32(42).string(message.rewardDirectMessage);
+    }
+    if (message.rewardTemplateId !== "") {
+      writer.uint32(50).string(message.rewardTemplateId);
+    }
+    if (message.rewardSource !== 0) {
+      writer.uint32(56).int32(message.rewardSource);
+    }
+    if (message.isHitOptAb !== false) {
+      writer.uint32(64).bool(message.isHitOptAb);
     }
     return writer;
   },
@@ -517,6 +559,38 @@ export const GoalReward: MessageFns<GoalReward> = {
           }
 
           message.auditStatus = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.rewardDirectMessage = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.rewardTemplateId = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.rewardSource = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.isHitOptAb = reader.bool();
           continue;
         }
       }
@@ -587,6 +661,43 @@ export const GoalStats: MessageFns<GoalStats> = {
           }
 
           message.totalNewFans = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRoomEnterParams(): RoomEnterParams {
+  return { sentGiftToGalleryLast6Months: false };
+}
+
+export const RoomEnterParams: MessageFns<RoomEnterParams> = {
+  encode(message: RoomEnterParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sentGiftToGalleryLast6Months !== false) {
+      writer.uint32(8).bool(message.sentGiftToGalleryLast6Months);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoomEnterParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoomEnterParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.sentGiftToGalleryLast6Months = reader.bool();
           continue;
         }
       }

@@ -16,6 +16,26 @@ export interface ControlChaosInfo {
   actionType: number;
 }
 
+export interface GameInteractionEffectInfo {
+  instructionIconUrl: string;
+  instructionName: GameInteractionText | undefined;
+  instructionDesc: GameInteractionText | undefined;
+  effectTypeName: GameInteractionText | undefined;
+  effectMode: string;
+  effectModeName: GameInteractionText | undefined;
+  instruction: string;
+  effectId: string;
+  effectVersion: string;
+  protocolVersion: number;
+  giftId: string;
+  effectType: number;
+}
+
+export interface GameInteractionText {
+  defaultPattern: string;
+  key: string;
+}
+
 export interface GameTricksShortcut {
   hotKeys: HotKey[];
 }
@@ -43,10 +63,15 @@ export interface GiftPickExtraGameInteraction {
 }
 
 export interface GiftPickExtraGameInteractionExternal {
+  effectInfo: GameInteractionEffectInfo | undefined;
 }
 
 export interface GiftPickExtraGameInteractionStorage {
   instruction: string;
+  instructionDescKey: string;
+  protocolVersion: number;
+  effectId: string;
+  effectVersion: string;
 }
 
 export interface GiftPickExtraGameTricks {
@@ -101,6 +126,8 @@ export interface ProfileExtraGameInteractionExternal {
 
 export interface ProfileExtraGameInteractionStorage {
   gameId: string;
+  templateId: string;
+  mode: string;
 }
 
 export interface ProfileExtraGameTricks {
@@ -199,6 +226,225 @@ export const ControlChaosInfo: MessageFns<ControlChaosInfo> = {
           }
 
           message.actionType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGameInteractionEffectInfo(): GameInteractionEffectInfo {
+  return {
+    instructionIconUrl: "",
+    instructionName: undefined,
+    instructionDesc: undefined,
+    effectTypeName: undefined,
+    effectMode: "",
+    effectModeName: undefined,
+    instruction: "",
+    effectId: "",
+    effectVersion: "",
+    protocolVersion: 0,
+    giftId: "",
+    effectType: 0,
+  };
+}
+
+export const GameInteractionEffectInfo: MessageFns<GameInteractionEffectInfo> = {
+  encode(message: GameInteractionEffectInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.instructionIconUrl !== "") {
+      writer.uint32(10).string(message.instructionIconUrl);
+    }
+    if (message.instructionName !== undefined) {
+      GameInteractionText.encode(message.instructionName, writer.uint32(18).fork()).join();
+    }
+    if (message.instructionDesc !== undefined) {
+      GameInteractionText.encode(message.instructionDesc, writer.uint32(26).fork()).join();
+    }
+    if (message.effectTypeName !== undefined) {
+      GameInteractionText.encode(message.effectTypeName, writer.uint32(34).fork()).join();
+    }
+    if (message.effectMode !== "") {
+      writer.uint32(42).string(message.effectMode);
+    }
+    if (message.effectModeName !== undefined) {
+      GameInteractionText.encode(message.effectModeName, writer.uint32(50).fork()).join();
+    }
+    if (message.instruction !== "") {
+      writer.uint32(58).string(message.instruction);
+    }
+    if (message.effectId !== "") {
+      writer.uint32(66).string(message.effectId);
+    }
+    if (message.effectVersion !== "") {
+      writer.uint32(74).string(message.effectVersion);
+    }
+    if (message.protocolVersion !== 0) {
+      writer.uint32(80).int32(message.protocolVersion);
+    }
+    if (message.giftId !== "") {
+      writer.uint32(90).string(message.giftId);
+    }
+    if (message.effectType !== 0) {
+      writer.uint32(96).int32(message.effectType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameInteractionEffectInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameInteractionEffectInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.instructionIconUrl = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.instructionName = GameInteractionText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.instructionDesc = GameInteractionText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.effectTypeName = GameInteractionText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.effectMode = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.effectModeName = GameInteractionText.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.instruction = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.effectId = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.effectVersion = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.protocolVersion = reader.int32();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.giftId = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.effectType = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGameInteractionText(): GameInteractionText {
+  return { defaultPattern: "", key: "" };
+}
+
+export const GameInteractionText: MessageFns<GameInteractionText> = {
+  encode(message: GameInteractionText, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.defaultPattern !== "") {
+      writer.uint32(10).string(message.defaultPattern);
+    }
+    if (message.key !== "") {
+      writer.uint32(18).string(message.key);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GameInteractionText {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGameInteractionText();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.defaultPattern = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.key = reader.string();
           continue;
         }
       }
@@ -480,11 +726,14 @@ export const GiftPickExtraGameInteraction: MessageFns<GiftPickExtraGameInteracti
 };
 
 function createBaseGiftPickExtraGameInteractionExternal(): GiftPickExtraGameInteractionExternal {
-  return {};
+  return { effectInfo: undefined };
 }
 
 export const GiftPickExtraGameInteractionExternal: MessageFns<GiftPickExtraGameInteractionExternal> = {
-  encode(_: GiftPickExtraGameInteractionExternal, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(message: GiftPickExtraGameInteractionExternal, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.effectInfo !== undefined) {
+      GameInteractionEffectInfo.encode(message.effectInfo, writer.uint32(10).fork()).join();
+    }
     return writer;
   },
 
@@ -495,6 +744,14 @@ export const GiftPickExtraGameInteractionExternal: MessageFns<GiftPickExtraGameI
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.effectInfo = GameInteractionEffectInfo.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -506,13 +763,25 @@ export const GiftPickExtraGameInteractionExternal: MessageFns<GiftPickExtraGameI
 };
 
 function createBaseGiftPickExtraGameInteractionStorage(): GiftPickExtraGameInteractionStorage {
-  return { instruction: "" };
+  return { instruction: "", instructionDescKey: "", protocolVersion: 0, effectId: "", effectVersion: "" };
 }
 
 export const GiftPickExtraGameInteractionStorage: MessageFns<GiftPickExtraGameInteractionStorage> = {
   encode(message: GiftPickExtraGameInteractionStorage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.instruction !== "") {
       writer.uint32(10).string(message.instruction);
+    }
+    if (message.instructionDescKey !== "") {
+      writer.uint32(18).string(message.instructionDescKey);
+    }
+    if (message.protocolVersion !== 0) {
+      writer.uint32(24).int32(message.protocolVersion);
+    }
+    if (message.effectId !== "") {
+      writer.uint32(34).string(message.effectId);
+    }
+    if (message.effectVersion !== "") {
+      writer.uint32(66).string(message.effectVersion);
     }
     return writer;
   },
@@ -530,6 +799,38 @@ export const GiftPickExtraGameInteractionStorage: MessageFns<GiftPickExtraGameIn
           }
 
           message.instruction = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.instructionDescKey = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.protocolVersion = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.effectId = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.effectVersion = reader.string();
           continue;
         }
       }
@@ -1023,13 +1324,19 @@ export const ProfileExtraGameInteractionExternal: MessageFns<ProfileExtraGameInt
 };
 
 function createBaseProfileExtraGameInteractionStorage(): ProfileExtraGameInteractionStorage {
-  return { gameId: "" };
+  return { gameId: "", templateId: "", mode: "" };
 }
 
 export const ProfileExtraGameInteractionStorage: MessageFns<ProfileExtraGameInteractionStorage> = {
   encode(message: ProfileExtraGameInteractionStorage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.gameId !== "") {
       writer.uint32(10).string(message.gameId);
+    }
+    if (message.templateId !== "") {
+      writer.uint32(18).string(message.templateId);
+    }
+    if (message.mode !== "") {
+      writer.uint32(26).string(message.mode);
     }
     return writer;
   },
@@ -1047,6 +1354,22 @@ export const ProfileExtraGameInteractionStorage: MessageFns<ProfileExtraGameInte
           }
 
           message.gameId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.templateId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.mode = reader.string();
           continue;
         }
       }

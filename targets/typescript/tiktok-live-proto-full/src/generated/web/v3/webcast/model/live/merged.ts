@@ -61,7 +61,9 @@ import { PollInfo } from "../poll_info.js";
 import { WarningTag } from "../warning_tag.js";
 import { BattleInfoResponse } from "./match_battle_info_response.js";
 import {
+  ActivityToggleInfo,
   AgeRestricted,
+  AIAnchorAboutMeInfo,
   ASRSummary,
   AudienceLinkmicRelation,
   BALinkStruct,
@@ -69,16 +71,20 @@ import {
   BoardUsingInfo,
   CaptionInfo,
   ChannelInfo,
+  CollaborativeLiveInfo,
   CommerceStruct,
   CommercialContentToggle,
   ContentSpotlightRankInfo,
+  CreateLinkmicInfo,
   CustomTabInfo,
   ECLiveHeadToLiveRoomParams,
+  EcommerceActivityInfo,
   EcommerceRoomHeadTag,
   EcommerceRoomTag,
   EffectInfo,
   EnlargeViewInfo,
   EnterNearByInfo,
+  EnterRoomDecisionInfo,
   EpiphronDecision,
   FYPCommerceStruct,
   GiftSuspension,
@@ -86,9 +92,11 @@ import {
   GuestInfo,
   HighlightFragmentInfo,
   LikeIconInfo,
+  LinkmicLayoutConfig,
   LiveFilterMsgRule,
   LiveGiftBoostCardRoomStatus,
   LiveRecordConfig,
+  LuminanceInfo,
   M2GuideInfo,
   MsgNotifyComAvoidConfig,
   MsgNotifyQuota,
@@ -105,6 +113,7 @@ import {
   PollConf,
   PreviewCardCommentBox,
   PreviewCTA,
+  ProgrammedLiveRoomTagInfo,
   PublicCommonDynamicText,
   QueueInfo,
   QuickGift,
@@ -119,6 +128,7 @@ import {
   SMBLivePreview,
   SMBToolInfo,
   StrategyPlatformFeatures,
+  StreamFeature,
   StreamSnapShot,
   StreamUrl,
   SubUpsellInfo,
@@ -126,6 +136,7 @@ import {
   ToolbarConfig,
   TopFrameBannerInfo,
   TTLSRoomInfo,
+  WatchReasonV2,
 } from "./messages.js";
 
 export const protobufPackage = "webcast.model.live";
@@ -441,6 +452,7 @@ export interface Room {
   hasTtlsLivePermission: boolean;
   smbLivePreview: SMBLivePreview | undefined;
   ttlsRoomInfo: TTLSRoomInfo | undefined;
+  hasTtlsGoods: boolean;
   showWatchLiveCta: boolean;
   isRepostedExpect: string;
   aiLivePreviewHighlightExtra: AILivePreviewHighlightExtra | undefined;
@@ -476,6 +488,21 @@ export interface Room {
   contentSpotlightRankInfo: ContentSpotlightRankInfo | undefined;
   streamSnapshotCover: ImageModel | undefined;
   ttlsLiveType: string;
+  leadsAdsPinCard: SubPinCard | undefined;
+  finalAnchorType: number;
+  streamFeatures: StreamFeature[];
+  enableStreamTranslation: boolean;
+  existedCommerceGoodsTs: string;
+  addTtlsProductTs: string;
+  activityToggleInfo: ActivityToggleInfo | undefined;
+  ecommerceActivityInfo: EcommerceActivityInfo | undefined;
+  watchReasonV2: WatchReasonV2 | undefined;
+  aiAnchorAboutMeInfo: AIAnchorAboutMeInfo | undefined;
+  streamCoverLuminanceInfo: LuminanceInfo | undefined;
+  enterRoomDecisionInfo: EnterRoomDecisionInfo | undefined;
+  collaborativeLiveInfo: CollaborativeLiveInfo | undefined;
+  programmedLiveShowTag: string;
+  programmedLiveRoomTagInfo: ProgrammedLiveRoomTagInfo | undefined;
 }
 
 export interface Room_LinkerMapEntry {
@@ -521,8 +548,12 @@ export interface RoomLinkInfo {
   cohostSettingsInfo: CohostSettingsInfo | undefined;
   abInfos: { [key: string]: CohostABInfo };
   linkMicChannel: string;
+  layoutConfig: LinkmicLayoutConfig | undefined;
   linkmicUnifyChannelId: string;
   multiGuestEnable: boolean;
+  subtitleEnable: number;
+  cohostAnchorsHash: string;
+  createLinkmicInfo: CreateLinkmicInfo | undefined;
 }
 
 export interface RoomLinkInfo_AbInfosEntry {
@@ -1818,6 +1849,7 @@ function createBaseRoom(): Room {
     hasTtlsLivePermission: false,
     smbLivePreview: undefined,
     ttlsRoomInfo: undefined,
+    hasTtlsGoods: false,
     showWatchLiveCta: false,
     isRepostedExpect: "0",
     aiLivePreviewHighlightExtra: undefined,
@@ -1853,6 +1885,21 @@ function createBaseRoom(): Room {
     contentSpotlightRankInfo: undefined,
     streamSnapshotCover: undefined,
     ttlsLiveType: "0",
+    leadsAdsPinCard: undefined,
+    finalAnchorType: 0,
+    streamFeatures: [],
+    enableStreamTranslation: false,
+    existedCommerceGoodsTs: "0",
+    addTtlsProductTs: "0",
+    activityToggleInfo: undefined,
+    ecommerceActivityInfo: undefined,
+    watchReasonV2: undefined,
+    aiAnchorAboutMeInfo: undefined,
+    streamCoverLuminanceInfo: undefined,
+    enterRoomDecisionInfo: undefined,
+    collaborativeLiveInfo: undefined,
+    programmedLiveShowTag: "0",
+    programmedLiveRoomTagInfo: undefined,
   };
 }
 
@@ -2498,6 +2545,9 @@ export const Room: MessageFns<Room> = {
     if (message.ttlsRoomInfo !== undefined) {
       TTLSRoomInfo.encode(message.ttlsRoomInfo, writer.uint32(2650).fork()).join();
     }
+    if (message.hasTtlsGoods !== false) {
+      writer.uint32(2656).bool(message.hasTtlsGoods);
+    }
     if (message.showWatchLiveCta !== false) {
       writer.uint32(2664).bool(message.showWatchLiveCta);
     }
@@ -2604,6 +2654,51 @@ export const Room: MessageFns<Room> = {
     }
     if (message.ttlsLiveType !== "0") {
       writer.uint32(2936).int64(message.ttlsLiveType);
+    }
+    if (message.leadsAdsPinCard !== undefined) {
+      SubPinCard.encode(message.leadsAdsPinCard, writer.uint32(2946).fork()).join();
+    }
+    if (message.finalAnchorType !== 0) {
+      writer.uint32(2952).int32(message.finalAnchorType);
+    }
+    for (const v of message.streamFeatures) {
+      StreamFeature.encode(v!, writer.uint32(2962).fork()).join();
+    }
+    if (message.enableStreamTranslation !== false) {
+      writer.uint32(2968).bool(message.enableStreamTranslation);
+    }
+    if (message.existedCommerceGoodsTs !== "0") {
+      writer.uint32(2976).int64(message.existedCommerceGoodsTs);
+    }
+    if (message.addTtlsProductTs !== "0") {
+      writer.uint32(2984).int64(message.addTtlsProductTs);
+    }
+    if (message.activityToggleInfo !== undefined) {
+      ActivityToggleInfo.encode(message.activityToggleInfo, writer.uint32(2994).fork()).join();
+    }
+    if (message.ecommerceActivityInfo !== undefined) {
+      EcommerceActivityInfo.encode(message.ecommerceActivityInfo, writer.uint32(3002).fork()).join();
+    }
+    if (message.watchReasonV2 !== undefined) {
+      WatchReasonV2.encode(message.watchReasonV2, writer.uint32(3010).fork()).join();
+    }
+    if (message.aiAnchorAboutMeInfo !== undefined) {
+      AIAnchorAboutMeInfo.encode(message.aiAnchorAboutMeInfo, writer.uint32(3018).fork()).join();
+    }
+    if (message.streamCoverLuminanceInfo !== undefined) {
+      LuminanceInfo.encode(message.streamCoverLuminanceInfo, writer.uint32(3026).fork()).join();
+    }
+    if (message.enterRoomDecisionInfo !== undefined) {
+      EnterRoomDecisionInfo.encode(message.enterRoomDecisionInfo, writer.uint32(3034).fork()).join();
+    }
+    if (message.collaborativeLiveInfo !== undefined) {
+      CollaborativeLiveInfo.encode(message.collaborativeLiveInfo, writer.uint32(3042).fork()).join();
+    }
+    if (message.programmedLiveShowTag !== "0") {
+      writer.uint32(3048).int64(message.programmedLiveShowTag);
+    }
+    if (message.programmedLiveRoomTagInfo !== undefined) {
+      ProgrammedLiveRoomTagInfo.encode(message.programmedLiveRoomTagInfo, writer.uint32(3058).fork()).join();
     }
     return writer;
   },
@@ -4326,6 +4421,14 @@ export const Room: MessageFns<Room> = {
           message.ttlsRoomInfo = TTLSRoomInfo.decode(reader, reader.uint32());
           continue;
         }
+        case 332: {
+          if (tag !== 2656) {
+            break;
+          }
+
+          message.hasTtlsGoods = reader.bool();
+          continue;
+        }
         case 333: {
           if (tag !== 2664) {
             break;
@@ -4616,6 +4719,126 @@ export const Room: MessageFns<Room> = {
           message.ttlsLiveType = reader.int64().toString();
           continue;
         }
+        case 368: {
+          if (tag !== 2946) {
+            break;
+          }
+
+          message.leadsAdsPinCard = SubPinCard.decode(reader, reader.uint32());
+          continue;
+        }
+        case 369: {
+          if (tag !== 2952) {
+            break;
+          }
+
+          message.finalAnchorType = reader.int32();
+          continue;
+        }
+        case 370: {
+          if (tag !== 2962) {
+            break;
+          }
+
+          message.streamFeatures.push(StreamFeature.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 371: {
+          if (tag !== 2968) {
+            break;
+          }
+
+          message.enableStreamTranslation = reader.bool();
+          continue;
+        }
+        case 372: {
+          if (tag !== 2976) {
+            break;
+          }
+
+          message.existedCommerceGoodsTs = reader.int64().toString();
+          continue;
+        }
+        case 373: {
+          if (tag !== 2984) {
+            break;
+          }
+
+          message.addTtlsProductTs = reader.int64().toString();
+          continue;
+        }
+        case 374: {
+          if (tag !== 2994) {
+            break;
+          }
+
+          message.activityToggleInfo = ActivityToggleInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 375: {
+          if (tag !== 3002) {
+            break;
+          }
+
+          message.ecommerceActivityInfo = EcommerceActivityInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 376: {
+          if (tag !== 3010) {
+            break;
+          }
+
+          message.watchReasonV2 = WatchReasonV2.decode(reader, reader.uint32());
+          continue;
+        }
+        case 377: {
+          if (tag !== 3018) {
+            break;
+          }
+
+          message.aiAnchorAboutMeInfo = AIAnchorAboutMeInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 378: {
+          if (tag !== 3026) {
+            break;
+          }
+
+          message.streamCoverLuminanceInfo = LuminanceInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 379: {
+          if (tag !== 3034) {
+            break;
+          }
+
+          message.enterRoomDecisionInfo = EnterRoomDecisionInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 380: {
+          if (tag !== 3042) {
+            break;
+          }
+
+          message.collaborativeLiveInfo = CollaborativeLiveInfo.decode(reader, reader.uint32());
+          continue;
+        }
+        case 381: {
+          if (tag !== 3048) {
+            break;
+          }
+
+          message.programmedLiveShowTag = reader.int64().toString();
+          continue;
+        }
+        case 382: {
+          if (tag !== 3058) {
+            break;
+          }
+
+          message.programmedLiveRoomTagInfo = ProgrammedLiveRoomTagInfo.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -4885,8 +5108,12 @@ function createBaseRoomLinkInfo(): RoomLinkInfo {
     cohostSettingsInfo: undefined,
     abInfos: {},
     linkMicChannel: "0",
+    layoutConfig: undefined,
     linkmicUnifyChannelId: "0",
     multiGuestEnable: false,
+    subtitleEnable: 0,
+    cohostAnchorsHash: "0",
+    createLinkmicInfo: undefined,
   };
 }
 
@@ -4945,11 +5172,23 @@ export const RoomLinkInfo: MessageFns<RoomLinkInfo> = {
     if (message.linkMicChannel !== "0") {
       writer.uint32(504).int64(message.linkMicChannel);
     }
+    if (message.layoutConfig !== undefined) {
+      LinkmicLayoutConfig.encode(message.layoutConfig, writer.uint32(514).fork()).join();
+    }
     if (message.linkmicUnifyChannelId !== "0") {
       writer.uint32(520).int64(message.linkmicUnifyChannelId);
     }
     if (message.multiGuestEnable !== false) {
       writer.uint32(528).bool(message.multiGuestEnable);
+    }
+    if (message.subtitleEnable !== 0) {
+      writer.uint32(536).int32(message.subtitleEnable);
+    }
+    if (message.cohostAnchorsHash !== "0") {
+      writer.uint32(544).int64(message.cohostAnchorsHash);
+    }
+    if (message.createLinkmicInfo !== undefined) {
+      CreateLinkmicInfo.encode(message.createLinkmicInfo, writer.uint32(554).fork()).join();
     }
     return writer;
   },
@@ -5110,6 +5349,14 @@ export const RoomLinkInfo: MessageFns<RoomLinkInfo> = {
           message.linkMicChannel = reader.int64().toString();
           continue;
         }
+        case 64: {
+          if (tag !== 514) {
+            break;
+          }
+
+          message.layoutConfig = LinkmicLayoutConfig.decode(reader, reader.uint32());
+          continue;
+        }
         case 65: {
           if (tag !== 520) {
             break;
@@ -5124,6 +5371,30 @@ export const RoomLinkInfo: MessageFns<RoomLinkInfo> = {
           }
 
           message.multiGuestEnable = reader.bool();
+          continue;
+        }
+        case 67: {
+          if (tag !== 536) {
+            break;
+          }
+
+          message.subtitleEnable = reader.int32();
+          continue;
+        }
+        case 68: {
+          if (tag !== 544) {
+            break;
+          }
+
+          message.cohostAnchorsHash = reader.int64().toString();
+          continue;
+        }
+        case 69: {
+          if (tag !== 554) {
+            break;
+          }
+
+          message.createLinkmicInfo = CreateLinkmicInfo.decode(reader, reader.uint32());
           continue;
         }
       }

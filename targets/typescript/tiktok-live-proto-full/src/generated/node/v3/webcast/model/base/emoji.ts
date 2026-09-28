@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import { EmoteModelAuditInfo } from "../../chatroom/api_audit_info.js";
+import { EmoteModelAuditInfo } from "../../chatroom/api_audit_info_2.js";
 import { EmoteUploadInfo } from "../../chatroom/api_emote_upload_info.js";
 import {
   AuditStatus,

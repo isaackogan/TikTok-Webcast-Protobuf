@@ -9,7 +9,7 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { RankUserEnigmaInfo } from "../../message_proto.js";
 import { FollowInfo } from "../../shared/anchor_info.js";
 import { ImageModel } from "../base/messages.js";
-import { BadgeStruct, PrivilegeLogExtra } from "../base/user.js";
+import { AvatarHashInfo, BadgeStruct, PrivilegeLogExtra } from "../base/user.js";
 import { User } from "../base/user_2.js";
 import { KaraokeSong } from "../merged.js";
 import { Text } from "../message/common.js";
@@ -95,6 +95,9 @@ export interface MGEnterActionInfo {
   enterActionOriginLinkmicId: string;
   enterActionSourceRole: number;
   enterActionSourceUser: User | undefined;
+  enterActionSourceTimeMs: string;
+  joinAction: number;
+  enterActionLinkerSessionId: string;
 }
 
 export interface MultiGuestLinkmicInfo {
@@ -113,6 +116,7 @@ export interface RankUser {
   border: Border | undefined;
   displayId: string;
   badgeList: BadgeStruct[];
+  avatarHashInfo: AvatarHashInfo | undefined;
   followStatus: string;
   idStr: string;
   enigmaInfo: RankUserEnigmaInfo | undefined;
@@ -830,6 +834,9 @@ function createBaseMGEnterActionInfo(): MGEnterActionInfo {
     enterActionOriginLinkmicId: "",
     enterActionSourceRole: 0,
     enterActionSourceUser: undefined,
+    enterActionSourceTimeMs: "0",
+    joinAction: 0,
+    enterActionLinkerSessionId: "",
   };
 }
 
@@ -849,6 +856,15 @@ export const MGEnterActionInfo: MessageFns<MGEnterActionInfo> = {
     }
     if (message.enterActionSourceUser !== undefined) {
       User.encode(message.enterActionSourceUser, writer.uint32(42).fork()).join();
+    }
+    if (message.enterActionSourceTimeMs !== "0") {
+      writer.uint32(48).int64(message.enterActionSourceTimeMs);
+    }
+    if (message.joinAction !== 0) {
+      writer.uint32(56).int32(message.joinAction);
+    }
+    if (message.enterActionLinkerSessionId !== "") {
+      writer.uint32(66).string(message.enterActionLinkerSessionId);
     }
     return writer;
   },
@@ -898,6 +914,30 @@ export const MGEnterActionInfo: MessageFns<MGEnterActionInfo> = {
           }
 
           message.enterActionSourceUser = User.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.enterActionSourceTimeMs = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.joinAction = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.enterActionLinkerSessionId = reader.string();
           continue;
         }
       }
@@ -990,6 +1030,7 @@ function createBaseRankUser(): RankUser {
     border: undefined,
     displayId: "",
     badgeList: [],
+    avatarHashInfo: undefined,
     followStatus: "0",
     idStr: "",
     enigmaInfo: undefined,
@@ -1021,6 +1062,9 @@ export const RankUser: MessageFns<RankUser> = {
     }
     for (const v of message.badgeList) {
       BadgeStruct.encode(v!, writer.uint32(514).fork()).join();
+    }
+    if (message.avatarHashInfo !== undefined) {
+      AvatarHashInfo.encode(message.avatarHashInfo, writer.uint32(538).fork()).join();
     }
     if (message.followStatus !== "0") {
       writer.uint32(8192).int64(message.followStatus);
@@ -1103,6 +1147,14 @@ export const RankUser: MessageFns<RankUser> = {
           }
 
           message.badgeList.push(BadgeStruct.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 67: {
+          if (tag !== 538) {
+            break;
+          }
+
+          message.avatarHashInfo = AvatarHashInfo.decode(reader, reader.uint32());
           continue;
         }
         case 1024: {

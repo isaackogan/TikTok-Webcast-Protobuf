@@ -14,7 +14,7 @@ import {
   IceShowdownSetting,
   MatchGameplayOption,
 } from "../data/messages.js";
-import { GiftModeMeta } from "../live/match.js";
+import { GiftModeMeta, GiftModeMetaV2, GoofyEffectInfo } from "../live/match.js";
 
 export const protobufPackage = "webcast.model.message.battle";
 
@@ -33,6 +33,8 @@ export interface BattleSetting {
   sourceType: string;
   iceShowdownSetting: IceShowdownSetting;
   gameplayOption: MatchGameplayOption;
+  giftModeMetaV2: GiftModeMetaV2 | undefined;
+  goofyEffectInfo: GoofyEffectInfo | undefined;
 }
 
 function createBaseBattleSetting(): BattleSetting {
@@ -51,6 +53,8 @@ function createBaseBattleSetting(): BattleSetting {
     sourceType: "0",
     iceShowdownSetting: 0,
     gameplayOption: 0,
+    giftModeMetaV2: undefined,
+    goofyEffectInfo: undefined,
   };
 }
 
@@ -97,6 +101,12 @@ export const BattleSetting: MessageFns<BattleSetting> = {
     }
     if (message.gameplayOption !== 0) {
       writer.uint32(112).int32(message.gameplayOption);
+    }
+    if (message.giftModeMetaV2 !== undefined) {
+      GiftModeMetaV2.encode(message.giftModeMetaV2, writer.uint32(122).fork()).join();
+    }
+    if (message.goofyEffectInfo !== undefined) {
+      GoofyEffectInfo.encode(message.goofyEffectInfo, writer.uint32(130).fork()).join();
     }
     return writer;
   },
@@ -218,6 +228,22 @@ export const BattleSetting: MessageFns<BattleSetting> = {
           }
 
           message.gameplayOption = reader.int32() as any;
+          continue;
+        }
+        case 15: {
+          if (tag !== 122) {
+            break;
+          }
+
+          message.giftModeMetaV2 = GiftModeMetaV2.decode(reader, reader.uint32());
+          continue;
+        }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+
+          message.goofyEffectInfo = GoofyEffectInfo.decode(reader, reader.uint32());
           continue;
         }
       }

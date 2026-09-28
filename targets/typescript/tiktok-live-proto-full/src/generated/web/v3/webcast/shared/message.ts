@@ -17,6 +17,10 @@ export interface BaseProtoMessage {
   msgType: number;
   offset: string;
   isHistory: boolean;
+  sampleFlag: number;
+  methodId: number;
+  groupKey: string;
+  groupScene: string;
 }
 
 export interface CommonMessageData {
@@ -80,7 +84,18 @@ export interface ProtoMessageFetchResult_RouteParamsEntry {
 }
 
 function createBaseBaseProtoMessage(): BaseProtoMessage {
-  return { method: "", payload: new Uint8Array(0), msgId: "0", msgType: 0, offset: "0", isHistory: false };
+  return {
+    method: "",
+    payload: new Uint8Array(0),
+    msgId: "0",
+    msgType: 0,
+    offset: "0",
+    isHistory: false,
+    sampleFlag: 0,
+    methodId: 0,
+    groupKey: "",
+    groupScene: "",
+  };
 }
 
 export const BaseProtoMessage: MessageFns<BaseProtoMessage> = {
@@ -102,6 +117,18 @@ export const BaseProtoMessage: MessageFns<BaseProtoMessage> = {
     }
     if (message.isHistory !== false) {
       writer.uint32(48).bool(message.isHistory);
+    }
+    if (message.sampleFlag !== 0) {
+      writer.uint32(56).int32(message.sampleFlag);
+    }
+    if (message.methodId !== 0) {
+      writer.uint32(64).int32(message.methodId);
+    }
+    if (message.groupKey !== "") {
+      writer.uint32(74).string(message.groupKey);
+    }
+    if (message.groupScene !== "") {
+      writer.uint32(82).string(message.groupScene);
     }
     return writer;
   },
@@ -159,6 +186,38 @@ export const BaseProtoMessage: MessageFns<BaseProtoMessage> = {
           }
 
           message.isHistory = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.sampleFlag = reader.int32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.methodId = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.groupKey = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.groupScene = reader.string();
           continue;
         }
       }
