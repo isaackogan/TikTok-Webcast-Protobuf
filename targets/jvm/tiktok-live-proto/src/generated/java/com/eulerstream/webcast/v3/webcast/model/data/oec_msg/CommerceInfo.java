@@ -12,6 +12,7 @@ import com.squareup.wire.Syntax;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -66,21 +67,42 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
   )
   public final AuctionInfo auction_info;
 
+  @WireField(
+      tag = 6,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "lynxType"
+  )
+  public final int lynx_type;
+
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "lynxInfo"
+  )
+  public final String lynx_info;
+
   public CommerceInfo(Map<Long, ProductItem> product_info, PopCardInfo pop_card_info,
       PopupWindowInfo popup_window_info, Map<Long, VoucherItem> voucher_info,
-      AuctionInfo auction_info) {
-    this(product_info, pop_card_info, popup_window_info, voucher_info, auction_info, ByteString.EMPTY);
+      AuctionInfo auction_info, int lynx_type, String lynx_info) {
+    this(product_info, pop_card_info, popup_window_info, voucher_info, auction_info, lynx_type, lynx_info, ByteString.EMPTY);
   }
 
   public CommerceInfo(Map<Long, ProductItem> product_info, PopCardInfo pop_card_info,
       PopupWindowInfo popup_window_info, Map<Long, VoucherItem> voucher_info,
-      AuctionInfo auction_info, ByteString unknownFields) {
+      AuctionInfo auction_info, int lynx_type, String lynx_info, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.product_info = Internal.immutableCopyOf("product_info", product_info);
     this.pop_card_info = pop_card_info;
     this.popup_window_info = popup_window_info;
     this.voucher_info = Internal.immutableCopyOf("voucher_info", voucher_info);
     this.auction_info = auction_info;
+    this.lynx_type = lynx_type;
+    if (lynx_info == null) {
+      throw new IllegalArgumentException("lynx_info == null");
+    }
+    this.lynx_info = lynx_info;
   }
 
   @Override
@@ -91,6 +113,8 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
     builder.popup_window_info = popup_window_info;
     builder.voucher_info = Internal.copyOf(voucher_info);
     builder.auction_info = auction_info;
+    builder.lynx_type = lynx_type;
+    builder.lynx_info = lynx_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -105,7 +129,9 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
         && Internal.equals(pop_card_info, o.pop_card_info)
         && Internal.equals(popup_window_info, o.popup_window_info)
         && voucher_info.equals(o.voucher_info)
-        && Internal.equals(auction_info, o.auction_info);
+        && Internal.equals(auction_info, o.auction_info)
+        && Internal.equals(lynx_type, o.lynx_type)
+        && Internal.equals(lynx_info, o.lynx_info);
   }
 
   @Override
@@ -118,6 +144,8 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
       result = result * 37 + (popup_window_info != null ? popup_window_info.hashCode() : 0);
       result = result * 37 + voucher_info.hashCode();
       result = result * 37 + (auction_info != null ? auction_info.hashCode() : 0);
+      result = result * 37 + Integer.hashCode(lynx_type);
+      result = result * 37 + (lynx_info != null ? lynx_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -131,6 +159,8 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
     if (popup_window_info != null) builder.append(", popup_window_info=").append(popup_window_info);
     if (!voucher_info.isEmpty()) builder.append(", voucher_info=").append(voucher_info);
     if (auction_info != null) builder.append(", auction_info=").append(auction_info);
+    builder.append(", lynx_type=").append(lynx_type);
+    if (lynx_info != null) builder.append(", lynx_info=").append(Internal.sanitize(lynx_info));
     return builder.replace(0, 2, "CommerceInfo{").append('}').toString();
   }
 
@@ -145,9 +175,15 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
 
     public AuctionInfo auction_info;
 
+    public int lynx_type;
+
+    public String lynx_info;
+
     public Builder() {
       product_info = Internal.newMutableMap();
       voucher_info = Internal.newMutableMap();
+      lynx_type = 0;
+      lynx_info = "";
     }
 
     public Builder product_info(Map<Long, ProductItem> product_info) {
@@ -177,9 +213,19 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
       return this;
     }
 
+    public Builder lynx_type(int lynx_type) {
+      this.lynx_type = lynx_type;
+      return this;
+    }
+
+    public Builder lynx_info(String lynx_info) {
+      this.lynx_info = lynx_info;
+      return this;
+    }
+
     @Override
     public CommerceInfo build() {
-      return new CommerceInfo(product_info, pop_card_info, popup_window_info, voucher_info, auction_info, super.buildUnknownFields());
+      return new CommerceInfo(product_info, pop_card_info, popup_window_info, voucher_info, auction_info, lynx_type, lynx_info, super.buildUnknownFields());
     }
   }
 
@@ -206,6 +252,12 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
       if (!Objects.equals(value.auction_info, null)) {
         result += AuctionInfo.ADAPTER.encodedSizeWithTag(5, value.auction_info);
       }
+      if (!Objects.equals(value.lynx_type, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(6, value.lynx_type);
+      }
+      if (!Objects.equals(value.lynx_info, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.lynx_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -217,12 +269,16 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
       if (!Objects.equals(value.popup_window_info, null)) PopupWindowInfo.ADAPTER.encodeWithTag(writer, 3, value.popup_window_info);
       voucher_infoAdapter().encodeWithTag(writer, 4, value.voucher_info);
       if (!Objects.equals(value.auction_info, null)) AuctionInfo.ADAPTER.encodeWithTag(writer, 5, value.auction_info);
+      if (!Objects.equals(value.lynx_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 6, value.lynx_type);
+      if (!Objects.equals(value.lynx_info, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.lynx_info);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, CommerceInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.lynx_info, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.lynx_info);
+      if (!Objects.equals(value.lynx_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 6, value.lynx_type);
       if (!Objects.equals(value.auction_info, null)) AuctionInfo.ADAPTER.encodeWithTag(writer, 5, value.auction_info);
       voucher_infoAdapter().encodeWithTag(writer, 4, value.voucher_info);
       if (!Objects.equals(value.popup_window_info, null)) PopupWindowInfo.ADAPTER.encodeWithTag(writer, 3, value.popup_window_info);
@@ -241,6 +297,8 @@ public final class CommerceInfo extends Message<CommerceInfo, CommerceInfo.Build
           case 3: builder.popup_window_info(PopupWindowInfo.ADAPTER.decode(reader)); break;
           case 4: builder.voucher_info.putAll(voucher_infoAdapter().decode(reader)); break;
           case 5: builder.auction_info(AuctionInfo.ADAPTER.decode(reader)); break;
+          case 6: builder.lynx_type(ProtoAdapter.INT32.decode(reader)); break;
+          case 7: builder.lynx_info(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

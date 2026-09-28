@@ -9,11 +9,14 @@ import com.squareup.wire.ProtoReader;
 import com.squareup.wire.ProtoWriter;
 import com.squareup.wire.ReverseProtoWriter;
 import com.squareup.wire.Syntax;
+import com.squareup.wire.WireField;
+import com.squareup.wire.internal.Internal;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.StringBuilder;
+import java.util.Objects;
 import okio.ByteString;
 
 public final class GiftPickExtraGameInteractionExternal extends Message<GiftPickExtraGameInteractionExternal, GiftPickExtraGameInteractionExternal.Builder> {
@@ -21,17 +24,28 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
 
   private static final long serialVersionUID = 0L;
 
-  public GiftPickExtraGameInteractionExternal() {
-    this(ByteString.EMPTY);
+  @WireField(
+      tag = 1,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.viewer_picks.GameInteractionEffectInfo#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "effectInfo"
+  )
+  public final GameInteractionEffectInfo effect_info;
+
+  public GiftPickExtraGameInteractionExternal(GameInteractionEffectInfo effect_info) {
+    this(effect_info, ByteString.EMPTY);
   }
 
-  public GiftPickExtraGameInteractionExternal(ByteString unknownFields) {
+  public GiftPickExtraGameInteractionExternal(GameInteractionEffectInfo effect_info,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
+    this.effect_info = effect_info;
   }
 
   @Override
   public Builder newBuilder() {
     Builder builder = new Builder();
+    builder.effect_info = effect_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -41,27 +55,42 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
     if (other == this) return true;
     if (!(other instanceof GiftPickExtraGameInteractionExternal)) return false;
     GiftPickExtraGameInteractionExternal o = (GiftPickExtraGameInteractionExternal) other;
-    return unknownFields().equals(o.unknownFields());
+    return unknownFields().equals(o.unknownFields())
+        && Internal.equals(effect_info, o.effect_info);
   }
 
   @Override
   public int hashCode() {
-    return unknownFields().hashCode();
+    int result = super.hashCode;
+    if (result == 0) {
+      result = unknownFields().hashCode();
+      result = result * 37 + (effect_info != null ? effect_info.hashCode() : 0);
+      super.hashCode = result;
+    }
+    return result;
   }
 
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
+    if (effect_info != null) builder.append(", effect_info=").append(effect_info);
     return builder.replace(0, 2, "GiftPickExtraGameInteractionExternal{").append('}').toString();
   }
 
   public static final class Builder extends Message.Builder<GiftPickExtraGameInteractionExternal, Builder> {
+    public GameInteractionEffectInfo effect_info;
+
     public Builder() {
+    }
+
+    public Builder effect_info(GameInteractionEffectInfo effect_info) {
+      this.effect_info = effect_info;
+      return this;
     }
 
     @Override
     public GiftPickExtraGameInteractionExternal build() {
-      return new GiftPickExtraGameInteractionExternal(super.buildUnknownFields());
+      return new GiftPickExtraGameInteractionExternal(effect_info, super.buildUnknownFields());
     }
   }
 
@@ -73,6 +102,9 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
     @Override
     public int encodedSize(GiftPickExtraGameInteractionExternal value) {
       int result = 0;
+      if (!Objects.equals(value.effect_info, null)) {
+        result += GameInteractionEffectInfo.ADAPTER.encodedSizeWithTag(1, value.effect_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -80,6 +112,7 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
     @Override
     public void encode(ProtoWriter writer, GiftPickExtraGameInteractionExternal value) throws
         IOException {
+      if (!Objects.equals(value.effect_info, null)) GameInteractionEffectInfo.ADAPTER.encodeWithTag(writer, 1, value.effect_info);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -87,6 +120,7 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
     public void encode(ReverseProtoWriter writer, GiftPickExtraGameInteractionExternal value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.effect_info, null)) GameInteractionEffectInfo.ADAPTER.encodeWithTag(writer, 1, value.effect_info);
     }
 
     @Override
@@ -95,6 +129,7 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
       long token = reader.beginMessage();
       for (int tag; (tag = reader.nextTag()) != -1;) {
         switch (tag) {
+          case 1: builder.effect_info(GameInteractionEffectInfo.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -107,6 +142,7 @@ public final class GiftPickExtraGameInteractionExternal extends Message<GiftPick
     @Override
     public GiftPickExtraGameInteractionExternal redact(GiftPickExtraGameInteractionExternal value) {
       Builder builder = value.newBuilder();
+      if (builder.effect_info != null) builder.effect_info = GameInteractionEffectInfo.ADAPTER.redact(builder.effect_info);
       builder.clearUnknownFields();
       return builder.build();
     }

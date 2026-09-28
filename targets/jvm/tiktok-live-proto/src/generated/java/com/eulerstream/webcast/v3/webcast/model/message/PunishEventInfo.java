@@ -105,15 +105,24 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
   )
   public final String show_reason;
 
+  @WireField(
+      tag = 11,
+      adapter = "com.squareup.wire.ProtoAdapter#INT64",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "endTimeV2"
+  )
+  public final long end_time_v2;
+
   public PunishEventInfo(String punish_type, String punish_reason, String punish_id,
       long violation_uid, PunishTypeId punish_type_id, long duration, String punish_perception_code,
-      long end_time, String violation_uid_str, String show_reason) {
-    this(punish_type, punish_reason, punish_id, violation_uid, punish_type_id, duration, punish_perception_code, end_time, violation_uid_str, show_reason, ByteString.EMPTY);
+      long end_time, String violation_uid_str, String show_reason, long end_time_v2) {
+    this(punish_type, punish_reason, punish_id, violation_uid, punish_type_id, duration, punish_perception_code, end_time, violation_uid_str, show_reason, end_time_v2, ByteString.EMPTY);
   }
 
   public PunishEventInfo(String punish_type, String punish_reason, String punish_id,
       long violation_uid, PunishTypeId punish_type_id, long duration, String punish_perception_code,
-      long end_time, String violation_uid_str, String show_reason, ByteString unknownFields) {
+      long end_time, String violation_uid_str, String show_reason, long end_time_v2,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (punish_type == null) {
       throw new IllegalArgumentException("punish_type == null");
@@ -146,6 +155,7 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
       throw new IllegalArgumentException("show_reason == null");
     }
     this.show_reason = show_reason;
+    this.end_time_v2 = end_time_v2;
   }
 
   @Override
@@ -161,6 +171,7 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
     builder.end_time = end_time;
     builder.violation_uid_str = violation_uid_str;
     builder.show_reason = show_reason;
+    builder.end_time_v2 = end_time_v2;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -180,7 +191,8 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
         && Internal.equals(punish_perception_code, o.punish_perception_code)
         && Internal.equals(end_time, o.end_time)
         && Internal.equals(violation_uid_str, o.violation_uid_str)
-        && Internal.equals(show_reason, o.show_reason);
+        && Internal.equals(show_reason, o.show_reason)
+        && Internal.equals(end_time_v2, o.end_time_v2);
   }
 
   @Override
@@ -198,6 +210,7 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
       result = result * 37 + Long.hashCode(end_time);
       result = result * 37 + (violation_uid_str != null ? violation_uid_str.hashCode() : 0);
       result = result * 37 + (show_reason != null ? show_reason.hashCode() : 0);
+      result = result * 37 + Long.hashCode(end_time_v2);
       super.hashCode = result;
     }
     return result;
@@ -216,6 +229,7 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
     builder.append(", end_time=").append(end_time);
     if (violation_uid_str != null) builder.append(", violation_uid_str=").append(Internal.sanitize(violation_uid_str));
     if (show_reason != null) builder.append(", show_reason=").append(Internal.sanitize(show_reason));
+    builder.append(", end_time_v2=").append(end_time_v2);
     return builder.replace(0, 2, "PunishEventInfo{").append('}').toString();
   }
 
@@ -240,6 +254,8 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
 
     public String show_reason;
 
+    public long end_time_v2;
+
     public Builder() {
       punish_type = "";
       punish_reason = "";
@@ -251,6 +267,7 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
       end_time = 0L;
       violation_uid_str = "";
       show_reason = "";
+      end_time_v2 = 0L;
     }
 
     public Builder punish_type(String punish_type) {
@@ -303,9 +320,14 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
       return this;
     }
 
+    public Builder end_time_v2(long end_time_v2) {
+      this.end_time_v2 = end_time_v2;
+      return this;
+    }
+
     @Override
     public PunishEventInfo build() {
-      return new PunishEventInfo(punish_type, punish_reason, punish_id, violation_uid, punish_type_id, duration, punish_perception_code, end_time, violation_uid_str, show_reason, super.buildUnknownFields());
+      return new PunishEventInfo(punish_type, punish_reason, punish_id, violation_uid, punish_type_id, duration, punish_perception_code, end_time, violation_uid_str, show_reason, end_time_v2, super.buildUnknownFields());
     }
   }
 
@@ -347,6 +369,9 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
       if (!Objects.equals(value.show_reason, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(10, value.show_reason);
       }
+      if (!Objects.equals(value.end_time_v2, 0L)) {
+        result += ProtoAdapter.INT64.encodedSizeWithTag(11, value.end_time_v2);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -363,12 +388,14 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
       if (!Objects.equals(value.end_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 8, value.end_time);
       if (!Objects.equals(value.violation_uid_str, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.violation_uid_str);
       if (!Objects.equals(value.show_reason, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.show_reason);
+      if (!Objects.equals(value.end_time_v2, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 11, value.end_time_v2);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, PunishEventInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.end_time_v2, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 11, value.end_time_v2);
       if (!Objects.equals(value.show_reason, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.show_reason);
       if (!Objects.equals(value.violation_uid_str, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.violation_uid_str);
       if (!Objects.equals(value.end_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 8, value.end_time);
@@ -404,6 +431,7 @@ public final class PunishEventInfo extends Message<PunishEventInfo, PunishEventI
           case 8: builder.end_time(ProtoAdapter.INT64.decode(reader)); break;
           case 9: builder.violation_uid_str(ProtoAdapter.STRING.decode(reader)); break;
           case 10: builder.show_reason(ProtoAdapter.STRING.decode(reader)); break;
+          case 11: builder.end_time_v2(ProtoAdapter.INT64.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

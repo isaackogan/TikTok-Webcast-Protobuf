@@ -83,6 +83,22 @@ public class EcommerceEntrance(
   )
   public val view_version:
       User_EcommerceEntrance_ViewVersion = User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN,
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "avatarBackgroundColor",
+    schemaIndex = 6,
+  )
+  public val avatar_background_color: String = "",
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "avatarStyleVersion",
+    schemaIndex = 7,
+  )
+  public val avatar_style_version: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<EcommerceEntrance, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -101,6 +117,8 @@ public class EcommerceEntrance(
     if (shop_entrance_info != other.shop_entrance_info) return false
     if (showcase_entrance_info != other.showcase_entrance_info) return false
     if (view_version != other.view_version) return false
+    if (avatar_background_color != other.avatar_background_color) return false
+    if (avatar_style_version != other.avatar_style_version) return false
     return true
   }
 
@@ -114,6 +132,8 @@ public class EcommerceEntrance(
       result = result * 37 + (shop_entrance_info?.hashCode() ?: 0)
       result = result * 37 + (showcase_entrance_info?.hashCode() ?: 0)
       result = result * 37 + view_version.hashCode()
+      result = result * 37 + avatar_background_color.hashCode()
+      result = result * 37 + avatar_style_version.hashCode()
       super.hashCode = result
     }
     return result
@@ -127,6 +147,8 @@ public class EcommerceEntrance(
     if (shop_entrance_info != null) result += """shop_entrance_info=$shop_entrance_info"""
     if (showcase_entrance_info != null) result += """showcase_entrance_info=$showcase_entrance_info"""
     result += """view_version=$view_version"""
+    result += """avatar_background_color=${sanitize(avatar_background_color)}"""
+    result += """avatar_style_version=$avatar_style_version"""
     return result.joinToString(prefix = "EcommerceEntrance{", separator = ", ", postfix = "}")
   }
 
@@ -137,8 +159,10 @@ public class EcommerceEntrance(
     shop_entrance_info: ShopEntranceInfo? = this.shop_entrance_info,
     showcase_entrance_info: ShowcaseEntranceInfo? = this.showcase_entrance_info,
     view_version: User_EcommerceEntrance_ViewVersion = this.view_version,
+    avatar_background_color: String = this.avatar_background_color,
+    avatar_style_version: Int = this.avatar_style_version,
     unknownFields: ByteString = this.unknownFields,
-  ): EcommerceEntrance = EcommerceEntrance(entrance_type, creator_type, schema, shop_entrance_info, showcase_entrance_info, view_version, unknownFields)
+  ): EcommerceEntrance = EcommerceEntrance(entrance_type, creator_type, schema, shop_entrance_info, showcase_entrance_info, view_version, avatar_background_color, avatar_style_version, unknownFields)
 
   public companion object {
     @JvmField
@@ -170,6 +194,12 @@ public class EcommerceEntrance(
         if (value.view_version != com.eulerstream.webcast.v3.webcast.model.`data`.User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN) {
           size += User_EcommerceEntrance_ViewVersion.ADAPTER.encodedSizeWithTag(6, value.view_version)
         }
+        if (value.avatar_background_color != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.avatar_background_color)
+        }
+        if (value.avatar_style_version != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(8, value.avatar_style_version)
+        }
         return size
       }
 
@@ -192,11 +222,23 @@ public class EcommerceEntrance(
         if (value.view_version != com.eulerstream.webcast.v3.webcast.model.`data`.User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN) {
           User_EcommerceEntrance_ViewVersion.ADAPTER.encodeWithTag(writer, 6, value.view_version)
         }
+        if (value.avatar_background_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.avatar_background_color)
+        }
+        if (value.avatar_style_version != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 8, value.avatar_style_version)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: EcommerceEntrance) {
         writer.writeBytes(value.unknownFields)
+        if (value.avatar_style_version != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 8, value.avatar_style_version)
+        }
+        if (value.avatar_background_color != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.avatar_background_color)
+        }
         if (value.view_version != com.eulerstream.webcast.v3.webcast.model.`data`.User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN) {
           User_EcommerceEntrance_ViewVersion.ADAPTER.encodeWithTag(writer, 6, value.view_version)
         }
@@ -224,6 +266,8 @@ public class EcommerceEntrance(
         var shop_entrance_info: ShopEntranceInfo? = null
         var showcase_entrance_info: ShowcaseEntranceInfo? = null
         var view_version: User_EcommerceEntrance_ViewVersion = User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN
+        var avatar_background_color: String = ""
+        var avatar_style_version: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> try {
@@ -244,6 +288,8 @@ public class EcommerceEntrance(
             } catch (e: ProtoAdapter.EnumConstantNotFoundException) {
               reader.addUnknownField(tag, FieldEncoding.VARINT, e.value.toLong())
             }
+            7 -> avatar_background_color = ProtoAdapter.STRING.decode(reader)
+            8 -> avatar_style_version = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -254,6 +300,8 @@ public class EcommerceEntrance(
           shop_entrance_info = shop_entrance_info,
           showcase_entrance_info = showcase_entrance_info,
           view_version = view_version,
+          avatar_background_color = avatar_background_color,
+          avatar_style_version = avatar_style_version,
           unknownFields = unknownFields
         )
       }

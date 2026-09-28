@@ -125,6 +125,14 @@ public class PollBasicInfo(
     schemaIndex = 11,
   )
   public val template_id: Long = 0L,
+  @field:WireField(
+    tag = 13,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "businessScene",
+    schemaIndex = 12,
+  )
+  public val business_scene: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<PollBasicInfo, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -149,6 +157,7 @@ public class PollBasicInfo(
     if (time_remain != other.time_remain) return false
     if (poll_index != other.poll_index) return false
     if (template_id != other.template_id) return false
+    if (business_scene != other.business_scene) return false
     return true
   }
 
@@ -168,6 +177,7 @@ public class PollBasicInfo(
       result = result * 37 + time_remain.hashCode()
       result = result * 37 + poll_index.hashCode()
       result = result * 37 + template_id.hashCode()
+      result = result * 37 + business_scene.hashCode()
       super.hashCode = result
     }
     return result
@@ -187,6 +197,7 @@ public class PollBasicInfo(
     result += """time_remain=$time_remain"""
     result += """poll_index=$poll_index"""
     result += """template_id=$template_id"""
+    result += """business_scene=$business_scene"""
     return result.joinToString(prefix = "PollBasicInfo{", separator = ", ", postfix = "}")
   }
 
@@ -203,8 +214,9 @@ public class PollBasicInfo(
     time_remain: Long = this.time_remain,
     poll_index: Long = this.poll_index,
     template_id: Long = this.template_id,
+    business_scene: Int = this.business_scene,
     unknownFields: ByteString = this.unknownFields,
-  ): PollBasicInfo = PollBasicInfo(poll_sponsor, gift_id, title, is_suggested_question, user_cnt, gift, poll_id_str, suggested_question_key, poll_duration, time_remain, poll_index, template_id, unknownFields)
+  ): PollBasicInfo = PollBasicInfo(poll_sponsor, gift_id, title, is_suggested_question, user_cnt, gift, poll_id_str, suggested_question_key, poll_duration, time_remain, poll_index, template_id, business_scene, unknownFields)
 
   public companion object {
     @JvmField
@@ -254,6 +266,9 @@ public class PollBasicInfo(
         if (value.template_id != 0L) {
           size += ProtoAdapter.INT64.encodedSizeWithTag(12, value.template_id)
         }
+        if (value.business_scene != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(13, value.business_scene)
+        }
         return size
       }
 
@@ -294,11 +309,17 @@ public class PollBasicInfo(
         if (value.template_id != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 12, value.template_id)
         }
+        if (value.business_scene != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 13, value.business_scene)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: PollBasicInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.business_scene != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 13, value.business_scene)
+        }
         if (value.template_id != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 12, value.template_id)
         }
@@ -350,6 +371,7 @@ public class PollBasicInfo(
         var time_remain: Long = 0L
         var poll_index: Long = 0L
         var template_id: Long = 0L
+        var business_scene: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> poll_sponsor = ProtoAdapter.STRING.decode(reader)
@@ -364,6 +386,7 @@ public class PollBasicInfo(
             10 -> time_remain = ProtoAdapter.INT64.decode(reader)
             11 -> poll_index = ProtoAdapter.INT64.decode(reader)
             12 -> template_id = ProtoAdapter.INT64.decode(reader)
+            13 -> business_scene = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -380,6 +403,7 @@ public class PollBasicInfo(
           time_remain = time_remain,
           poll_index = poll_index,
           template_id = template_id,
+          business_scene = business_scene,
           unknownFields = unknownFields
         )
       }

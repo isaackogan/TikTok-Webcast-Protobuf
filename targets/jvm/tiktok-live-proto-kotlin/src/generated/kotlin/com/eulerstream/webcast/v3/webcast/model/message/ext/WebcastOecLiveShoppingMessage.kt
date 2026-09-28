@@ -32,6 +32,7 @@ import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
 import com.squareup.wire.`internal`.immutableCopyOf
 import com.squareup.wire.`internal`.redactElements
+import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -199,6 +200,14 @@ public class WebcastOecLiveShoppingMessage(
     schemaIndex = 21,
   )
   public val oec_live_shopping_message_v2: OecLiveShoppingMessageV2? = null,
+  @field:WireField(
+    tag = 200,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "messageInfo",
+    schemaIndex = 22,
+  )
+  public val message_info: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastOecLiveShoppingMessage, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -262,6 +271,7 @@ public class WebcastOecLiveShoppingMessage(
     if (anchor_pin_card_reset_type != other.anchor_pin_card_reset_type) return false
     if (voucher != other.voucher) return false
     if (oec_live_shopping_message_v2 != other.oec_live_shopping_message_v2) return false
+    if (message_info != other.message_info) return false
     return true
   }
 
@@ -291,6 +301,7 @@ public class WebcastOecLiveShoppingMessage(
       result = result * 37 + anchor_pin_card_reset_type.hashCode()
       result = result * 37 + (voucher?.hashCode() ?: 0)
       result = result * 37 + (oec_live_shopping_message_v2?.hashCode() ?: 0)
+      result = result * 37 + message_info.hashCode()
       super.hashCode = result
     }
     return result
@@ -320,6 +331,7 @@ public class WebcastOecLiveShoppingMessage(
     result += """anchor_pin_card_reset_type=$anchor_pin_card_reset_type"""
     if (voucher != null) result += """voucher=$voucher"""
     if (oec_live_shopping_message_v2 != null) result += """oec_live_shopping_message_v2=$oec_live_shopping_message_v2"""
+    result += """message_info=${sanitize(message_info)}"""
     return result.joinToString(prefix = "WebcastOecLiveShoppingMessage{", separator = ", ", postfix = "}")
   }
 
@@ -346,8 +358,9 @@ public class WebcastOecLiveShoppingMessage(
     anchor_pin_card_reset_type: Int = this.anchor_pin_card_reset_type,
     voucher: Voucher? = this.voucher,
     oec_live_shopping_message_v2: OecLiveShoppingMessageV2? = this.oec_live_shopping_message_v2,
+    message_info: String = this.message_info,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastOecLiveShoppingMessage = WebcastOecLiveShoppingMessage(common, action_type, live_product_number, pop_product, trace_info, hot_tags, atmosphere_tag_info, live_permission_info, product_snap_shot, pin_card_delay_time, flash_sale_atmosphere_info, card_type, billboard_info, billboard_display_result, dispersion_info, promotion_info, campaign_banner_display_result, campaign_banner_display, refresh_live_bag_info, anchor_pin_card_reset_type, voucher, oec_live_shopping_message_v2, unknownFields)
+  ): WebcastOecLiveShoppingMessage = WebcastOecLiveShoppingMessage(common, action_type, live_product_number, pop_product, trace_info, hot_tags, atmosphere_tag_info, live_permission_info, product_snap_shot, pin_card_delay_time, flash_sale_atmosphere_info, card_type, billboard_info, billboard_display_result, dispersion_info, promotion_info, campaign_banner_display_result, campaign_banner_display, refresh_live_bag_info, anchor_pin_card_reset_type, voucher, oec_live_shopping_message_v2, message_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -422,6 +435,9 @@ public class WebcastOecLiveShoppingMessage(
         if (value.oec_live_shopping_message_v2 != null) {
           size += OecLiveShoppingMessageV2.ADAPTER.encodedSizeWithTag(100, value.oec_live_shopping_message_v2)
         }
+        if (value.message_info != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(200, value.message_info)
+        }
         return size
       }
 
@@ -486,11 +502,17 @@ public class WebcastOecLiveShoppingMessage(
         if (value.oec_live_shopping_message_v2 != null) {
           OecLiveShoppingMessageV2.ADAPTER.encodeWithTag(writer, 100, value.oec_live_shopping_message_v2)
         }
+        if (value.message_info != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 200, value.message_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastOecLiveShoppingMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.message_info != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 200, value.message_info)
+        }
         if (value.oec_live_shopping_message_v2 != null) {
           OecLiveShoppingMessageV2.ADAPTER.encodeWithTag(writer, 100, value.oec_live_shopping_message_v2)
         }
@@ -576,6 +598,7 @@ public class WebcastOecLiveShoppingMessage(
         var anchor_pin_card_reset_type: Int = 0
         var voucher: Voucher? = null
         var oec_live_shopping_message_v2: OecLiveShoppingMessageV2? = null
+        var message_info: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -600,6 +623,7 @@ public class WebcastOecLiveShoppingMessage(
             20 -> anchor_pin_card_reset_type = ProtoAdapter.INT32.decode(reader)
             21 -> voucher = Voucher.ADAPTER.decode(reader)
             100 -> oec_live_shopping_message_v2 = OecLiveShoppingMessageV2.ADAPTER.decode(reader)
+            200 -> message_info = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -626,6 +650,7 @@ public class WebcastOecLiveShoppingMessage(
           anchor_pin_card_reset_type = anchor_pin_card_reset_type,
           voucher = voucher,
           oec_live_shopping_message_v2 = oec_live_shopping_message_v2,
+          message_info = message_info,
           unknownFields = unknownFields
         )
       }

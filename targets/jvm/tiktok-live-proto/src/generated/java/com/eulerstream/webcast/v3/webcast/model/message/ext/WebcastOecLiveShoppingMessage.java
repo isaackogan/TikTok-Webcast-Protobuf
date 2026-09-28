@@ -215,6 +215,14 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
   )
   public final OecLiveShoppingMessageV2 oec_live_shopping_message_v2;
 
+  @WireField(
+      tag = 200,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "messageInfo"
+  )
+  public final String message_info;
+
   public WebcastOecLiveShoppingMessage(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.common = builder.common;
@@ -239,6 +247,10 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
     this.anchor_pin_card_reset_type = builder.anchor_pin_card_reset_type;
     this.voucher = builder.voucher;
     this.oec_live_shopping_message_v2 = builder.oec_live_shopping_message_v2;
+    if (builder.message_info == null) {
+      throw new IllegalArgumentException("builder.message_info == null");
+    }
+    this.message_info = builder.message_info;
   }
 
   @Override
@@ -266,6 +278,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
     builder.anchor_pin_card_reset_type = anchor_pin_card_reset_type;
     builder.voucher = voucher;
     builder.oec_live_shopping_message_v2 = oec_live_shopping_message_v2;
+    builder.message_info = message_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -297,7 +310,8 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
         && Internal.equals(refresh_live_bag_info, o.refresh_live_bag_info)
         && Internal.equals(anchor_pin_card_reset_type, o.anchor_pin_card_reset_type)
         && Internal.equals(voucher, o.voucher)
-        && Internal.equals(oec_live_shopping_message_v2, o.oec_live_shopping_message_v2);
+        && Internal.equals(oec_live_shopping_message_v2, o.oec_live_shopping_message_v2)
+        && Internal.equals(message_info, o.message_info);
   }
 
   @Override
@@ -327,6 +341,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
       result = result * 37 + Integer.hashCode(anchor_pin_card_reset_type);
       result = result * 37 + (voucher != null ? voucher.hashCode() : 0);
       result = result * 37 + (oec_live_shopping_message_v2 != null ? oec_live_shopping_message_v2.hashCode() : 0);
+      result = result * 37 + (message_info != null ? message_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -357,6 +372,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
     builder.append(", anchor_pin_card_reset_type=").append(anchor_pin_card_reset_type);
     if (voucher != null) builder.append(", voucher=").append(voucher);
     if (oec_live_shopping_message_v2 != null) builder.append(", oec_live_shopping_message_v2=").append(oec_live_shopping_message_v2);
+    if (message_info != null) builder.append(", message_info=").append(Internal.sanitize(message_info));
     return builder.replace(0, 2, "WebcastOecLiveShoppingMessage{").append('}').toString();
   }
 
@@ -405,6 +421,8 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
 
     public OecLiveShoppingMessageV2 oec_live_shopping_message_v2;
 
+    public String message_info;
+
     public Builder() {
       action_type = 0;
       live_product_number = 0;
@@ -414,6 +432,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
       card_type = 0;
       dispersion_info = Internal.newMutableList();
       anchor_pin_card_reset_type = 0;
+      message_info = "";
     }
 
     public Builder common(CommonMessageData common) {
@@ -532,6 +551,11 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
       return this;
     }
 
+    public Builder message_info(String message_info) {
+      this.message_info = message_info;
+      return this;
+    }
+
     @Override
     public WebcastOecLiveShoppingMessage build() {
       return new WebcastOecLiveShoppingMessage(this, super.buildUnknownFields());
@@ -606,6 +630,9 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
       if (!Objects.equals(value.oec_live_shopping_message_v2, null)) {
         result += OecLiveShoppingMessageV2.ADAPTER.encodedSizeWithTag(100, value.oec_live_shopping_message_v2);
       }
+      if (!Objects.equals(value.message_info, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(200, value.message_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -634,6 +661,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
       if (!Objects.equals(value.anchor_pin_card_reset_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 20, value.anchor_pin_card_reset_type);
       if (!Objects.equals(value.voucher, null)) Voucher.ADAPTER.encodeWithTag(writer, 21, value.voucher);
       if (!Objects.equals(value.oec_live_shopping_message_v2, null)) OecLiveShoppingMessageV2.ADAPTER.encodeWithTag(writer, 100, value.oec_live_shopping_message_v2);
+      if (!Objects.equals(value.message_info, "")) ProtoAdapter.STRING.encodeWithTag(writer, 200, value.message_info);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -641,6 +669,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
     public void encode(ReverseProtoWriter writer, WebcastOecLiveShoppingMessage value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.message_info, "")) ProtoAdapter.STRING.encodeWithTag(writer, 200, value.message_info);
       if (!Objects.equals(value.oec_live_shopping_message_v2, null)) OecLiveShoppingMessageV2.ADAPTER.encodeWithTag(writer, 100, value.oec_live_shopping_message_v2);
       if (!Objects.equals(value.voucher, null)) Voucher.ADAPTER.encodeWithTag(writer, 21, value.voucher);
       if (!Objects.equals(value.anchor_pin_card_reset_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 20, value.anchor_pin_card_reset_type);
@@ -693,6 +722,7 @@ public final class WebcastOecLiveShoppingMessage extends Message<WebcastOecLiveS
           case 20: builder.anchor_pin_card_reset_type(ProtoAdapter.INT32.decode(reader)); break;
           case 21: builder.voucher(Voucher.ADAPTER.decode(reader)); break;
           case 100: builder.oec_live_shopping_message_v2(OecLiveShoppingMessageV2.ADAPTER.decode(reader)); break;
+          case 200: builder.message_info(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

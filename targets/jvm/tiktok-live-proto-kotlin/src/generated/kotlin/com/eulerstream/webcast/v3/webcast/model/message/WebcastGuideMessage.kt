@@ -91,6 +91,14 @@ public class WebcastGuideMessage(
     schemaIndex = 7,
   )
   public val frequency_rule: GuideMessageFrequencyRule? = null,
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#INT64",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "streamTime",
+    schemaIndex = 8,
+  )
+  public val stream_time: Long = 0L,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastGuideMessage, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -111,6 +119,7 @@ public class WebcastGuideMessage(
     if (display_style != other.display_style) return false
     if (scene != other.scene) return false
     if (frequency_rule != other.frequency_rule) return false
+    if (stream_time != other.stream_time) return false
     return true
   }
 
@@ -126,6 +135,7 @@ public class WebcastGuideMessage(
       result = result * 37 + display_style.hashCode()
       result = result * 37 + scene.hashCode()
       result = result * 37 + (frequency_rule?.hashCode() ?: 0)
+      result = result * 37 + stream_time.hashCode()
       super.hashCode = result
     }
     return result
@@ -141,6 +151,7 @@ public class WebcastGuideMessage(
     result += """display_style=$display_style"""
     result += """scene=${sanitize(scene)}"""
     if (frequency_rule != null) result += """frequency_rule=$frequency_rule"""
+    result += """stream_time=$stream_time"""
     return result.joinToString(prefix = "WebcastGuideMessage{", separator = ", ", postfix = "}")
   }
 
@@ -153,8 +164,9 @@ public class WebcastGuideMessage(
     display_style: Long = this.display_style,
     scene: String = this.scene,
     frequency_rule: GuideMessageFrequencyRule? = this.frequency_rule,
+    stream_time: Long = this.stream_time,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastGuideMessage = WebcastGuideMessage(common, guide_type, gift_id, description, duration, display_style, scene, frequency_rule, unknownFields)
+  ): WebcastGuideMessage = WebcastGuideMessage(common, guide_type, gift_id, description, duration, display_style, scene, frequency_rule, stream_time, unknownFields)
 
   public companion object {
     @JvmField
@@ -193,6 +205,9 @@ public class WebcastGuideMessage(
         if (value.frequency_rule != null) {
           size += GuideMessageFrequencyRule.ADAPTER.encodedSizeWithTag(8, value.frequency_rule)
         }
+        if (value.stream_time != 0L) {
+          size += ProtoAdapter.INT64.encodedSizeWithTag(9, value.stream_time)
+        }
         return size
       }
 
@@ -221,11 +236,17 @@ public class WebcastGuideMessage(
         if (value.frequency_rule != null) {
           GuideMessageFrequencyRule.ADAPTER.encodeWithTag(writer, 8, value.frequency_rule)
         }
+        if (value.stream_time != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 9, value.stream_time)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastGuideMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.stream_time != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 9, value.stream_time)
+        }
         if (value.frequency_rule != null) {
           GuideMessageFrequencyRule.ADAPTER.encodeWithTag(writer, 8, value.frequency_rule)
         }
@@ -261,6 +282,7 @@ public class WebcastGuideMessage(
         var display_style: Long = 0L
         var scene: String = ""
         var frequency_rule: GuideMessageFrequencyRule? = null
+        var stream_time: Long = 0L
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -271,6 +293,7 @@ public class WebcastGuideMessage(
             6 -> display_style = ProtoAdapter.INT64.decode(reader)
             7 -> scene = ProtoAdapter.STRING.decode(reader)
             8 -> frequency_rule = GuideMessageFrequencyRule.ADAPTER.decode(reader)
+            9 -> stream_time = ProtoAdapter.INT64.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -283,6 +306,7 @@ public class WebcastGuideMessage(
           display_style = display_style,
           scene = scene,
           frequency_rule = frequency_rule,
+          stream_time = stream_time,
           unknownFields = unknownFields
         )
       }

@@ -46,6 +46,13 @@ public class ProfileExtraGameInteractionStorage(
     schemaIndex = 1,
   )
   public val template_id: String = "",
+  @field:WireField(
+    tag = 3,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    schemaIndex = 2,
+  )
+  public val mode: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<ProfileExtraGameInteractionStorage, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -60,6 +67,7 @@ public class ProfileExtraGameInteractionStorage(
     if (unknownFields != other.unknownFields) return false
     if (game_id != other.game_id) return false
     if (template_id != other.template_id) return false
+    if (mode != other.mode) return false
     return true
   }
 
@@ -69,6 +77,7 @@ public class ProfileExtraGameInteractionStorage(
       result = unknownFields.hashCode()
       result = result * 37 + game_id.hashCode()
       result = result * 37 + template_id.hashCode()
+      result = result * 37 + mode.hashCode()
       super.hashCode = result
     }
     return result
@@ -78,14 +87,16 @@ public class ProfileExtraGameInteractionStorage(
     val result = mutableListOf<String>()
     result += """game_id=${sanitize(game_id)}"""
     result += """template_id=${sanitize(template_id)}"""
+    result += """mode=${sanitize(mode)}"""
     return result.joinToString(prefix = "ProfileExtraGameInteractionStorage{", separator = ", ", postfix = "}")
   }
 
   public fun copy(
     game_id: String = this.game_id,
     template_id: String = this.template_id,
+    mode: String = this.mode,
     unknownFields: ByteString = this.unknownFields,
-  ): ProfileExtraGameInteractionStorage = ProfileExtraGameInteractionStorage(game_id, template_id, unknownFields)
+  ): ProfileExtraGameInteractionStorage = ProfileExtraGameInteractionStorage(game_id, template_id, mode, unknownFields)
 
   public companion object {
     @JvmField
@@ -106,6 +117,9 @@ public class ProfileExtraGameInteractionStorage(
         if (value.template_id != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(2, value.template_id)
         }
+        if (value.mode != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(3, value.mode)
+        }
         return size
       }
 
@@ -116,11 +130,17 @@ public class ProfileExtraGameInteractionStorage(
         if (value.template_id != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 2, value.template_id)
         }
+        if (value.mode != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 3, value.mode)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: ProfileExtraGameInteractionStorage) {
         writer.writeBytes(value.unknownFields)
+        if (value.mode != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 3, value.mode)
+        }
         if (value.template_id != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 2, value.template_id)
         }
@@ -132,16 +152,19 @@ public class ProfileExtraGameInteractionStorage(
       override fun decode(reader: ProtoReader): ProfileExtraGameInteractionStorage {
         var game_id: String = ""
         var template_id: String = ""
+        var mode: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> game_id = ProtoAdapter.STRING.decode(reader)
             2 -> template_id = ProtoAdapter.STRING.decode(reader)
+            3 -> mode = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
         return ProfileExtraGameInteractionStorage(
           game_id = game_id,
           template_id = template_id,
+          mode = mode,
           unknownFields = unknownFields
         )
       }

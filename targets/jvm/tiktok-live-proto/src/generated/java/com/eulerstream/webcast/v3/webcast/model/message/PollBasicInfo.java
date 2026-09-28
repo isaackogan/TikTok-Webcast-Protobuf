@@ -14,6 +14,7 @@ import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -121,17 +122,25 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
   )
   public final long template_id;
 
+  @WireField(
+      tag = 13,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "businessScene"
+  )
+  public final int business_scene;
+
   public PollBasicInfo(String poll_sponsor, long gift_id, String title,
       boolean is_suggested_question, long user_cnt, Gift gift, String poll_id_str,
       String suggested_question_key, long poll_duration, long time_remain, long poll_index,
-      long template_id) {
-    this(poll_sponsor, gift_id, title, is_suggested_question, user_cnt, gift, poll_id_str, suggested_question_key, poll_duration, time_remain, poll_index, template_id, ByteString.EMPTY);
+      long template_id, int business_scene) {
+    this(poll_sponsor, gift_id, title, is_suggested_question, user_cnt, gift, poll_id_str, suggested_question_key, poll_duration, time_remain, poll_index, template_id, business_scene, ByteString.EMPTY);
   }
 
   public PollBasicInfo(String poll_sponsor, long gift_id, String title,
       boolean is_suggested_question, long user_cnt, Gift gift, String poll_id_str,
       String suggested_question_key, long poll_duration, long time_remain, long poll_index,
-      long template_id, ByteString unknownFields) {
+      long template_id, int business_scene, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (poll_sponsor == null) {
       throw new IllegalArgumentException("poll_sponsor == null");
@@ -157,6 +166,7 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
     this.time_remain = time_remain;
     this.poll_index = poll_index;
     this.template_id = template_id;
+    this.business_scene = business_scene;
   }
 
   @Override
@@ -174,6 +184,7 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
     builder.time_remain = time_remain;
     builder.poll_index = poll_index;
     builder.template_id = template_id;
+    builder.business_scene = business_scene;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -195,7 +206,8 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
         && Internal.equals(poll_duration, o.poll_duration)
         && Internal.equals(time_remain, o.time_remain)
         && Internal.equals(poll_index, o.poll_index)
-        && Internal.equals(template_id, o.template_id);
+        && Internal.equals(template_id, o.template_id)
+        && Internal.equals(business_scene, o.business_scene);
   }
 
   @Override
@@ -215,6 +227,7 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
       result = result * 37 + Long.hashCode(time_remain);
       result = result * 37 + Long.hashCode(poll_index);
       result = result * 37 + Long.hashCode(template_id);
+      result = result * 37 + Integer.hashCode(business_scene);
       super.hashCode = result;
     }
     return result;
@@ -235,6 +248,7 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
     builder.append(", time_remain=").append(time_remain);
     builder.append(", poll_index=").append(poll_index);
     builder.append(", template_id=").append(template_id);
+    builder.append(", business_scene=").append(business_scene);
     return builder.replace(0, 2, "PollBasicInfo{").append('}').toString();
   }
 
@@ -263,6 +277,8 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
 
     public long template_id;
 
+    public int business_scene;
+
     public Builder() {
       poll_sponsor = "";
       gift_id = 0L;
@@ -275,6 +291,7 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
       time_remain = 0L;
       poll_index = 0L;
       template_id = 0L;
+      business_scene = 0;
     }
 
     public Builder poll_sponsor(String poll_sponsor) {
@@ -337,9 +354,14 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
       return this;
     }
 
+    public Builder business_scene(int business_scene) {
+      this.business_scene = business_scene;
+      return this;
+    }
+
     @Override
     public PollBasicInfo build() {
-      return new PollBasicInfo(poll_sponsor, gift_id, title, is_suggested_question, user_cnt, gift, poll_id_str, suggested_question_key, poll_duration, time_remain, poll_index, template_id, super.buildUnknownFields());
+      return new PollBasicInfo(poll_sponsor, gift_id, title, is_suggested_question, user_cnt, gift, poll_id_str, suggested_question_key, poll_duration, time_remain, poll_index, template_id, business_scene, super.buildUnknownFields());
     }
   }
 
@@ -387,6 +409,9 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
       if (!Objects.equals(value.template_id, 0L)) {
         result += ProtoAdapter.INT64.encodedSizeWithTag(12, value.template_id);
       }
+      if (!Objects.equals(value.business_scene, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(13, value.business_scene);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -405,12 +430,14 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
       if (!Objects.equals(value.time_remain, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 10, value.time_remain);
       if (!Objects.equals(value.poll_index, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 11, value.poll_index);
       if (!Objects.equals(value.template_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 12, value.template_id);
+      if (!Objects.equals(value.business_scene, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 13, value.business_scene);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, PollBasicInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.business_scene, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 13, value.business_scene);
       if (!Objects.equals(value.template_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 12, value.template_id);
       if (!Objects.equals(value.poll_index, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 11, value.poll_index);
       if (!Objects.equals(value.time_remain, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 10, value.time_remain);
@@ -443,6 +470,7 @@ public final class PollBasicInfo extends Message<PollBasicInfo, PollBasicInfo.Bu
           case 10: builder.time_remain(ProtoAdapter.INT64.decode(reader)); break;
           case 11: builder.poll_index(ProtoAdapter.INT64.decode(reader)); break;
           case 12: builder.template_id(ProtoAdapter.INT64.decode(reader)); break;
+          case 13: builder.business_scene(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

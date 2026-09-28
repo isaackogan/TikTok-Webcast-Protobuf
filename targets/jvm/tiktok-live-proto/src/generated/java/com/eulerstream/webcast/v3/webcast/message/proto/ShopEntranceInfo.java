@@ -116,17 +116,25 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
   )
   public final List<SellingPoint> selling_point;
 
+  @WireField(
+      tag = 12,
+      adapter = "com.eulerstream.webcast.v3.webcast.message.proto.TopRatedInfo#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "topRatedInfo"
+  )
+  public final TopRatedInfo top_rated_info;
+
   public ShopEntranceInfo(String shop_id, String shop_name, String shop_rating,
       StoreLabel store_label, String format_sold_count, long sold_count, int exp_rate_percentile,
       String exp_rate_top_display, int rate_display_style, boolean show_rate_not_applicable,
-      List<SellingPoint> selling_point) {
-    this(shop_id, shop_name, shop_rating, store_label, format_sold_count, sold_count, exp_rate_percentile, exp_rate_top_display, rate_display_style, show_rate_not_applicable, selling_point, ByteString.EMPTY);
+      List<SellingPoint> selling_point, TopRatedInfo top_rated_info) {
+    this(shop_id, shop_name, shop_rating, store_label, format_sold_count, sold_count, exp_rate_percentile, exp_rate_top_display, rate_display_style, show_rate_not_applicable, selling_point, top_rated_info, ByteString.EMPTY);
   }
 
   public ShopEntranceInfo(String shop_id, String shop_name, String shop_rating,
       StoreLabel store_label, String format_sold_count, long sold_count, int exp_rate_percentile,
       String exp_rate_top_display, int rate_display_style, boolean show_rate_not_applicable,
-      List<SellingPoint> selling_point, ByteString unknownFields) {
+      List<SellingPoint> selling_point, TopRatedInfo top_rated_info, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (shop_id == null) {
       throw new IllegalArgumentException("shop_id == null");
@@ -154,6 +162,7 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
     this.rate_display_style = rate_display_style;
     this.show_rate_not_applicable = show_rate_not_applicable;
     this.selling_point = Internal.immutableCopyOf("selling_point", selling_point);
+    this.top_rated_info = top_rated_info;
   }
 
   @Override
@@ -170,6 +179,7 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
     builder.rate_display_style = rate_display_style;
     builder.show_rate_not_applicable = show_rate_not_applicable;
     builder.selling_point = Internal.copyOf(selling_point);
+    builder.top_rated_info = top_rated_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -190,7 +200,8 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
         && Internal.equals(exp_rate_top_display, o.exp_rate_top_display)
         && Internal.equals(rate_display_style, o.rate_display_style)
         && Internal.equals(show_rate_not_applicable, o.show_rate_not_applicable)
-        && selling_point.equals(o.selling_point);
+        && selling_point.equals(o.selling_point)
+        && Internal.equals(top_rated_info, o.top_rated_info);
   }
 
   @Override
@@ -209,6 +220,7 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
       result = result * 37 + Integer.hashCode(rate_display_style);
       result = result * 37 + Boolean.hashCode(show_rate_not_applicable);
       result = result * 37 + selling_point.hashCode();
+      result = result * 37 + (top_rated_info != null ? top_rated_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -228,6 +240,7 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
     builder.append(", rate_display_style=").append(rate_display_style);
     builder.append(", show_rate_not_applicable=").append(show_rate_not_applicable);
     if (!selling_point.isEmpty()) builder.append(", selling_point=").append(selling_point);
+    if (top_rated_info != null) builder.append(", top_rated_info=").append(top_rated_info);
     return builder.replace(0, 2, "ShopEntranceInfo{").append('}').toString();
   }
 
@@ -253,6 +266,8 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
     public boolean show_rate_not_applicable;
 
     public List<SellingPoint> selling_point;
+
+    public TopRatedInfo top_rated_info;
 
     public Builder() {
       shop_id = "";
@@ -323,9 +338,14 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
       return this;
     }
 
+    public Builder top_rated_info(TopRatedInfo top_rated_info) {
+      this.top_rated_info = top_rated_info;
+      return this;
+    }
+
     @Override
     public ShopEntranceInfo build() {
-      return new ShopEntranceInfo(shop_id, shop_name, shop_rating, store_label, format_sold_count, sold_count, exp_rate_percentile, exp_rate_top_display, rate_display_style, show_rate_not_applicable, selling_point, super.buildUnknownFields());
+      return new ShopEntranceInfo(shop_id, shop_name, shop_rating, store_label, format_sold_count, sold_count, exp_rate_percentile, exp_rate_top_display, rate_display_style, show_rate_not_applicable, selling_point, top_rated_info, super.buildUnknownFields());
     }
   }
 
@@ -368,6 +388,9 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
         result += ProtoAdapter.BOOL.encodedSizeWithTag(10, value.show_rate_not_applicable);
       }
       result += SellingPoint.ADAPTER.asRepeated().encodedSizeWithTag(11, value.selling_point);
+      if (!Objects.equals(value.top_rated_info, null)) {
+        result += TopRatedInfo.ADAPTER.encodedSizeWithTag(12, value.top_rated_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -385,12 +408,14 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
       if (!Objects.equals(value.rate_display_style, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 9, value.rate_display_style);
       if (!Objects.equals(value.show_rate_not_applicable, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.show_rate_not_applicable);
       SellingPoint.ADAPTER.asRepeated().encodeWithTag(writer, 11, value.selling_point);
+      if (!Objects.equals(value.top_rated_info, null)) TopRatedInfo.ADAPTER.encodeWithTag(writer, 12, value.top_rated_info);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, ShopEntranceInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.top_rated_info, null)) TopRatedInfo.ADAPTER.encodeWithTag(writer, 12, value.top_rated_info);
       SellingPoint.ADAPTER.asRepeated().encodeWithTag(writer, 11, value.selling_point);
       if (!Objects.equals(value.show_rate_not_applicable, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.show_rate_not_applicable);
       if (!Objects.equals(value.rate_display_style, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 9, value.rate_display_style);
@@ -421,6 +446,7 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
           case 9: builder.rate_display_style(ProtoAdapter.INT32.decode(reader)); break;
           case 10: builder.show_rate_not_applicable(ProtoAdapter.BOOL.decode(reader)); break;
           case 11: builder.selling_point.add(SellingPoint.ADAPTER.decode(reader)); break;
+          case 12: builder.top_rated_info(TopRatedInfo.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -435,6 +461,7 @@ public final class ShopEntranceInfo extends Message<ShopEntranceInfo, ShopEntran
       Builder builder = value.newBuilder();
       if (builder.store_label != null) builder.store_label = StoreLabel.ADAPTER.redact(builder.store_label);
       Internal.redactElements(builder.selling_point, SellingPoint.ADAPTER);
+      if (builder.top_rated_info != null) builder.top_rated_info = TopRatedInfo.ADAPTER.redact(builder.top_rated_info);
       builder.clearUnknownFields();
       return builder.build();
     }

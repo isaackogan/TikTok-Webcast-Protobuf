@@ -86,6 +86,22 @@ public class AuctionWinnerPopup(
     schemaIndex = 6,
   )
   public val schema: String = "",
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "popupPageStyle",
+    schemaIndex = 7,
+  )
+  public val popup_page_style: Int = 0,
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "lynxPopupInfo",
+    schemaIndex = 8,
+  )
+  public val lynx_popup_info: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<AuctionWinnerPopup, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -105,6 +121,8 @@ public class AuctionWinnerPopup(
     if (payment_expire_timestamp != other.payment_expire_timestamp) return false
     if (product_img != other.product_img) return false
     if (schema != other.schema) return false
+    if (popup_page_style != other.popup_page_style) return false
+    if (lynx_popup_info != other.lynx_popup_info) return false
     return true
   }
 
@@ -119,6 +137,8 @@ public class AuctionWinnerPopup(
       result = result * 37 + payment_expire_timestamp.hashCode()
       result = result * 37 + (product_img?.hashCode() ?: 0)
       result = result * 37 + schema.hashCode()
+      result = result * 37 + popup_page_style.hashCode()
+      result = result * 37 + lynx_popup_info.hashCode()
       super.hashCode = result
     }
     return result
@@ -133,6 +153,8 @@ public class AuctionWinnerPopup(
     result += """payment_expire_timestamp=${sanitize(payment_expire_timestamp)}"""
     if (product_img != null) result += """product_img=$product_img"""
     result += """schema=${sanitize(schema)}"""
+    result += """popup_page_style=$popup_page_style"""
+    result += """lynx_popup_info=${sanitize(lynx_popup_info)}"""
     return result.joinToString(prefix = "AuctionWinnerPopup{", separator = ", ", postfix = "}")
   }
 
@@ -144,8 +166,10 @@ public class AuctionWinnerPopup(
     payment_expire_timestamp: String = this.payment_expire_timestamp,
     product_img: ImageModel? = this.product_img,
     schema: String = this.schema,
+    popup_page_style: Int = this.popup_page_style,
+    lynx_popup_info: String = this.lynx_popup_info,
     unknownFields: ByteString = this.unknownFields,
-  ): AuctionWinnerPopup = AuctionWinnerPopup(auction_id, winner_user_id, product_id, notify_type, payment_expire_timestamp, product_img, schema, unknownFields)
+  ): AuctionWinnerPopup = AuctionWinnerPopup(auction_id, winner_user_id, product_id, notify_type, payment_expire_timestamp, product_img, schema, popup_page_style, lynx_popup_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -181,6 +205,12 @@ public class AuctionWinnerPopup(
         if (value.schema != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.schema)
         }
+        if (value.popup_page_style != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(8, value.popup_page_style)
+        }
+        if (value.lynx_popup_info != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(9, value.lynx_popup_info)
+        }
         return size
       }
 
@@ -206,11 +236,23 @@ public class AuctionWinnerPopup(
         if (value.schema != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 7, value.schema)
         }
+        if (value.popup_page_style != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 8, value.popup_page_style)
+        }
+        if (value.lynx_popup_info != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 9, value.lynx_popup_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: AuctionWinnerPopup) {
         writer.writeBytes(value.unknownFields)
+        if (value.lynx_popup_info != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 9, value.lynx_popup_info)
+        }
+        if (value.popup_page_style != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 8, value.popup_page_style)
+        }
         if (value.schema != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 7, value.schema)
         }
@@ -242,6 +284,8 @@ public class AuctionWinnerPopup(
         var payment_expire_timestamp: String = ""
         var product_img: ImageModel? = null
         var schema: String = ""
+        var popup_page_style: Int = 0
+        var lynx_popup_info: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> auction_id = ProtoAdapter.STRING.decode(reader)
@@ -251,6 +295,8 @@ public class AuctionWinnerPopup(
             5 -> payment_expire_timestamp = ProtoAdapter.STRING.decode(reader)
             6 -> product_img = ImageModel.ADAPTER.decode(reader)
             7 -> schema = ProtoAdapter.STRING.decode(reader)
+            8 -> popup_page_style = ProtoAdapter.INT32.decode(reader)
+            9 -> lynx_popup_info = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -262,6 +308,8 @@ public class AuctionWinnerPopup(
           payment_expire_timestamp = payment_expire_timestamp,
           product_img = product_img,
           schema = schema,
+          popup_page_style = popup_page_style,
+          lynx_popup_info = lynx_popup_info,
           unknownFields = unknownFields
         )
       }

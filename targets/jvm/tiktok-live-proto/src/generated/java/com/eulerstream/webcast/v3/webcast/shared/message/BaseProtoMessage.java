@@ -80,13 +80,38 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
   )
   public final int sample_flag;
 
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "methodId"
+  )
+  public final int method_id;
+
+  @WireField(
+      tag = 9,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "groupKey"
+  )
+  public final String group_key;
+
+  @WireField(
+      tag = 10,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "groupScene"
+  )
+  public final String group_scene;
+
   public BaseProtoMessage(String method, ByteString payload, long msg_id, int msg_type, long offset,
-      boolean is_history, int sample_flag) {
-    this(method, payload, msg_id, msg_type, offset, is_history, sample_flag, ByteString.EMPTY);
+      boolean is_history, int sample_flag, int method_id, String group_key, String group_scene) {
+    this(method, payload, msg_id, msg_type, offset, is_history, sample_flag, method_id, group_key, group_scene, ByteString.EMPTY);
   }
 
   public BaseProtoMessage(String method, ByteString payload, long msg_id, int msg_type, long offset,
-      boolean is_history, int sample_flag, ByteString unknownFields) {
+      boolean is_history, int sample_flag, int method_id, String group_key, String group_scene,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (method == null) {
       throw new IllegalArgumentException("method == null");
@@ -101,6 +126,15 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
     this.offset = offset;
     this.is_history = is_history;
     this.sample_flag = sample_flag;
+    this.method_id = method_id;
+    if (group_key == null) {
+      throw new IllegalArgumentException("group_key == null");
+    }
+    this.group_key = group_key;
+    if (group_scene == null) {
+      throw new IllegalArgumentException("group_scene == null");
+    }
+    this.group_scene = group_scene;
   }
 
   @Override
@@ -113,6 +147,9 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
     builder.offset = offset;
     builder.is_history = is_history;
     builder.sample_flag = sample_flag;
+    builder.method_id = method_id;
+    builder.group_key = group_key;
+    builder.group_scene = group_scene;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -129,7 +166,10 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
         && Internal.equals(msg_type, o.msg_type)
         && Internal.equals(offset, o.offset)
         && Internal.equals(is_history, o.is_history)
-        && Internal.equals(sample_flag, o.sample_flag);
+        && Internal.equals(sample_flag, o.sample_flag)
+        && Internal.equals(method_id, o.method_id)
+        && Internal.equals(group_key, o.group_key)
+        && Internal.equals(group_scene, o.group_scene);
   }
 
   @Override
@@ -144,6 +184,9 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
       result = result * 37 + Long.hashCode(offset);
       result = result * 37 + Boolean.hashCode(is_history);
       result = result * 37 + Integer.hashCode(sample_flag);
+      result = result * 37 + Integer.hashCode(method_id);
+      result = result * 37 + (group_key != null ? group_key.hashCode() : 0);
+      result = result * 37 + (group_scene != null ? group_scene.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -159,6 +202,9 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
     builder.append(", offset=").append(offset);
     builder.append(", is_history=").append(is_history);
     builder.append(", sample_flag=").append(sample_flag);
+    builder.append(", method_id=").append(method_id);
+    if (group_key != null) builder.append(", group_key=").append(Internal.sanitize(group_key));
+    if (group_scene != null) builder.append(", group_scene=").append(Internal.sanitize(group_scene));
     return builder.replace(0, 2, "BaseProtoMessage{").append('}').toString();
   }
 
@@ -177,6 +223,12 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
 
     public int sample_flag;
 
+    public int method_id;
+
+    public String group_key;
+
+    public String group_scene;
+
     public Builder() {
       method = "";
       payload = ByteString.EMPTY;
@@ -185,6 +237,9 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
       offset = 0L;
       is_history = false;
       sample_flag = 0;
+      method_id = 0;
+      group_key = "";
+      group_scene = "";
     }
 
     public Builder method(String method) {
@@ -222,9 +277,24 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
       return this;
     }
 
+    public Builder method_id(int method_id) {
+      this.method_id = method_id;
+      return this;
+    }
+
+    public Builder group_key(String group_key) {
+      this.group_key = group_key;
+      return this;
+    }
+
+    public Builder group_scene(String group_scene) {
+      this.group_scene = group_scene;
+      return this;
+    }
+
     @Override
     public BaseProtoMessage build() {
-      return new BaseProtoMessage(method, payload, msg_id, msg_type, offset, is_history, sample_flag, super.buildUnknownFields());
+      return new BaseProtoMessage(method, payload, msg_id, msg_type, offset, is_history, sample_flag, method_id, group_key, group_scene, super.buildUnknownFields());
     }
   }
 
@@ -257,6 +327,15 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
       if (!Objects.equals(value.sample_flag, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(7, value.sample_flag);
       }
+      if (!Objects.equals(value.method_id, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(8, value.method_id);
+      }
+      if (!Objects.equals(value.group_key, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(9, value.group_key);
+      }
+      if (!Objects.equals(value.group_scene, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(10, value.group_scene);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -270,12 +349,18 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
       if (!Objects.equals(value.offset, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.offset);
       if (!Objects.equals(value.is_history, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.is_history);
       if (!Objects.equals(value.sample_flag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.sample_flag);
+      if (!Objects.equals(value.method_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 8, value.method_id);
+      if (!Objects.equals(value.group_key, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.group_key);
+      if (!Objects.equals(value.group_scene, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.group_scene);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, BaseProtoMessage value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.group_scene, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.group_scene);
+      if (!Objects.equals(value.group_key, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.group_key);
+      if (!Objects.equals(value.method_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 8, value.method_id);
       if (!Objects.equals(value.sample_flag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.sample_flag);
       if (!Objects.equals(value.is_history, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.is_history);
       if (!Objects.equals(value.offset, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.offset);
@@ -298,6 +383,9 @@ public final class BaseProtoMessage extends Message<BaseProtoMessage, BaseProtoM
           case 5: builder.offset(ProtoAdapter.INT64.decode(reader)); break;
           case 6: builder.is_history(ProtoAdapter.BOOL.decode(reader)); break;
           case 7: builder.sample_flag(ProtoAdapter.INT32.decode(reader)); break;
+          case 8: builder.method_id(ProtoAdapter.INT32.decode(reader)); break;
+          case 9: builder.group_key(ProtoAdapter.STRING.decode(reader)); break;
+          case 10: builder.group_scene(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

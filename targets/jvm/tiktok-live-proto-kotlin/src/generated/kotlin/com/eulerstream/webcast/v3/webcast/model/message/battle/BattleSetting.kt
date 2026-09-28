@@ -15,6 +15,7 @@ import com.eulerstream.webcast.v3.webcast.model.`data`.IceShowdownSetting
 import com.eulerstream.webcast.v3.webcast.model.`data`.MatchGameplayOption
 import com.eulerstream.webcast.v3.webcast.model.live.match.GiftModeMeta
 import com.eulerstream.webcast.v3.webcast.model.live.match.GiftModeMetaV2
+import com.eulerstream.webcast.v3.webcast.model.live.match.GoofyEffectInfo
 import com.squareup.wire.FieldEncoding
 import com.squareup.wire.Message
 import com.squareup.wire.ProtoAdapter
@@ -154,6 +155,14 @@ public class BattleSetting(
     schemaIndex = 14,
   )
   public val gift_mode_meta_v2: GiftModeMetaV2? = null,
+  @field:WireField(
+    tag = 16,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.live.match.GoofyEffectInfo#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "goofyEffectInfo",
+    schemaIndex = 15,
+  )
+  public val goofy_effect_info: GoofyEffectInfo? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<BattleSetting, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -181,6 +190,7 @@ public class BattleSetting(
     if (ice_showdown_setting != other.ice_showdown_setting) return false
     if (gameplay_option != other.gameplay_option) return false
     if (gift_mode_meta_v2 != other.gift_mode_meta_v2) return false
+    if (goofy_effect_info != other.goofy_effect_info) return false
     return true
   }
 
@@ -203,6 +213,7 @@ public class BattleSetting(
       result = result * 37 + ice_showdown_setting.hashCode()
       result = result * 37 + gameplay_option.hashCode()
       result = result * 37 + (gift_mode_meta_v2?.hashCode() ?: 0)
+      result = result * 37 + (goofy_effect_info?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -225,6 +236,7 @@ public class BattleSetting(
     result += """ice_showdown_setting=$ice_showdown_setting"""
     result += """gameplay_option=$gameplay_option"""
     if (gift_mode_meta_v2 != null) result += """gift_mode_meta_v2=$gift_mode_meta_v2"""
+    if (goofy_effect_info != null) result += """goofy_effect_info=$goofy_effect_info"""
     return result.joinToString(prefix = "BattleSetting{", separator = ", ", postfix = "}")
   }
 
@@ -244,8 +256,9 @@ public class BattleSetting(
     ice_showdown_setting: IceShowdownSetting = this.ice_showdown_setting,
     gameplay_option: MatchGameplayOption = this.gameplay_option,
     gift_mode_meta_v2: GiftModeMetaV2? = this.gift_mode_meta_v2,
+    goofy_effect_info: GoofyEffectInfo? = this.goofy_effect_info,
     unknownFields: ByteString = this.unknownFields,
-  ): BattleSetting = BattleSetting(battle_id, start_time_ms, duration, channel_id, status, invite_type, gift_mode_meta, battle_type, extra_duration_second, end_time_ms, scene, source_type, ice_showdown_setting, gameplay_option, gift_mode_meta_v2, unknownFields)
+  ): BattleSetting = BattleSetting(battle_id, start_time_ms, duration, channel_id, status, invite_type, gift_mode_meta, battle_type, extra_duration_second, end_time_ms, scene, source_type, ice_showdown_setting, gameplay_option, gift_mode_meta_v2, goofy_effect_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -304,6 +317,9 @@ public class BattleSetting(
         if (value.gift_mode_meta_v2 != null) {
           size += GiftModeMetaV2.ADAPTER.encodedSizeWithTag(15, value.gift_mode_meta_v2)
         }
+        if (value.goofy_effect_info != null) {
+          size += GoofyEffectInfo.ADAPTER.encodedSizeWithTag(16, value.goofy_effect_info)
+        }
         return size
       }
 
@@ -353,11 +369,17 @@ public class BattleSetting(
         if (value.gift_mode_meta_v2 != null) {
           GiftModeMetaV2.ADAPTER.encodeWithTag(writer, 15, value.gift_mode_meta_v2)
         }
+        if (value.goofy_effect_info != null) {
+          GoofyEffectInfo.ADAPTER.encodeWithTag(writer, 16, value.goofy_effect_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: BattleSetting) {
         writer.writeBytes(value.unknownFields)
+        if (value.goofy_effect_info != null) {
+          GoofyEffectInfo.ADAPTER.encodeWithTag(writer, 16, value.goofy_effect_info)
+        }
         if (value.gift_mode_meta_v2 != null) {
           GiftModeMetaV2.ADAPTER.encodeWithTag(writer, 15, value.gift_mode_meta_v2)
         }
@@ -421,6 +443,7 @@ public class BattleSetting(
         var ice_showdown_setting: IceShowdownSetting = IceShowdownSetting.ICE_SHOWDOWN_OFF
         var gameplay_option: MatchGameplayOption = MatchGameplayOption.MATCH_OPTION_UNKNOWN
         var gift_mode_meta_v2: GiftModeMetaV2? = null
+        var goofy_effect_info: GoofyEffectInfo? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> battle_id = ProtoAdapter.INT64.decode(reader)
@@ -462,6 +485,7 @@ public class BattleSetting(
               reader.addUnknownField(tag, FieldEncoding.VARINT, e.value.toLong())
             }
             15 -> gift_mode_meta_v2 = GiftModeMetaV2.ADAPTER.decode(reader)
+            16 -> goofy_effect_info = GoofyEffectInfo.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -481,6 +505,7 @@ public class BattleSetting(
           ice_showdown_setting = ice_showdown_setting,
           gameplay_option = gameplay_option,
           gift_mode_meta_v2 = gift_mode_meta_v2,
+          goofy_effect_info = goofy_effect_info,
           unknownFields = unknownFields
         )
       }
@@ -488,6 +513,7 @@ public class BattleSetting(
       override fun redact(`value`: BattleSetting): BattleSetting = value.copy(
         gift_mode_meta = value.gift_mode_meta?.let(GiftModeMeta.ADAPTER::redact),
         gift_mode_meta_v2 = value.gift_mode_meta_v2?.let(GiftModeMetaV2.ADAPTER::redact),
+        goofy_effect_info = value.goofy_effect_info?.let(GoofyEffectInfo.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

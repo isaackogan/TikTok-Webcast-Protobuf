@@ -62,6 +62,38 @@ public class GoalReward(
     schemaIndex = 3,
   )
   public val audit_status: Int = 0,
+  @field:WireField(
+    tag = 5,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "rewardDirectMessage",
+    schemaIndex = 4,
+  )
+  public val reward_direct_message: String = "",
+  @field:WireField(
+    tag = 6,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "rewardTemplateId",
+    schemaIndex = 5,
+  )
+  public val reward_template_id: String = "",
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "rewardSource",
+    schemaIndex = 6,
+  )
+  public val reward_source: Int = 0,
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "isHitOptAb",
+    schemaIndex = 7,
+  )
+  public val is_hit_opt_ab: Boolean = false,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<GoalReward, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -78,6 +110,10 @@ public class GoalReward(
     if (top_n != other.top_n) return false
     if (has_sticker != other.has_sticker) return false
     if (audit_status != other.audit_status) return false
+    if (reward_direct_message != other.reward_direct_message) return false
+    if (reward_template_id != other.reward_template_id) return false
+    if (reward_source != other.reward_source) return false
+    if (is_hit_opt_ab != other.is_hit_opt_ab) return false
     return true
   }
 
@@ -89,6 +125,10 @@ public class GoalReward(
       result = result * 37 + top_n.hashCode()
       result = result * 37 + has_sticker.hashCode()
       result = result * 37 + audit_status.hashCode()
+      result = result * 37 + reward_direct_message.hashCode()
+      result = result * 37 + reward_template_id.hashCode()
+      result = result * 37 + reward_source.hashCode()
+      result = result * 37 + is_hit_opt_ab.hashCode()
       super.hashCode = result
     }
     return result
@@ -100,6 +140,10 @@ public class GoalReward(
     result += """top_n=$top_n"""
     result += """has_sticker=$has_sticker"""
     result += """audit_status=$audit_status"""
+    result += """reward_direct_message=${sanitize(reward_direct_message)}"""
+    result += """reward_template_id=${sanitize(reward_template_id)}"""
+    result += """reward_source=$reward_source"""
+    result += """is_hit_opt_ab=$is_hit_opt_ab"""
     return result.joinToString(prefix = "GoalReward{", separator = ", ", postfix = "}")
   }
 
@@ -108,8 +152,12 @@ public class GoalReward(
     top_n: Int = this.top_n,
     has_sticker: Boolean = this.has_sticker,
     audit_status: Int = this.audit_status,
+    reward_direct_message: String = this.reward_direct_message,
+    reward_template_id: String = this.reward_template_id,
+    reward_source: Int = this.reward_source,
+    is_hit_opt_ab: Boolean = this.is_hit_opt_ab,
     unknownFields: ByteString = this.unknownFields,
-  ): GoalReward = GoalReward(reward_content, top_n, has_sticker, audit_status, unknownFields)
+  ): GoalReward = GoalReward(reward_content, top_n, has_sticker, audit_status, reward_direct_message, reward_template_id, reward_source, is_hit_opt_ab, unknownFields)
 
   public companion object {
     @JvmField
@@ -135,6 +183,18 @@ public class GoalReward(
         if (value.audit_status != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(4, value.audit_status)
         }
+        if (value.reward_direct_message != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(5, value.reward_direct_message)
+        }
+        if (value.reward_template_id != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(6, value.reward_template_id)
+        }
+        if (value.reward_source != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(7, value.reward_source)
+        }
+        if (value.is_hit_opt_ab != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(8, value.is_hit_opt_ab)
+        }
         return size
       }
 
@@ -151,11 +211,35 @@ public class GoalReward(
         if (value.audit_status != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 4, value.audit_status)
         }
+        if (value.reward_direct_message != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 5, value.reward_direct_message)
+        }
+        if (value.reward_template_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.reward_template_id)
+        }
+        if (value.reward_source != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 7, value.reward_source)
+        }
+        if (value.is_hit_opt_ab != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_hit_opt_ab)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: GoalReward) {
         writer.writeBytes(value.unknownFields)
+        if (value.is_hit_opt_ab != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_hit_opt_ab)
+        }
+        if (value.reward_source != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 7, value.reward_source)
+        }
+        if (value.reward_template_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.reward_template_id)
+        }
+        if (value.reward_direct_message != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 5, value.reward_direct_message)
+        }
         if (value.audit_status != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 4, value.audit_status)
         }
@@ -175,12 +259,20 @@ public class GoalReward(
         var top_n: Int = 0
         var has_sticker: Boolean = false
         var audit_status: Int = 0
+        var reward_direct_message: String = ""
+        var reward_template_id: String = ""
+        var reward_source: Int = 0
+        var is_hit_opt_ab: Boolean = false
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> reward_content = ProtoAdapter.STRING.decode(reader)
             2 -> top_n = ProtoAdapter.INT32.decode(reader)
             3 -> has_sticker = ProtoAdapter.BOOL.decode(reader)
             4 -> audit_status = ProtoAdapter.INT32.decode(reader)
+            5 -> reward_direct_message = ProtoAdapter.STRING.decode(reader)
+            6 -> reward_template_id = ProtoAdapter.STRING.decode(reader)
+            7 -> reward_source = ProtoAdapter.INT32.decode(reader)
+            8 -> is_hit_opt_ab = ProtoAdapter.BOOL.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -189,6 +281,10 @@ public class GoalReward(
           top_n = top_n,
           has_sticker = has_sticker,
           audit_status = audit_status,
+          reward_direct_message = reward_direct_message,
+          reward_template_id = reward_template_id,
+          reward_source = reward_source,
+          is_hit_opt_ab = is_hit_opt_ab,
           unknownFields = unknownFields
         )
       }

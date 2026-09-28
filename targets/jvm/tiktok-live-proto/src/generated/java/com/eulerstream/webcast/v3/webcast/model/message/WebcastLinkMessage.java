@@ -223,6 +223,14 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
   public final LinkerAcceptNoticeContent reply_accept_notice_content;
 
   @WireField(
+      tag = 24,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.message.CohostInviteStateNotifyContent#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "cohostInviteStateNotifyContent"
+  )
+  public final CohostInviteStateNotifyContent cohost_invite_state_notify_content;
+
+  @WireField(
       tag = 101,
       adapter = "com.eulerstream.webcast.v3.webcast.model.message.LinkerSysKickOutContent#ADAPTER",
       label = WireField.Label.OMIT_IDENTITY,
@@ -293,6 +301,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
     this.cohost_list_change_content = builder.cohost_list_change_content;
     this.media_change_content = builder.media_change_content;
     this.reply_accept_notice_content = builder.reply_accept_notice_content;
+    this.cohost_invite_state_notify_content = builder.cohost_invite_state_notify_content;
     this.sys_kick_out_content = builder.sys_kick_out_content;
     this.user_toast_content = builder.user_toast_content;
     if (builder.extra == null) {
@@ -333,6 +342,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
     builder.cohost_list_change_content = cohost_list_change_content;
     builder.media_change_content = media_change_content;
     builder.reply_accept_notice_content = reply_accept_notice_content;
+    builder.cohost_invite_state_notify_content = cohost_invite_state_notify_content;
     builder.sys_kick_out_content = sys_kick_out_content;
     builder.user_toast_content = user_toast_content;
     builder.extra = extra;
@@ -372,6 +382,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
         && Internal.equals(cohost_list_change_content, o.cohost_list_change_content)
         && Internal.equals(media_change_content, o.media_change_content)
         && Internal.equals(reply_accept_notice_content, o.reply_accept_notice_content)
+        && Internal.equals(cohost_invite_state_notify_content, o.cohost_invite_state_notify_content)
         && Internal.equals(sys_kick_out_content, o.sys_kick_out_content)
         && Internal.equals(user_toast_content, o.user_toast_content)
         && Internal.equals(extra, o.extra)
@@ -408,6 +419,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
       result = result * 37 + (cohost_list_change_content != null ? cohost_list_change_content.hashCode() : 0);
       result = result * 37 + (media_change_content != null ? media_change_content.hashCode() : 0);
       result = result * 37 + (reply_accept_notice_content != null ? reply_accept_notice_content.hashCode() : 0);
+      result = result * 37 + (cohost_invite_state_notify_content != null ? cohost_invite_state_notify_content.hashCode() : 0);
       result = result * 37 + (sys_kick_out_content != null ? sys_kick_out_content.hashCode() : 0);
       result = result * 37 + (user_toast_content != null ? user_toast_content.hashCode() : 0);
       result = result * 37 + (extra != null ? extra.hashCode() : 0);
@@ -445,6 +457,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
     if (cohost_list_change_content != null) builder.append(", cohost_list_change_content=").append(cohost_list_change_content);
     if (media_change_content != null) builder.append(", media_change_content=").append(media_change_content);
     if (reply_accept_notice_content != null) builder.append(", reply_accept_notice_content=").append(reply_accept_notice_content);
+    if (cohost_invite_state_notify_content != null) builder.append(", cohost_invite_state_notify_content=").append(cohost_invite_state_notify_content);
     if (sys_kick_out_content != null) builder.append(", sys_kick_out_content=").append(sys_kick_out_content);
     if (user_toast_content != null) builder.append(", user_toast_content=").append(user_toast_content);
     if (extra != null) builder.append(", extra=").append(Internal.sanitize(extra));
@@ -500,6 +513,8 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
     public LinkerMediaChangeContent media_change_content;
 
     public LinkerAcceptNoticeContent reply_accept_notice_content;
+
+    public CohostInviteStateNotifyContent cohost_invite_state_notify_content;
 
     public LinkerSysKickOutContent sys_kick_out_content;
 
@@ -641,6 +656,12 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
       return this;
     }
 
+    public Builder cohost_invite_state_notify_content(
+        CohostInviteStateNotifyContent cohost_invite_state_notify_content) {
+      this.cohost_invite_state_notify_content = cohost_invite_state_notify_content;
+      return this;
+    }
+
     public Builder sys_kick_out_content(LinkerSysKickOutContent sys_kick_out_content) {
       this.sys_kick_out_content = sys_kick_out_content;
       return this;
@@ -754,6 +775,9 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
       if (!Objects.equals(value.reply_accept_notice_content, null)) {
         result += LinkerAcceptNoticeContent.ADAPTER.encodedSizeWithTag(23, value.reply_accept_notice_content);
       }
+      if (!Objects.equals(value.cohost_invite_state_notify_content, null)) {
+        result += CohostInviteStateNotifyContent.ADAPTER.encodedSizeWithTag(24, value.cohost_invite_state_notify_content);
+      }
       if (!Objects.equals(value.sys_kick_out_content, null)) {
         result += LinkerSysKickOutContent.ADAPTER.encodedSizeWithTag(101, value.sys_kick_out_content);
       }
@@ -801,6 +825,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
       if (!Objects.equals(value.cohost_list_change_content, null)) CohostListChangeContent.ADAPTER.encodeWithTag(writer, 21, value.cohost_list_change_content);
       if (!Objects.equals(value.media_change_content, null)) LinkerMediaChangeContent.ADAPTER.encodeWithTag(writer, 22, value.media_change_content);
       if (!Objects.equals(value.reply_accept_notice_content, null)) LinkerAcceptNoticeContent.ADAPTER.encodeWithTag(writer, 23, value.reply_accept_notice_content);
+      if (!Objects.equals(value.cohost_invite_state_notify_content, null)) CohostInviteStateNotifyContent.ADAPTER.encodeWithTag(writer, 24, value.cohost_invite_state_notify_content);
       if (!Objects.equals(value.sys_kick_out_content, null)) LinkerSysKickOutContent.ADAPTER.encodeWithTag(writer, 101, value.sys_kick_out_content);
       if (!Objects.equals(value.user_toast_content, null)) LinkmicUserToastContent.ADAPTER.encodeWithTag(writer, 102, value.user_toast_content);
       if (!Objects.equals(value.extra, "")) ProtoAdapter.STRING.encodeWithTag(writer, 200, value.extra);
@@ -819,6 +844,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
       if (!Objects.equals(value.extra, "")) ProtoAdapter.STRING.encodeWithTag(writer, 200, value.extra);
       if (!Objects.equals(value.user_toast_content, null)) LinkmicUserToastContent.ADAPTER.encodeWithTag(writer, 102, value.user_toast_content);
       if (!Objects.equals(value.sys_kick_out_content, null)) LinkerSysKickOutContent.ADAPTER.encodeWithTag(writer, 101, value.sys_kick_out_content);
+      if (!Objects.equals(value.cohost_invite_state_notify_content, null)) CohostInviteStateNotifyContent.ADAPTER.encodeWithTag(writer, 24, value.cohost_invite_state_notify_content);
       if (!Objects.equals(value.reply_accept_notice_content, null)) LinkerAcceptNoticeContent.ADAPTER.encodeWithTag(writer, 23, value.reply_accept_notice_content);
       if (!Objects.equals(value.media_change_content, null)) LinkerMediaChangeContent.ADAPTER.encodeWithTag(writer, 22, value.media_change_content);
       if (!Objects.equals(value.cohost_list_change_content, null)) CohostListChangeContent.ADAPTER.encodeWithTag(writer, 21, value.cohost_list_change_content);
@@ -873,6 +899,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
           case 21: builder.cohost_list_change_content(CohostListChangeContent.ADAPTER.decode(reader)); break;
           case 22: builder.media_change_content(LinkerMediaChangeContent.ADAPTER.decode(reader)); break;
           case 23: builder.reply_accept_notice_content(LinkerAcceptNoticeContent.ADAPTER.decode(reader)); break;
+          case 24: builder.cohost_invite_state_notify_content(CohostInviteStateNotifyContent.ADAPTER.decode(reader)); break;
           case 101: builder.sys_kick_out_content(LinkerSysKickOutContent.ADAPTER.decode(reader)); break;
           case 102: builder.user_toast_content(LinkmicUserToastContent.ADAPTER.decode(reader)); break;
           case 200: builder.extra(ProtoAdapter.STRING.decode(reader)); break;
@@ -911,6 +938,7 @@ public final class WebcastLinkMessage extends Message<WebcastLinkMessage, Webcas
       if (builder.cohost_list_change_content != null) builder.cohost_list_change_content = CohostListChangeContent.ADAPTER.redact(builder.cohost_list_change_content);
       if (builder.media_change_content != null) builder.media_change_content = LinkerMediaChangeContent.ADAPTER.redact(builder.media_change_content);
       if (builder.reply_accept_notice_content != null) builder.reply_accept_notice_content = LinkerAcceptNoticeContent.ADAPTER.redact(builder.reply_accept_notice_content);
+      if (builder.cohost_invite_state_notify_content != null) builder.cohost_invite_state_notify_content = CohostInviteStateNotifyContent.ADAPTER.redact(builder.cohost_invite_state_notify_content);
       if (builder.sys_kick_out_content != null) builder.sys_kick_out_content = LinkerSysKickOutContent.ADAPTER.redact(builder.sys_kick_out_content);
       if (builder.user_toast_content != null) builder.user_toast_content = LinkmicUserToastContent.ADAPTER.redact(builder.user_toast_content);
       builder.clearUnknownFields();

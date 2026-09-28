@@ -81,14 +81,31 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
   )
   public final String schema;
 
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "popupPageStyle"
+  )
+  public final int popup_page_style;
+
+  @WireField(
+      tag = 9,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "lynxPopupInfo"
+  )
+  public final String lynx_popup_info;
+
   public AuctionWinnerPopup(String auction_id, String winner_user_id, String product_id,
-      int notify_type, String payment_expire_timestamp, ImageModel product_img, String schema) {
-    this(auction_id, winner_user_id, product_id, notify_type, payment_expire_timestamp, product_img, schema, ByteString.EMPTY);
+      int notify_type, String payment_expire_timestamp, ImageModel product_img, String schema,
+      int popup_page_style, String lynx_popup_info) {
+    this(auction_id, winner_user_id, product_id, notify_type, payment_expire_timestamp, product_img, schema, popup_page_style, lynx_popup_info, ByteString.EMPTY);
   }
 
   public AuctionWinnerPopup(String auction_id, String winner_user_id, String product_id,
       int notify_type, String payment_expire_timestamp, ImageModel product_img, String schema,
-      ByteString unknownFields) {
+      int popup_page_style, String lynx_popup_info, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (auction_id == null) {
       throw new IllegalArgumentException("auction_id == null");
@@ -112,6 +129,11 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
       throw new IllegalArgumentException("schema == null");
     }
     this.schema = schema;
+    this.popup_page_style = popup_page_style;
+    if (lynx_popup_info == null) {
+      throw new IllegalArgumentException("lynx_popup_info == null");
+    }
+    this.lynx_popup_info = lynx_popup_info;
   }
 
   @Override
@@ -124,6 +146,8 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
     builder.payment_expire_timestamp = payment_expire_timestamp;
     builder.product_img = product_img;
     builder.schema = schema;
+    builder.popup_page_style = popup_page_style;
+    builder.lynx_popup_info = lynx_popup_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -140,7 +164,9 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
         && Internal.equals(notify_type, o.notify_type)
         && Internal.equals(payment_expire_timestamp, o.payment_expire_timestamp)
         && Internal.equals(product_img, o.product_img)
-        && Internal.equals(schema, o.schema);
+        && Internal.equals(schema, o.schema)
+        && Internal.equals(popup_page_style, o.popup_page_style)
+        && Internal.equals(lynx_popup_info, o.lynx_popup_info);
   }
 
   @Override
@@ -155,6 +181,8 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
       result = result * 37 + (payment_expire_timestamp != null ? payment_expire_timestamp.hashCode() : 0);
       result = result * 37 + (product_img != null ? product_img.hashCode() : 0);
       result = result * 37 + (schema != null ? schema.hashCode() : 0);
+      result = result * 37 + Integer.hashCode(popup_page_style);
+      result = result * 37 + (lynx_popup_info != null ? lynx_popup_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -170,6 +198,8 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
     if (payment_expire_timestamp != null) builder.append(", payment_expire_timestamp=").append(Internal.sanitize(payment_expire_timestamp));
     if (product_img != null) builder.append(", product_img=").append(product_img);
     if (schema != null) builder.append(", schema=").append(Internal.sanitize(schema));
+    builder.append(", popup_page_style=").append(popup_page_style);
+    if (lynx_popup_info != null) builder.append(", lynx_popup_info=").append(Internal.sanitize(lynx_popup_info));
     return builder.replace(0, 2, "AuctionWinnerPopup{").append('}').toString();
   }
 
@@ -188,6 +218,10 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
 
     public String schema;
 
+    public int popup_page_style;
+
+    public String lynx_popup_info;
+
     public Builder() {
       auction_id = "";
       winner_user_id = "";
@@ -195,6 +229,8 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
       notify_type = 0;
       payment_expire_timestamp = "";
       schema = "";
+      popup_page_style = 0;
+      lynx_popup_info = "";
     }
 
     public Builder auction_id(String auction_id) {
@@ -232,9 +268,19 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
       return this;
     }
 
+    public Builder popup_page_style(int popup_page_style) {
+      this.popup_page_style = popup_page_style;
+      return this;
+    }
+
+    public Builder lynx_popup_info(String lynx_popup_info) {
+      this.lynx_popup_info = lynx_popup_info;
+      return this;
+    }
+
     @Override
     public AuctionWinnerPopup build() {
-      return new AuctionWinnerPopup(auction_id, winner_user_id, product_id, notify_type, payment_expire_timestamp, product_img, schema, super.buildUnknownFields());
+      return new AuctionWinnerPopup(auction_id, winner_user_id, product_id, notify_type, payment_expire_timestamp, product_img, schema, popup_page_style, lynx_popup_info, super.buildUnknownFields());
     }
   }
 
@@ -267,6 +313,12 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
       if (!Objects.equals(value.schema, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.schema);
       }
+      if (!Objects.equals(value.popup_page_style, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(8, value.popup_page_style);
+      }
+      if (!Objects.equals(value.lynx_popup_info, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(9, value.lynx_popup_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -280,12 +332,16 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
       if (!Objects.equals(value.payment_expire_timestamp, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.payment_expire_timestamp);
       if (!Objects.equals(value.product_img, null)) ImageModel.ADAPTER.encodeWithTag(writer, 6, value.product_img);
       if (!Objects.equals(value.schema, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.schema);
+      if (!Objects.equals(value.popup_page_style, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 8, value.popup_page_style);
+      if (!Objects.equals(value.lynx_popup_info, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.lynx_popup_info);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, AuctionWinnerPopup value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.lynx_popup_info, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.lynx_popup_info);
+      if (!Objects.equals(value.popup_page_style, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 8, value.popup_page_style);
       if (!Objects.equals(value.schema, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.schema);
       if (!Objects.equals(value.product_img, null)) ImageModel.ADAPTER.encodeWithTag(writer, 6, value.product_img);
       if (!Objects.equals(value.payment_expire_timestamp, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.payment_expire_timestamp);
@@ -308,6 +364,8 @@ public final class AuctionWinnerPopup extends Message<AuctionWinnerPopup, Auctio
           case 5: builder.payment_expire_timestamp(ProtoAdapter.STRING.decode(reader)); break;
           case 6: builder.product_img(ImageModel.ADAPTER.decode(reader)); break;
           case 7: builder.schema(ProtoAdapter.STRING.decode(reader)); break;
+          case 8: builder.popup_page_style(ProtoAdapter.INT32.decode(reader)); break;
+          case 9: builder.lynx_popup_info(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

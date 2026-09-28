@@ -97,17 +97,25 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
   )
   public final String linkmic_id;
 
+  @WireField(
+      tag = 10,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "linkerSessionId"
+  )
+  public final String linker_session_id;
+
   public LinkmicAudienceApplyGuide(LinkMicAudienceNoticeText content,
       LinkMicAudienceNoticeText button_content, User user, int display_strategy,
       String linkmic_audience_apply_notice_reason, long display_position, String trigger_type,
-      String request_id, String linkmic_id) {
-    this(content, button_content, user, display_strategy, linkmic_audience_apply_notice_reason, display_position, trigger_type, request_id, linkmic_id, ByteString.EMPTY);
+      String request_id, String linkmic_id, String linker_session_id) {
+    this(content, button_content, user, display_strategy, linkmic_audience_apply_notice_reason, display_position, trigger_type, request_id, linkmic_id, linker_session_id, ByteString.EMPTY);
   }
 
   public LinkmicAudienceApplyGuide(LinkMicAudienceNoticeText content,
       LinkMicAudienceNoticeText button_content, User user, int display_strategy,
       String linkmic_audience_apply_notice_reason, long display_position, String trigger_type,
-      String request_id, String linkmic_id, ByteString unknownFields) {
+      String request_id, String linkmic_id, String linker_session_id, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.content = content;
     this.button_content = button_content;
@@ -130,6 +138,10 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
       throw new IllegalArgumentException("linkmic_id == null");
     }
     this.linkmic_id = linkmic_id;
+    if (linker_session_id == null) {
+      throw new IllegalArgumentException("linker_session_id == null");
+    }
+    this.linker_session_id = linker_session_id;
   }
 
   @Override
@@ -144,6 +156,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
     builder.trigger_type = trigger_type;
     builder.request_id = request_id;
     builder.linkmic_id = linkmic_id;
+    builder.linker_session_id = linker_session_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -162,7 +175,8 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
         && Internal.equals(display_position, o.display_position)
         && Internal.equals(trigger_type, o.trigger_type)
         && Internal.equals(request_id, o.request_id)
-        && Internal.equals(linkmic_id, o.linkmic_id);
+        && Internal.equals(linkmic_id, o.linkmic_id)
+        && Internal.equals(linker_session_id, o.linker_session_id);
   }
 
   @Override
@@ -179,6 +193,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
       result = result * 37 + (trigger_type != null ? trigger_type.hashCode() : 0);
       result = result * 37 + (request_id != null ? request_id.hashCode() : 0);
       result = result * 37 + (linkmic_id != null ? linkmic_id.hashCode() : 0);
+      result = result * 37 + (linker_session_id != null ? linker_session_id.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -196,6 +211,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
     if (trigger_type != null) builder.append(", trigger_type=").append(Internal.sanitize(trigger_type));
     if (request_id != null) builder.append(", request_id=").append(Internal.sanitize(request_id));
     if (linkmic_id != null) builder.append(", linkmic_id=").append(Internal.sanitize(linkmic_id));
+    if (linker_session_id != null) builder.append(", linker_session_id=").append(Internal.sanitize(linker_session_id));
     return builder.replace(0, 2, "LinkmicAudienceApplyGuide{").append('}').toString();
   }
 
@@ -218,6 +234,8 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
 
     public String linkmic_id;
 
+    public String linker_session_id;
+
     public Builder() {
       display_strategy = 0;
       linkmic_audience_apply_notice_reason = "";
@@ -225,6 +243,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
       trigger_type = "";
       request_id = "";
       linkmic_id = "";
+      linker_session_id = "";
     }
 
     public Builder content(LinkMicAudienceNoticeText content) {
@@ -273,9 +292,14 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
       return this;
     }
 
+    public Builder linker_session_id(String linker_session_id) {
+      this.linker_session_id = linker_session_id;
+      return this;
+    }
+
     @Override
     public LinkmicAudienceApplyGuide build() {
-      return new LinkmicAudienceApplyGuide(content, button_content, user, display_strategy, linkmic_audience_apply_notice_reason, display_position, trigger_type, request_id, linkmic_id, super.buildUnknownFields());
+      return new LinkmicAudienceApplyGuide(content, button_content, user, display_strategy, linkmic_audience_apply_notice_reason, display_position, trigger_type, request_id, linkmic_id, linker_session_id, super.buildUnknownFields());
     }
   }
 
@@ -314,6 +338,9 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
       if (!Objects.equals(value.linkmic_id, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(9, value.linkmic_id);
       }
+      if (!Objects.equals(value.linker_session_id, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(10, value.linker_session_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -329,6 +356,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
       if (!Objects.equals(value.trigger_type, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.trigger_type);
       if (!Objects.equals(value.request_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.request_id);
       if (!Objects.equals(value.linkmic_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.linkmic_id);
+      if (!Objects.equals(value.linker_session_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.linker_session_id);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -336,6 +364,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
     public void encode(ReverseProtoWriter writer, LinkmicAudienceApplyGuide value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.linker_session_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.linker_session_id);
       if (!Objects.equals(value.linkmic_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.linkmic_id);
       if (!Objects.equals(value.request_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.request_id);
       if (!Objects.equals(value.trigger_type, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.trigger_type);
@@ -362,6 +391,7 @@ public final class LinkmicAudienceApplyGuide extends Message<LinkmicAudienceAppl
           case 7: builder.trigger_type(ProtoAdapter.STRING.decode(reader)); break;
           case 8: builder.request_id(ProtoAdapter.STRING.decode(reader)); break;
           case 9: builder.linkmic_id(ProtoAdapter.STRING.decode(reader)); break;
+          case 10: builder.linker_session_id(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

@@ -34,9 +34,10 @@ public class BattleTaskStart(
     tag = 1,
     adapter = "com.eulerstream.webcast.v3.webcast.model.live.match.BattleBonusConfig#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "battleBonusConfig",
     schemaIndex = 0,
   )
-  public val config: BattleBonusConfig? = null,
+  public val battle_bonus_config: BattleBonusConfig? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<BattleTaskStart, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -49,7 +50,7 @@ public class BattleTaskStart(
     if (other === this) return true
     if (other !is BattleTaskStart) return false
     if (unknownFields != other.unknownFields) return false
-    if (config != other.config) return false
+    if (battle_bonus_config != other.battle_bonus_config) return false
     return true
   }
 
@@ -57,7 +58,7 @@ public class BattleTaskStart(
     var result = super.hashCode
     if (result == 0) {
       result = unknownFields.hashCode()
-      result = result * 37 + (config?.hashCode() ?: 0)
+      result = result * 37 + (battle_bonus_config?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -65,11 +66,11 @@ public class BattleTaskStart(
 
   override fun toString(): String {
     val result = mutableListOf<String>()
-    if (config != null) result += """config=$config"""
+    if (battle_bonus_config != null) result += """battle_bonus_config=$battle_bonus_config"""
     return result.joinToString(prefix = "BattleTaskStart{", separator = ", ", postfix = "}")
   }
 
-  public fun copy(config: BattleBonusConfig? = this.config, unknownFields: ByteString = this.unknownFields): BattleTaskStart = BattleTaskStart(config, unknownFields)
+  public fun copy(battle_bonus_config: BattleBonusConfig? = this.battle_bonus_config, unknownFields: ByteString = this.unknownFields): BattleTaskStart = BattleTaskStart(battle_bonus_config, unknownFields)
 
   public companion object {
     @JvmField
@@ -83,42 +84,42 @@ public class BattleTaskStart(
     ) {
       override fun encodedSize(`value`: BattleTaskStart): Int {
         var size = value.unknownFields.size
-        if (value.config != null) {
-          size += BattleBonusConfig.ADAPTER.encodedSizeWithTag(1, value.config)
+        if (value.battle_bonus_config != null) {
+          size += BattleBonusConfig.ADAPTER.encodedSizeWithTag(1, value.battle_bonus_config)
         }
         return size
       }
 
       override fun encode(writer: ProtoWriter, `value`: BattleTaskStart) {
-        if (value.config != null) {
-          BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.config)
+        if (value.battle_bonus_config != null) {
+          BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.battle_bonus_config)
         }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: BattleTaskStart) {
         writer.writeBytes(value.unknownFields)
-        if (value.config != null) {
-          BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.config)
+        if (value.battle_bonus_config != null) {
+          BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.battle_bonus_config)
         }
       }
 
       override fun decode(reader: ProtoReader): BattleTaskStart {
-        var config: BattleBonusConfig? = null
+        var battle_bonus_config: BattleBonusConfig? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
-            1 -> config = BattleBonusConfig.ADAPTER.decode(reader)
+            1 -> battle_bonus_config = BattleBonusConfig.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
         return BattleTaskStart(
-          config = config,
+          battle_bonus_config = battle_bonus_config,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: BattleTaskStart): BattleTaskStart = value.copy(
-        config = value.config?.let(BattleBonusConfig.ADAPTER::redact),
+        battle_bonus_config = value.battle_bonus_config?.let(BattleBonusConfig.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

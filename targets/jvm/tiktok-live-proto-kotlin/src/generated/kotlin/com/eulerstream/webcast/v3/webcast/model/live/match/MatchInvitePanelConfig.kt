@@ -7,6 +7,7 @@
 
 package com.eulerstream.webcast.v3.webcast.model.live.match
 
+import com.eulerstream.webcast.v3.webcast.model.base.ImageModel
 import com.eulerstream.webcast.v3.webcast.model.message.common.Text
 import com.squareup.wire.FieldEncoding
 import com.squareup.wire.Message
@@ -62,6 +63,22 @@ public class MatchInvitePanelConfig(
     schemaIndex = 3,
   )
   public val desc_text_dark_mode: Text? = null,
+  @field:WireField(
+    tag = 5,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "descIcon",
+    schemaIndex = 4,
+  )
+  public val desc_icon: ImageModel? = null,
+  @field:WireField(
+    tag = 6,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "descIconDarkMode",
+    schemaIndex = 5,
+  )
+  public val desc_icon_dark_mode: ImageModel? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<MatchInvitePanelConfig, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -78,6 +95,8 @@ public class MatchInvitePanelConfig(
     if (header_text_dark_mode != other.header_text_dark_mode) return false
     if (desc_text != other.desc_text) return false
     if (desc_text_dark_mode != other.desc_text_dark_mode) return false
+    if (desc_icon != other.desc_icon) return false
+    if (desc_icon_dark_mode != other.desc_icon_dark_mode) return false
     return true
   }
 
@@ -89,6 +108,8 @@ public class MatchInvitePanelConfig(
       result = result * 37 + (header_text_dark_mode?.hashCode() ?: 0)
       result = result * 37 + (desc_text?.hashCode() ?: 0)
       result = result * 37 + (desc_text_dark_mode?.hashCode() ?: 0)
+      result = result * 37 + (desc_icon?.hashCode() ?: 0)
+      result = result * 37 + (desc_icon_dark_mode?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -100,6 +121,8 @@ public class MatchInvitePanelConfig(
     if (header_text_dark_mode != null) result += """header_text_dark_mode=$header_text_dark_mode"""
     if (desc_text != null) result += """desc_text=$desc_text"""
     if (desc_text_dark_mode != null) result += """desc_text_dark_mode=$desc_text_dark_mode"""
+    if (desc_icon != null) result += """desc_icon=$desc_icon"""
+    if (desc_icon_dark_mode != null) result += """desc_icon_dark_mode=$desc_icon_dark_mode"""
     return result.joinToString(prefix = "MatchInvitePanelConfig{", separator = ", ", postfix = "}")
   }
 
@@ -108,8 +131,10 @@ public class MatchInvitePanelConfig(
     header_text_dark_mode: Text? = this.header_text_dark_mode,
     desc_text: Text? = this.desc_text,
     desc_text_dark_mode: Text? = this.desc_text_dark_mode,
+    desc_icon: ImageModel? = this.desc_icon,
+    desc_icon_dark_mode: ImageModel? = this.desc_icon_dark_mode,
     unknownFields: ByteString = this.unknownFields,
-  ): MatchInvitePanelConfig = MatchInvitePanelConfig(header_text, header_text_dark_mode, desc_text, desc_text_dark_mode, unknownFields)
+  ): MatchInvitePanelConfig = MatchInvitePanelConfig(header_text, header_text_dark_mode, desc_text, desc_text_dark_mode, desc_icon, desc_icon_dark_mode, unknownFields)
 
   public companion object {
     @JvmField
@@ -136,6 +161,12 @@ public class MatchInvitePanelConfig(
         if (value.desc_text_dark_mode != null) {
           size += Text.ADAPTER.encodedSizeWithTag(4, value.desc_text_dark_mode)
         }
+        if (value.desc_icon != null) {
+          size += ImageModel.ADAPTER.encodedSizeWithTag(5, value.desc_icon)
+        }
+        if (value.desc_icon_dark_mode != null) {
+          size += ImageModel.ADAPTER.encodedSizeWithTag(6, value.desc_icon_dark_mode)
+        }
         return size
       }
 
@@ -152,11 +183,23 @@ public class MatchInvitePanelConfig(
         if (value.desc_text_dark_mode != null) {
           Text.ADAPTER.encodeWithTag(writer, 4, value.desc_text_dark_mode)
         }
+        if (value.desc_icon != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 5, value.desc_icon)
+        }
+        if (value.desc_icon_dark_mode != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 6, value.desc_icon_dark_mode)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: MatchInvitePanelConfig) {
         writer.writeBytes(value.unknownFields)
+        if (value.desc_icon_dark_mode != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 6, value.desc_icon_dark_mode)
+        }
+        if (value.desc_icon != null) {
+          ImageModel.ADAPTER.encodeWithTag(writer, 5, value.desc_icon)
+        }
         if (value.desc_text_dark_mode != null) {
           Text.ADAPTER.encodeWithTag(writer, 4, value.desc_text_dark_mode)
         }
@@ -176,12 +219,16 @@ public class MatchInvitePanelConfig(
         var header_text_dark_mode: Text? = null
         var desc_text: Text? = null
         var desc_text_dark_mode: Text? = null
+        var desc_icon: ImageModel? = null
+        var desc_icon_dark_mode: ImageModel? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> header_text = Text.ADAPTER.decode(reader)
             2 -> header_text_dark_mode = Text.ADAPTER.decode(reader)
             3 -> desc_text = Text.ADAPTER.decode(reader)
             4 -> desc_text_dark_mode = Text.ADAPTER.decode(reader)
+            5 -> desc_icon = ImageModel.ADAPTER.decode(reader)
+            6 -> desc_icon_dark_mode = ImageModel.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -190,6 +237,8 @@ public class MatchInvitePanelConfig(
           header_text_dark_mode = header_text_dark_mode,
           desc_text = desc_text,
           desc_text_dark_mode = desc_text_dark_mode,
+          desc_icon = desc_icon,
+          desc_icon_dark_mode = desc_icon_dark_mode,
           unknownFields = unknownFields
         )
       }
@@ -199,6 +248,8 @@ public class MatchInvitePanelConfig(
         header_text_dark_mode = value.header_text_dark_mode?.let(Text.ADAPTER::redact),
         desc_text = value.desc_text?.let(Text.ADAPTER::redact),
         desc_text_dark_mode = value.desc_text_dark_mode?.let(Text.ADAPTER::redact),
+        desc_icon = value.desc_icon?.let(ImageModel.ADAPTER::redact),
+        desc_icon_dark_mode = value.desc_icon_dark_mode?.let(ImageModel.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

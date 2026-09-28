@@ -110,6 +110,14 @@ public class PunishEventInfo(
     schemaIndex = 9,
   )
   public val show_reason: String = "",
+  @field:WireField(
+    tag = 11,
+    adapter = "com.squareup.wire.ProtoAdapter#INT64",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "endTimeV2",
+    schemaIndex = 10,
+  )
+  public val end_time_v2: Long = 0L,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<PunishEventInfo, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -132,6 +140,7 @@ public class PunishEventInfo(
     if (end_time != other.end_time) return false
     if (violation_uid_str != other.violation_uid_str) return false
     if (show_reason != other.show_reason) return false
+    if (end_time_v2 != other.end_time_v2) return false
     return true
   }
 
@@ -149,6 +158,7 @@ public class PunishEventInfo(
       result = result * 37 + end_time.hashCode()
       result = result * 37 + violation_uid_str.hashCode()
       result = result * 37 + show_reason.hashCode()
+      result = result * 37 + end_time_v2.hashCode()
       super.hashCode = result
     }
     return result
@@ -166,6 +176,7 @@ public class PunishEventInfo(
     result += """end_time=$end_time"""
     result += """violation_uid_str=${sanitize(violation_uid_str)}"""
     result += """show_reason=${sanitize(show_reason)}"""
+    result += """end_time_v2=$end_time_v2"""
     return result.joinToString(prefix = "PunishEventInfo{", separator = ", ", postfix = "}")
   }
 
@@ -180,8 +191,9 @@ public class PunishEventInfo(
     end_time: Long = this.end_time,
     violation_uid_str: String = this.violation_uid_str,
     show_reason: String = this.show_reason,
+    end_time_v2: Long = this.end_time_v2,
     unknownFields: ByteString = this.unknownFields,
-  ): PunishEventInfo = PunishEventInfo(punish_type, punish_reason, punish_id, violation_uid, punish_type_id, duration, punish_perception_code, end_time, violation_uid_str, show_reason, unknownFields)
+  ): PunishEventInfo = PunishEventInfo(punish_type, punish_reason, punish_id, violation_uid, punish_type_id, duration, punish_perception_code, end_time, violation_uid_str, show_reason, end_time_v2, unknownFields)
 
   public companion object {
     @JvmField
@@ -225,6 +237,9 @@ public class PunishEventInfo(
         if (value.show_reason != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(10, value.show_reason)
         }
+        if (value.end_time_v2 != 0L) {
+          size += ProtoAdapter.INT64.encodedSizeWithTag(11, value.end_time_v2)
+        }
         return size
       }
 
@@ -259,11 +274,17 @@ public class PunishEventInfo(
         if (value.show_reason != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 10, value.show_reason)
         }
+        if (value.end_time_v2 != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 11, value.end_time_v2)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: PunishEventInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.end_time_v2 != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 11, value.end_time_v2)
+        }
         if (value.show_reason != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 10, value.show_reason)
         }
@@ -307,6 +328,7 @@ public class PunishEventInfo(
         var end_time: Long = 0L
         var violation_uid_str: String = ""
         var show_reason: String = ""
+        var end_time_v2: Long = 0L
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> punish_type = ProtoAdapter.STRING.decode(reader)
@@ -323,6 +345,7 @@ public class PunishEventInfo(
             8 -> end_time = ProtoAdapter.INT64.decode(reader)
             9 -> violation_uid_str = ProtoAdapter.STRING.decode(reader)
             10 -> show_reason = ProtoAdapter.STRING.decode(reader)
+            11 -> end_time_v2 = ProtoAdapter.INT64.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -337,6 +360,7 @@ public class PunishEventInfo(
           end_time = end_time,
           violation_uid_str = violation_uid_str,
           show_reason = show_reason,
+          end_time_v2 = end_time_v2,
           unknownFields = unknownFields
         )
       }

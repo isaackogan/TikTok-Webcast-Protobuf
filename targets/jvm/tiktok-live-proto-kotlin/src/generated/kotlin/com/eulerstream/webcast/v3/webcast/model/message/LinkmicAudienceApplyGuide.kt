@@ -101,6 +101,14 @@ public class LinkmicAudienceApplyGuide(
     schemaIndex = 8,
   )
   public val linkmic_id: String = "",
+  @field:WireField(
+    tag = 10,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "linkerSessionId",
+    schemaIndex = 9,
+  )
+  public val linker_session_id: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<LinkmicAudienceApplyGuide, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -122,6 +130,7 @@ public class LinkmicAudienceApplyGuide(
     if (trigger_type != other.trigger_type) return false
     if (request_id != other.request_id) return false
     if (linkmic_id != other.linkmic_id) return false
+    if (linker_session_id != other.linker_session_id) return false
     return true
   }
 
@@ -138,6 +147,7 @@ public class LinkmicAudienceApplyGuide(
       result = result * 37 + trigger_type.hashCode()
       result = result * 37 + request_id.hashCode()
       result = result * 37 + linkmic_id.hashCode()
+      result = result * 37 + linker_session_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -154,6 +164,7 @@ public class LinkmicAudienceApplyGuide(
     result += """trigger_type=${sanitize(trigger_type)}"""
     result += """request_id=${sanitize(request_id)}"""
     result += """linkmic_id=${sanitize(linkmic_id)}"""
+    result += """linker_session_id=${sanitize(linker_session_id)}"""
     return result.joinToString(prefix = "LinkmicAudienceApplyGuide{", separator = ", ", postfix = "}")
   }
 
@@ -167,8 +178,9 @@ public class LinkmicAudienceApplyGuide(
     trigger_type: String = this.trigger_type,
     request_id: String = this.request_id,
     linkmic_id: String = this.linkmic_id,
+    linker_session_id: String = this.linker_session_id,
     unknownFields: ByteString = this.unknownFields,
-  ): LinkmicAudienceApplyGuide = LinkmicAudienceApplyGuide(content, button_content, user, display_strategy, linkmic_audience_apply_notice_reason, display_position, trigger_type, request_id, linkmic_id, unknownFields)
+  ): LinkmicAudienceApplyGuide = LinkmicAudienceApplyGuide(content, button_content, user, display_strategy, linkmic_audience_apply_notice_reason, display_position, trigger_type, request_id, linkmic_id, linker_session_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -210,6 +222,9 @@ public class LinkmicAudienceApplyGuide(
         if (value.linkmic_id != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(9, value.linkmic_id)
         }
+        if (value.linker_session_id != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(10, value.linker_session_id)
+        }
         return size
       }
 
@@ -241,11 +256,17 @@ public class LinkmicAudienceApplyGuide(
         if (value.linkmic_id != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 9, value.linkmic_id)
         }
+        if (value.linker_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 10, value.linker_session_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: LinkmicAudienceApplyGuide) {
         writer.writeBytes(value.unknownFields)
+        if (value.linker_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 10, value.linker_session_id)
+        }
         if (value.linkmic_id != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 9, value.linkmic_id)
         }
@@ -285,6 +306,7 @@ public class LinkmicAudienceApplyGuide(
         var trigger_type: String = ""
         var request_id: String = ""
         var linkmic_id: String = ""
+        var linker_session_id: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> content = LinkMicAudienceNoticeText.ADAPTER.decode(reader)
@@ -296,6 +318,7 @@ public class LinkmicAudienceApplyGuide(
             7 -> trigger_type = ProtoAdapter.STRING.decode(reader)
             8 -> request_id = ProtoAdapter.STRING.decode(reader)
             9 -> linkmic_id = ProtoAdapter.STRING.decode(reader)
+            10 -> linker_session_id = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -309,6 +332,7 @@ public class LinkmicAudienceApplyGuide(
           trigger_type = trigger_type,
           request_id = request_id,
           linkmic_id = linkmic_id,
+          linker_session_id = linker_session_id,
           unknownFields = unknownFields
         )
       }

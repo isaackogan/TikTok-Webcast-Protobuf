@@ -113,6 +113,14 @@ public class StoreIdentityLabel(
     schemaIndex = 9,
   )
   public val shop_identity_label_key: String = "",
+  @field:WireField(
+    tag = 11,
+    adapter = "com.eulerstream.webcast.v3.webcast.message.proto.ShopThemedImage#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "identityImageLogo",
+    schemaIndex = 10,
+  )
+  public val identity_image_logo: ShopThemedImage? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<StoreIdentityLabel, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -135,6 +143,7 @@ public class StoreIdentityLabel(
     if (identity_label_text_color_dark != other.identity_label_text_color_dark) return false
     if (shop_explanation_page_schema != other.shop_explanation_page_schema) return false
     if (shop_identity_label_key != other.shop_identity_label_key) return false
+    if (identity_image_logo != other.identity_image_logo) return false
     return true
   }
 
@@ -152,6 +161,7 @@ public class StoreIdentityLabel(
       result = result * 37 + identity_label_text_color_dark.hashCode()
       result = result * 37 + shop_explanation_page_schema.hashCode()
       result = result * 37 + shop_identity_label_key.hashCode()
+      result = result * 37 + (identity_image_logo?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -169,6 +179,7 @@ public class StoreIdentityLabel(
     result += """identity_label_text_color_dark=${sanitize(identity_label_text_color_dark)}"""
     result += """shop_explanation_page_schema=${sanitize(shop_explanation_page_schema)}"""
     result += """shop_identity_label_key=${sanitize(shop_identity_label_key)}"""
+    if (identity_image_logo != null) result += """identity_image_logo=$identity_image_logo"""
     return result.joinToString(prefix = "StoreIdentityLabel{", separator = ", ", postfix = "}")
   }
 
@@ -183,8 +194,9 @@ public class StoreIdentityLabel(
     identity_label_text_color_dark: String = this.identity_label_text_color_dark,
     shop_explanation_page_schema: String = this.shop_explanation_page_schema,
     shop_identity_label_key: String = this.shop_identity_label_key,
+    identity_image_logo: ShopThemedImage? = this.identity_image_logo,
     unknownFields: ByteString = this.unknownFields,
-  ): StoreIdentityLabel = StoreIdentityLabel(label_type, identity_label_text, identity_logo_light, identity_logo_dark, identity_label_bg_color_light, identity_label_bg_color_dark, identity_label_text_color_light, identity_label_text_color_dark, shop_explanation_page_schema, shop_identity_label_key, unknownFields)
+  ): StoreIdentityLabel = StoreIdentityLabel(label_type, identity_label_text, identity_logo_light, identity_logo_dark, identity_label_bg_color_light, identity_label_bg_color_dark, identity_label_text_color_light, identity_label_text_color_dark, shop_explanation_page_schema, shop_identity_label_key, identity_image_logo, unknownFields)
 
   public companion object {
     @JvmField
@@ -229,6 +241,9 @@ public class StoreIdentityLabel(
         if (value.shop_identity_label_key != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(10, value.shop_identity_label_key)
         }
+        if (value.identity_image_logo != null) {
+          size += ShopThemedImage.ADAPTER.encodedSizeWithTag(11, value.identity_image_logo)
+        }
         return size
       }
 
@@ -263,11 +278,17 @@ public class StoreIdentityLabel(
         if (value.shop_identity_label_key != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 10, value.shop_identity_label_key)
         }
+        if (value.identity_image_logo != null) {
+          ShopThemedImage.ADAPTER.encodeWithTag(writer, 11, value.identity_image_logo)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: StoreIdentityLabel) {
         writer.writeBytes(value.unknownFields)
+        if (value.identity_image_logo != null) {
+          ShopThemedImage.ADAPTER.encodeWithTag(writer, 11, value.identity_image_logo)
+        }
         if (value.shop_identity_label_key != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 10, value.shop_identity_label_key)
         }
@@ -311,6 +332,7 @@ public class StoreIdentityLabel(
         var identity_label_text_color_dark: String = ""
         var shop_explanation_page_schema: String = ""
         var shop_identity_label_key: String = ""
+        var identity_image_logo: ShopThemedImage? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> try {
@@ -327,6 +349,7 @@ public class StoreIdentityLabel(
             8 -> identity_label_text_color_dark = ProtoAdapter.STRING.decode(reader)
             9 -> shop_explanation_page_schema = ProtoAdapter.STRING.decode(reader)
             10 -> shop_identity_label_key = ProtoAdapter.STRING.decode(reader)
+            11 -> identity_image_logo = ShopThemedImage.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -341,6 +364,7 @@ public class StoreIdentityLabel(
           identity_label_text_color_dark = identity_label_text_color_dark,
           shop_explanation_page_schema = shop_explanation_page_schema,
           shop_identity_label_key = shop_identity_label_key,
+          identity_image_logo = identity_image_logo,
           unknownFields = unknownFields
         )
       }
@@ -348,6 +372,7 @@ public class StoreIdentityLabel(
       override fun redact(`value`: StoreIdentityLabel): StoreIdentityLabel = value.copy(
         identity_logo_light = value.identity_logo_light?.let(ShopLabelImage.ADAPTER::redact),
         identity_logo_dark = value.identity_logo_dark?.let(ShopLabelImage.ADAPTER::redact),
+        identity_image_logo = value.identity_image_logo?.let(ShopThemedImage.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

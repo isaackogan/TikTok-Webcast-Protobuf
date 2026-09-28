@@ -40,11 +40,18 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
   )
   public final String template_id;
 
-  public ProfileExtraGameInteractionStorage(String game_id, String template_id) {
-    this(game_id, template_id, ByteString.EMPTY);
+  @WireField(
+      tag = 3,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY
+  )
+  public final String mode;
+
+  public ProfileExtraGameInteractionStorage(String game_id, String template_id, String mode) {
+    this(game_id, template_id, mode, ByteString.EMPTY);
   }
 
-  public ProfileExtraGameInteractionStorage(String game_id, String template_id,
+  public ProfileExtraGameInteractionStorage(String game_id, String template_id, String mode,
       ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (game_id == null) {
@@ -55,6 +62,10 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
       throw new IllegalArgumentException("template_id == null");
     }
     this.template_id = template_id;
+    if (mode == null) {
+      throw new IllegalArgumentException("mode == null");
+    }
+    this.mode = mode;
   }
 
   @Override
@@ -62,6 +73,7 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
     Builder builder = new Builder();
     builder.game_id = game_id;
     builder.template_id = template_id;
+    builder.mode = mode;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -73,7 +85,8 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
     ProfileExtraGameInteractionStorage o = (ProfileExtraGameInteractionStorage) other;
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(game_id, o.game_id)
-        && Internal.equals(template_id, o.template_id);
+        && Internal.equals(template_id, o.template_id)
+        && Internal.equals(mode, o.mode);
   }
 
   @Override
@@ -83,6 +96,7 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
       result = unknownFields().hashCode();
       result = result * 37 + (game_id != null ? game_id.hashCode() : 0);
       result = result * 37 + (template_id != null ? template_id.hashCode() : 0);
+      result = result * 37 + (mode != null ? mode.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -93,6 +107,7 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
     StringBuilder builder = new StringBuilder();
     if (game_id != null) builder.append(", game_id=").append(Internal.sanitize(game_id));
     if (template_id != null) builder.append(", template_id=").append(Internal.sanitize(template_id));
+    if (mode != null) builder.append(", mode=").append(Internal.sanitize(mode));
     return builder.replace(0, 2, "ProfileExtraGameInteractionStorage{").append('}').toString();
   }
 
@@ -101,9 +116,12 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
 
     public String template_id;
 
+    public String mode;
+
     public Builder() {
       game_id = "";
       template_id = "";
+      mode = "";
     }
 
     public Builder game_id(String game_id) {
@@ -116,9 +134,14 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
       return this;
     }
 
+    public Builder mode(String mode) {
+      this.mode = mode;
+      return this;
+    }
+
     @Override
     public ProfileExtraGameInteractionStorage build() {
-      return new ProfileExtraGameInteractionStorage(game_id, template_id, super.buildUnknownFields());
+      return new ProfileExtraGameInteractionStorage(game_id, template_id, mode, super.buildUnknownFields());
     }
   }
 
@@ -136,6 +159,9 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
       if (!Objects.equals(value.template_id, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(2, value.template_id);
       }
+      if (!Objects.equals(value.mode, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(3, value.mode);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -145,6 +171,7 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
         IOException {
       if (!Objects.equals(value.game_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 1, value.game_id);
       if (!Objects.equals(value.template_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.template_id);
+      if (!Objects.equals(value.mode, "")) ProtoAdapter.STRING.encodeWithTag(writer, 3, value.mode);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -152,6 +179,7 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
     public void encode(ReverseProtoWriter writer, ProfileExtraGameInteractionStorage value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.mode, "")) ProtoAdapter.STRING.encodeWithTag(writer, 3, value.mode);
       if (!Objects.equals(value.template_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.template_id);
       if (!Objects.equals(value.game_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 1, value.game_id);
     }
@@ -164,6 +192,7 @@ public final class ProfileExtraGameInteractionStorage extends Message<ProfileExt
         switch (tag) {
           case 1: builder.game_id(ProtoAdapter.STRING.decode(reader)); break;
           case 2: builder.template_id(ProtoAdapter.STRING.decode(reader)); break;
+          case 3: builder.mode(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

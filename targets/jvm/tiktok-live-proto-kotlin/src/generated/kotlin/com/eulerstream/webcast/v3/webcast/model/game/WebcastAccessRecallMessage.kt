@@ -91,6 +91,14 @@ public class WebcastAccessRecallMessage(
     schemaIndex = 7,
   )
   public val punish_info: PunishEventInfo? = null,
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#INT64",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "endTimeV2",
+    schemaIndex = 8,
+  )
+  public val end_time_v2: Long = 0L,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastAccessRecallMessage, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -111,6 +119,7 @@ public class WebcastAccessRecallMessage(
     if (notice != other.notice) return false
     if (content != other.content) return false
     if (punish_info != other.punish_info) return false
+    if (end_time_v2 != other.end_time_v2) return false
     return true
   }
 
@@ -126,6 +135,7 @@ public class WebcastAccessRecallMessage(
       result = result * 37 + (notice?.hashCode() ?: 0)
       result = result * 37 + (content?.hashCode() ?: 0)
       result = result * 37 + (punish_info?.hashCode() ?: 0)
+      result = result * 37 + end_time_v2.hashCode()
       super.hashCode = result
     }
     return result
@@ -141,6 +151,7 @@ public class WebcastAccessRecallMessage(
     if (notice != null) result += """notice=$notice"""
     if (content != null) result += """content=$content"""
     if (punish_info != null) result += """punish_info=$punish_info"""
+    result += """end_time_v2=$end_time_v2"""
     return result.joinToString(prefix = "WebcastAccessRecallMessage{", separator = ", ", postfix = "}")
   }
 
@@ -153,8 +164,9 @@ public class WebcastAccessRecallMessage(
     notice: Text? = this.notice,
     content: Text? = this.content,
     punish_info: PunishEventInfo? = this.punish_info,
+    end_time_v2: Long = this.end_time_v2,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastAccessRecallMessage = WebcastAccessRecallMessage(common, status, duration, end_time, scene, notice, content, punish_info, unknownFields)
+  ): WebcastAccessRecallMessage = WebcastAccessRecallMessage(common, status, duration, end_time, scene, notice, content, punish_info, end_time_v2, unknownFields)
 
   public companion object {
     @JvmField
@@ -193,6 +205,9 @@ public class WebcastAccessRecallMessage(
         if (value.punish_info != null) {
           size += PunishEventInfo.ADAPTER.encodedSizeWithTag(8, value.punish_info)
         }
+        if (value.end_time_v2 != 0L) {
+          size += ProtoAdapter.INT64.encodedSizeWithTag(9, value.end_time_v2)
+        }
         return size
       }
 
@@ -221,11 +236,17 @@ public class WebcastAccessRecallMessage(
         if (value.punish_info != null) {
           PunishEventInfo.ADAPTER.encodeWithTag(writer, 8, value.punish_info)
         }
+        if (value.end_time_v2 != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_v2)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastAccessRecallMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.end_time_v2 != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_v2)
+        }
         if (value.punish_info != null) {
           PunishEventInfo.ADAPTER.encodeWithTag(writer, 8, value.punish_info)
         }
@@ -261,6 +282,7 @@ public class WebcastAccessRecallMessage(
         var notice: Text? = null
         var content: Text? = null
         var punish_info: PunishEventInfo? = null
+        var end_time_v2: Long = 0L
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -271,6 +293,7 @@ public class WebcastAccessRecallMessage(
             6 -> notice = Text.ADAPTER.decode(reader)
             7 -> content = Text.ADAPTER.decode(reader)
             8 -> punish_info = PunishEventInfo.ADAPTER.decode(reader)
+            9 -> end_time_v2 = ProtoAdapter.INT64.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -283,6 +306,7 @@ public class WebcastAccessRecallMessage(
           notice = notice,
           content = content,
           punish_info = punish_info,
+          end_time_v2 = end_time_v2,
           unknownFields = unknownFields
         )
       }

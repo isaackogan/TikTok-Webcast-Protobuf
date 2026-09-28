@@ -18,6 +18,8 @@ import com.squareup.wire.ReverseProtoWriter
 import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
+import com.squareup.wire.`internal`.immutableCopyOf
+import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -28,6 +30,8 @@ import kotlin.Long
 import kotlin.Nothing
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.Map
+import kotlin.lazy
 import okio.ByteString
 
 public class PermitJoinGroupBizContent(
@@ -71,8 +75,26 @@ public class PermitJoinGroupBizContent(
     schemaIndex = 4,
   )
   public val quick_cohost_invitee_user_info: QuickCohostInviteeUserInfo? = null,
+  invitee_trace: Map<String, String> = emptyMap(),
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "joinSessionId",
+    schemaIndex = 6,
+  )
+  public val join_session_id: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<PermitJoinGroupBizContent, Nothing>(ADAPTER, unknownFields) {
+  @field:WireField(
+    tag = 6,
+    keyAdapter = "com.squareup.wire.ProtoAdapter#STRING",
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    jsonName = "inviteeTrace",
+    schemaIndex = 5,
+  )
+  public val invitee_trace: Map<String, String> = immutableCopyOf("invitee_trace", invitee_trace)
+
   @Deprecated(
     message = "Shouldn't be used in Kotlin",
     level = DeprecationLevel.HIDDEN,
@@ -88,6 +110,8 @@ public class PermitJoinGroupBizContent(
     if (skip_cancel_match != other.skip_cancel_match) return false
     if (matched_preference_tag != other.matched_preference_tag) return false
     if (quick_cohost_invitee_user_info != other.quick_cohost_invitee_user_info) return false
+    if (invitee_trace != other.invitee_trace) return false
+    if (join_session_id != other.join_session_id) return false
     return true
   }
 
@@ -100,6 +124,8 @@ public class PermitJoinGroupBizContent(
       result = result * 37 + skip_cancel_match.hashCode()
       result = result * 37 + matched_preference_tag.hashCode()
       result = result * 37 + (quick_cohost_invitee_user_info?.hashCode() ?: 0)
+      result = result * 37 + invitee_trace.hashCode()
+      result = result * 37 + join_session_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -112,6 +138,8 @@ public class PermitJoinGroupBizContent(
     result += """skip_cancel_match=$skip_cancel_match"""
     result += """matched_preference_tag=$matched_preference_tag"""
     if (quick_cohost_invitee_user_info != null) result += """quick_cohost_invitee_user_info=$quick_cohost_invitee_user_info"""
+    if (invitee_trace.isNotEmpty()) result += """invitee_trace=$invitee_trace"""
+    result += """join_session_id=${sanitize(join_session_id)}"""
     return result.joinToString(prefix = "PermitJoinGroupBizContent{", separator = ", ", postfix = "}")
   }
 
@@ -121,8 +149,10 @@ public class PermitJoinGroupBizContent(
     skip_cancel_match: Boolean = this.skip_cancel_match,
     matched_preference_tag: Int = this.matched_preference_tag,
     quick_cohost_invitee_user_info: QuickCohostInviteeUserInfo? = this.quick_cohost_invitee_user_info,
+    invitee_trace: Map<String, String> = this.invitee_trace,
+    join_session_id: String = this.join_session_id,
     unknownFields: ByteString = this.unknownFields,
-  ): PermitJoinGroupBizContent = PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, unknownFields)
+  ): PermitJoinGroupBizContent = PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, invitee_trace, join_session_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -135,6 +165,9 @@ public class PermitJoinGroupBizContent(
       null, 
       "webcast/im.proto"
     ) {
+      private val invitee_traceAdapter: ProtoAdapter<Map<String, String>> by
+          lazy { ProtoAdapter.newMapAdapter(ProtoAdapter.STRING, ProtoAdapter.STRING) }
+
       override fun encodedSize(`value`: PermitJoinGroupBizContent): Int {
         var size = value.unknownFields.size
         if (value.reply_status != com.eulerstream.webcast.v3.webcast.linkmic.common.ReplyStatus.REPLY_STATUS_UNKNOWN) {
@@ -151,6 +184,10 @@ public class PermitJoinGroupBizContent(
         }
         if (value.quick_cohost_invitee_user_info != null) {
           size += QuickCohostInviteeUserInfo.ADAPTER.encodedSizeWithTag(5, value.quick_cohost_invitee_user_info)
+        }
+        size += invitee_traceAdapter.encodedSizeWithTag(6, value.invitee_trace)
+        if (value.join_session_id != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.join_session_id)
         }
         return size
       }
@@ -171,11 +208,19 @@ public class PermitJoinGroupBizContent(
         if (value.quick_cohost_invitee_user_info != null) {
           QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info)
         }
+        invitee_traceAdapter.encodeWithTag(writer, 6, value.invitee_trace)
+        if (value.join_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.join_session_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: PermitJoinGroupBizContent) {
         writer.writeBytes(value.unknownFields)
+        if (value.join_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.join_session_id)
+        }
+        invitee_traceAdapter.encodeWithTag(writer, 6, value.invitee_trace)
         if (value.quick_cohost_invitee_user_info != null) {
           QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info)
         }
@@ -199,6 +244,8 @@ public class PermitJoinGroupBizContent(
         var skip_cancel_match: Boolean = false
         var matched_preference_tag: Int = 0
         var quick_cohost_invitee_user_info: QuickCohostInviteeUserInfo? = null
+        val invitee_trace = mutableMapOf<String, String>()
+        var join_session_id: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> try {
@@ -214,6 +261,8 @@ public class PermitJoinGroupBizContent(
             3 -> skip_cancel_match = ProtoAdapter.BOOL.decode(reader)
             4 -> matched_preference_tag = ProtoAdapter.INT32.decode(reader)
             5 -> quick_cohost_invitee_user_info = QuickCohostInviteeUserInfo.ADAPTER.decode(reader)
+            6 -> invitee_trace.putAll(invitee_traceAdapter.decode(reader))
+            7 -> join_session_id = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -223,6 +272,8 @@ public class PermitJoinGroupBizContent(
           skip_cancel_match = skip_cancel_match,
           matched_preference_tag = matched_preference_tag,
           quick_cohost_invitee_user_info = quick_cohost_invitee_user_info,
+          invitee_trace = invitee_trace,
+          join_session_id = join_session_id,
           unknownFields = unknownFields
         )
       }

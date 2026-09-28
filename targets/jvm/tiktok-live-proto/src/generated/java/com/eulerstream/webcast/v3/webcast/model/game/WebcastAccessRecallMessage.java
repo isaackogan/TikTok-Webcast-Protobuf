@@ -87,14 +87,23 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
   )
   public final PunishEventInfo punish_info;
 
+  @WireField(
+      tag = 9,
+      adapter = "com.squareup.wire.ProtoAdapter#INT64",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "endTimeV2"
+  )
+  public final long end_time_v2;
+
   public WebcastAccessRecallMessage(CommonMessageData common, int status, long duration,
-      long end_time, String scene, Text notice, Text content, PunishEventInfo punish_info) {
-    this(common, status, duration, end_time, scene, notice, content, punish_info, ByteString.EMPTY);
+      long end_time, String scene, Text notice, Text content, PunishEventInfo punish_info,
+      long end_time_v2) {
+    this(common, status, duration, end_time, scene, notice, content, punish_info, end_time_v2, ByteString.EMPTY);
   }
 
   public WebcastAccessRecallMessage(CommonMessageData common, int status, long duration,
       long end_time, String scene, Text notice, Text content, PunishEventInfo punish_info,
-      ByteString unknownFields) {
+      long end_time_v2, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.common = common;
     this.status = status;
@@ -107,6 +116,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
     this.notice = notice;
     this.content = content;
     this.punish_info = punish_info;
+    this.end_time_v2 = end_time_v2;
   }
 
   @Override
@@ -120,6 +130,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
     builder.notice = notice;
     builder.content = content;
     builder.punish_info = punish_info;
+    builder.end_time_v2 = end_time_v2;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -137,7 +148,8 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
         && Internal.equals(scene, o.scene)
         && Internal.equals(notice, o.notice)
         && Internal.equals(content, o.content)
-        && Internal.equals(punish_info, o.punish_info);
+        && Internal.equals(punish_info, o.punish_info)
+        && Internal.equals(end_time_v2, o.end_time_v2);
   }
 
   @Override
@@ -153,6 +165,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
       result = result * 37 + (notice != null ? notice.hashCode() : 0);
       result = result * 37 + (content != null ? content.hashCode() : 0);
       result = result * 37 + (punish_info != null ? punish_info.hashCode() : 0);
+      result = result * 37 + Long.hashCode(end_time_v2);
       super.hashCode = result;
     }
     return result;
@@ -169,6 +182,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
     if (notice != null) builder.append(", notice=").append(notice);
     if (content != null) builder.append(", content=").append(content);
     if (punish_info != null) builder.append(", punish_info=").append(punish_info);
+    builder.append(", end_time_v2=").append(end_time_v2);
     return builder.replace(0, 2, "WebcastAccessRecallMessage{").append('}').toString();
   }
 
@@ -189,11 +203,14 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
 
     public PunishEventInfo punish_info;
 
+    public long end_time_v2;
+
     public Builder() {
       status = 0;
       duration = 0L;
       end_time = 0L;
       scene = "";
+      end_time_v2 = 0L;
     }
 
     public Builder common(CommonMessageData common) {
@@ -236,9 +253,14 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
       return this;
     }
 
+    public Builder end_time_v2(long end_time_v2) {
+      this.end_time_v2 = end_time_v2;
+      return this;
+    }
+
     @Override
     public WebcastAccessRecallMessage build() {
-      return new WebcastAccessRecallMessage(common, status, duration, end_time, scene, notice, content, punish_info, super.buildUnknownFields());
+      return new WebcastAccessRecallMessage(common, status, duration, end_time, scene, notice, content, punish_info, end_time_v2, super.buildUnknownFields());
     }
   }
 
@@ -274,6 +296,9 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
       if (!Objects.equals(value.punish_info, null)) {
         result += PunishEventInfo.ADAPTER.encodedSizeWithTag(8, value.punish_info);
       }
+      if (!Objects.equals(value.end_time_v2, 0L)) {
+        result += ProtoAdapter.INT64.encodedSizeWithTag(9, value.end_time_v2);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -288,6 +313,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
       if (!Objects.equals(value.notice, null)) Text.ADAPTER.encodeWithTag(writer, 6, value.notice);
       if (!Objects.equals(value.content, null)) Text.ADAPTER.encodeWithTag(writer, 7, value.content);
       if (!Objects.equals(value.punish_info, null)) PunishEventInfo.ADAPTER.encodeWithTag(writer, 8, value.punish_info);
+      if (!Objects.equals(value.end_time_v2, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_v2);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -295,6 +321,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
     public void encode(ReverseProtoWriter writer, WebcastAccessRecallMessage value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.end_time_v2, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 9, value.end_time_v2);
       if (!Objects.equals(value.punish_info, null)) PunishEventInfo.ADAPTER.encodeWithTag(writer, 8, value.punish_info);
       if (!Objects.equals(value.content, null)) Text.ADAPTER.encodeWithTag(writer, 7, value.content);
       if (!Objects.equals(value.notice, null)) Text.ADAPTER.encodeWithTag(writer, 6, value.notice);
@@ -319,6 +346,7 @@ public final class WebcastAccessRecallMessage extends Message<WebcastAccessRecal
           case 6: builder.notice(Text.ADAPTER.decode(reader)); break;
           case 7: builder.content(Text.ADAPTER.decode(reader)); break;
           case 8: builder.punish_info(PunishEventInfo.ADAPTER.decode(reader)); break;
+          case 9: builder.end_time_v2(ProtoAdapter.INT64.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

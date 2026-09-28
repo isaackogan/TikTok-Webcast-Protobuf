@@ -70,6 +70,14 @@ public class JoinRoomDirectContent(
   public val layout: LayoutState? = null,
   spot_list: List<SpotInfo> = emptyList(),
   ui_pos: List<PosIdentity> = emptyList(),
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "joinerLinkerSessionId",
+    schemaIndex = 6,
+  )
+  public val joiner_linker_session_id: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<JoinRoomDirectContent, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -106,6 +114,7 @@ public class JoinRoomDirectContent(
     if (layout != other.layout) return false
     if (spot_list != other.spot_list) return false
     if (ui_pos != other.ui_pos) return false
+    if (joiner_linker_session_id != other.joiner_linker_session_id) return false
     return true
   }
 
@@ -119,6 +128,7 @@ public class JoinRoomDirectContent(
       result = result * 37 + (layout?.hashCode() ?: 0)
       result = result * 37 + spot_list.hashCode()
       result = result * 37 + ui_pos.hashCode()
+      result = result * 37 + joiner_linker_session_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -132,6 +142,7 @@ public class JoinRoomDirectContent(
     if (layout != null) result += """layout=$layout"""
     if (spot_list.isNotEmpty()) result += """spot_list=$spot_list"""
     if (ui_pos.isNotEmpty()) result += """ui_pos=$ui_pos"""
+    result += """joiner_linker_session_id=${sanitize(joiner_linker_session_id)}"""
     return result.joinToString(prefix = "JoinRoomDirectContent{", separator = ", ", postfix = "}")
   }
 
@@ -142,8 +153,9 @@ public class JoinRoomDirectContent(
     layout: LayoutState? = this.layout,
     spot_list: List<SpotInfo> = this.spot_list,
     ui_pos: List<PosIdentity> = this.ui_pos,
+    joiner_linker_session_id: String = this.joiner_linker_session_id,
     unknownFields: ByteString = this.unknownFields,
-  ): JoinRoomDirectContent = JoinRoomDirectContent(joiner, joiner_link_mic_id, joiner_ext_info, layout, spot_list, ui_pos, unknownFields)
+  ): JoinRoomDirectContent = JoinRoomDirectContent(joiner, joiner_link_mic_id, joiner_ext_info, layout, spot_list, ui_pos, joiner_linker_session_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -172,6 +184,9 @@ public class JoinRoomDirectContent(
         }
         size += SpotInfo.ADAPTER.asRepeated().encodedSizeWithTag(5, value.spot_list)
         size += PosIdentity.ADAPTER.asRepeated().encodedSizeWithTag(6, value.ui_pos)
+        if (value.joiner_linker_session_id != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.joiner_linker_session_id)
+        }
         return size
       }
 
@@ -190,11 +205,17 @@ public class JoinRoomDirectContent(
         }
         SpotInfo.ADAPTER.asRepeated().encodeWithTag(writer, 5, value.spot_list)
         PosIdentity.ADAPTER.asRepeated().encodeWithTag(writer, 6, value.ui_pos)
+        if (value.joiner_linker_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.joiner_linker_session_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: JoinRoomDirectContent) {
         writer.writeBytes(value.unknownFields)
+        if (value.joiner_linker_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.joiner_linker_session_id)
+        }
         PosIdentity.ADAPTER.asRepeated().encodeWithTag(writer, 6, value.ui_pos)
         SpotInfo.ADAPTER.asRepeated().encodeWithTag(writer, 5, value.spot_list)
         if (value.layout != null) {
@@ -218,6 +239,7 @@ public class JoinRoomDirectContent(
         var layout: LayoutState? = null
         val spot_list = mutableListOf<SpotInfo>()
         val ui_pos = mutableListOf<PosIdentity>()
+        var joiner_linker_session_id: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> joiner = Player.ADAPTER.decode(reader)
@@ -226,6 +248,7 @@ public class JoinRoomDirectContent(
             4 -> layout = LayoutState.ADAPTER.decode(reader)
             5 -> spot_list.add(SpotInfo.ADAPTER.decode(reader))
             6 -> ui_pos.add(PosIdentity.ADAPTER.decode(reader))
+            7 -> joiner_linker_session_id = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -236,6 +259,7 @@ public class JoinRoomDirectContent(
           layout = layout,
           spot_list = spot_list,
           ui_pos = ui_pos,
+          joiner_linker_session_id = joiner_linker_session_id,
           unknownFields = unknownFields
         )
       }

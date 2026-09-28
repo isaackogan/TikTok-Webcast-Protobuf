@@ -16,6 +16,7 @@ import com.squareup.wire.ReverseProtoWriter
 import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
+import com.squareup.wire.`internal`.immutableCopyOf
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -26,6 +27,8 @@ import kotlin.Long
 import kotlin.Nothing
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.Map
+import kotlin.lazy
 import okio.ByteString
 
 public class TraceInfo(
@@ -53,8 +56,28 @@ public class TraceInfo(
     schemaIndex = 2,
   )
   public val send_time: Long = 0L,
+  trace_time_map: Map<String, Long> = emptyMap(),
+  da_info: Map<String, String> = emptyMap(),
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<TraceInfo, Nothing>(ADAPTER, unknownFields) {
+  @field:WireField(
+    tag = 10,
+    keyAdapter = "com.squareup.wire.ProtoAdapter#STRING",
+    adapter = "com.squareup.wire.ProtoAdapter#INT64",
+    jsonName = "traceTimeMap",
+    schemaIndex = 3,
+  )
+  public val trace_time_map: Map<String, Long> = immutableCopyOf("trace_time_map", trace_time_map)
+
+  @field:WireField(
+    tag = 11,
+    keyAdapter = "com.squareup.wire.ProtoAdapter#STRING",
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    jsonName = "daInfo",
+    schemaIndex = 4,
+  )
+  public val da_info: Map<String, String> = immutableCopyOf("da_info", da_info)
+
   @Deprecated(
     message = "Shouldn't be used in Kotlin",
     level = DeprecationLevel.HIDDEN,
@@ -68,6 +91,8 @@ public class TraceInfo(
     if (operate_time != other.operate_time) return false
     if (arrival_time != other.arrival_time) return false
     if (send_time != other.send_time) return false
+    if (trace_time_map != other.trace_time_map) return false
+    if (da_info != other.da_info) return false
     return true
   }
 
@@ -78,6 +103,8 @@ public class TraceInfo(
       result = result * 37 + operate_time.hashCode()
       result = result * 37 + arrival_time.hashCode()
       result = result * 37 + send_time.hashCode()
+      result = result * 37 + trace_time_map.hashCode()
+      result = result * 37 + da_info.hashCode()
       super.hashCode = result
     }
     return result
@@ -88,6 +115,8 @@ public class TraceInfo(
     result += """operate_time=$operate_time"""
     result += """arrival_time=$arrival_time"""
     result += """send_time=$send_time"""
+    if (trace_time_map.isNotEmpty()) result += """trace_time_map=$trace_time_map"""
+    if (da_info.isNotEmpty()) result += """da_info=$da_info"""
     return result.joinToString(prefix = "TraceInfo{", separator = ", ", postfix = "}")
   }
 
@@ -95,8 +124,10 @@ public class TraceInfo(
     operate_time: Long = this.operate_time,
     arrival_time: Long = this.arrival_time,
     send_time: Long = this.send_time,
+    trace_time_map: Map<String, Long> = this.trace_time_map,
+    da_info: Map<String, String> = this.da_info,
     unknownFields: ByteString = this.unknownFields,
-  ): TraceInfo = TraceInfo(operate_time, arrival_time, send_time, unknownFields)
+  ): TraceInfo = TraceInfo(operate_time, arrival_time, send_time, trace_time_map, da_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -108,6 +139,12 @@ public class TraceInfo(
       null, 
       "webcast/model/message/ext.proto"
     ) {
+      private val trace_time_mapAdapter: ProtoAdapter<Map<String, Long>> by
+          lazy { ProtoAdapter.newMapAdapter(ProtoAdapter.STRING, ProtoAdapter.INT64) }
+
+      private val da_infoAdapter: ProtoAdapter<Map<String, String>> by
+          lazy { ProtoAdapter.newMapAdapter(ProtoAdapter.STRING, ProtoAdapter.STRING) }
+
       override fun encodedSize(`value`: TraceInfo): Int {
         var size = value.unknownFields.size
         if (value.operate_time != 0L) {
@@ -119,6 +156,8 @@ public class TraceInfo(
         if (value.send_time != 0L) {
           size += ProtoAdapter.INT64.encodedSizeWithTag(3, value.send_time)
         }
+        size += trace_time_mapAdapter.encodedSizeWithTag(10, value.trace_time_map)
+        size += da_infoAdapter.encodedSizeWithTag(11, value.da_info)
         return size
       }
 
@@ -132,11 +171,15 @@ public class TraceInfo(
         if (value.send_time != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 3, value.send_time)
         }
+        trace_time_mapAdapter.encodeWithTag(writer, 10, value.trace_time_map)
+        da_infoAdapter.encodeWithTag(writer, 11, value.da_info)
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: TraceInfo) {
         writer.writeBytes(value.unknownFields)
+        da_infoAdapter.encodeWithTag(writer, 11, value.da_info)
+        trace_time_mapAdapter.encodeWithTag(writer, 10, value.trace_time_map)
         if (value.send_time != 0L) {
           ProtoAdapter.INT64.encodeWithTag(writer, 3, value.send_time)
         }
@@ -152,11 +195,15 @@ public class TraceInfo(
         var operate_time: Long = 0L
         var arrival_time: Long = 0L
         var send_time: Long = 0L
+        val trace_time_map = mutableMapOf<String, Long>()
+        val da_info = mutableMapOf<String, String>()
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> operate_time = ProtoAdapter.INT64.decode(reader)
             2 -> arrival_time = ProtoAdapter.INT64.decode(reader)
             3 -> send_time = ProtoAdapter.INT64.decode(reader)
+            10 -> trace_time_map.putAll(trace_time_mapAdapter.decode(reader))
+            11 -> da_info.putAll(da_infoAdapter.decode(reader))
             else -> reader.readUnknownField(tag)
           }
         }
@@ -164,6 +211,8 @@ public class TraceInfo(
           operate_time = operate_time,
           arrival_time = arrival_time,
           send_time = send_time,
+          trace_time_map = trace_time_map,
+          da_info = da_info,
           unknownFields = unknownFields
         )
       }

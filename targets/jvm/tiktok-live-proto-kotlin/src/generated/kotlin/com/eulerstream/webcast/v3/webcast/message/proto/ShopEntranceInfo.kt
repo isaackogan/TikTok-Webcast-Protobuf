@@ -114,6 +114,14 @@ public class ShopEntranceInfo(
   )
   public val show_rate_not_applicable: Boolean = false,
   selling_point: List<SellingPoint> = emptyList(),
+  @field:WireField(
+    tag = 12,
+    adapter = "com.eulerstream.webcast.v3.webcast.message.proto.TopRatedInfo#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "topRatedInfo",
+    schemaIndex = 11,
+  )
+  public val top_rated_info: TopRatedInfo? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<ShopEntranceInfo, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -146,6 +154,7 @@ public class ShopEntranceInfo(
     if (rate_display_style != other.rate_display_style) return false
     if (show_rate_not_applicable != other.show_rate_not_applicable) return false
     if (selling_point != other.selling_point) return false
+    if (top_rated_info != other.top_rated_info) return false
     return true
   }
 
@@ -164,6 +173,7 @@ public class ShopEntranceInfo(
       result = result * 37 + rate_display_style.hashCode()
       result = result * 37 + show_rate_not_applicable.hashCode()
       result = result * 37 + selling_point.hashCode()
+      result = result * 37 + (top_rated_info?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -182,6 +192,7 @@ public class ShopEntranceInfo(
     result += """rate_display_style=$rate_display_style"""
     result += """show_rate_not_applicable=$show_rate_not_applicable"""
     if (selling_point.isNotEmpty()) result += """selling_point=$selling_point"""
+    if (top_rated_info != null) result += """top_rated_info=$top_rated_info"""
     return result.joinToString(prefix = "ShopEntranceInfo{", separator = ", ", postfix = "}")
   }
 
@@ -197,8 +208,9 @@ public class ShopEntranceInfo(
     rate_display_style: Int = this.rate_display_style,
     show_rate_not_applicable: Boolean = this.show_rate_not_applicable,
     selling_point: List<SellingPoint> = this.selling_point,
+    top_rated_info: TopRatedInfo? = this.top_rated_info,
     unknownFields: ByteString = this.unknownFields,
-  ): ShopEntranceInfo = ShopEntranceInfo(shop_id, shop_name, shop_rating, store_label, format_sold_count, sold_count, exp_rate_percentile, exp_rate_top_display, rate_display_style, show_rate_not_applicable, selling_point, unknownFields)
+  ): ShopEntranceInfo = ShopEntranceInfo(shop_id, shop_name, shop_rating, store_label, format_sold_count, sold_count, exp_rate_percentile, exp_rate_top_display, rate_display_style, show_rate_not_applicable, selling_point, top_rated_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -243,6 +255,9 @@ public class ShopEntranceInfo(
           size += ProtoAdapter.BOOL.encodedSizeWithTag(10, value.show_rate_not_applicable)
         }
         size += SellingPoint.ADAPTER.asRepeated().encodedSizeWithTag(11, value.selling_point)
+        if (value.top_rated_info != null) {
+          size += TopRatedInfo.ADAPTER.encodedSizeWithTag(12, value.top_rated_info)
+        }
         return size
       }
 
@@ -278,11 +293,17 @@ public class ShopEntranceInfo(
           ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.show_rate_not_applicable)
         }
         SellingPoint.ADAPTER.asRepeated().encodeWithTag(writer, 11, value.selling_point)
+        if (value.top_rated_info != null) {
+          TopRatedInfo.ADAPTER.encodeWithTag(writer, 12, value.top_rated_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: ShopEntranceInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.top_rated_info != null) {
+          TopRatedInfo.ADAPTER.encodeWithTag(writer, 12, value.top_rated_info)
+        }
         SellingPoint.ADAPTER.asRepeated().encodeWithTag(writer, 11, value.selling_point)
         if (value.show_rate_not_applicable != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 10, value.show_rate_not_applicable)
@@ -328,6 +349,7 @@ public class ShopEntranceInfo(
         var rate_display_style: Int = 0
         var show_rate_not_applicable: Boolean = false
         val selling_point = mutableListOf<SellingPoint>()
+        var top_rated_info: TopRatedInfo? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> shop_id = ProtoAdapter.STRING.decode(reader)
@@ -341,6 +363,7 @@ public class ShopEntranceInfo(
             9 -> rate_display_style = ProtoAdapter.INT32.decode(reader)
             10 -> show_rate_not_applicable = ProtoAdapter.BOOL.decode(reader)
             11 -> selling_point.add(SellingPoint.ADAPTER.decode(reader))
+            12 -> top_rated_info = TopRatedInfo.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -356,6 +379,7 @@ public class ShopEntranceInfo(
           rate_display_style = rate_display_style,
           show_rate_not_applicable = show_rate_not_applicable,
           selling_point = selling_point,
+          top_rated_info = top_rated_info,
           unknownFields = unknownFields
         )
       }
@@ -363,6 +387,7 @@ public class ShopEntranceInfo(
       override fun redact(`value`: ShopEntranceInfo): ShopEntranceInfo = value.copy(
         store_label = value.store_label?.let(StoreLabel.ADAPTER::redact),
         selling_point = value.selling_point.redactElements(SellingPoint.ADAPTER),
+        top_rated_info = value.top_rated_info?.let(TopRatedInfo.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

@@ -18,6 +18,7 @@ import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
 import com.squareup.wire.`internal`.immutableCopyOf
 import com.squareup.wire.`internal`.redactElements
+import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -59,6 +60,22 @@ public class CommerceInfo(
     schemaIndex = 4,
   )
   public val auction_info: AuctionInfo? = null,
+  @field:WireField(
+    tag = 6,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "lynxType",
+    schemaIndex = 5,
+  )
+  public val lynx_type: Int = 0,
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "lynxInfo",
+    schemaIndex = 6,
+  )
+  public val lynx_info: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<CommerceInfo, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -94,6 +111,8 @@ public class CommerceInfo(
     if (popup_window_info != other.popup_window_info) return false
     if (voucher_info != other.voucher_info) return false
     if (auction_info != other.auction_info) return false
+    if (lynx_type != other.lynx_type) return false
+    if (lynx_info != other.lynx_info) return false
     return true
   }
 
@@ -106,6 +125,8 @@ public class CommerceInfo(
       result = result * 37 + (popup_window_info?.hashCode() ?: 0)
       result = result * 37 + voucher_info.hashCode()
       result = result * 37 + (auction_info?.hashCode() ?: 0)
+      result = result * 37 + lynx_type.hashCode()
+      result = result * 37 + lynx_info.hashCode()
       super.hashCode = result
     }
     return result
@@ -118,6 +139,8 @@ public class CommerceInfo(
     if (popup_window_info != null) result += """popup_window_info=$popup_window_info"""
     if (voucher_info.isNotEmpty()) result += """voucher_info=$voucher_info"""
     if (auction_info != null) result += """auction_info=$auction_info"""
+    result += """lynx_type=$lynx_type"""
+    result += """lynx_info=${sanitize(lynx_info)}"""
     return result.joinToString(prefix = "CommerceInfo{", separator = ", ", postfix = "}")
   }
 
@@ -127,8 +150,10 @@ public class CommerceInfo(
     popup_window_info: PopupWindowInfo? = this.popup_window_info,
     voucher_info: Map<Long, VoucherItem> = this.voucher_info,
     auction_info: AuctionInfo? = this.auction_info,
+    lynx_type: Int = this.lynx_type,
+    lynx_info: String = this.lynx_info,
     unknownFields: ByteString = this.unknownFields,
-  ): CommerceInfo = CommerceInfo(product_info, pop_card_info, popup_window_info, voucher_info, auction_info, unknownFields)
+  ): CommerceInfo = CommerceInfo(product_info, pop_card_info, popup_window_info, voucher_info, auction_info, lynx_type, lynx_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -159,6 +184,12 @@ public class CommerceInfo(
         if (value.auction_info != null) {
           size += AuctionInfo.ADAPTER.encodedSizeWithTag(5, value.auction_info)
         }
+        if (value.lynx_type != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(6, value.lynx_type)
+        }
+        if (value.lynx_info != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(7, value.lynx_info)
+        }
         return size
       }
 
@@ -174,11 +205,23 @@ public class CommerceInfo(
         if (value.auction_info != null) {
           AuctionInfo.ADAPTER.encodeWithTag(writer, 5, value.auction_info)
         }
+        if (value.lynx_type != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 6, value.lynx_type)
+        }
+        if (value.lynx_info != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.lynx_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: CommerceInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.lynx_info != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 7, value.lynx_info)
+        }
+        if (value.lynx_type != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 6, value.lynx_type)
+        }
         if (value.auction_info != null) {
           AuctionInfo.ADAPTER.encodeWithTag(writer, 5, value.auction_info)
         }
@@ -198,6 +241,8 @@ public class CommerceInfo(
         var popup_window_info: PopupWindowInfo? = null
         val voucher_info = mutableMapOf<Long, VoucherItem>()
         var auction_info: AuctionInfo? = null
+        var lynx_type: Int = 0
+        var lynx_info: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> product_info.putAll(product_infoAdapter.decode(reader))
@@ -205,6 +250,8 @@ public class CommerceInfo(
             3 -> popup_window_info = PopupWindowInfo.ADAPTER.decode(reader)
             4 -> voucher_info.putAll(voucher_infoAdapter.decode(reader))
             5 -> auction_info = AuctionInfo.ADAPTER.decode(reader)
+            6 -> lynx_type = ProtoAdapter.INT32.decode(reader)
+            7 -> lynx_info = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -214,6 +261,8 @@ public class CommerceInfo(
           popup_window_info = popup_window_info,
           voucher_info = voucher_info,
           auction_info = auction_info,
+          lynx_type = lynx_type,
+          lynx_info = lynx_info,
           unknownFields = unknownFields
         )
       }

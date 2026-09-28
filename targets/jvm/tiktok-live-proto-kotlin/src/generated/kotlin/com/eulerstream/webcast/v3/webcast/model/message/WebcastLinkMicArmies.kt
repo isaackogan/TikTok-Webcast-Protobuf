@@ -198,6 +198,14 @@ public class WebcastLinkMicArmies(
     schemaIndex = 20,
   )
   public val enigma_battle_extra_info: EnigmaBattleExtraInfo? = null,
+  @field:WireField(
+    tag = 22,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "multiplierType",
+    schemaIndex = 21,
+  )
+  public val multiplier_type: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastLinkMicArmies, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -248,6 +256,7 @@ public class WebcastLinkMicArmies(
     if (fuzzy_display_config_v2 != other.fuzzy_display_config_v2) return false
     if (effect_infos != other.effect_infos) return false
     if (enigma_battle_extra_info != other.enigma_battle_extra_info) return false
+    if (multiplier_type != other.multiplier_type) return false
     return true
   }
 
@@ -276,6 +285,7 @@ public class WebcastLinkMicArmies(
       result = result * 37 + (fuzzy_display_config_v2?.hashCode() ?: 0)
       result = result * 37 + (effect_infos?.hashCode() ?: 0)
       result = result * 37 + (enigma_battle_extra_info?.hashCode() ?: 0)
+      result = result * 37 + multiplier_type.hashCode()
       super.hashCode = result
     }
     return result
@@ -304,6 +314,7 @@ public class WebcastLinkMicArmies(
     if (fuzzy_display_config_v2 != null) result += """fuzzy_display_config_v2=$fuzzy_display_config_v2"""
     if (effect_infos != null) result += """effect_infos=$effect_infos"""
     if (enigma_battle_extra_info != null) result += """enigma_battle_extra_info=$enigma_battle_extra_info"""
+    result += """multiplier_type=$multiplier_type"""
     return result.joinToString(prefix = "WebcastLinkMicArmies{", separator = ", ", postfix = "}")
   }
 
@@ -329,8 +340,9 @@ public class WebcastLinkMicArmies(
     fuzzy_display_config_v2: HighScoreControlCfg? = this.fuzzy_display_config_v2,
     effect_infos: BattleEffectInfos? = this.effect_infos,
     enigma_battle_extra_info: EnigmaBattleExtraInfo? = this.enigma_battle_extra_info,
+    multiplier_type: Int = this.multiplier_type,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastLinkMicArmies = WebcastLinkMicArmies(common, battle_id, armies, channel_id, send_gift_success_time, update_battle_score_time, trigger_reason, from_user_id, gift_id, gift_count, gift_icon_image, total_diamond_count, repeat_count, team_armies, trigger_critical_strike, has_team_match_mvp_sfx, log_id, battle_settings, fuzzy_display_config_v2, effect_infos, enigma_battle_extra_info, unknownFields)
+  ): WebcastLinkMicArmies = WebcastLinkMicArmies(common, battle_id, armies, channel_id, send_gift_success_time, update_battle_score_time, trigger_reason, from_user_id, gift_id, gift_count, gift_icon_image, total_diamond_count, repeat_count, team_armies, trigger_critical_strike, has_team_match_mvp_sfx, log_id, battle_settings, fuzzy_display_config_v2, effect_infos, enigma_battle_extra_info, multiplier_type, unknownFields)
 
   public companion object {
     @JvmField
@@ -407,6 +419,9 @@ public class WebcastLinkMicArmies(
         if (value.enigma_battle_extra_info != null) {
           size += EnigmaBattleExtraInfo.ADAPTER.encodedSizeWithTag(21, value.enigma_battle_extra_info)
         }
+        if (value.multiplier_type != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(22, value.multiplier_type)
+        }
         return size
       }
 
@@ -470,11 +485,17 @@ public class WebcastLinkMicArmies(
         if (value.enigma_battle_extra_info != null) {
           EnigmaBattleExtraInfo.ADAPTER.encodeWithTag(writer, 21, value.enigma_battle_extra_info)
         }
+        if (value.multiplier_type != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 22, value.multiplier_type)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastLinkMicArmies) {
         writer.writeBytes(value.unknownFields)
+        if (value.multiplier_type != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 22, value.multiplier_type)
+        }
         if (value.enigma_battle_extra_info != null) {
           EnigmaBattleExtraInfo.ADAPTER.encodeWithTag(writer, 21, value.enigma_battle_extra_info)
         }
@@ -558,6 +579,7 @@ public class WebcastLinkMicArmies(
         var fuzzy_display_config_v2: HighScoreControlCfg? = null
         var effect_infos: BattleEffectInfos? = null
         var enigma_battle_extra_info: EnigmaBattleExtraInfo? = null
+        var multiplier_type: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -585,6 +607,7 @@ public class WebcastLinkMicArmies(
             19 -> fuzzy_display_config_v2 = HighScoreControlCfg.ADAPTER.decode(reader)
             20 -> effect_infos = BattleEffectInfos.ADAPTER.decode(reader)
             21 -> enigma_battle_extra_info = EnigmaBattleExtraInfo.ADAPTER.decode(reader)
+            22 -> multiplier_type = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -610,6 +633,7 @@ public class WebcastLinkMicArmies(
           fuzzy_display_config_v2 = fuzzy_display_config_v2,
           effect_infos = effect_infos,
           enigma_battle_extra_info = enigma_battle_extra_info,
+          multiplier_type = multiplier_type,
           unknownFields = unknownFields
         )
       }

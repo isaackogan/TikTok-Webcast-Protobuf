@@ -204,6 +204,14 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
   )
   public final EnigmaBattleExtraInfo enigma_battle_extra_info;
 
+  @WireField(
+      tag = 22,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "multiplierType"
+  )
+  public final int multiplier_type;
+
   public WebcastLinkMicArmies(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.common = builder.common;
@@ -233,6 +241,7 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
     this.fuzzy_display_config_v2 = builder.fuzzy_display_config_v2;
     this.effect_infos = builder.effect_infos;
     this.enigma_battle_extra_info = builder.enigma_battle_extra_info;
+    this.multiplier_type = builder.multiplier_type;
   }
 
   @Override
@@ -259,6 +268,7 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
     builder.fuzzy_display_config_v2 = fuzzy_display_config_v2;
     builder.effect_infos = effect_infos;
     builder.enigma_battle_extra_info = enigma_battle_extra_info;
+    builder.multiplier_type = multiplier_type;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -289,7 +299,8 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
         && Internal.equals(battle_settings, o.battle_settings)
         && Internal.equals(fuzzy_display_config_v2, o.fuzzy_display_config_v2)
         && Internal.equals(effect_infos, o.effect_infos)
-        && Internal.equals(enigma_battle_extra_info, o.enigma_battle_extra_info);
+        && Internal.equals(enigma_battle_extra_info, o.enigma_battle_extra_info)
+        && Internal.equals(multiplier_type, o.multiplier_type);
   }
 
   @Override
@@ -318,6 +329,7 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
       result = result * 37 + (fuzzy_display_config_v2 != null ? fuzzy_display_config_v2.hashCode() : 0);
       result = result * 37 + (effect_infos != null ? effect_infos.hashCode() : 0);
       result = result * 37 + (enigma_battle_extra_info != null ? enigma_battle_extra_info.hashCode() : 0);
+      result = result * 37 + Integer.hashCode(multiplier_type);
       super.hashCode = result;
     }
     return result;
@@ -347,6 +359,7 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
     if (fuzzy_display_config_v2 != null) builder.append(", fuzzy_display_config_v2=").append(fuzzy_display_config_v2);
     if (effect_infos != null) builder.append(", effect_infos=").append(effect_infos);
     if (enigma_battle_extra_info != null) builder.append(", enigma_battle_extra_info=").append(enigma_battle_extra_info);
+    builder.append(", multiplier_type=").append(multiplier_type);
     return builder.replace(0, 2, "WebcastLinkMicArmies{").append('}').toString();
   }
 
@@ -393,6 +406,8 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
 
     public EnigmaBattleExtraInfo enigma_battle_extra_info;
 
+    public int multiplier_type;
+
     public Builder() {
       battle_id = 0L;
       armies = Internal.newMutableMap();
@@ -409,6 +424,7 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
       trigger_critical_strike = false;
       has_team_match_mvp_sfx = false;
       log_id = "";
+      multiplier_type = 0;
     }
 
     public Builder common(CommonMessageData common) {
@@ -518,6 +534,11 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
       return this;
     }
 
+    public Builder multiplier_type(int multiplier_type) {
+      this.multiplier_type = multiplier_type;
+      return this;
+    }
+
     @Override
     public WebcastLinkMicArmies build() {
       return new WebcastLinkMicArmies(this, super.buildUnknownFields());
@@ -593,6 +614,9 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
       if (!Objects.equals(value.enigma_battle_extra_info, null)) {
         result += EnigmaBattleExtraInfo.ADAPTER.encodedSizeWithTag(21, value.enigma_battle_extra_info);
       }
+      if (!Objects.equals(value.multiplier_type, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(22, value.multiplier_type);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -620,12 +644,14 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
       if (!Objects.equals(value.fuzzy_display_config_v2, null)) HighScoreControlCfg.ADAPTER.encodeWithTag(writer, 19, value.fuzzy_display_config_v2);
       if (!Objects.equals(value.effect_infos, null)) BattleEffectInfos.ADAPTER.encodeWithTag(writer, 20, value.effect_infos);
       if (!Objects.equals(value.enigma_battle_extra_info, null)) EnigmaBattleExtraInfo.ADAPTER.encodeWithTag(writer, 21, value.enigma_battle_extra_info);
+      if (!Objects.equals(value.multiplier_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 22, value.multiplier_type);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, WebcastLinkMicArmies value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.multiplier_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 22, value.multiplier_type);
       if (!Objects.equals(value.enigma_battle_extra_info, null)) EnigmaBattleExtraInfo.ADAPTER.encodeWithTag(writer, 21, value.enigma_battle_extra_info);
       if (!Objects.equals(value.effect_infos, null)) BattleEffectInfos.ADAPTER.encodeWithTag(writer, 20, value.effect_infos);
       if (!Objects.equals(value.fuzzy_display_config_v2, null)) HighScoreControlCfg.ADAPTER.encodeWithTag(writer, 19, value.fuzzy_display_config_v2);
@@ -683,6 +709,7 @@ public final class WebcastLinkMicArmies extends Message<WebcastLinkMicArmies, We
           case 19: builder.fuzzy_display_config_v2(HighScoreControlCfg.ADAPTER.decode(reader)); break;
           case 20: builder.effect_infos(BattleEffectInfos.ADAPTER.decode(reader)); break;
           case 21: builder.enigma_battle_extra_info(EnigmaBattleExtraInfo.ADAPTER.decode(reader)); break;
+          case 22: builder.multiplier_type(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

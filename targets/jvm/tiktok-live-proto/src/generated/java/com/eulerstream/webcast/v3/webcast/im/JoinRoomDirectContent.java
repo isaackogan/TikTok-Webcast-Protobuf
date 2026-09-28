@@ -76,15 +76,23 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
   )
   public final List<PosIdentity> ui_pos;
 
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "joinerLinkerSessionId"
+  )
+  public final String joiner_linker_session_id;
+
   public JoinRoomDirectContent(Player joiner, String joiner_link_mic_id,
       RTCExtraInfo joiner_ext_info, LayoutState layout, List<SpotInfo> spot_list,
-      List<PosIdentity> ui_pos) {
-    this(joiner, joiner_link_mic_id, joiner_ext_info, layout, spot_list, ui_pos, ByteString.EMPTY);
+      List<PosIdentity> ui_pos, String joiner_linker_session_id) {
+    this(joiner, joiner_link_mic_id, joiner_ext_info, layout, spot_list, ui_pos, joiner_linker_session_id, ByteString.EMPTY);
   }
 
   public JoinRoomDirectContent(Player joiner, String joiner_link_mic_id,
       RTCExtraInfo joiner_ext_info, LayoutState layout, List<SpotInfo> spot_list,
-      List<PosIdentity> ui_pos, ByteString unknownFields) {
+      List<PosIdentity> ui_pos, String joiner_linker_session_id, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.joiner = joiner;
     if (joiner_link_mic_id == null) {
@@ -95,6 +103,10 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
     this.layout = layout;
     this.spot_list = Internal.immutableCopyOf("spot_list", spot_list);
     this.ui_pos = Internal.immutableCopyOf("ui_pos", ui_pos);
+    if (joiner_linker_session_id == null) {
+      throw new IllegalArgumentException("joiner_linker_session_id == null");
+    }
+    this.joiner_linker_session_id = joiner_linker_session_id;
   }
 
   @Override
@@ -106,6 +118,7 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
     builder.layout = layout;
     builder.spot_list = Internal.copyOf(spot_list);
     builder.ui_pos = Internal.copyOf(ui_pos);
+    builder.joiner_linker_session_id = joiner_linker_session_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -121,7 +134,8 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
         && Internal.equals(joiner_ext_info, o.joiner_ext_info)
         && Internal.equals(layout, o.layout)
         && spot_list.equals(o.spot_list)
-        && ui_pos.equals(o.ui_pos);
+        && ui_pos.equals(o.ui_pos)
+        && Internal.equals(joiner_linker_session_id, o.joiner_linker_session_id);
   }
 
   @Override
@@ -135,6 +149,7 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
       result = result * 37 + (layout != null ? layout.hashCode() : 0);
       result = result * 37 + spot_list.hashCode();
       result = result * 37 + ui_pos.hashCode();
+      result = result * 37 + (joiner_linker_session_id != null ? joiner_linker_session_id.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -149,6 +164,7 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
     if (layout != null) builder.append(", layout=").append(layout);
     if (!spot_list.isEmpty()) builder.append(", spot_list=").append(spot_list);
     if (!ui_pos.isEmpty()) builder.append(", ui_pos=").append(ui_pos);
+    if (joiner_linker_session_id != null) builder.append(", joiner_linker_session_id=").append(Internal.sanitize(joiner_linker_session_id));
     return builder.replace(0, 2, "JoinRoomDirectContent{").append('}').toString();
   }
 
@@ -165,10 +181,13 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
 
     public List<PosIdentity> ui_pos;
 
+    public String joiner_linker_session_id;
+
     public Builder() {
       joiner_link_mic_id = "";
       spot_list = Internal.newMutableList();
       ui_pos = Internal.newMutableList();
+      joiner_linker_session_id = "";
     }
 
     public Builder joiner(Player joiner) {
@@ -203,9 +222,14 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
       return this;
     }
 
+    public Builder joiner_linker_session_id(String joiner_linker_session_id) {
+      this.joiner_linker_session_id = joiner_linker_session_id;
+      return this;
+    }
+
     @Override
     public JoinRoomDirectContent build() {
-      return new JoinRoomDirectContent(joiner, joiner_link_mic_id, joiner_ext_info, layout, spot_list, ui_pos, super.buildUnknownFields());
+      return new JoinRoomDirectContent(joiner, joiner_link_mic_id, joiner_ext_info, layout, spot_list, ui_pos, joiner_linker_session_id, super.buildUnknownFields());
     }
   }
 
@@ -231,6 +255,9 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
       }
       result += SpotInfo.ADAPTER.asRepeated().encodedSizeWithTag(5, value.spot_list);
       result += PosIdentity.ADAPTER.asRepeated().encodedSizeWithTag(6, value.ui_pos);
+      if (!Objects.equals(value.joiner_linker_session_id, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.joiner_linker_session_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -243,12 +270,14 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
       if (!Objects.equals(value.layout, null)) LayoutState.ADAPTER.encodeWithTag(writer, 4, value.layout);
       SpotInfo.ADAPTER.asRepeated().encodeWithTag(writer, 5, value.spot_list);
       PosIdentity.ADAPTER.asRepeated().encodeWithTag(writer, 6, value.ui_pos);
+      if (!Objects.equals(value.joiner_linker_session_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.joiner_linker_session_id);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, JoinRoomDirectContent value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.joiner_linker_session_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.joiner_linker_session_id);
       PosIdentity.ADAPTER.asRepeated().encodeWithTag(writer, 6, value.ui_pos);
       SpotInfo.ADAPTER.asRepeated().encodeWithTag(writer, 5, value.spot_list);
       if (!Objects.equals(value.layout, null)) LayoutState.ADAPTER.encodeWithTag(writer, 4, value.layout);
@@ -269,6 +298,7 @@ public final class JoinRoomDirectContent extends Message<JoinRoomDirectContent, 
           case 4: builder.layout(LayoutState.ADAPTER.decode(reader)); break;
           case 5: builder.spot_list.add(SpotInfo.ADAPTER.decode(reader)); break;
           case 6: builder.ui_pos.add(PosIdentity.ADAPTER.decode(reader)); break;
+          case 7: builder.joiner_linker_session_id(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

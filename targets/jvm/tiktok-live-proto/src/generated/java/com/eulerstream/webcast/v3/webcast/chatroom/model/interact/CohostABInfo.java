@@ -65,21 +65,51 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
   )
   public final boolean is_match_playbook_optimisation_enabled;
 
+  @WireField(
+      tag = 6,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "isMatchPlaybookUsabilityEnabled"
+  )
+  public final boolean is_match_playbook_usability_enabled;
+
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "isMatchPlaybookReminderEnabled"
+  )
+  public final boolean is_match_playbook_reminder_enabled;
+
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "isMatchGoofyEffectEnabled"
+  )
+  public final boolean is_match_goofy_effect_enabled;
+
   public CohostABInfo(boolean live_match_button_opt, boolean is_cohost_multiguest,
       boolean is_match_playbook_enabled, boolean is_cohost_during_multiguest_enabled,
-      boolean is_match_playbook_optimisation_enabled) {
-    this(live_match_button_opt, is_cohost_multiguest, is_match_playbook_enabled, is_cohost_during_multiguest_enabled, is_match_playbook_optimisation_enabled, ByteString.EMPTY);
+      boolean is_match_playbook_optimisation_enabled, boolean is_match_playbook_usability_enabled,
+      boolean is_match_playbook_reminder_enabled, boolean is_match_goofy_effect_enabled) {
+    this(live_match_button_opt, is_cohost_multiguest, is_match_playbook_enabled, is_cohost_during_multiguest_enabled, is_match_playbook_optimisation_enabled, is_match_playbook_usability_enabled, is_match_playbook_reminder_enabled, is_match_goofy_effect_enabled, ByteString.EMPTY);
   }
 
   public CohostABInfo(boolean live_match_button_opt, boolean is_cohost_multiguest,
       boolean is_match_playbook_enabled, boolean is_cohost_during_multiguest_enabled,
-      boolean is_match_playbook_optimisation_enabled, ByteString unknownFields) {
+      boolean is_match_playbook_optimisation_enabled, boolean is_match_playbook_usability_enabled,
+      boolean is_match_playbook_reminder_enabled, boolean is_match_goofy_effect_enabled,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.live_match_button_opt = live_match_button_opt;
     this.is_cohost_multiguest = is_cohost_multiguest;
     this.is_match_playbook_enabled = is_match_playbook_enabled;
     this.is_cohost_during_multiguest_enabled = is_cohost_during_multiguest_enabled;
     this.is_match_playbook_optimisation_enabled = is_match_playbook_optimisation_enabled;
+    this.is_match_playbook_usability_enabled = is_match_playbook_usability_enabled;
+    this.is_match_playbook_reminder_enabled = is_match_playbook_reminder_enabled;
+    this.is_match_goofy_effect_enabled = is_match_goofy_effect_enabled;
   }
 
   @Override
@@ -90,6 +120,9 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
     builder.is_match_playbook_enabled = is_match_playbook_enabled;
     builder.is_cohost_during_multiguest_enabled = is_cohost_during_multiguest_enabled;
     builder.is_match_playbook_optimisation_enabled = is_match_playbook_optimisation_enabled;
+    builder.is_match_playbook_usability_enabled = is_match_playbook_usability_enabled;
+    builder.is_match_playbook_reminder_enabled = is_match_playbook_reminder_enabled;
+    builder.is_match_goofy_effect_enabled = is_match_goofy_effect_enabled;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -104,7 +137,10 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
         && Internal.equals(is_cohost_multiguest, o.is_cohost_multiguest)
         && Internal.equals(is_match_playbook_enabled, o.is_match_playbook_enabled)
         && Internal.equals(is_cohost_during_multiguest_enabled, o.is_cohost_during_multiguest_enabled)
-        && Internal.equals(is_match_playbook_optimisation_enabled, o.is_match_playbook_optimisation_enabled);
+        && Internal.equals(is_match_playbook_optimisation_enabled, o.is_match_playbook_optimisation_enabled)
+        && Internal.equals(is_match_playbook_usability_enabled, o.is_match_playbook_usability_enabled)
+        && Internal.equals(is_match_playbook_reminder_enabled, o.is_match_playbook_reminder_enabled)
+        && Internal.equals(is_match_goofy_effect_enabled, o.is_match_goofy_effect_enabled);
   }
 
   @Override
@@ -117,6 +153,9 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
       result = result * 37 + Boolean.hashCode(is_match_playbook_enabled);
       result = result * 37 + Boolean.hashCode(is_cohost_during_multiguest_enabled);
       result = result * 37 + Boolean.hashCode(is_match_playbook_optimisation_enabled);
+      result = result * 37 + Boolean.hashCode(is_match_playbook_usability_enabled);
+      result = result * 37 + Boolean.hashCode(is_match_playbook_reminder_enabled);
+      result = result * 37 + Boolean.hashCode(is_match_goofy_effect_enabled);
       super.hashCode = result;
     }
     return result;
@@ -130,6 +169,9 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
     builder.append(", is_match_playbook_enabled=").append(is_match_playbook_enabled);
     builder.append(", is_cohost_during_multiguest_enabled=").append(is_cohost_during_multiguest_enabled);
     builder.append(", is_match_playbook_optimisation_enabled=").append(is_match_playbook_optimisation_enabled);
+    builder.append(", is_match_playbook_usability_enabled=").append(is_match_playbook_usability_enabled);
+    builder.append(", is_match_playbook_reminder_enabled=").append(is_match_playbook_reminder_enabled);
+    builder.append(", is_match_goofy_effect_enabled=").append(is_match_goofy_effect_enabled);
     return builder.replace(0, 2, "CohostABInfo{").append('}').toString();
   }
 
@@ -144,12 +186,21 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
 
     public boolean is_match_playbook_optimisation_enabled;
 
+    public boolean is_match_playbook_usability_enabled;
+
+    public boolean is_match_playbook_reminder_enabled;
+
+    public boolean is_match_goofy_effect_enabled;
+
     public Builder() {
       live_match_button_opt = false;
       is_cohost_multiguest = false;
       is_match_playbook_enabled = false;
       is_cohost_during_multiguest_enabled = false;
       is_match_playbook_optimisation_enabled = false;
+      is_match_playbook_usability_enabled = false;
+      is_match_playbook_reminder_enabled = false;
+      is_match_goofy_effect_enabled = false;
     }
 
     public Builder live_match_button_opt(boolean live_match_button_opt) {
@@ -179,9 +230,25 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
       return this;
     }
 
+    public Builder is_match_playbook_usability_enabled(
+        boolean is_match_playbook_usability_enabled) {
+      this.is_match_playbook_usability_enabled = is_match_playbook_usability_enabled;
+      return this;
+    }
+
+    public Builder is_match_playbook_reminder_enabled(boolean is_match_playbook_reminder_enabled) {
+      this.is_match_playbook_reminder_enabled = is_match_playbook_reminder_enabled;
+      return this;
+    }
+
+    public Builder is_match_goofy_effect_enabled(boolean is_match_goofy_effect_enabled) {
+      this.is_match_goofy_effect_enabled = is_match_goofy_effect_enabled;
+      return this;
+    }
+
     @Override
     public CohostABInfo build() {
-      return new CohostABInfo(live_match_button_opt, is_cohost_multiguest, is_match_playbook_enabled, is_cohost_during_multiguest_enabled, is_match_playbook_optimisation_enabled, super.buildUnknownFields());
+      return new CohostABInfo(live_match_button_opt, is_cohost_multiguest, is_match_playbook_enabled, is_cohost_during_multiguest_enabled, is_match_playbook_optimisation_enabled, is_match_playbook_usability_enabled, is_match_playbook_reminder_enabled, is_match_goofy_effect_enabled, super.buildUnknownFields());
     }
   }
 
@@ -208,6 +275,15 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
       if (!Objects.equals(value.is_match_playbook_optimisation_enabled, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(5, value.is_match_playbook_optimisation_enabled);
       }
+      if (!Objects.equals(value.is_match_playbook_usability_enabled, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(6, value.is_match_playbook_usability_enabled);
+      }
+      if (!Objects.equals(value.is_match_playbook_reminder_enabled, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(7, value.is_match_playbook_reminder_enabled);
+      }
+      if (!Objects.equals(value.is_match_goofy_effect_enabled, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(8, value.is_match_goofy_effect_enabled);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -219,12 +295,18 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
       if (!Objects.equals(value.is_match_playbook_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.is_match_playbook_enabled);
       if (!Objects.equals(value.is_cohost_during_multiguest_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.is_cohost_during_multiguest_enabled);
       if (!Objects.equals(value.is_match_playbook_optimisation_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 5, value.is_match_playbook_optimisation_enabled);
+      if (!Objects.equals(value.is_match_playbook_usability_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.is_match_playbook_usability_enabled);
+      if (!Objects.equals(value.is_match_playbook_reminder_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 7, value.is_match_playbook_reminder_enabled);
+      if (!Objects.equals(value.is_match_goofy_effect_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_match_goofy_effect_enabled);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, CohostABInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.is_match_goofy_effect_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_match_goofy_effect_enabled);
+      if (!Objects.equals(value.is_match_playbook_reminder_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 7, value.is_match_playbook_reminder_enabled);
+      if (!Objects.equals(value.is_match_playbook_usability_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.is_match_playbook_usability_enabled);
       if (!Objects.equals(value.is_match_playbook_optimisation_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 5, value.is_match_playbook_optimisation_enabled);
       if (!Objects.equals(value.is_cohost_during_multiguest_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 4, value.is_cohost_during_multiguest_enabled);
       if (!Objects.equals(value.is_match_playbook_enabled, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.is_match_playbook_enabled);
@@ -243,6 +325,9 @@ public final class CohostABInfo extends Message<CohostABInfo, CohostABInfo.Build
           case 3: builder.is_match_playbook_enabled(ProtoAdapter.BOOL.decode(reader)); break;
           case 4: builder.is_cohost_during_multiguest_enabled(ProtoAdapter.BOOL.decode(reader)); break;
           case 5: builder.is_match_playbook_optimisation_enabled(ProtoAdapter.BOOL.decode(reader)); break;
+          case 6: builder.is_match_playbook_usability_enabled(ProtoAdapter.BOOL.decode(reader)); break;
+          case 7: builder.is_match_playbook_reminder_enabled(ProtoAdapter.BOOL.decode(reader)); break;
+          case 8: builder.is_match_goofy_effect_enabled(ProtoAdapter.BOOL.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

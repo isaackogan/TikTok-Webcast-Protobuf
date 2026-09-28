@@ -62,21 +62,31 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
   )
   public final GiftEffectStreamSpec stream_effect_spec;
 
+  @WireField(
+      tag = 6,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.gift.model.GiftEffectLiveGenSpec#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "liveGenEffectSpec"
+  )
+  public final GiftEffectLiveGenSpec live_gen_effect_spec;
+
   public GiftEffectSpecs(GiftEffectCrossScreenStickerSpec cross_screen_sticker,
       GiftEffectLynxSpec lynx, GiftEffectPrefabSpec prefab, GiftEffectSerialSpec serial_spec,
-      GiftEffectStreamSpec stream_effect_spec) {
-    this(cross_screen_sticker, lynx, prefab, serial_spec, stream_effect_spec, ByteString.EMPTY);
+      GiftEffectStreamSpec stream_effect_spec, GiftEffectLiveGenSpec live_gen_effect_spec) {
+    this(cross_screen_sticker, lynx, prefab, serial_spec, stream_effect_spec, live_gen_effect_spec, ByteString.EMPTY);
   }
 
   public GiftEffectSpecs(GiftEffectCrossScreenStickerSpec cross_screen_sticker,
       GiftEffectLynxSpec lynx, GiftEffectPrefabSpec prefab, GiftEffectSerialSpec serial_spec,
-      GiftEffectStreamSpec stream_effect_spec, ByteString unknownFields) {
+      GiftEffectStreamSpec stream_effect_spec, GiftEffectLiveGenSpec live_gen_effect_spec,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.cross_screen_sticker = cross_screen_sticker;
     this.lynx = lynx;
     this.prefab = prefab;
     this.serial_spec = serial_spec;
     this.stream_effect_spec = stream_effect_spec;
+    this.live_gen_effect_spec = live_gen_effect_spec;
   }
 
   @Override
@@ -87,6 +97,7 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
     builder.prefab = prefab;
     builder.serial_spec = serial_spec;
     builder.stream_effect_spec = stream_effect_spec;
+    builder.live_gen_effect_spec = live_gen_effect_spec;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -101,7 +112,8 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
         && Internal.equals(lynx, o.lynx)
         && Internal.equals(prefab, o.prefab)
         && Internal.equals(serial_spec, o.serial_spec)
-        && Internal.equals(stream_effect_spec, o.stream_effect_spec);
+        && Internal.equals(stream_effect_spec, o.stream_effect_spec)
+        && Internal.equals(live_gen_effect_spec, o.live_gen_effect_spec);
   }
 
   @Override
@@ -114,6 +126,7 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
       result = result * 37 + (prefab != null ? prefab.hashCode() : 0);
       result = result * 37 + (serial_spec != null ? serial_spec.hashCode() : 0);
       result = result * 37 + (stream_effect_spec != null ? stream_effect_spec.hashCode() : 0);
+      result = result * 37 + (live_gen_effect_spec != null ? live_gen_effect_spec.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -127,6 +140,7 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
     if (prefab != null) builder.append(", prefab=").append(prefab);
     if (serial_spec != null) builder.append(", serial_spec=").append(serial_spec);
     if (stream_effect_spec != null) builder.append(", stream_effect_spec=").append(stream_effect_spec);
+    if (live_gen_effect_spec != null) builder.append(", live_gen_effect_spec=").append(live_gen_effect_spec);
     return builder.replace(0, 2, "GiftEffectSpecs{").append('}').toString();
   }
 
@@ -140,6 +154,8 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
     public GiftEffectSerialSpec serial_spec;
 
     public GiftEffectStreamSpec stream_effect_spec;
+
+    public GiftEffectLiveGenSpec live_gen_effect_spec;
 
     public Builder() {
     }
@@ -169,9 +185,14 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
       return this;
     }
 
+    public Builder live_gen_effect_spec(GiftEffectLiveGenSpec live_gen_effect_spec) {
+      this.live_gen_effect_spec = live_gen_effect_spec;
+      return this;
+    }
+
     @Override
     public GiftEffectSpecs build() {
-      return new GiftEffectSpecs(cross_screen_sticker, lynx, prefab, serial_spec, stream_effect_spec, super.buildUnknownFields());
+      return new GiftEffectSpecs(cross_screen_sticker, lynx, prefab, serial_spec, stream_effect_spec, live_gen_effect_spec, super.buildUnknownFields());
     }
   }
 
@@ -198,6 +219,9 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
       if (!Objects.equals(value.stream_effect_spec, null)) {
         result += GiftEffectStreamSpec.ADAPTER.encodedSizeWithTag(5, value.stream_effect_spec);
       }
+      if (!Objects.equals(value.live_gen_effect_spec, null)) {
+        result += GiftEffectLiveGenSpec.ADAPTER.encodedSizeWithTag(6, value.live_gen_effect_spec);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -209,12 +233,14 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
       if (!Objects.equals(value.prefab, null)) GiftEffectPrefabSpec.ADAPTER.encodeWithTag(writer, 3, value.prefab);
       if (!Objects.equals(value.serial_spec, null)) GiftEffectSerialSpec.ADAPTER.encodeWithTag(writer, 4, value.serial_spec);
       if (!Objects.equals(value.stream_effect_spec, null)) GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 5, value.stream_effect_spec);
+      if (!Objects.equals(value.live_gen_effect_spec, null)) GiftEffectLiveGenSpec.ADAPTER.encodeWithTag(writer, 6, value.live_gen_effect_spec);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, GiftEffectSpecs value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.live_gen_effect_spec, null)) GiftEffectLiveGenSpec.ADAPTER.encodeWithTag(writer, 6, value.live_gen_effect_spec);
       if (!Objects.equals(value.stream_effect_spec, null)) GiftEffectStreamSpec.ADAPTER.encodeWithTag(writer, 5, value.stream_effect_spec);
       if (!Objects.equals(value.serial_spec, null)) GiftEffectSerialSpec.ADAPTER.encodeWithTag(writer, 4, value.serial_spec);
       if (!Objects.equals(value.prefab, null)) GiftEffectPrefabSpec.ADAPTER.encodeWithTag(writer, 3, value.prefab);
@@ -233,6 +259,7 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
           case 3: builder.prefab(GiftEffectPrefabSpec.ADAPTER.decode(reader)); break;
           case 4: builder.serial_spec(GiftEffectSerialSpec.ADAPTER.decode(reader)); break;
           case 5: builder.stream_effect_spec(GiftEffectStreamSpec.ADAPTER.decode(reader)); break;
+          case 6: builder.live_gen_effect_spec(GiftEffectLiveGenSpec.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -250,6 +277,7 @@ public final class GiftEffectSpecs extends Message<GiftEffectSpecs, GiftEffectSp
       if (builder.prefab != null) builder.prefab = GiftEffectPrefabSpec.ADAPTER.redact(builder.prefab);
       if (builder.serial_spec != null) builder.serial_spec = GiftEffectSerialSpec.ADAPTER.redact(builder.serial_spec);
       if (builder.stream_effect_spec != null) builder.stream_effect_spec = GiftEffectStreamSpec.ADAPTER.redact(builder.stream_effect_spec);
+      if (builder.live_gen_effect_spec != null) builder.live_gen_effect_spec = GiftEffectLiveGenSpec.ADAPTER.redact(builder.live_gen_effect_spec);
       builder.clearUnknownFields();
       return builder.build();
     }

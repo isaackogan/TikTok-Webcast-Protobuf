@@ -10,6 +10,7 @@ import com.eulerstream.webcast.v3.webcast.model.data.IceShowdownSetting;
 import com.eulerstream.webcast.v3.webcast.model.data.MatchGameplayOption;
 import com.eulerstream.webcast.v3.webcast.model.live.match.GiftModeMeta;
 import com.eulerstream.webcast.v3.webcast.model.live.match.GiftModeMetaV2;
+import com.eulerstream.webcast.v3.webcast.model.live.match.GoofyEffectInfo;
 import com.squareup.wire.FieldEncoding;
 import com.squareup.wire.Message;
 import com.squareup.wire.ProtoAdapter;
@@ -151,54 +152,50 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
   )
   public final GiftModeMetaV2 gift_mode_meta_v2;
 
-  public BattleSetting(long battle_id, long start_time_ms, int duration, long channel_id,
-      BattleSettings_BattleStatus status, BattleInviteType invite_type, GiftModeMeta gift_mode_meta,
-      BattleType battle_type, long extra_duration_second, long end_time_ms, BattleScene scene,
-      long source_type, IceShowdownSetting ice_showdown_setting,
-      MatchGameplayOption gameplay_option, GiftModeMetaV2 gift_mode_meta_v2) {
-    this(battle_id, start_time_ms, duration, channel_id, status, invite_type, gift_mode_meta, battle_type, extra_duration_second, end_time_ms, scene, source_type, ice_showdown_setting, gameplay_option, gift_mode_meta_v2, ByteString.EMPTY);
-  }
+  @WireField(
+      tag = 16,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.live.match.GoofyEffectInfo#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "goofyEffectInfo"
+  )
+  public final GoofyEffectInfo goofy_effect_info;
 
-  public BattleSetting(long battle_id, long start_time_ms, int duration, long channel_id,
-      BattleSettings_BattleStatus status, BattleInviteType invite_type, GiftModeMeta gift_mode_meta,
-      BattleType battle_type, long extra_duration_second, long end_time_ms, BattleScene scene,
-      long source_type, IceShowdownSetting ice_showdown_setting,
-      MatchGameplayOption gameplay_option, GiftModeMetaV2 gift_mode_meta_v2,
-      ByteString unknownFields) {
+  public BattleSetting(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
-    this.battle_id = battle_id;
-    this.start_time_ms = start_time_ms;
-    this.duration = duration;
-    this.channel_id = channel_id;
-    if (status == null) {
-      throw new IllegalArgumentException("status == null");
+    this.battle_id = builder.battle_id;
+    this.start_time_ms = builder.start_time_ms;
+    this.duration = builder.duration;
+    this.channel_id = builder.channel_id;
+    if (builder.status == null) {
+      throw new IllegalArgumentException("builder.status == null");
     }
-    this.status = status;
-    if (invite_type == null) {
-      throw new IllegalArgumentException("invite_type == null");
+    this.status = builder.status;
+    if (builder.invite_type == null) {
+      throw new IllegalArgumentException("builder.invite_type == null");
     }
-    this.invite_type = invite_type;
-    this.gift_mode_meta = gift_mode_meta;
-    if (battle_type == null) {
-      throw new IllegalArgumentException("battle_type == null");
+    this.invite_type = builder.invite_type;
+    this.gift_mode_meta = builder.gift_mode_meta;
+    if (builder.battle_type == null) {
+      throw new IllegalArgumentException("builder.battle_type == null");
     }
-    this.battle_type = battle_type;
-    this.extra_duration_second = extra_duration_second;
-    this.end_time_ms = end_time_ms;
-    if (scene == null) {
-      throw new IllegalArgumentException("scene == null");
+    this.battle_type = builder.battle_type;
+    this.extra_duration_second = builder.extra_duration_second;
+    this.end_time_ms = builder.end_time_ms;
+    if (builder.scene == null) {
+      throw new IllegalArgumentException("builder.scene == null");
     }
-    this.scene = scene;
-    this.source_type = source_type;
-    if (ice_showdown_setting == null) {
-      throw new IllegalArgumentException("ice_showdown_setting == null");
+    this.scene = builder.scene;
+    this.source_type = builder.source_type;
+    if (builder.ice_showdown_setting == null) {
+      throw new IllegalArgumentException("builder.ice_showdown_setting == null");
     }
-    this.ice_showdown_setting = ice_showdown_setting;
-    if (gameplay_option == null) {
-      throw new IllegalArgumentException("gameplay_option == null");
+    this.ice_showdown_setting = builder.ice_showdown_setting;
+    if (builder.gameplay_option == null) {
+      throw new IllegalArgumentException("builder.gameplay_option == null");
     }
-    this.gameplay_option = gameplay_option;
-    this.gift_mode_meta_v2 = gift_mode_meta_v2;
+    this.gameplay_option = builder.gameplay_option;
+    this.gift_mode_meta_v2 = builder.gift_mode_meta_v2;
+    this.goofy_effect_info = builder.goofy_effect_info;
   }
 
   @Override
@@ -219,6 +216,7 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
     builder.ice_showdown_setting = ice_showdown_setting;
     builder.gameplay_option = gameplay_option;
     builder.gift_mode_meta_v2 = gift_mode_meta_v2;
+    builder.goofy_effect_info = goofy_effect_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -243,7 +241,8 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
         && Internal.equals(source_type, o.source_type)
         && Internal.equals(ice_showdown_setting, o.ice_showdown_setting)
         && Internal.equals(gameplay_option, o.gameplay_option)
-        && Internal.equals(gift_mode_meta_v2, o.gift_mode_meta_v2);
+        && Internal.equals(gift_mode_meta_v2, o.gift_mode_meta_v2)
+        && Internal.equals(goofy_effect_info, o.goofy_effect_info);
   }
 
   @Override
@@ -266,6 +265,7 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
       result = result * 37 + (ice_showdown_setting != null ? ice_showdown_setting.hashCode() : 0);
       result = result * 37 + (gameplay_option != null ? gameplay_option.hashCode() : 0);
       result = result * 37 + (gift_mode_meta_v2 != null ? gift_mode_meta_v2.hashCode() : 0);
+      result = result * 37 + (goofy_effect_info != null ? goofy_effect_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -289,6 +289,7 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
     if (ice_showdown_setting != null) builder.append(", ice_showdown_setting=").append(ice_showdown_setting);
     if (gameplay_option != null) builder.append(", gameplay_option=").append(gameplay_option);
     if (gift_mode_meta_v2 != null) builder.append(", gift_mode_meta_v2=").append(gift_mode_meta_v2);
+    if (goofy_effect_info != null) builder.append(", goofy_effect_info=").append(goofy_effect_info);
     return builder.replace(0, 2, "BattleSetting{").append('}').toString();
   }
 
@@ -322,6 +323,8 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
     public MatchGameplayOption gameplay_option;
 
     public GiftModeMetaV2 gift_mode_meta_v2;
+
+    public GoofyEffectInfo goofy_effect_info;
 
     public Builder() {
       battle_id = 0L;
@@ -414,9 +417,14 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
       return this;
     }
 
+    public Builder goofy_effect_info(GoofyEffectInfo goofy_effect_info) {
+      this.goofy_effect_info = goofy_effect_info;
+      return this;
+    }
+
     @Override
     public BattleSetting build() {
-      return new BattleSetting(battle_id, start_time_ms, duration, channel_id, status, invite_type, gift_mode_meta, battle_type, extra_duration_second, end_time_ms, scene, source_type, ice_showdown_setting, gameplay_option, gift_mode_meta_v2, super.buildUnknownFields());
+      return new BattleSetting(this, super.buildUnknownFields());
     }
   }
 
@@ -473,6 +481,9 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
       if (!Objects.equals(value.gift_mode_meta_v2, null)) {
         result += GiftModeMetaV2.ADAPTER.encodedSizeWithTag(15, value.gift_mode_meta_v2);
       }
+      if (!Objects.equals(value.goofy_effect_info, null)) {
+        result += GoofyEffectInfo.ADAPTER.encodedSizeWithTag(16, value.goofy_effect_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -494,12 +505,14 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
       if (!Objects.equals(value.ice_showdown_setting, IceShowdownSetting.ICE_SHOWDOWN_OFF)) IceShowdownSetting.ADAPTER.encodeWithTag(writer, 13, value.ice_showdown_setting);
       if (!Objects.equals(value.gameplay_option, MatchGameplayOption.MATCH_OPTION_UNKNOWN)) MatchGameplayOption.ADAPTER.encodeWithTag(writer, 14, value.gameplay_option);
       if (!Objects.equals(value.gift_mode_meta_v2, null)) GiftModeMetaV2.ADAPTER.encodeWithTag(writer, 15, value.gift_mode_meta_v2);
+      if (!Objects.equals(value.goofy_effect_info, null)) GoofyEffectInfo.ADAPTER.encodeWithTag(writer, 16, value.goofy_effect_info);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, BattleSetting value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.goofy_effect_info, null)) GoofyEffectInfo.ADAPTER.encodeWithTag(writer, 16, value.goofy_effect_info);
       if (!Objects.equals(value.gift_mode_meta_v2, null)) GiftModeMetaV2.ADAPTER.encodeWithTag(writer, 15, value.gift_mode_meta_v2);
       if (!Objects.equals(value.gameplay_option, MatchGameplayOption.MATCH_OPTION_UNKNOWN)) MatchGameplayOption.ADAPTER.encodeWithTag(writer, 14, value.gameplay_option);
       if (!Objects.equals(value.ice_showdown_setting, IceShowdownSetting.ICE_SHOWDOWN_OFF)) IceShowdownSetting.ADAPTER.encodeWithTag(writer, 13, value.ice_showdown_setting);
@@ -580,6 +593,7 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
             break;
           }
           case 15: builder.gift_mode_meta_v2(GiftModeMetaV2.ADAPTER.decode(reader)); break;
+          case 16: builder.goofy_effect_info(GoofyEffectInfo.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -594,6 +608,7 @@ public final class BattleSetting extends Message<BattleSetting, BattleSetting.Bu
       Builder builder = value.newBuilder();
       if (builder.gift_mode_meta != null) builder.gift_mode_meta = GiftModeMeta.ADAPTER.redact(builder.gift_mode_meta);
       if (builder.gift_mode_meta_v2 != null) builder.gift_mode_meta_v2 = GiftModeMetaV2.ADAPTER.redact(builder.gift_mode_meta_v2);
+      if (builder.goofy_effect_info != null) builder.goofy_effect_info = GoofyEffectInfo.ADAPTER.redact(builder.goofy_effect_info);
       builder.clearUnknownFields();
       return builder.build();
     }

@@ -489,10 +489,18 @@ public class User(
   )
   public val fans_club_info: FansClubInfo? = null,
   @field:WireField(
+    tag = 67,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.base.user.AvatarHashInfo#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "avatarHashInfo",
+    schemaIndex = 66,
+  )
+  public val avatar_hash_info: AvatarHashInfo? = null,
+  @field:WireField(
     tag = 1_001,
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 66,
+    schemaIndex = 67,
   )
   public val deprecated19: Boolean = false,
   @field:WireField(
@@ -500,7 +508,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowFindByContacts",
-    schemaIndex = 67,
+    schemaIndex = 68,
   )
   public val allow_find_by_contacts: Boolean = false,
   @field:WireField(
@@ -508,7 +516,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowOthersDownloadVideo",
-    schemaIndex = 68,
+    schemaIndex = 69,
   )
   public val allow_others_download_video: Boolean = false,
   @field:WireField(
@@ -516,7 +524,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowOthersDownloadWhenSharingVideo",
-    schemaIndex = 69,
+    schemaIndex = 70,
   )
   public val allow_others_download_when_sharing_video: Boolean = false,
   @field:WireField(
@@ -524,7 +532,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowShareShowProfile",
-    schemaIndex = 70,
+    schemaIndex = 71,
   )
   public val allow_share_show_profile: Boolean = false,
   @field:WireField(
@@ -532,7 +540,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowShowInGossip",
-    schemaIndex = 71,
+    schemaIndex = 72,
   )
   public val allow_show_in_gossip: Boolean = false,
   @field:WireField(
@@ -540,7 +548,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowShowMyAction",
-    schemaIndex = 72,
+    schemaIndex = 73,
   )
   public val allow_show_my_action: Boolean = false,
   @field:WireField(
@@ -548,7 +556,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowStrangeComment",
-    schemaIndex = 73,
+    schemaIndex = 74,
   )
   public val allow_strange_comment: Boolean = false,
   @field:WireField(
@@ -556,7 +564,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowUnfollowerComment",
-    schemaIndex = 74,
+    schemaIndex = 75,
   )
   public val allow_unfollower_comment: Boolean = false,
   @field:WireField(
@@ -564,7 +572,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "allowUseLinkmic",
-    schemaIndex = 75,
+    schemaIndex = 76,
   )
   public val allow_use_linkmic: Boolean = false,
   @field:WireField(
@@ -572,7 +580,7 @@ public class User(
     adapter = "com.eulerstream.webcast.v3.webcast.model.AnchorLevel#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "anchorLevel",
-    schemaIndex = 76,
+    schemaIndex = 77,
   )
   public val anchor_level: AnchorLevel? = null,
   @field:WireField(
@@ -580,7 +588,7 @@ public class User(
     adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "avatarJpg",
-    schemaIndex = 77,
+    schemaIndex = 78,
   )
   public val avatar_jpg: ImageModel? = null,
   @field:WireField(
@@ -588,21 +596,21 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "bgImgUrl",
-    schemaIndex = 78,
+    schemaIndex = 79,
   )
   public val bg_img_url: String = "",
   @field:WireField(
     tag = 1_014,
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 79,
+    schemaIndex = 80,
   )
   public val deprecated18: String = "",
   @field:WireField(
     tag = 1_015,
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 80,
+    schemaIndex = 81,
   )
   public val deprecated16: Boolean = false,
   @field:WireField(
@@ -610,7 +618,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT32",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "blockStatus",
-    schemaIndex = 81,
+    schemaIndex = 82,
   )
   public val block_status: Int = 0,
   @field:WireField(
@@ -618,14 +626,14 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT32",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "commentRestrict",
-    schemaIndex = 82,
+    schemaIndex = 83,
   )
   public val comment_restrict: Int = 0,
   @field:WireField(
     tag = 1_018,
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 83,
+    schemaIndex = 84,
   )
   public val constellation: String = "",
   @field:WireField(
@@ -633,7 +641,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT32",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "disableIchat",
-    schemaIndex = 84,
+    schemaIndex = 85,
   )
   public val disable_ichat: Int = 0,
   @field:WireField(
@@ -641,14 +649,14 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT64",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "enableIchatImg",
-    schemaIndex = 85,
+    schemaIndex = 86,
   )
   public val enable_ichat_img: Long = 0L,
   @field:WireField(
     tag = 1_021,
     adapter = "com.squareup.wire.ProtoAdapter#INT32",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 86,
+    schemaIndex = 87,
   )
   public val exp: Int = 0,
   @field:WireField(
@@ -656,7 +664,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT64",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "fanTicketCount",
-    schemaIndex = 87,
+    schemaIndex = 88,
   )
   public val fan_ticket_count: Long = 0L,
   @field:WireField(
@@ -664,7 +672,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "foldStrangerChat",
-    schemaIndex = 88,
+    schemaIndex = 89,
   )
   public val fold_stranger_chat: Boolean = false,
   @field:WireField(
@@ -672,21 +680,21 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT64",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "followStatus",
-    schemaIndex = 89,
+    schemaIndex = 90,
   )
   public val follow_status: Long = 0L,
   @field:WireField(
     tag = 1_025,
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 90,
+    schemaIndex = 91,
   )
   public val deprecated28: Boolean = false,
   @field:WireField(
     tag = 1_026,
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 91,
+    schemaIndex = 92,
   )
   public val deprecated29: String = "",
   @field:WireField(
@@ -694,7 +702,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT32",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "ichatRestrictType",
-    schemaIndex = 92,
+    schemaIndex = 93,
   )
   public val ichat_restrict_type: Int = 0,
   @field:WireField(
@@ -702,7 +710,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "idStr",
-    schemaIndex = 93,
+    schemaIndex = 94,
   )
   public val id_str: String = "",
   @field:WireField(
@@ -710,7 +718,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "isFollower",
-    schemaIndex = 94,
+    schemaIndex = 95,
   )
   public val is_follower: Boolean = false,
   @field:WireField(
@@ -718,7 +726,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "isFollowing",
-    schemaIndex = 95,
+    schemaIndex = 96,
   )
   public val is_following: Boolean = false,
   @field:WireField(
@@ -726,7 +734,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "needProfileGuide",
-    schemaIndex = 96,
+    schemaIndex = 97,
   )
   public val need_profile_guide: Boolean = false,
   @field:WireField(
@@ -734,7 +742,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#INT64",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "payScores",
-    schemaIndex = 97,
+    schemaIndex = 98,
   )
   public val pay_scores: Long = 0L,
   @field:WireField(
@@ -742,7 +750,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushCommentStatus",
-    schemaIndex = 98,
+    schemaIndex = 99,
   )
   public val push_comment_status: Boolean = false,
   @field:WireField(
@@ -750,7 +758,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushDigg",
-    schemaIndex = 99,
+    schemaIndex = 100,
   )
   public val push_digg: Boolean = false,
   @field:WireField(
@@ -758,7 +766,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushFollow",
-    schemaIndex = 100,
+    schemaIndex = 101,
   )
   public val push_follow: Boolean = false,
   @field:WireField(
@@ -766,7 +774,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushFriendAction",
-    schemaIndex = 101,
+    schemaIndex = 102,
   )
   public val push_friend_action: Boolean = false,
   @field:WireField(
@@ -774,7 +782,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushIchat",
-    schemaIndex = 102,
+    schemaIndex = 103,
   )
   public val push_ichat: Boolean = false,
   @field:WireField(
@@ -782,7 +790,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushStatus",
-    schemaIndex = 103,
+    schemaIndex = 104,
   )
   public val push_status: Boolean = false,
   @field:WireField(
@@ -790,7 +798,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushVideoPost",
-    schemaIndex = 104,
+    schemaIndex = 105,
   )
   public val push_video_post: Boolean = false,
   @field:WireField(
@@ -798,21 +806,21 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "pushVideoRecommend",
-    schemaIndex = 105,
+    schemaIndex = 106,
   )
   public val push_video_recommend: Boolean = false,
   @field:WireField(
     tag = 1_041,
     adapter = "com.squareup.wire.ProtoAdapter#BYTES",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 106,
+    schemaIndex = 107,
   )
   public val stats: ByteString = ByteString.EMPTY,
   @field:WireField(
     tag = 1_042,
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 107,
+    schemaIndex = 108,
   )
   public val deprecated17: Boolean = false,
   @field:WireField(
@@ -820,7 +828,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "verifiedReason",
-    schemaIndex = 108,
+    schemaIndex = 109,
   )
   public val verified_reason: String = "",
   @field:WireField(
@@ -828,7 +836,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "withCarManagementPermission",
-    schemaIndex = 109,
+    schemaIndex = 110,
   )
   public val with_car_management_permission: Boolean = false,
   upcoming_event_list: List<LiveEventInfo> = emptyList(),
@@ -837,7 +845,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "scmLabel",
-    schemaIndex = 111,
+    schemaIndex = 112,
   )
   public val scm_label: String = "",
   @field:WireField(
@@ -845,7 +853,7 @@ public class User(
     adapter = "com.eulerstream.webcast.v3.webcast.message.proto.EcommerceEntrance#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "ecommerceEntrance",
-    schemaIndex = 112,
+    schemaIndex = 113,
   )
   public val ecommerce_entrance: EcommerceEntrance? = null,
   @field:WireField(
@@ -853,7 +861,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "isBlock",
-    schemaIndex = 113,
+    schemaIndex = 114,
   )
   public val is_block: Boolean = false,
   @field:WireField(
@@ -861,7 +869,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "isSubscribe",
-    schemaIndex = 114,
+    schemaIndex = 115,
   )
   public val is_subscribe: Boolean = false,
   @field:WireField(
@@ -869,7 +877,7 @@ public class User(
     adapter = "com.squareup.wire.ProtoAdapter#BOOL",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "isAnchorMarked",
-    schemaIndex = 115,
+    schemaIndex = 116,
   )
   public val is_anchor_marked: Boolean = false,
   @field:WireField(
@@ -877,7 +885,7 @@ public class User(
     adapter = "com.eulerstream.webcast.v3.webcast.model.base.user.EnigmaInfo#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "enigmaInfo",
-    schemaIndex = 116,
+    schemaIndex = 117,
   )
   public val enigma_info: EnigmaInfo? = null,
   unknownFields: ByteString = ByteString.EMPTY,
@@ -972,7 +980,7 @@ public class User(
     adapter = "com.eulerstream.webcast.v3.webcast.model.LiveEventInfo#ADAPTER",
     label = WireField.Label.REPEATED,
     jsonName = "upcomingEventList",
-    schemaIndex = 110,
+    schemaIndex = 111,
   )
   public val upcoming_event_list: List<LiveEventInfo> =
       immutableCopyOf("upcoming_event_list", upcoming_event_list)
@@ -1053,6 +1061,7 @@ public class User(
     if (badge_list != other.badge_list) return false
     if (mint_type_label != other.mint_type_label) return false
     if (fans_club_info != other.fans_club_info) return false
+    if (avatar_hash_info != other.avatar_hash_info) return false
     if (deprecated19 != other.deprecated19) return false
     if (allow_find_by_contacts != other.allow_find_by_contacts) return false
     if (allow_others_download_video != other.allow_others_download_video) return false
@@ -1177,6 +1186,7 @@ public class User(
       result = result * 37 + badge_list.hashCode()
       result = result * 37 + mint_type_label.hashCode()
       result = result * 37 + (fans_club_info?.hashCode() ?: 0)
+      result = result * 37 + (avatar_hash_info?.hashCode() ?: 0)
       result = result * 37 + deprecated19.hashCode()
       result = result * 37 + allow_find_by_contacts.hashCode()
       result = result * 37 + allow_others_download_video.hashCode()
@@ -1301,6 +1311,7 @@ public class User(
     if (badge_list.isNotEmpty()) result += """badge_list=$badge_list"""
     if (mint_type_label.isNotEmpty()) result += """mint_type_label=$mint_type_label"""
     if (fans_club_info != null) result += """fans_club_info=$fans_club_info"""
+    if (avatar_hash_info != null) result += """avatar_hash_info=$avatar_hash_info"""
     result += """deprecated19=$deprecated19"""
     result += """allow_find_by_contacts=$allow_find_by_contacts"""
     result += """allow_others_download_video=$allow_others_download_video"""
@@ -1422,6 +1433,7 @@ public class User(
     badge_list: List<BadgeStruct> = this.badge_list,
     mint_type_label: List<Long> = this.mint_type_label,
     fans_club_info: FansClubInfo? = this.fans_club_info,
+    avatar_hash_info: AvatarHashInfo? = this.avatar_hash_info,
     deprecated19: Boolean = this.deprecated19,
     allow_find_by_contacts: Boolean = this.allow_find_by_contacts,
     allow_others_download_video: Boolean = this.allow_others_download_video,
@@ -1474,7 +1486,7 @@ public class User(
     is_anchor_marked: Boolean = this.is_anchor_marked,
     enigma_info: EnigmaInfo? = this.enigma_info,
     unknownFields: ByteString = this.unknownFields,
-  ): User = User(id, deprecated1, nickname, deprecated2, bio_description, deprecated3, deprecated4, deprecated5, avatar_thumb, avatar_medium, avatar_large, verified, deprecated6, deprecated7, status, create_time, modify_time, secret, share_qrcode_uri, deprecated8, badge_image_list, follow_info, pay_grade, fans_club, border, special_id, avatar_border, medal, real_time_icons, new_real_time_icons, top_vip_no, user_attr, own_room, pay_score, ticket_count, anchor_info, link_mic_stats, display_id, with_commerce_permission, with_fusion_shop_entry, deprecated21, webcast_anchor_level, verified_content, author_stats, top_fans, sec_uid, user_role, deprecated9, activity_reward, deprecated10, deprecated11, personal_card, authentication_info, deprecated12, deprecated13, deprecated14, media_badge_image_list, deprecated15, user_vip_info, commerce_webcast_config_ids, border_list, combo_badge_info, subscribe_info, badge_list, mint_type_label, fans_club_info, deprecated19, allow_find_by_contacts, allow_others_download_video, allow_others_download_when_sharing_video, allow_share_show_profile, allow_show_in_gossip, allow_show_my_action, allow_strange_comment, allow_unfollower_comment, allow_use_linkmic, anchor_level, avatar_jpg, bg_img_url, deprecated18, deprecated16, block_status, comment_restrict, constellation, disable_ichat, enable_ichat_img, exp, fan_ticket_count, fold_stranger_chat, follow_status, deprecated28, deprecated29, ichat_restrict_type, id_str, is_follower, is_following, need_profile_guide, pay_scores, push_comment_status, push_digg, push_follow, push_friend_action, push_ichat, push_status, push_video_post, push_video_recommend, stats, deprecated17, verified_reason, with_car_management_permission, upcoming_event_list, scm_label, ecommerce_entrance, is_block, is_subscribe, is_anchor_marked, enigma_info, unknownFields)
+  ): User = User(id, deprecated1, nickname, deprecated2, bio_description, deprecated3, deprecated4, deprecated5, avatar_thumb, avatar_medium, avatar_large, verified, deprecated6, deprecated7, status, create_time, modify_time, secret, share_qrcode_uri, deprecated8, badge_image_list, follow_info, pay_grade, fans_club, border, special_id, avatar_border, medal, real_time_icons, new_real_time_icons, top_vip_no, user_attr, own_room, pay_score, ticket_count, anchor_info, link_mic_stats, display_id, with_commerce_permission, with_fusion_shop_entry, deprecated21, webcast_anchor_level, verified_content, author_stats, top_fans, sec_uid, user_role, deprecated9, activity_reward, deprecated10, deprecated11, personal_card, authentication_info, deprecated12, deprecated13, deprecated14, media_badge_image_list, deprecated15, user_vip_info, commerce_webcast_config_ids, border_list, combo_badge_info, subscribe_info, badge_list, mint_type_label, fans_club_info, avatar_hash_info, deprecated19, allow_find_by_contacts, allow_others_download_video, allow_others_download_when_sharing_video, allow_share_show_profile, allow_show_in_gossip, allow_show_my_action, allow_strange_comment, allow_unfollower_comment, allow_use_linkmic, anchor_level, avatar_jpg, bg_img_url, deprecated18, deprecated16, block_status, comment_restrict, constellation, disable_ichat, enable_ichat_img, exp, fan_ticket_count, fold_stranger_chat, follow_status, deprecated28, deprecated29, ichat_restrict_type, id_str, is_follower, is_following, need_profile_guide, pay_scores, push_comment_status, push_digg, push_follow, push_friend_action, push_ichat, push_status, push_video_post, push_video_recommend, stats, deprecated17, verified_reason, with_car_management_permission, upcoming_event_list, scm_label, ecommerce_entrance, is_block, is_subscribe, is_anchor_marked, enigma_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -1667,6 +1679,9 @@ public class User(
         size += ProtoAdapter.INT64.asPacked().encodedSizeWithTag(65, value.mint_type_label)
         if (value.fans_club_info != null) {
           size += FansClubInfo.ADAPTER.encodedSizeWithTag(66, value.fans_club_info)
+        }
+        if (value.avatar_hash_info != null) {
+          size += AvatarHashInfo.ADAPTER.encodedSizeWithTag(67, value.avatar_hash_info)
         }
         if (value.deprecated19 != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(1_001, value.deprecated19)
@@ -2003,6 +2018,9 @@ public class User(
         if (value.fans_club_info != null) {
           FansClubInfo.ADAPTER.encodeWithTag(writer, 66, value.fans_club_info)
         }
+        if (value.avatar_hash_info != null) {
+          AvatarHashInfo.ADAPTER.encodeWithTag(writer, 67, value.avatar_hash_info)
+        }
         if (value.deprecated19 != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 1_001, value.deprecated19)
         }
@@ -2310,6 +2328,9 @@ public class User(
         if (value.deprecated19 != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 1_001, value.deprecated19)
         }
+        if (value.avatar_hash_info != null) {
+          AvatarHashInfo.ADAPTER.encodeWithTag(writer, 67, value.avatar_hash_info)
+        }
         if (value.fans_club_info != null) {
           FansClubInfo.ADAPTER.encodeWithTag(writer, 66, value.fans_club_info)
         }
@@ -2559,6 +2580,7 @@ public class User(
         val badge_list = mutableListOf<BadgeStruct>()
         var mint_type_label: MutableList<Long>? = null
         var fans_club_info: FansClubInfo? = null
+        var avatar_hash_info: AvatarHashInfo? = null
         var deprecated19: Boolean = false
         var allow_find_by_contacts: Boolean = false
         var allow_others_download_video: Boolean = false
@@ -2700,6 +2722,7 @@ public class User(
               mint_type_label!!.add(ProtoAdapter.INT64.decode(reader))
             }
             66 -> fans_club_info = FansClubInfo.ADAPTER.decode(reader)
+            67 -> avatar_hash_info = AvatarHashInfo.ADAPTER.decode(reader)
             1_001 -> deprecated19 = ProtoAdapter.BOOL.decode(reader)
             1_002 -> allow_find_by_contacts = ProtoAdapter.BOOL.decode(reader)
             1_003 -> allow_others_download_video = ProtoAdapter.BOOL.decode(reader)
@@ -2821,6 +2844,7 @@ public class User(
           badge_list = badge_list,
           mint_type_label = mint_type_label ?: listOf(),
           fans_club_info = fans_club_info,
+          avatar_hash_info = avatar_hash_info,
           deprecated19 = deprecated19,
           allow_find_by_contacts = allow_find_by_contacts,
           allow_others_download_video = allow_others_download_video,
@@ -2904,6 +2928,7 @@ public class User(
         subscribe_info = value.subscribe_info?.let(SubscribeInfo.ADAPTER::redact),
         badge_list = value.badge_list.redactElements(BadgeStruct.ADAPTER),
         fans_club_info = value.fans_club_info?.let(FansClubInfo.ADAPTER::redact),
+        avatar_hash_info = value.avatar_hash_info?.let(AvatarHashInfo.ADAPTER::redact),
         anchor_level = value.anchor_level?.let(AnchorLevel.ADAPTER::redact),
         avatar_jpg = value.avatar_jpg?.let(ImageModel.ADAPTER::redact),
         upcoming_event_list = value.upcoming_event_list.redactElements(LiveEventInfo.ADAPTER),

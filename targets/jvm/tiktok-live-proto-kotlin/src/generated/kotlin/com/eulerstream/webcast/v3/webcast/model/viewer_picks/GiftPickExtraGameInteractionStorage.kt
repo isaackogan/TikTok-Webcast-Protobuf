@@ -45,6 +45,30 @@ public class GiftPickExtraGameInteractionStorage(
     schemaIndex = 1,
   )
   public val instruction_desc_key: String = "",
+  @field:WireField(
+    tag = 3,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "protocolVersion",
+    schemaIndex = 2,
+  )
+  public val protocol_version: Int = 0,
+  @field:WireField(
+    tag = 4,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "effectId",
+    schemaIndex = 3,
+  )
+  public val effect_id: String = "",
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "effectVersion",
+    schemaIndex = 4,
+  )
+  public val effect_version: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<GiftPickExtraGameInteractionStorage, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -59,6 +83,9 @@ public class GiftPickExtraGameInteractionStorage(
     if (unknownFields != other.unknownFields) return false
     if (instruction != other.instruction) return false
     if (instruction_desc_key != other.instruction_desc_key) return false
+    if (protocol_version != other.protocol_version) return false
+    if (effect_id != other.effect_id) return false
+    if (effect_version != other.effect_version) return false
     return true
   }
 
@@ -68,6 +95,9 @@ public class GiftPickExtraGameInteractionStorage(
       result = unknownFields.hashCode()
       result = result * 37 + instruction.hashCode()
       result = result * 37 + instruction_desc_key.hashCode()
+      result = result * 37 + protocol_version.hashCode()
+      result = result * 37 + effect_id.hashCode()
+      result = result * 37 + effect_version.hashCode()
       super.hashCode = result
     }
     return result
@@ -77,14 +107,20 @@ public class GiftPickExtraGameInteractionStorage(
     val result = mutableListOf<String>()
     result += """instruction=${sanitize(instruction)}"""
     result += """instruction_desc_key=${sanitize(instruction_desc_key)}"""
+    result += """protocol_version=$protocol_version"""
+    result += """effect_id=${sanitize(effect_id)}"""
+    result += """effect_version=${sanitize(effect_version)}"""
     return result.joinToString(prefix = "GiftPickExtraGameInteractionStorage{", separator = ", ", postfix = "}")
   }
 
   public fun copy(
     instruction: String = this.instruction,
     instruction_desc_key: String = this.instruction_desc_key,
+    protocol_version: Int = this.protocol_version,
+    effect_id: String = this.effect_id,
+    effect_version: String = this.effect_version,
     unknownFields: ByteString = this.unknownFields,
-  ): GiftPickExtraGameInteractionStorage = GiftPickExtraGameInteractionStorage(instruction, instruction_desc_key, unknownFields)
+  ): GiftPickExtraGameInteractionStorage = GiftPickExtraGameInteractionStorage(instruction, instruction_desc_key, protocol_version, effect_id, effect_version, unknownFields)
 
   public companion object {
     @JvmField
@@ -105,6 +141,15 @@ public class GiftPickExtraGameInteractionStorage(
         if (value.instruction_desc_key != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(2, value.instruction_desc_key)
         }
+        if (value.protocol_version != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(3, value.protocol_version)
+        }
+        if (value.effect_id != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(4, value.effect_id)
+        }
+        if (value.effect_version != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(8, value.effect_version)
+        }
         return size
       }
 
@@ -115,11 +160,29 @@ public class GiftPickExtraGameInteractionStorage(
         if (value.instruction_desc_key != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 2, value.instruction_desc_key)
         }
+        if (value.protocol_version != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 3, value.protocol_version)
+        }
+        if (value.effect_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 4, value.effect_id)
+        }
+        if (value.effect_version != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 8, value.effect_version)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: GiftPickExtraGameInteractionStorage) {
         writer.writeBytes(value.unknownFields)
+        if (value.effect_version != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 8, value.effect_version)
+        }
+        if (value.effect_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 4, value.effect_id)
+        }
+        if (value.protocol_version != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 3, value.protocol_version)
+        }
         if (value.instruction_desc_key != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 2, value.instruction_desc_key)
         }
@@ -131,16 +194,25 @@ public class GiftPickExtraGameInteractionStorage(
       override fun decode(reader: ProtoReader): GiftPickExtraGameInteractionStorage {
         var instruction: String = ""
         var instruction_desc_key: String = ""
+        var protocol_version: Int = 0
+        var effect_id: String = ""
+        var effect_version: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> instruction = ProtoAdapter.STRING.decode(reader)
             2 -> instruction_desc_key = ProtoAdapter.STRING.decode(reader)
+            3 -> protocol_version = ProtoAdapter.INT32.decode(reader)
+            4 -> effect_id = ProtoAdapter.STRING.decode(reader)
+            8 -> effect_version = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
         return GiftPickExtraGameInteractionStorage(
           instruction = instruction,
           instruction_desc_key = instruction_desc_key,
+          protocol_version = protocol_version,
+          effect_id = effect_id,
+          effect_version = effect_version,
           unknownFields = unknownFields
         )
       }

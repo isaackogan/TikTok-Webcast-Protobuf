@@ -3,6 +3,7 @@
 package com.eulerstream.webcast.v3.webcast.model.message;
 
 import com.eulerstream.webcast.v3.webcast.im.BattleCardMsgType;
+import com.eulerstream.webcast.v3.webcast.model.live.match.EffectingCardQueue;
 import com.eulerstream.webcast.v3.webcast.shared.message.CommonMessageData;
 import com.squareup.wire.FieldEncoding;
 import com.squareup.wire.Message;
@@ -20,6 +21,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.StringBuilder;
+import java.util.Map;
 import java.util.Objects;
 import okio.ByteString;
 
@@ -155,6 +157,46 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
   )
   public final int award_reason;
 
+  @WireField(
+      tag = 17,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.message.UseMusicCard#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "useMusicCard"
+  )
+  public final UseMusicCard use_music_card;
+
+  @WireField(
+      tag = 18,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.message.MusicAwardNotice#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "musicAwardNotice"
+  )
+  public final MusicAwardNotice music_award_notice;
+
+  @WireField(
+      tag = 19,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.message.MusicEffectNotice#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "musicEffectNotice"
+  )
+  public final MusicEffectNotice music_effect_notice;
+
+  @WireField(
+      tag = 20,
+      keyAdapter = "com.squareup.wire.ProtoAdapter#INT64",
+      adapter = "com.eulerstream.webcast.v3.webcast.model.live.match.EffectingCardQueue#ADAPTER",
+      jsonName = "cardQueueMap"
+  )
+  public final Map<Long, EffectingCardQueue> card_queue_map;
+
+  @WireField(
+      tag = 21,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.message.AnchorLeftCardRefundNotice#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "anchorLeftCardRefundNotice"
+  )
+  public final AnchorLeftCardRefundNotice anchor_left_card_refund_notice;
+
   public WebcastLinkMicBattleItemCard(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.common = builder.common;
@@ -176,6 +218,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
     this.use_top3_card = builder.use_top3_card;
     this.use_vault_glove_card = builder.use_vault_glove_card;
     this.award_reason = builder.award_reason;
+    this.use_music_card = builder.use_music_card;
+    this.music_award_notice = builder.music_award_notice;
+    this.music_effect_notice = builder.music_effect_notice;
+    this.card_queue_map = Internal.immutableCopyOf("card_queue_map", builder.card_queue_map);
+    this.anchor_left_card_refund_notice = builder.anchor_left_card_refund_notice;
   }
 
   @Override
@@ -197,6 +244,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
     builder.use_top3_card = use_top3_card;
     builder.use_vault_glove_card = use_vault_glove_card;
     builder.award_reason = award_reason;
+    builder.use_music_card = use_music_card;
+    builder.music_award_notice = music_award_notice;
+    builder.music_effect_notice = music_effect_notice;
+    builder.card_queue_map = Internal.copyOf(card_queue_map);
+    builder.anchor_left_card_refund_notice = anchor_left_card_refund_notice;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -222,7 +274,12 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
         && Internal.equals(use_top2_card, o.use_top2_card)
         && Internal.equals(use_top3_card, o.use_top3_card)
         && Internal.equals(use_vault_glove_card, o.use_vault_glove_card)
-        && Internal.equals(award_reason, o.award_reason);
+        && Internal.equals(award_reason, o.award_reason)
+        && Internal.equals(use_music_card, o.use_music_card)
+        && Internal.equals(music_award_notice, o.music_award_notice)
+        && Internal.equals(music_effect_notice, o.music_effect_notice)
+        && card_queue_map.equals(o.card_queue_map)
+        && Internal.equals(anchor_left_card_refund_notice, o.anchor_left_card_refund_notice);
   }
 
   @Override
@@ -246,6 +303,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
       result = result * 37 + (use_top3_card != null ? use_top3_card.hashCode() : 0);
       result = result * 37 + (use_vault_glove_card != null ? use_vault_glove_card.hashCode() : 0);
       result = result * 37 + Integer.hashCode(award_reason);
+      result = result * 37 + (use_music_card != null ? use_music_card.hashCode() : 0);
+      result = result * 37 + (music_award_notice != null ? music_award_notice.hashCode() : 0);
+      result = result * 37 + (music_effect_notice != null ? music_effect_notice.hashCode() : 0);
+      result = result * 37 + card_queue_map.hashCode();
+      result = result * 37 + (anchor_left_card_refund_notice != null ? anchor_left_card_refund_notice.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -270,6 +332,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
     if (use_top3_card != null) builder.append(", use_top3_card=").append(use_top3_card);
     if (use_vault_glove_card != null) builder.append(", use_vault_glove_card=").append(use_vault_glove_card);
     builder.append(", award_reason=").append(award_reason);
+    if (use_music_card != null) builder.append(", use_music_card=").append(use_music_card);
+    if (music_award_notice != null) builder.append(", music_award_notice=").append(music_award_notice);
+    if (music_effect_notice != null) builder.append(", music_effect_notice=").append(music_effect_notice);
+    if (!card_queue_map.isEmpty()) builder.append(", card_queue_map=").append(card_queue_map);
+    if (anchor_left_card_refund_notice != null) builder.append(", anchor_left_card_refund_notice=").append(anchor_left_card_refund_notice);
     return builder.replace(0, 2, "WebcastLinkMicBattleItemCard{").append('}').toString();
   }
 
@@ -306,10 +373,21 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
 
     public int award_reason;
 
+    public UseMusicCard use_music_card;
+
+    public MusicAwardNotice music_award_notice;
+
+    public MusicEffectNotice music_effect_notice;
+
+    public Map<Long, EffectingCardQueue> card_queue_map;
+
+    public AnchorLeftCardRefundNotice anchor_left_card_refund_notice;
+
     public Builder() {
       battle_id = 0L;
       msg_type = BattleCardMsgType.UNKNOWN_CARD_ACTION;
       award_reason = 0;
+      card_queue_map = Internal.newMutableMap();
     }
 
     public Builder common(CommonMessageData common) {
@@ -392,6 +470,33 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
       return this;
     }
 
+    public Builder use_music_card(UseMusicCard use_music_card) {
+      this.use_music_card = use_music_card;
+      return this;
+    }
+
+    public Builder music_award_notice(MusicAwardNotice music_award_notice) {
+      this.music_award_notice = music_award_notice;
+      return this;
+    }
+
+    public Builder music_effect_notice(MusicEffectNotice music_effect_notice) {
+      this.music_effect_notice = music_effect_notice;
+      return this;
+    }
+
+    public Builder card_queue_map(Map<Long, EffectingCardQueue> card_queue_map) {
+      Internal.checkElementsNotNull(card_queue_map);
+      this.card_queue_map = card_queue_map;
+      return this;
+    }
+
+    public Builder anchor_left_card_refund_notice(
+        AnchorLeftCardRefundNotice anchor_left_card_refund_notice) {
+      this.anchor_left_card_refund_notice = anchor_left_card_refund_notice;
+      return this;
+    }
+
     @Override
     public WebcastLinkMicBattleItemCard build() {
       return new WebcastLinkMicBattleItemCard(this, super.buildUnknownFields());
@@ -399,6 +504,8 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
   }
 
   private static final class ProtoAdapter_WebcastLinkMicBattleItemCard extends ProtoAdapter<WebcastLinkMicBattleItemCard> {
+    private ProtoAdapter<Map<Long, EffectingCardQueue>> card_queue_map;
+
     public ProtoAdapter_WebcastLinkMicBattleItemCard() {
       super(FieldEncoding.LENGTH_DELIMITED, WebcastLinkMicBattleItemCard.class, "type.googleapis.com/webcast.model.message.WebcastLinkMicBattleItemCard", Syntax.PROTO_3, null, "webcast/model/message/messages.proto");
     }
@@ -454,6 +561,19 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
       if (!Objects.equals(value.award_reason, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(16, value.award_reason);
       }
+      if (!Objects.equals(value.use_music_card, null)) {
+        result += UseMusicCard.ADAPTER.encodedSizeWithTag(17, value.use_music_card);
+      }
+      if (!Objects.equals(value.music_award_notice, null)) {
+        result += MusicAwardNotice.ADAPTER.encodedSizeWithTag(18, value.music_award_notice);
+      }
+      if (!Objects.equals(value.music_effect_notice, null)) {
+        result += MusicEffectNotice.ADAPTER.encodedSizeWithTag(19, value.music_effect_notice);
+      }
+      result += card_queue_mapAdapter().encodedSizeWithTag(20, value.card_queue_map);
+      if (!Objects.equals(value.anchor_left_card_refund_notice, null)) {
+        result += AnchorLeftCardRefundNotice.ADAPTER.encodedSizeWithTag(21, value.anchor_left_card_refund_notice);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -476,6 +596,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
       if (!Objects.equals(value.use_top3_card, null)) UseTop3Card.ADAPTER.encodeWithTag(writer, 14, value.use_top3_card);
       if (!Objects.equals(value.use_vault_glove_card, null)) UseVaultGloveCard.ADAPTER.encodeWithTag(writer, 15, value.use_vault_glove_card);
       if (!Objects.equals(value.award_reason, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 16, value.award_reason);
+      if (!Objects.equals(value.use_music_card, null)) UseMusicCard.ADAPTER.encodeWithTag(writer, 17, value.use_music_card);
+      if (!Objects.equals(value.music_award_notice, null)) MusicAwardNotice.ADAPTER.encodeWithTag(writer, 18, value.music_award_notice);
+      if (!Objects.equals(value.music_effect_notice, null)) MusicEffectNotice.ADAPTER.encodeWithTag(writer, 19, value.music_effect_notice);
+      card_queue_mapAdapter().encodeWithTag(writer, 20, value.card_queue_map);
+      if (!Objects.equals(value.anchor_left_card_refund_notice, null)) AnchorLeftCardRefundNotice.ADAPTER.encodeWithTag(writer, 21, value.anchor_left_card_refund_notice);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -483,6 +608,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
     public void encode(ReverseProtoWriter writer, WebcastLinkMicBattleItemCard value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.anchor_left_card_refund_notice, null)) AnchorLeftCardRefundNotice.ADAPTER.encodeWithTag(writer, 21, value.anchor_left_card_refund_notice);
+      card_queue_mapAdapter().encodeWithTag(writer, 20, value.card_queue_map);
+      if (!Objects.equals(value.music_effect_notice, null)) MusicEffectNotice.ADAPTER.encodeWithTag(writer, 19, value.music_effect_notice);
+      if (!Objects.equals(value.music_award_notice, null)) MusicAwardNotice.ADAPTER.encodeWithTag(writer, 18, value.music_award_notice);
+      if (!Objects.equals(value.use_music_card, null)) UseMusicCard.ADAPTER.encodeWithTag(writer, 17, value.use_music_card);
       if (!Objects.equals(value.award_reason, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 16, value.award_reason);
       if (!Objects.equals(value.use_vault_glove_card, null)) UseVaultGloveCard.ADAPTER.encodeWithTag(writer, 15, value.use_vault_glove_card);
       if (!Objects.equals(value.use_top3_card, null)) UseTop3Card.ADAPTER.encodeWithTag(writer, 14, value.use_top3_card);
@@ -530,6 +660,11 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
           case 14: builder.use_top3_card(UseTop3Card.ADAPTER.decode(reader)); break;
           case 15: builder.use_vault_glove_card(UseVaultGloveCard.ADAPTER.decode(reader)); break;
           case 16: builder.award_reason(ProtoAdapter.INT32.decode(reader)); break;
+          case 17: builder.use_music_card(UseMusicCard.ADAPTER.decode(reader)); break;
+          case 18: builder.music_award_notice(MusicAwardNotice.ADAPTER.decode(reader)); break;
+          case 19: builder.music_effect_notice(MusicEffectNotice.ADAPTER.decode(reader)); break;
+          case 20: builder.card_queue_map.putAll(card_queue_mapAdapter().decode(reader)); break;
+          case 21: builder.anchor_left_card_refund_notice(AnchorLeftCardRefundNotice.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -555,8 +690,22 @@ public final class WebcastLinkMicBattleItemCard extends Message<WebcastLinkMicBa
       if (builder.use_top2_card != null) builder.use_top2_card = UseTop2Card.ADAPTER.redact(builder.use_top2_card);
       if (builder.use_top3_card != null) builder.use_top3_card = UseTop3Card.ADAPTER.redact(builder.use_top3_card);
       if (builder.use_vault_glove_card != null) builder.use_vault_glove_card = UseVaultGloveCard.ADAPTER.redact(builder.use_vault_glove_card);
+      if (builder.use_music_card != null) builder.use_music_card = UseMusicCard.ADAPTER.redact(builder.use_music_card);
+      if (builder.music_award_notice != null) builder.music_award_notice = MusicAwardNotice.ADAPTER.redact(builder.music_award_notice);
+      if (builder.music_effect_notice != null) builder.music_effect_notice = MusicEffectNotice.ADAPTER.redact(builder.music_effect_notice);
+      Internal.redactElements(builder.card_queue_map, EffectingCardQueue.ADAPTER);
+      if (builder.anchor_left_card_refund_notice != null) builder.anchor_left_card_refund_notice = AnchorLeftCardRefundNotice.ADAPTER.redact(builder.anchor_left_card_refund_notice);
       builder.clearUnknownFields();
       return builder.build();
+    }
+
+    private ProtoAdapter<Map<Long, EffectingCardQueue>> card_queue_mapAdapter() {
+      ProtoAdapter<Map<Long, EffectingCardQueue>> result = card_queue_map;
+      if (result == null) {
+        result = ProtoAdapter.newMapAdapter(ProtoAdapter.INT64, EffectingCardQueue.ADAPTER);
+        card_queue_map = result;
+      }
+      return result;
     }
   }
 }

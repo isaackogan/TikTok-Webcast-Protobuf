@@ -17,6 +17,7 @@ import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -102,18 +103,35 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
   )
   public final boolean is_quick_call_auto_approved;
 
+  @WireField(
+      tag = 10,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "mgMatchType"
+  )
+  public final int mg_match_type;
+
+  @WireField(
+      tag = 11,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "linkedSubReason"
+  )
+  public final int linked_sub_reason;
+
   public PermitBizContent(MultiLiveAnchorPanelSettings anchor_setting_info, long expire_timestamp,
       User operator_user_info, LinkMicUserAdminType operator_link_admin_type,
       LinkUserType link_user_type, boolean is_apply_auto_approved, long link_type_permission,
-      boolean is_full_position_pre_approved, boolean is_quick_call_auto_approved) {
-    this(anchor_setting_info, expire_timestamp, operator_user_info, operator_link_admin_type, link_user_type, is_apply_auto_approved, link_type_permission, is_full_position_pre_approved, is_quick_call_auto_approved, ByteString.EMPTY);
+      boolean is_full_position_pre_approved, boolean is_quick_call_auto_approved, int mg_match_type,
+      int linked_sub_reason) {
+    this(anchor_setting_info, expire_timestamp, operator_user_info, operator_link_admin_type, link_user_type, is_apply_auto_approved, link_type_permission, is_full_position_pre_approved, is_quick_call_auto_approved, mg_match_type, linked_sub_reason, ByteString.EMPTY);
   }
 
   public PermitBizContent(MultiLiveAnchorPanelSettings anchor_setting_info, long expire_timestamp,
       User operator_user_info, LinkMicUserAdminType operator_link_admin_type,
       LinkUserType link_user_type, boolean is_apply_auto_approved, long link_type_permission,
-      boolean is_full_position_pre_approved, boolean is_quick_call_auto_approved,
-      ByteString unknownFields) {
+      boolean is_full_position_pre_approved, boolean is_quick_call_auto_approved, int mg_match_type,
+      int linked_sub_reason, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.anchor_setting_info = anchor_setting_info;
     this.expire_timestamp = expire_timestamp;
@@ -130,6 +148,8 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
     this.link_type_permission = link_type_permission;
     this.is_full_position_pre_approved = is_full_position_pre_approved;
     this.is_quick_call_auto_approved = is_quick_call_auto_approved;
+    this.mg_match_type = mg_match_type;
+    this.linked_sub_reason = linked_sub_reason;
   }
 
   @Override
@@ -144,6 +164,8 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
     builder.link_type_permission = link_type_permission;
     builder.is_full_position_pre_approved = is_full_position_pre_approved;
     builder.is_quick_call_auto_approved = is_quick_call_auto_approved;
+    builder.mg_match_type = mg_match_type;
+    builder.linked_sub_reason = linked_sub_reason;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -162,7 +184,9 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
         && Internal.equals(is_apply_auto_approved, o.is_apply_auto_approved)
         && Internal.equals(link_type_permission, o.link_type_permission)
         && Internal.equals(is_full_position_pre_approved, o.is_full_position_pre_approved)
-        && Internal.equals(is_quick_call_auto_approved, o.is_quick_call_auto_approved);
+        && Internal.equals(is_quick_call_auto_approved, o.is_quick_call_auto_approved)
+        && Internal.equals(mg_match_type, o.mg_match_type)
+        && Internal.equals(linked_sub_reason, o.linked_sub_reason);
   }
 
   @Override
@@ -179,6 +203,8 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
       result = result * 37 + Long.hashCode(link_type_permission);
       result = result * 37 + Boolean.hashCode(is_full_position_pre_approved);
       result = result * 37 + Boolean.hashCode(is_quick_call_auto_approved);
+      result = result * 37 + Integer.hashCode(mg_match_type);
+      result = result * 37 + Integer.hashCode(linked_sub_reason);
       super.hashCode = result;
     }
     return result;
@@ -196,6 +222,8 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
     builder.append(", link_type_permission=").append(link_type_permission);
     builder.append(", is_full_position_pre_approved=").append(is_full_position_pre_approved);
     builder.append(", is_quick_call_auto_approved=").append(is_quick_call_auto_approved);
+    builder.append(", mg_match_type=").append(mg_match_type);
+    builder.append(", linked_sub_reason=").append(linked_sub_reason);
     return builder.replace(0, 2, "PermitBizContent{").append('}').toString();
   }
 
@@ -218,6 +246,10 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
 
     public boolean is_quick_call_auto_approved;
 
+    public int mg_match_type;
+
+    public int linked_sub_reason;
+
     public Builder() {
       expire_timestamp = 0L;
       operator_link_admin_type = LinkMicUserAdminType.UNDEFINED_TYPE;
@@ -226,6 +258,8 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
       link_type_permission = 0L;
       is_full_position_pre_approved = false;
       is_quick_call_auto_approved = false;
+      mg_match_type = 0;
+      linked_sub_reason = 0;
     }
 
     public Builder anchor_setting_info(MultiLiveAnchorPanelSettings anchor_setting_info) {
@@ -273,9 +307,19 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
       return this;
     }
 
+    public Builder mg_match_type(int mg_match_type) {
+      this.mg_match_type = mg_match_type;
+      return this;
+    }
+
+    public Builder linked_sub_reason(int linked_sub_reason) {
+      this.linked_sub_reason = linked_sub_reason;
+      return this;
+    }
+
     @Override
     public PermitBizContent build() {
-      return new PermitBizContent(anchor_setting_info, expire_timestamp, operator_user_info, operator_link_admin_type, link_user_type, is_apply_auto_approved, link_type_permission, is_full_position_pre_approved, is_quick_call_auto_approved, super.buildUnknownFields());
+      return new PermitBizContent(anchor_setting_info, expire_timestamp, operator_user_info, operator_link_admin_type, link_user_type, is_apply_auto_approved, link_type_permission, is_full_position_pre_approved, is_quick_call_auto_approved, mg_match_type, linked_sub_reason, super.buildUnknownFields());
     }
   }
 
@@ -314,6 +358,12 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
       if (!Objects.equals(value.is_quick_call_auto_approved, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(9, value.is_quick_call_auto_approved);
       }
+      if (!Objects.equals(value.mg_match_type, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(10, value.mg_match_type);
+      }
+      if (!Objects.equals(value.linked_sub_reason, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(11, value.linked_sub_reason);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -329,12 +379,16 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
       if (!Objects.equals(value.link_type_permission, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 7, value.link_type_permission);
       if (!Objects.equals(value.is_full_position_pre_approved, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_full_position_pre_approved);
       if (!Objects.equals(value.is_quick_call_auto_approved, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 9, value.is_quick_call_auto_approved);
+      if (!Objects.equals(value.mg_match_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 10, value.mg_match_type);
+      if (!Objects.equals(value.linked_sub_reason, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 11, value.linked_sub_reason);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, PermitBizContent value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.linked_sub_reason, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 11, value.linked_sub_reason);
+      if (!Objects.equals(value.mg_match_type, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 10, value.mg_match_type);
       if (!Objects.equals(value.is_quick_call_auto_approved, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 9, value.is_quick_call_auto_approved);
       if (!Objects.equals(value.is_full_position_pre_approved, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_full_position_pre_approved);
       if (!Objects.equals(value.link_type_permission, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 7, value.link_type_permission);
@@ -375,6 +429,8 @@ public final class PermitBizContent extends Message<PermitBizContent, PermitBizC
           case 7: builder.link_type_permission(ProtoAdapter.INT64.decode(reader)); break;
           case 8: builder.is_full_position_pre_approved(ProtoAdapter.BOOL.decode(reader)); break;
           case 9: builder.is_quick_call_auto_approved(ProtoAdapter.BOOL.decode(reader)); break;
+          case 10: builder.mg_match_type(ProtoAdapter.INT32.decode(reader)); break;
+          case 11: builder.linked_sub_reason(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

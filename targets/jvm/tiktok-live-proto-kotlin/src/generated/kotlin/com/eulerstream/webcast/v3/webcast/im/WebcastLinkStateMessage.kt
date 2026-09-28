@@ -9,6 +9,7 @@ package com.eulerstream.webcast.v3.webcast.im
 
 import com.eulerstream.webcast.v3.webcast.linkmic.common.BackGroundImageState
 import com.eulerstream.webcast.v3.webcast.linkmic.common.LayoutState
+import com.eulerstream.webcast.v3.webcast.linkmic.common.LinkStateMultiGuestBizExtra
 import com.eulerstream.webcast.v3.webcast.linkmic.common.LinkUserState
 import com.eulerstream.webcast.v3.webcast.linkmic.common.PosIdentity
 import com.eulerstream.webcast.v3.webcast.linkmic.common.Scene
@@ -128,6 +129,14 @@ public class WebcastLinkStateMessage(
     schemaIndex = 14,
   )
   public val linker_mode: Int = 0,
+  @field:WireField(
+    tag = 17,
+    adapter = "com.eulerstream.webcast.v3.webcast.linkmic.common.LinkStateMultiGuestBizExtra#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "multiGuestBizInfo",
+    schemaIndex = 15,
+  )
+  public val multi_guest_biz_info: LinkStateMultiGuestBizExtra? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastLinkStateMessage, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -192,6 +201,7 @@ public class WebcastLinkStateMessage(
     if (spot_list != other.spot_list) return false
     if (audio_muted_remote_channels != other.audio_muted_remote_channels) return false
     if (linker_mode != other.linker_mode) return false
+    if (multi_guest_biz_info != other.multi_guest_biz_info) return false
     return true
   }
 
@@ -214,6 +224,7 @@ public class WebcastLinkStateMessage(
       result = result * 37 + spot_list.hashCode()
       result = result * 37 + audio_muted_remote_channels.hashCode()
       result = result * 37 + linker_mode.hashCode()
+      result = result * 37 + (multi_guest_biz_info?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -236,6 +247,7 @@ public class WebcastLinkStateMessage(
     if (spot_list.isNotEmpty()) result += """spot_list=$spot_list"""
     if (audio_muted_remote_channels.isNotEmpty()) result += """audio_muted_remote_channels=$audio_muted_remote_channels"""
     result += """linker_mode=$linker_mode"""
+    if (multi_guest_biz_info != null) result += """multi_guest_biz_info=$multi_guest_biz_info"""
     return result.joinToString(prefix = "WebcastLinkStateMessage{", separator = ", ", postfix = "}")
   }
 
@@ -255,8 +267,9 @@ public class WebcastLinkStateMessage(
     spot_list: List<SpotInfo> = this.spot_list,
     audio_muted_remote_channels: List<Long> = this.audio_muted_remote_channels,
     linker_mode: Int = this.linker_mode,
+    multi_guest_biz_info: LinkStateMultiGuestBizExtra? = this.multi_guest_biz_info,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastLinkStateMessage = WebcastLinkStateMessage(common, channel_id, scene, version, need_ack, layout, user_states, client_send_time, state_type, background, wallpaper_url, ui_pos, spot_list, audio_muted_remote_channels, linker_mode, unknownFields)
+  ): WebcastLinkStateMessage = WebcastLinkStateMessage(common, channel_id, scene, version, need_ack, layout, user_states, client_send_time, state_type, background, wallpaper_url, ui_pos, spot_list, audio_muted_remote_channels, linker_mode, multi_guest_biz_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -308,6 +321,9 @@ public class WebcastLinkStateMessage(
         if (value.linker_mode != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(16, value.linker_mode)
         }
+        if (value.multi_guest_biz_info != null) {
+          size += LinkStateMultiGuestBizExtra.ADAPTER.encodedSizeWithTag(17, value.multi_guest_biz_info)
+        }
         return size
       }
 
@@ -349,11 +365,17 @@ public class WebcastLinkStateMessage(
         if (value.linker_mode != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 16, value.linker_mode)
         }
+        if (value.multi_guest_biz_info != null) {
+          LinkStateMultiGuestBizExtra.ADAPTER.encodeWithTag(writer, 17, value.multi_guest_biz_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastLinkStateMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.multi_guest_biz_info != null) {
+          LinkStateMultiGuestBizExtra.ADAPTER.encodeWithTag(writer, 17, value.multi_guest_biz_info)
+        }
         if (value.linker_mode != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 16, value.linker_mode)
         }
@@ -409,6 +431,7 @@ public class WebcastLinkStateMessage(
         val spot_list = mutableListOf<SpotInfo>()
         var audio_muted_remote_channels: MutableList<Long>? = null
         var linker_mode: Int = 0
+        var multi_guest_biz_info: LinkStateMultiGuestBizExtra? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -443,6 +466,7 @@ public class WebcastLinkStateMessage(
               audio_muted_remote_channels!!.add(ProtoAdapter.INT64.decode(reader))
             }
             16 -> linker_mode = ProtoAdapter.INT32.decode(reader)
+            17 -> multi_guest_biz_info = LinkStateMultiGuestBizExtra.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -462,6 +486,7 @@ public class WebcastLinkStateMessage(
           spot_list = spot_list,
           audio_muted_remote_channels = audio_muted_remote_channels ?: listOf(),
           linker_mode = linker_mode,
+          multi_guest_biz_info = multi_guest_biz_info,
           unknownFields = unknownFields
         )
       }
@@ -473,6 +498,7 @@ public class WebcastLinkStateMessage(
         background = value.background?.let(BackGroundImageState.ADAPTER::redact),
         ui_pos = value.ui_pos.redactElements(PosIdentity.ADAPTER),
         spot_list = value.spot_list.redactElements(SpotInfo.ADAPTER),
+        multi_guest_biz_info = value.multi_guest_biz_info?.let(LinkStateMultiGuestBizExtra.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

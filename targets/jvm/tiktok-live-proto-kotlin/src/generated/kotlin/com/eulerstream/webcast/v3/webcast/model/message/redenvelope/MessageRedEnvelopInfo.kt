@@ -7,7 +7,9 @@
 
 package com.eulerstream.webcast.v3.webcast.model.message.redenvelope
 
-import com.eulerstream.webcast.v3.webcast.envelope.EnvelopeEnigmaInfo
+import com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeEnigmaInfo
+import com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeGift
+import com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeRewardPool
 import com.eulerstream.webcast.v3.webcast.model.`data`.EnvelopeBusinessType
 import com.eulerstream.webcast.v3.webcast.model.`data`.EnvelopeFollowShowStatus
 import com.eulerstream.webcast.v3.webcast.model.base.ImageModel
@@ -20,6 +22,8 @@ import com.squareup.wire.ReverseProtoWriter
 import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
+import com.squareup.wire.`internal`.immutableCopyOf
+import com.squareup.wire.`internal`.redactElements
 import com.squareup.wire.`internal`.sanitize
 import kotlin.Any
 import kotlin.AssertionError
@@ -31,6 +35,7 @@ import kotlin.Long
 import kotlin.Nothing
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import okio.ByteString
 
 public class MessageRedEnvelopInfo(
@@ -149,7 +154,7 @@ public class MessageRedEnvelopInfo(
   public val vote_count: Int = 0,
   @field:WireField(
     tag = 15,
-    adapter = "com.eulerstream.webcast.v3.webcast.envelope.EnvelopeEnigmaInfo#ADAPTER",
+    adapter = "com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeEnigmaInfo#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "senderEnigmaInfo",
     schemaIndex = 14,
@@ -163,8 +168,26 @@ public class MessageRedEnvelopInfo(
     schemaIndex = 15,
   )
   public val super_fan_count: Int = 0,
+  @field:WireField(
+    tag = 17,
+    adapter = "com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeRewardPool#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "rewardPool",
+    schemaIndex = 16,
+  )
+  public val reward_pool: EnvelopeRewardPool? = null,
+  gift_infos: List<EnvelopeGift> = emptyList(),
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<MessageRedEnvelopInfo, Nothing>(ADAPTER, unknownFields) {
+  @field:WireField(
+    tag = 18,
+    adapter = "com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeGift#ADAPTER",
+    label = WireField.Label.REPEATED,
+    jsonName = "giftInfos",
+    schemaIndex = 17,
+  )
+  public val gift_infos: List<EnvelopeGift> = immutableCopyOf("gift_infos", gift_infos)
+
   @Deprecated(
     message = "Shouldn't be used in Kotlin",
     level = DeprecationLevel.HIDDEN,
@@ -191,6 +214,8 @@ public class MessageRedEnvelopInfo(
     if (vote_count != other.vote_count) return false
     if (sender_enigma_info != other.sender_enigma_info) return false
     if (super_fan_count != other.super_fan_count) return false
+    if (reward_pool != other.reward_pool) return false
+    if (gift_infos != other.gift_infos) return false
     return true
   }
 
@@ -214,6 +239,8 @@ public class MessageRedEnvelopInfo(
       result = result * 37 + vote_count.hashCode()
       result = result * 37 + (sender_enigma_info?.hashCode() ?: 0)
       result = result * 37 + super_fan_count.hashCode()
+      result = result * 37 + (reward_pool?.hashCode() ?: 0)
+      result = result * 37 + gift_infos.hashCode()
       super.hashCode = result
     }
     return result
@@ -237,6 +264,8 @@ public class MessageRedEnvelopInfo(
     result += """vote_count=$vote_count"""
     if (sender_enigma_info != null) result += """sender_enigma_info=$sender_enigma_info"""
     result += """super_fan_count=$super_fan_count"""
+    if (reward_pool != null) result += """reward_pool=$reward_pool"""
+    if (gift_infos.isNotEmpty()) result += """gift_infos=$gift_infos"""
     return result.joinToString(prefix = "MessageRedEnvelopInfo{", separator = ", ", postfix = "}")
   }
 
@@ -257,8 +286,10 @@ public class MessageRedEnvelopInfo(
     vote_count: Int = this.vote_count,
     sender_enigma_info: EnvelopeEnigmaInfo? = this.sender_enigma_info,
     super_fan_count: Int = this.super_fan_count,
+    reward_pool: EnvelopeRewardPool? = this.reward_pool,
+    gift_infos: List<EnvelopeGift> = this.gift_infos,
     unknownFields: ByteString = this.unknownFields,
-  ): MessageRedEnvelopInfo = MessageRedEnvelopInfo(envelope_id, business_type, envelope_idc, send_user_name, diamond_count, people_count, unpack_at, send_user_id, send_user_avatar, create_at, room_id, follow_show_status, skin_id, vote_count, sender_enigma_info, super_fan_count, unknownFields)
+  ): MessageRedEnvelopInfo = MessageRedEnvelopInfo(envelope_id, business_type, envelope_idc, send_user_name, diamond_count, people_count, unpack_at, send_user_id, send_user_avatar, create_at, room_id, follow_show_status, skin_id, vote_count, sender_enigma_info, super_fan_count, reward_pool, gift_infos, unknownFields)
 
   public companion object {
     @JvmField
@@ -321,6 +352,10 @@ public class MessageRedEnvelopInfo(
         if (value.super_fan_count != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(16, value.super_fan_count)
         }
+        if (value.reward_pool != null) {
+          size += EnvelopeRewardPool.ADAPTER.encodedSizeWithTag(17, value.reward_pool)
+        }
+        size += EnvelopeGift.ADAPTER.asRepeated().encodedSizeWithTag(18, value.gift_infos)
         return size
       }
 
@@ -373,11 +408,19 @@ public class MessageRedEnvelopInfo(
         if (value.super_fan_count != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 16, value.super_fan_count)
         }
+        if (value.reward_pool != null) {
+          EnvelopeRewardPool.ADAPTER.encodeWithTag(writer, 17, value.reward_pool)
+        }
+        EnvelopeGift.ADAPTER.asRepeated().encodeWithTag(writer, 18, value.gift_infos)
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: MessageRedEnvelopInfo) {
         writer.writeBytes(value.unknownFields)
+        EnvelopeGift.ADAPTER.asRepeated().encodeWithTag(writer, 18, value.gift_infos)
+        if (value.reward_pool != null) {
+          EnvelopeRewardPool.ADAPTER.encodeWithTag(writer, 17, value.reward_pool)
+        }
         if (value.super_fan_count != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 16, value.super_fan_count)
         }
@@ -445,6 +488,8 @@ public class MessageRedEnvelopInfo(
         var vote_count: Int = 0
         var sender_enigma_info: EnvelopeEnigmaInfo? = null
         var super_fan_count: Int = 0
+        var reward_pool: EnvelopeRewardPool? = null
+        val gift_infos = mutableListOf<EnvelopeGift>()
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> envelope_id = ProtoAdapter.STRING.decode(reader)
@@ -471,6 +516,8 @@ public class MessageRedEnvelopInfo(
             14 -> vote_count = ProtoAdapter.INT32.decode(reader)
             15 -> sender_enigma_info = EnvelopeEnigmaInfo.ADAPTER.decode(reader)
             16 -> super_fan_count = ProtoAdapter.INT32.decode(reader)
+            17 -> reward_pool = EnvelopeRewardPool.ADAPTER.decode(reader)
+            18 -> gift_infos.add(EnvelopeGift.ADAPTER.decode(reader))
             else -> reader.readUnknownField(tag)
           }
         }
@@ -491,6 +538,8 @@ public class MessageRedEnvelopInfo(
           vote_count = vote_count,
           sender_enigma_info = sender_enigma_info,
           super_fan_count = super_fan_count,
+          reward_pool = reward_pool,
+          gift_infos = gift_infos,
           unknownFields = unknownFields
         )
       }
@@ -498,6 +547,8 @@ public class MessageRedEnvelopInfo(
       override fun redact(`value`: MessageRedEnvelopInfo): MessageRedEnvelopInfo = value.copy(
         send_user_avatar = value.send_user_avatar?.let(ImageModel.ADAPTER::redact),
         sender_enigma_info = value.sender_enigma_info?.let(EnvelopeEnigmaInfo.ADAPTER::redact),
+        reward_pool = value.reward_pool?.let(EnvelopeRewardPool.ADAPTER::redact),
+        gift_infos = value.gift_infos.redactElements(EnvelopeGift.ADAPTER),
         unknownFields = ByteString.EMPTY
       )
     }

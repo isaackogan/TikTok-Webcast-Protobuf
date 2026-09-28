@@ -547,6 +547,14 @@ public final class User extends Message<User, User.Builder> {
   public final FansClubInfo fans_club_info;
 
   @WireField(
+      tag = 67,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.base.user.AvatarHashInfo#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "avatarHashInfo"
+  )
+  public final AvatarHashInfo avatar_hash_info;
+
+  @WireField(
       tag = 1001,
       adapter = "com.squareup.wire.ProtoAdapter#BOOL",
       label = WireField.Label.OMIT_IDENTITY
@@ -1058,6 +1066,7 @@ public final class User extends Message<User, User.Builder> {
     this.badge_list = Internal.immutableCopyOf("badge_list", builder.badge_list);
     this.mint_type_label = Internal.immutableCopyOf("mint_type_label", builder.mint_type_label);
     this.fans_club_info = builder.fans_club_info;
+    this.avatar_hash_info = builder.avatar_hash_info;
     this.deprecated19 = builder.deprecated19;
     this.allow_find_by_contacts = builder.allow_find_by_contacts;
     this.allow_others_download_video = builder.allow_others_download_video;
@@ -1204,6 +1213,7 @@ public final class User extends Message<User, User.Builder> {
     builder.badge_list = Internal.copyOf(badge_list);
     builder.mint_type_label = Internal.copyOf(mint_type_label);
     builder.fans_club_info = fans_club_info;
+    builder.avatar_hash_info = avatar_hash_info;
     builder.deprecated19 = deprecated19;
     builder.allow_find_by_contacts = allow_find_by_contacts;
     builder.allow_others_download_video = allow_others_download_video;
@@ -1331,6 +1341,7 @@ public final class User extends Message<User, User.Builder> {
         && badge_list.equals(o.badge_list)
         && mint_type_label.equals(o.mint_type_label)
         && Internal.equals(fans_club_info, o.fans_club_info)
+        && Internal.equals(avatar_hash_info, o.avatar_hash_info)
         && Internal.equals(deprecated19, o.deprecated19)
         && Internal.equals(allow_find_by_contacts, o.allow_find_by_contacts)
         && Internal.equals(allow_others_download_video, o.allow_others_download_video)
@@ -1455,6 +1466,7 @@ public final class User extends Message<User, User.Builder> {
       result = result * 37 + badge_list.hashCode();
       result = result * 37 + mint_type_label.hashCode();
       result = result * 37 + (fans_club_info != null ? fans_club_info.hashCode() : 0);
+      result = result * 37 + (avatar_hash_info != null ? avatar_hash_info.hashCode() : 0);
       result = result * 37 + Boolean.hashCode(deprecated19);
       result = result * 37 + Boolean.hashCode(allow_find_by_contacts);
       result = result * 37 + Boolean.hashCode(allow_others_download_video);
@@ -1580,6 +1592,7 @@ public final class User extends Message<User, User.Builder> {
     if (!badge_list.isEmpty()) builder.append(", badge_list=").append(badge_list);
     if (!mint_type_label.isEmpty()) builder.append(", mint_type_label=").append(mint_type_label);
     if (fans_club_info != null) builder.append(", fans_club_info=").append(fans_club_info);
+    if (avatar_hash_info != null) builder.append(", avatar_hash_info=").append(avatar_hash_info);
     builder.append(", deprecated19=").append(deprecated19);
     builder.append(", allow_find_by_contacts=").append(allow_find_by_contacts);
     builder.append(", allow_others_download_video=").append(allow_others_download_video);
@@ -1766,6 +1779,8 @@ public final class User extends Message<User, User.Builder> {
     public List<Long> mint_type_label;
 
     public FansClubInfo fans_club_info;
+
+    public AvatarHashInfo avatar_hash_info;
 
     public boolean deprecated19;
 
@@ -2304,6 +2319,11 @@ public final class User extends Message<User, User.Builder> {
       return this;
     }
 
+    public Builder avatar_hash_info(AvatarHashInfo avatar_hash_info) {
+      this.avatar_hash_info = avatar_hash_info;
+      return this;
+    }
+
     public Builder deprecated19(boolean deprecated19) {
       this.deprecated19 = deprecated19;
       return this;
@@ -2755,6 +2775,9 @@ public final class User extends Message<User, User.Builder> {
       if (!Objects.equals(value.fans_club_info, null)) {
         result += FansClubInfo.ADAPTER.encodedSizeWithTag(66, value.fans_club_info);
       }
+      if (!Objects.equals(value.avatar_hash_info, null)) {
+        result += AvatarHashInfo.ADAPTER.encodedSizeWithTag(67, value.avatar_hash_info);
+      }
       if (!Objects.equals(value.deprecated19, false)) {
         result += ProtoAdapter.BOOL.encodedSizeWithTag(1001, value.deprecated19);
       }
@@ -2978,6 +3001,7 @@ public final class User extends Message<User, User.Builder> {
       BadgeStruct.ADAPTER.asRepeated().encodeWithTag(writer, 64, value.badge_list);
       ProtoAdapter.INT64.asPacked().encodeWithTag(writer, 65, value.mint_type_label);
       if (!Objects.equals(value.fans_club_info, null)) FansClubInfo.ADAPTER.encodeWithTag(writer, 66, value.fans_club_info);
+      if (!Objects.equals(value.avatar_hash_info, null)) AvatarHashInfo.ADAPTER.encodeWithTag(writer, 67, value.avatar_hash_info);
       if (!Objects.equals(value.deprecated19, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1001, value.deprecated19);
       if (!Objects.equals(value.allow_find_by_contacts, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1002, value.allow_find_by_contacts);
       if (!Objects.equals(value.allow_others_download_video, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1003, value.allow_others_download_video);
@@ -3086,6 +3110,7 @@ public final class User extends Message<User, User.Builder> {
       if (!Objects.equals(value.allow_others_download_video, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1003, value.allow_others_download_video);
       if (!Objects.equals(value.allow_find_by_contacts, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1002, value.allow_find_by_contacts);
       if (!Objects.equals(value.deprecated19, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 1001, value.deprecated19);
+      if (!Objects.equals(value.avatar_hash_info, null)) AvatarHashInfo.ADAPTER.encodeWithTag(writer, 67, value.avatar_hash_info);
       if (!Objects.equals(value.fans_club_info, null)) FansClubInfo.ADAPTER.encodeWithTag(writer, 66, value.fans_club_info);
       ProtoAdapter.INT64.asPacked().encodeWithTag(writer, 65, value.mint_type_label);
       BadgeStruct.ADAPTER.asRepeated().encodeWithTag(writer, 64, value.badge_list);
@@ -3233,6 +3258,7 @@ public final class User extends Message<User, User.Builder> {
           case 64: builder.badge_list.add(BadgeStruct.ADAPTER.decode(reader)); break;
           case 65: builder.mint_type_label.add(ProtoAdapter.INT64.decode(reader)); break;
           case 66: builder.fans_club_info(FansClubInfo.ADAPTER.decode(reader)); break;
+          case 67: builder.avatar_hash_info(AvatarHashInfo.ADAPTER.decode(reader)); break;
           case 1001: builder.deprecated19(ProtoAdapter.BOOL.decode(reader)); break;
           case 1002: builder.allow_find_by_contacts(ProtoAdapter.BOOL.decode(reader)); break;
           case 1003: builder.allow_others_download_video(ProtoAdapter.BOOL.decode(reader)); break;
@@ -3323,6 +3349,7 @@ public final class User extends Message<User, User.Builder> {
       if (builder.subscribe_info != null) builder.subscribe_info = SubscribeInfo.ADAPTER.redact(builder.subscribe_info);
       Internal.redactElements(builder.badge_list, BadgeStruct.ADAPTER);
       if (builder.fans_club_info != null) builder.fans_club_info = FansClubInfo.ADAPTER.redact(builder.fans_club_info);
+      if (builder.avatar_hash_info != null) builder.avatar_hash_info = AvatarHashInfo.ADAPTER.redact(builder.avatar_hash_info);
       if (builder.anchor_level != null) builder.anchor_level = AnchorLevel.ADAPTER.redact(builder.anchor_level);
       if (builder.avatar_jpg != null) builder.avatar_jpg = ImageModel.ADAPTER.redact(builder.avatar_jpg);
       Internal.redactElements(builder.upcoming_event_list, LiveEventInfo.ADAPTER);

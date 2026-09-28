@@ -2,7 +2,9 @@
 // Source: webcast.model.message.redenvelope.MessageRedEnvelopInfo in webcast/model/message/redenvelope.proto
 package com.eulerstream.webcast.v3.webcast.model.message.redenvelope;
 
-import com.eulerstream.webcast.v3.webcast.envelope.EnvelopeEnigmaInfo;
+import com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeEnigmaInfo;
+import com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeGift;
+import com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeRewardPool;
 import com.eulerstream.webcast.v3.webcast.model.base.ImageModel;
 import com.eulerstream.webcast.v3.webcast.model.data.EnvelopeBusinessType;
 import com.eulerstream.webcast.v3.webcast.model.data.EnvelopeFollowShowStatus;
@@ -21,6 +23,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.StringBuilder;
+import java.util.List;
 import java.util.Objects;
 import okio.ByteString;
 
@@ -143,7 +146,7 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
 
   @WireField(
       tag = 15,
-      adapter = "com.eulerstream.webcast.v3.webcast.envelope.EnvelopeEnigmaInfo#ADAPTER",
+      adapter = "com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeEnigmaInfo#ADAPTER",
       label = WireField.Label.OMIT_IDENTITY,
       jsonName = "senderEnigmaInfo"
   )
@@ -156,6 +159,22 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       jsonName = "superFanCount"
   )
   public final int super_fan_count;
+
+  @WireField(
+      tag = 17,
+      adapter = "com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeRewardPool#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "rewardPool"
+  )
+  public final EnvelopeRewardPool reward_pool;
+
+  @WireField(
+      tag = 18,
+      adapter = "com.eulerstream.webcast.v3.webcast.envelope.model.EnvelopeGift#ADAPTER",
+      label = WireField.Label.REPEATED,
+      jsonName = "giftInfos"
+  )
+  public final List<EnvelopeGift> gift_infos;
 
   public MessageRedEnvelopInfo(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
@@ -199,6 +218,8 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
     this.vote_count = builder.vote_count;
     this.sender_enigma_info = builder.sender_enigma_info;
     this.super_fan_count = builder.super_fan_count;
+    this.reward_pool = builder.reward_pool;
+    this.gift_infos = Internal.immutableCopyOf("gift_infos", builder.gift_infos);
   }
 
   @Override
@@ -220,6 +241,8 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
     builder.vote_count = vote_count;
     builder.sender_enigma_info = sender_enigma_info;
     builder.super_fan_count = super_fan_count;
+    builder.reward_pool = reward_pool;
+    builder.gift_infos = Internal.copyOf(gift_infos);
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -245,7 +268,9 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
         && Internal.equals(skin_id, o.skin_id)
         && Internal.equals(vote_count, o.vote_count)
         && Internal.equals(sender_enigma_info, o.sender_enigma_info)
-        && Internal.equals(super_fan_count, o.super_fan_count);
+        && Internal.equals(super_fan_count, o.super_fan_count)
+        && Internal.equals(reward_pool, o.reward_pool)
+        && gift_infos.equals(o.gift_infos);
   }
 
   @Override
@@ -269,6 +294,8 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       result = result * 37 + Integer.hashCode(vote_count);
       result = result * 37 + (sender_enigma_info != null ? sender_enigma_info.hashCode() : 0);
       result = result * 37 + Integer.hashCode(super_fan_count);
+      result = result * 37 + (reward_pool != null ? reward_pool.hashCode() : 0);
+      result = result * 37 + gift_infos.hashCode();
       super.hashCode = result;
     }
     return result;
@@ -293,6 +320,8 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
     builder.append(", vote_count=").append(vote_count);
     if (sender_enigma_info != null) builder.append(", sender_enigma_info=").append(sender_enigma_info);
     builder.append(", super_fan_count=").append(super_fan_count);
+    if (reward_pool != null) builder.append(", reward_pool=").append(reward_pool);
+    if (!gift_infos.isEmpty()) builder.append(", gift_infos=").append(gift_infos);
     return builder.replace(0, 2, "MessageRedEnvelopInfo{").append('}').toString();
   }
 
@@ -329,6 +358,10 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
 
     public int super_fan_count;
 
+    public EnvelopeRewardPool reward_pool;
+
+    public List<EnvelopeGift> gift_infos;
+
     public Builder() {
       envelope_id = "";
       business_type = EnvelopeBusinessType.BUSINESS_TYPE_UNKNOWN;
@@ -344,6 +377,7 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       skin_id = 0;
       vote_count = 0;
       super_fan_count = 0;
+      gift_infos = Internal.newMutableList();
     }
 
     public Builder envelope_id(String envelope_id) {
@@ -426,6 +460,17 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       return this;
     }
 
+    public Builder reward_pool(EnvelopeRewardPool reward_pool) {
+      this.reward_pool = reward_pool;
+      return this;
+    }
+
+    public Builder gift_infos(List<EnvelopeGift> gift_infos) {
+      Internal.checkElementsNotNull(gift_infos);
+      this.gift_infos = gift_infos;
+      return this;
+    }
+
     @Override
     public MessageRedEnvelopInfo build() {
       return new MessageRedEnvelopInfo(this, super.buildUnknownFields());
@@ -488,6 +533,10 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       if (!Objects.equals(value.super_fan_count, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(16, value.super_fan_count);
       }
+      if (!Objects.equals(value.reward_pool, null)) {
+        result += EnvelopeRewardPool.ADAPTER.encodedSizeWithTag(17, value.reward_pool);
+      }
+      result += EnvelopeGift.ADAPTER.asRepeated().encodedSizeWithTag(18, value.gift_infos);
       result += value.unknownFields().size();
       return result;
     }
@@ -510,12 +559,16 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       if (!Objects.equals(value.vote_count, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 14, value.vote_count);
       if (!Objects.equals(value.sender_enigma_info, null)) EnvelopeEnigmaInfo.ADAPTER.encodeWithTag(writer, 15, value.sender_enigma_info);
       if (!Objects.equals(value.super_fan_count, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 16, value.super_fan_count);
+      if (!Objects.equals(value.reward_pool, null)) EnvelopeRewardPool.ADAPTER.encodeWithTag(writer, 17, value.reward_pool);
+      EnvelopeGift.ADAPTER.asRepeated().encodeWithTag(writer, 18, value.gift_infos);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, MessageRedEnvelopInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      EnvelopeGift.ADAPTER.asRepeated().encodeWithTag(writer, 18, value.gift_infos);
+      if (!Objects.equals(value.reward_pool, null)) EnvelopeRewardPool.ADAPTER.encodeWithTag(writer, 17, value.reward_pool);
       if (!Objects.equals(value.super_fan_count, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 16, value.super_fan_count);
       if (!Objects.equals(value.sender_enigma_info, null)) EnvelopeEnigmaInfo.ADAPTER.encodeWithTag(writer, 15, value.sender_enigma_info);
       if (!Objects.equals(value.vote_count, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 14, value.vote_count);
@@ -570,6 +623,8 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
           case 14: builder.vote_count(ProtoAdapter.INT32.decode(reader)); break;
           case 15: builder.sender_enigma_info(EnvelopeEnigmaInfo.ADAPTER.decode(reader)); break;
           case 16: builder.super_fan_count(ProtoAdapter.INT32.decode(reader)); break;
+          case 17: builder.reward_pool(EnvelopeRewardPool.ADAPTER.decode(reader)); break;
+          case 18: builder.gift_infos.add(EnvelopeGift.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -584,6 +639,8 @@ public final class MessageRedEnvelopInfo extends Message<MessageRedEnvelopInfo, 
       Builder builder = value.newBuilder();
       if (builder.send_user_avatar != null) builder.send_user_avatar = ImageModel.ADAPTER.redact(builder.send_user_avatar);
       if (builder.sender_enigma_info != null) builder.sender_enigma_info = EnvelopeEnigmaInfo.ADAPTER.redact(builder.sender_enigma_info);
+      if (builder.reward_pool != null) builder.reward_pool = EnvelopeRewardPool.ADAPTER.redact(builder.reward_pool);
+      Internal.redactElements(builder.gift_infos, EnvelopeGift.ADAPTER);
       builder.clearUnknownFields();
       return builder.build();
     }

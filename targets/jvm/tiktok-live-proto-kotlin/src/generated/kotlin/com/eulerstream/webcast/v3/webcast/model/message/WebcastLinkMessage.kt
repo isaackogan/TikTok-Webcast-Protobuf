@@ -227,11 +227,19 @@ public class WebcastLinkMessage(
   )
   public val reply_accept_notice_content: LinkerAcceptNoticeContent? = null,
   @field:WireField(
+    tag = 24,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.message.CohostInviteStateNotifyContent#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "cohostInviteStateNotifyContent",
+    schemaIndex = 23,
+  )
+  public val cohost_invite_state_notify_content: CohostInviteStateNotifyContent? = null,
+  @field:WireField(
     tag = 101,
     adapter = "com.eulerstream.webcast.v3.webcast.model.message.LinkerSysKickOutContent#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "sysKickOutContent",
-    schemaIndex = 23,
+    schemaIndex = 24,
   )
   public val sys_kick_out_content: LinkerSysKickOutContent? = null,
   @field:WireField(
@@ -239,14 +247,14 @@ public class WebcastLinkMessage(
     adapter = "com.eulerstream.webcast.v3.webcast.model.message.LinkmicUserToastContent#ADAPTER",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "userToastContent",
-    schemaIndex = 24,
+    schemaIndex = 25,
   )
   public val user_toast_content: LinkmicUserToastContent? = null,
   @field:WireField(
     tag = 200,
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 25,
+    schemaIndex = 26,
   )
   public val extra: String = "",
   @field:WireField(
@@ -254,7 +262,7 @@ public class WebcastLinkMessage(
     adapter = "com.squareup.wire.ProtoAdapter#INT64",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "expireTimestamp",
-    schemaIndex = 26,
+    schemaIndex = 27,
   )
   public val expire_timestamp: Long = 0L,
   @field:WireField(
@@ -262,14 +270,14 @@ public class WebcastLinkMessage(
     adapter = "com.squareup.wire.ProtoAdapter#STRING",
     label = WireField.Label.OMIT_IDENTITY,
     jsonName = "transferExtra",
-    schemaIndex = 27,
+    schemaIndex = 28,
   )
   public val transfer_extra: String = "",
   @field:WireField(
     tag = 203,
     adapter = "com.squareup.wire.ProtoAdapter#INT64",
     label = WireField.Label.OMIT_IDENTITY,
-    schemaIndex = 28,
+    schemaIndex = 29,
   )
   public val version: Long = 0L,
   unknownFields: ByteString = ByteString.EMPTY,
@@ -307,6 +315,7 @@ public class WebcastLinkMessage(
     if (cohost_list_change_content != other.cohost_list_change_content) return false
     if (media_change_content != other.media_change_content) return false
     if (reply_accept_notice_content != other.reply_accept_notice_content) return false
+    if (cohost_invite_state_notify_content != other.cohost_invite_state_notify_content) return false
     if (sys_kick_out_content != other.sys_kick_out_content) return false
     if (user_toast_content != other.user_toast_content) return false
     if (extra != other.extra) return false
@@ -343,6 +352,7 @@ public class WebcastLinkMessage(
       result = result * 37 + (cohost_list_change_content?.hashCode() ?: 0)
       result = result * 37 + (media_change_content?.hashCode() ?: 0)
       result = result * 37 + (reply_accept_notice_content?.hashCode() ?: 0)
+      result = result * 37 + (cohost_invite_state_notify_content?.hashCode() ?: 0)
       result = result * 37 + (sys_kick_out_content?.hashCode() ?: 0)
       result = result * 37 + (user_toast_content?.hashCode() ?: 0)
       result = result * 37 + extra.hashCode()
@@ -379,6 +389,7 @@ public class WebcastLinkMessage(
     if (cohost_list_change_content != null) result += """cohost_list_change_content=$cohost_list_change_content"""
     if (media_change_content != null) result += """media_change_content=$media_change_content"""
     if (reply_accept_notice_content != null) result += """reply_accept_notice_content=$reply_accept_notice_content"""
+    if (cohost_invite_state_notify_content != null) result += """cohost_invite_state_notify_content=$cohost_invite_state_notify_content"""
     if (sys_kick_out_content != null) result += """sys_kick_out_content=$sys_kick_out_content"""
     if (user_toast_content != null) result += """user_toast_content=$user_toast_content"""
     result += """extra=${sanitize(extra)}"""
@@ -412,6 +423,7 @@ public class WebcastLinkMessage(
     cohost_list_change_content: CohostListChangeContent? = this.cohost_list_change_content,
     media_change_content: LinkerMediaChangeContent? = this.media_change_content,
     reply_accept_notice_content: LinkerAcceptNoticeContent? = this.reply_accept_notice_content,
+    cohost_invite_state_notify_content: CohostInviteStateNotifyContent? = this.cohost_invite_state_notify_content,
     sys_kick_out_content: LinkerSysKickOutContent? = this.sys_kick_out_content,
     user_toast_content: LinkmicUserToastContent? = this.user_toast_content,
     extra: String = this.extra,
@@ -419,7 +431,7 @@ public class WebcastLinkMessage(
     transfer_extra: String = this.transfer_extra,
     version: Long = this.version,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastLinkMessage = WebcastLinkMessage(common, message_type, linker_id, scene, invite_content, reply_content, create_content, close_content, enter_content, leave_content, cancel_content, kick_out_content, linked_list_change_content, update_user_content, waiting_list_change_content, mute_content, random_match_content, update_user_setting_content, mic_idx_update_content, list_change_content, cohost_list_change_content, media_change_content, reply_accept_notice_content, sys_kick_out_content, user_toast_content, extra, expire_timestamp, transfer_extra, version, unknownFields)
+  ): WebcastLinkMessage = WebcastLinkMessage(common, message_type, linker_id, scene, invite_content, reply_content, create_content, close_content, enter_content, leave_content, cancel_content, kick_out_content, linked_list_change_content, update_user_content, waiting_list_change_content, mute_content, random_match_content, update_user_setting_content, mic_idx_update_content, list_change_content, cohost_list_change_content, media_change_content, reply_accept_notice_content, cohost_invite_state_notify_content, sys_kick_out_content, user_toast_content, extra, expire_timestamp, transfer_extra, version, unknownFields)
 
   public companion object {
     @JvmField
@@ -502,6 +514,9 @@ public class WebcastLinkMessage(
         }
         if (value.reply_accept_notice_content != null) {
           size += LinkerAcceptNoticeContent.ADAPTER.encodedSizeWithTag(23, value.reply_accept_notice_content)
+        }
+        if (value.cohost_invite_state_notify_content != null) {
+          size += CohostInviteStateNotifyContent.ADAPTER.encodedSizeWithTag(24, value.cohost_invite_state_notify_content)
         }
         if (value.sys_kick_out_content != null) {
           size += LinkerSysKickOutContent.ADAPTER.encodedSizeWithTag(101, value.sys_kick_out_content)
@@ -594,6 +609,9 @@ public class WebcastLinkMessage(
         if (value.reply_accept_notice_content != null) {
           LinkerAcceptNoticeContent.ADAPTER.encodeWithTag(writer, 23, value.reply_accept_notice_content)
         }
+        if (value.cohost_invite_state_notify_content != null) {
+          CohostInviteStateNotifyContent.ADAPTER.encodeWithTag(writer, 24, value.cohost_invite_state_notify_content)
+        }
         if (value.sys_kick_out_content != null) {
           LinkerSysKickOutContent.ADAPTER.encodeWithTag(writer, 101, value.sys_kick_out_content)
         }
@@ -634,6 +652,9 @@ public class WebcastLinkMessage(
         }
         if (value.sys_kick_out_content != null) {
           LinkerSysKickOutContent.ADAPTER.encodeWithTag(writer, 101, value.sys_kick_out_content)
+        }
+        if (value.cohost_invite_state_notify_content != null) {
+          CohostInviteStateNotifyContent.ADAPTER.encodeWithTag(writer, 24, value.cohost_invite_state_notify_content)
         }
         if (value.reply_accept_notice_content != null) {
           LinkerAcceptNoticeContent.ADAPTER.encodeWithTag(writer, 23, value.reply_accept_notice_content)
@@ -730,6 +751,7 @@ public class WebcastLinkMessage(
         var cohost_list_change_content: CohostListChangeContent? = null
         var media_change_content: LinkerMediaChangeContent? = null
         var reply_accept_notice_content: LinkerAcceptNoticeContent? = null
+        var cohost_invite_state_notify_content: CohostInviteStateNotifyContent? = null
         var sys_kick_out_content: LinkerSysKickOutContent? = null
         var user_toast_content: LinkmicUserToastContent? = null
         var extra: String = ""
@@ -761,6 +783,7 @@ public class WebcastLinkMessage(
             21 -> cohost_list_change_content = CohostListChangeContent.ADAPTER.decode(reader)
             22 -> media_change_content = LinkerMediaChangeContent.ADAPTER.decode(reader)
             23 -> reply_accept_notice_content = LinkerAcceptNoticeContent.ADAPTER.decode(reader)
+            24 -> cohost_invite_state_notify_content = CohostInviteStateNotifyContent.ADAPTER.decode(reader)
             101 -> sys_kick_out_content = LinkerSysKickOutContent.ADAPTER.decode(reader)
             102 -> user_toast_content = LinkmicUserToastContent.ADAPTER.decode(reader)
             200 -> extra = ProtoAdapter.STRING.decode(reader)
@@ -794,6 +817,7 @@ public class WebcastLinkMessage(
           cohost_list_change_content = cohost_list_change_content,
           media_change_content = media_change_content,
           reply_accept_notice_content = reply_accept_notice_content,
+          cohost_invite_state_notify_content = cohost_invite_state_notify_content,
           sys_kick_out_content = sys_kick_out_content,
           user_toast_content = user_toast_content,
           extra = extra,
@@ -825,6 +849,7 @@ public class WebcastLinkMessage(
         cohost_list_change_content = value.cohost_list_change_content?.let(CohostListChangeContent.ADAPTER::redact),
         media_change_content = value.media_change_content?.let(LinkerMediaChangeContent.ADAPTER::redact),
         reply_accept_notice_content = value.reply_accept_notice_content?.let(LinkerAcceptNoticeContent.ADAPTER::redact),
+        cohost_invite_state_notify_content = value.cohost_invite_state_notify_content?.let(CohostInviteStateNotifyContent.ADAPTER::redact),
         sys_kick_out_content = value.sys_kick_out_content?.let(LinkerSysKickOutContent.ADAPTER::redact),
         user_toast_content = value.user_toast_content?.let(LinkmicUserToastContent.ADAPTER::redact),
         unknownFields = ByteString.EMPTY

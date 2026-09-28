@@ -77,6 +77,14 @@ public class UserPlayInfo(
     schemaIndex = 5,
   )
   public val user_tag: PlayUserTag = PlayUserTag.PLAY_USER_TAG_UNKNOWN,
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#INT64",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "playRoundId",
+    schemaIndex = 6,
+  )
+  public val play_round_id: Long = 0L,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<UserPlayInfo, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -95,6 +103,7 @@ public class UserPlayInfo(
     if (rank != other.rank) return false
     if (target_score != other.target_score) return false
     if (user_tag != other.user_tag) return false
+    if (play_round_id != other.play_round_id) return false
     return true
   }
 
@@ -108,6 +117,7 @@ public class UserPlayInfo(
       result = result * 37 + rank.hashCode()
       result = result * 37 + target_score.hashCode()
       result = result * 37 + user_tag.hashCode()
+      result = result * 37 + play_round_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -121,6 +131,7 @@ public class UserPlayInfo(
     result += """rank=$rank"""
     result += """target_score=$target_score"""
     result += """user_tag=$user_tag"""
+    result += """play_round_id=$play_round_id"""
     return result.joinToString(prefix = "UserPlayInfo{", separator = ", ", postfix = "}")
   }
 
@@ -131,8 +142,9 @@ public class UserPlayInfo(
     rank: Int = this.rank,
     target_score: Long = this.target_score,
     user_tag: PlayUserTag = this.user_tag,
+    play_round_id: Long = this.play_round_id,
     unknownFields: ByteString = this.unknownFields,
-  ): UserPlayInfo = UserPlayInfo(play_id, play_scene, score, rank, target_score, user_tag, unknownFields)
+  ): UserPlayInfo = UserPlayInfo(play_id, play_scene, score, rank, target_score, user_tag, play_round_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -164,6 +176,9 @@ public class UserPlayInfo(
         if (value.user_tag != com.eulerstream.webcast.v3.webcast.model.`data`.multi_guest_play.PlayUserTag.PLAY_USER_TAG_UNKNOWN) {
           size += PlayUserTag.ADAPTER.encodedSizeWithTag(6, value.user_tag)
         }
+        if (value.play_round_id != 0L) {
+          size += ProtoAdapter.INT64.encodedSizeWithTag(7, value.play_round_id)
+        }
         return size
       }
 
@@ -186,11 +201,17 @@ public class UserPlayInfo(
         if (value.user_tag != com.eulerstream.webcast.v3.webcast.model.`data`.multi_guest_play.PlayUserTag.PLAY_USER_TAG_UNKNOWN) {
           PlayUserTag.ADAPTER.encodeWithTag(writer, 6, value.user_tag)
         }
+        if (value.play_round_id != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 7, value.play_round_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: UserPlayInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.play_round_id != 0L) {
+          ProtoAdapter.INT64.encodeWithTag(writer, 7, value.play_round_id)
+        }
         if (value.user_tag != com.eulerstream.webcast.v3.webcast.model.`data`.multi_guest_play.PlayUserTag.PLAY_USER_TAG_UNKNOWN) {
           PlayUserTag.ADAPTER.encodeWithTag(writer, 6, value.user_tag)
         }
@@ -218,6 +239,7 @@ public class UserPlayInfo(
         var rank: Int = 0
         var target_score: Long = 0L
         var user_tag: PlayUserTag = PlayUserTag.PLAY_USER_TAG_UNKNOWN
+        var play_round_id: Long = 0L
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> play_id = ProtoAdapter.INT64.decode(reader)
@@ -234,6 +256,7 @@ public class UserPlayInfo(
             } catch (e: ProtoAdapter.EnumConstantNotFoundException) {
               reader.addUnknownField(tag, FieldEncoding.VARINT, e.value.toLong())
             }
+            7 -> play_round_id = ProtoAdapter.INT64.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -244,6 +267,7 @@ public class UserPlayInfo(
           rank = rank,
           target_score = target_score,
           user_tag = user_tag,
+          play_round_id = play_round_id,
           unknownFields = unknownFields
         )
       }

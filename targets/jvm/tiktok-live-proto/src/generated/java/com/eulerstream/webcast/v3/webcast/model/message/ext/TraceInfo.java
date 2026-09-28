@@ -17,6 +17,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.StringBuilder;
+import java.util.Map;
 import java.util.Objects;
 import okio.ByteString;
 
@@ -49,15 +50,35 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
   )
   public final long send_time;
 
-  public TraceInfo(long operate_time, long arrival_time, long send_time) {
-    this(operate_time, arrival_time, send_time, ByteString.EMPTY);
+  @WireField(
+      tag = 10,
+      keyAdapter = "com.squareup.wire.ProtoAdapter#STRING",
+      adapter = "com.squareup.wire.ProtoAdapter#INT64",
+      jsonName = "traceTimeMap"
+  )
+  public final Map<String, Long> trace_time_map;
+
+  @WireField(
+      tag = 11,
+      keyAdapter = "com.squareup.wire.ProtoAdapter#STRING",
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      jsonName = "daInfo"
+  )
+  public final Map<String, String> da_info;
+
+  public TraceInfo(long operate_time, long arrival_time, long send_time,
+      Map<String, Long> trace_time_map, Map<String, String> da_info) {
+    this(operate_time, arrival_time, send_time, trace_time_map, da_info, ByteString.EMPTY);
   }
 
-  public TraceInfo(long operate_time, long arrival_time, long send_time, ByteString unknownFields) {
+  public TraceInfo(long operate_time, long arrival_time, long send_time,
+      Map<String, Long> trace_time_map, Map<String, String> da_info, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.operate_time = operate_time;
     this.arrival_time = arrival_time;
     this.send_time = send_time;
+    this.trace_time_map = Internal.immutableCopyOf("trace_time_map", trace_time_map);
+    this.da_info = Internal.immutableCopyOf("da_info", da_info);
   }
 
   @Override
@@ -66,6 +87,8 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
     builder.operate_time = operate_time;
     builder.arrival_time = arrival_time;
     builder.send_time = send_time;
+    builder.trace_time_map = Internal.copyOf(trace_time_map);
+    builder.da_info = Internal.copyOf(da_info);
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -78,7 +101,9 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(operate_time, o.operate_time)
         && Internal.equals(arrival_time, o.arrival_time)
-        && Internal.equals(send_time, o.send_time);
+        && Internal.equals(send_time, o.send_time)
+        && trace_time_map.equals(o.trace_time_map)
+        && da_info.equals(o.da_info);
   }
 
   @Override
@@ -89,6 +114,8 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
       result = result * 37 + Long.hashCode(operate_time);
       result = result * 37 + Long.hashCode(arrival_time);
       result = result * 37 + Long.hashCode(send_time);
+      result = result * 37 + trace_time_map.hashCode();
+      result = result * 37 + da_info.hashCode();
       super.hashCode = result;
     }
     return result;
@@ -100,6 +127,8 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
     builder.append(", operate_time=").append(operate_time);
     builder.append(", arrival_time=").append(arrival_time);
     builder.append(", send_time=").append(send_time);
+    if (!trace_time_map.isEmpty()) builder.append(", trace_time_map=").append(trace_time_map);
+    if (!da_info.isEmpty()) builder.append(", da_info=").append(da_info);
     return builder.replace(0, 2, "TraceInfo{").append('}').toString();
   }
 
@@ -110,10 +139,16 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
 
     public long send_time;
 
+    public Map<String, Long> trace_time_map;
+
+    public Map<String, String> da_info;
+
     public Builder() {
       operate_time = 0L;
       arrival_time = 0L;
       send_time = 0L;
+      trace_time_map = Internal.newMutableMap();
+      da_info = Internal.newMutableMap();
     }
 
     public Builder operate_time(long operate_time) {
@@ -131,13 +166,29 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
       return this;
     }
 
+    public Builder trace_time_map(Map<String, Long> trace_time_map) {
+      Internal.checkElementsNotNull(trace_time_map);
+      this.trace_time_map = trace_time_map;
+      return this;
+    }
+
+    public Builder da_info(Map<String, String> da_info) {
+      Internal.checkElementsNotNull(da_info);
+      this.da_info = da_info;
+      return this;
+    }
+
     @Override
     public TraceInfo build() {
-      return new TraceInfo(operate_time, arrival_time, send_time, super.buildUnknownFields());
+      return new TraceInfo(operate_time, arrival_time, send_time, trace_time_map, da_info, super.buildUnknownFields());
     }
   }
 
   private static final class ProtoAdapter_TraceInfo extends ProtoAdapter<TraceInfo> {
+    private ProtoAdapter<Map<String, Long>> trace_time_map;
+
+    private ProtoAdapter<Map<String, String>> da_info;
+
     public ProtoAdapter_TraceInfo() {
       super(FieldEncoding.LENGTH_DELIMITED, TraceInfo.class, "type.googleapis.com/webcast.model.message.ext.TraceInfo", Syntax.PROTO_3, null, "webcast/model/message/ext.proto");
     }
@@ -154,6 +205,8 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
       if (!Objects.equals(value.send_time, 0L)) {
         result += ProtoAdapter.INT64.encodedSizeWithTag(3, value.send_time);
       }
+      result += trace_time_mapAdapter().encodedSizeWithTag(10, value.trace_time_map);
+      result += da_infoAdapter().encodedSizeWithTag(11, value.da_info);
       result += value.unknownFields().size();
       return result;
     }
@@ -163,12 +216,16 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
       if (!Objects.equals(value.operate_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 1, value.operate_time);
       if (!Objects.equals(value.arrival_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 2, value.arrival_time);
       if (!Objects.equals(value.send_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 3, value.send_time);
+      trace_time_mapAdapter().encodeWithTag(writer, 10, value.trace_time_map);
+      da_infoAdapter().encodeWithTag(writer, 11, value.da_info);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, TraceInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      da_infoAdapter().encodeWithTag(writer, 11, value.da_info);
+      trace_time_mapAdapter().encodeWithTag(writer, 10, value.trace_time_map);
       if (!Objects.equals(value.send_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 3, value.send_time);
       if (!Objects.equals(value.arrival_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 2, value.arrival_time);
       if (!Objects.equals(value.operate_time, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 1, value.operate_time);
@@ -183,6 +240,8 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
           case 1: builder.operate_time(ProtoAdapter.INT64.decode(reader)); break;
           case 2: builder.arrival_time(ProtoAdapter.INT64.decode(reader)); break;
           case 3: builder.send_time(ProtoAdapter.INT64.decode(reader)); break;
+          case 10: builder.trace_time_map.putAll(trace_time_mapAdapter().decode(reader)); break;
+          case 11: builder.da_info.putAll(da_infoAdapter().decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -197,6 +256,24 @@ public final class TraceInfo extends Message<TraceInfo, TraceInfo.Builder> {
       Builder builder = value.newBuilder();
       builder.clearUnknownFields();
       return builder.build();
+    }
+
+    private ProtoAdapter<Map<String, Long>> trace_time_mapAdapter() {
+      ProtoAdapter<Map<String, Long>> result = trace_time_map;
+      if (result == null) {
+        result = ProtoAdapter.newMapAdapter(ProtoAdapter.STRING, ProtoAdapter.INT64);
+        trace_time_map = result;
+      }
+      return result;
+    }
+
+    private ProtoAdapter<Map<String, String>> da_infoAdapter() {
+      ProtoAdapter<Map<String, String>> result = da_info;
+      if (result == null) {
+        result = ProtoAdapter.newMapAdapter(ProtoAdapter.STRING, ProtoAdapter.STRING);
+        da_info = result;
+      }
+      return result;
     }
   }
 }

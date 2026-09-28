@@ -58,12 +58,47 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
   )
   public final int audit_status;
 
-  public GoalReward(String reward_content, int top_n, boolean has_sticker, int audit_status) {
-    this(reward_content, top_n, has_sticker, audit_status, ByteString.EMPTY);
+  @WireField(
+      tag = 5,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "rewardDirectMessage"
+  )
+  public final String reward_direct_message;
+
+  @WireField(
+      tag = 6,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "rewardTemplateId"
+  )
+  public final String reward_template_id;
+
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "rewardSource"
+  )
+  public final int reward_source;
+
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "isHitOptAb"
+  )
+  public final boolean is_hit_opt_ab;
+
+  public GoalReward(String reward_content, int top_n, boolean has_sticker, int audit_status,
+      String reward_direct_message, String reward_template_id, int reward_source,
+      boolean is_hit_opt_ab) {
+    this(reward_content, top_n, has_sticker, audit_status, reward_direct_message, reward_template_id, reward_source, is_hit_opt_ab, ByteString.EMPTY);
   }
 
   public GoalReward(String reward_content, int top_n, boolean has_sticker, int audit_status,
-      ByteString unknownFields) {
+      String reward_direct_message, String reward_template_id, int reward_source,
+      boolean is_hit_opt_ab, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (reward_content == null) {
       throw new IllegalArgumentException("reward_content == null");
@@ -72,6 +107,16 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
     this.top_n = top_n;
     this.has_sticker = has_sticker;
     this.audit_status = audit_status;
+    if (reward_direct_message == null) {
+      throw new IllegalArgumentException("reward_direct_message == null");
+    }
+    this.reward_direct_message = reward_direct_message;
+    if (reward_template_id == null) {
+      throw new IllegalArgumentException("reward_template_id == null");
+    }
+    this.reward_template_id = reward_template_id;
+    this.reward_source = reward_source;
+    this.is_hit_opt_ab = is_hit_opt_ab;
   }
 
   @Override
@@ -81,6 +126,10 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
     builder.top_n = top_n;
     builder.has_sticker = has_sticker;
     builder.audit_status = audit_status;
+    builder.reward_direct_message = reward_direct_message;
+    builder.reward_template_id = reward_template_id;
+    builder.reward_source = reward_source;
+    builder.is_hit_opt_ab = is_hit_opt_ab;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -94,7 +143,11 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
         && Internal.equals(reward_content, o.reward_content)
         && Internal.equals(top_n, o.top_n)
         && Internal.equals(has_sticker, o.has_sticker)
-        && Internal.equals(audit_status, o.audit_status);
+        && Internal.equals(audit_status, o.audit_status)
+        && Internal.equals(reward_direct_message, o.reward_direct_message)
+        && Internal.equals(reward_template_id, o.reward_template_id)
+        && Internal.equals(reward_source, o.reward_source)
+        && Internal.equals(is_hit_opt_ab, o.is_hit_opt_ab);
   }
 
   @Override
@@ -106,6 +159,10 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
       result = result * 37 + Integer.hashCode(top_n);
       result = result * 37 + Boolean.hashCode(has_sticker);
       result = result * 37 + Integer.hashCode(audit_status);
+      result = result * 37 + (reward_direct_message != null ? reward_direct_message.hashCode() : 0);
+      result = result * 37 + (reward_template_id != null ? reward_template_id.hashCode() : 0);
+      result = result * 37 + Integer.hashCode(reward_source);
+      result = result * 37 + Boolean.hashCode(is_hit_opt_ab);
       super.hashCode = result;
     }
     return result;
@@ -118,6 +175,10 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
     builder.append(", top_n=").append(top_n);
     builder.append(", has_sticker=").append(has_sticker);
     builder.append(", audit_status=").append(audit_status);
+    if (reward_direct_message != null) builder.append(", reward_direct_message=").append(Internal.sanitize(reward_direct_message));
+    if (reward_template_id != null) builder.append(", reward_template_id=").append(Internal.sanitize(reward_template_id));
+    builder.append(", reward_source=").append(reward_source);
+    builder.append(", is_hit_opt_ab=").append(is_hit_opt_ab);
     return builder.replace(0, 2, "GoalReward{").append('}').toString();
   }
 
@@ -130,11 +191,23 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
 
     public int audit_status;
 
+    public String reward_direct_message;
+
+    public String reward_template_id;
+
+    public int reward_source;
+
+    public boolean is_hit_opt_ab;
+
     public Builder() {
       reward_content = "";
       top_n = 0;
       has_sticker = false;
       audit_status = 0;
+      reward_direct_message = "";
+      reward_template_id = "";
+      reward_source = 0;
+      is_hit_opt_ab = false;
     }
 
     public Builder reward_content(String reward_content) {
@@ -157,9 +230,29 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
       return this;
     }
 
+    public Builder reward_direct_message(String reward_direct_message) {
+      this.reward_direct_message = reward_direct_message;
+      return this;
+    }
+
+    public Builder reward_template_id(String reward_template_id) {
+      this.reward_template_id = reward_template_id;
+      return this;
+    }
+
+    public Builder reward_source(int reward_source) {
+      this.reward_source = reward_source;
+      return this;
+    }
+
+    public Builder is_hit_opt_ab(boolean is_hit_opt_ab) {
+      this.is_hit_opt_ab = is_hit_opt_ab;
+      return this;
+    }
+
     @Override
     public GoalReward build() {
-      return new GoalReward(reward_content, top_n, has_sticker, audit_status, super.buildUnknownFields());
+      return new GoalReward(reward_content, top_n, has_sticker, audit_status, reward_direct_message, reward_template_id, reward_source, is_hit_opt_ab, super.buildUnknownFields());
     }
   }
 
@@ -183,6 +276,18 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
       if (!Objects.equals(value.audit_status, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(4, value.audit_status);
       }
+      if (!Objects.equals(value.reward_direct_message, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(5, value.reward_direct_message);
+      }
+      if (!Objects.equals(value.reward_template_id, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(6, value.reward_template_id);
+      }
+      if (!Objects.equals(value.reward_source, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(7, value.reward_source);
+      }
+      if (!Objects.equals(value.is_hit_opt_ab, false)) {
+        result += ProtoAdapter.BOOL.encodedSizeWithTag(8, value.is_hit_opt_ab);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -193,12 +298,20 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
       if (!Objects.equals(value.top_n, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 2, value.top_n);
       if (!Objects.equals(value.has_sticker, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.has_sticker);
       if (!Objects.equals(value.audit_status, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.audit_status);
+      if (!Objects.equals(value.reward_direct_message, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.reward_direct_message);
+      if (!Objects.equals(value.reward_template_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.reward_template_id);
+      if (!Objects.equals(value.reward_source, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.reward_source);
+      if (!Objects.equals(value.is_hit_opt_ab, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_hit_opt_ab);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, GoalReward value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.is_hit_opt_ab, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_hit_opt_ab);
+      if (!Objects.equals(value.reward_source, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.reward_source);
+      if (!Objects.equals(value.reward_template_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 6, value.reward_template_id);
+      if (!Objects.equals(value.reward_direct_message, "")) ProtoAdapter.STRING.encodeWithTag(writer, 5, value.reward_direct_message);
       if (!Objects.equals(value.audit_status, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.audit_status);
       if (!Objects.equals(value.has_sticker, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.has_sticker);
       if (!Objects.equals(value.top_n, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 2, value.top_n);
@@ -215,6 +328,10 @@ public final class GoalReward extends Message<GoalReward, GoalReward.Builder> {
           case 2: builder.top_n(ProtoAdapter.INT32.decode(reader)); break;
           case 3: builder.has_sticker(ProtoAdapter.BOOL.decode(reader)); break;
           case 4: builder.audit_status(ProtoAdapter.INT32.decode(reader)); break;
+          case 5: builder.reward_direct_message(ProtoAdapter.STRING.decode(reader)); break;
+          case 6: builder.reward_template_id(ProtoAdapter.STRING.decode(reader)); break;
+          case 7: builder.reward_source(ProtoAdapter.INT32.decode(reader)); break;
+          case 8: builder.is_hit_opt_ab(ProtoAdapter.BOOL.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

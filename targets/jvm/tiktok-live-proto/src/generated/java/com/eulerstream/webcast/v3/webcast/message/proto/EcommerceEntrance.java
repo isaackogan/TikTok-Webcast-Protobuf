@@ -15,6 +15,7 @@ import com.squareup.wire.Syntax;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -74,17 +75,35 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
   )
   public final User_EcommerceEntrance_ViewVersion view_version;
 
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "avatarBackgroundColor"
+  )
+  public final String avatar_background_color;
+
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "avatarStyleVersion"
+  )
+  public final int avatar_style_version;
+
   public EcommerceEntrance(User_EcommerceEntrance_EntranceType entrance_type,
       User_EcommerceEntrance_CreatorType creator_type, String schema,
       ShopEntranceInfo shop_entrance_info, ShowcaseEntranceInfo showcase_entrance_info,
-      User_EcommerceEntrance_ViewVersion view_version) {
-    this(entrance_type, creator_type, schema, shop_entrance_info, showcase_entrance_info, view_version, ByteString.EMPTY);
+      User_EcommerceEntrance_ViewVersion view_version, String avatar_background_color,
+      int avatar_style_version) {
+    this(entrance_type, creator_type, schema, shop_entrance_info, showcase_entrance_info, view_version, avatar_background_color, avatar_style_version, ByteString.EMPTY);
   }
 
   public EcommerceEntrance(User_EcommerceEntrance_EntranceType entrance_type,
       User_EcommerceEntrance_CreatorType creator_type, String schema,
       ShopEntranceInfo shop_entrance_info, ShowcaseEntranceInfo showcase_entrance_info,
-      User_EcommerceEntrance_ViewVersion view_version, ByteString unknownFields) {
+      User_EcommerceEntrance_ViewVersion view_version, String avatar_background_color,
+      int avatar_style_version, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (entrance_type == null) {
       throw new IllegalArgumentException("entrance_type == null");
@@ -104,6 +123,11 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
       throw new IllegalArgumentException("view_version == null");
     }
     this.view_version = view_version;
+    if (avatar_background_color == null) {
+      throw new IllegalArgumentException("avatar_background_color == null");
+    }
+    this.avatar_background_color = avatar_background_color;
+    this.avatar_style_version = avatar_style_version;
   }
 
   @Override
@@ -115,6 +139,8 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
     builder.shop_entrance_info = shop_entrance_info;
     builder.showcase_entrance_info = showcase_entrance_info;
     builder.view_version = view_version;
+    builder.avatar_background_color = avatar_background_color;
+    builder.avatar_style_version = avatar_style_version;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -130,7 +156,9 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
         && Internal.equals(schema, o.schema)
         && Internal.equals(shop_entrance_info, o.shop_entrance_info)
         && Internal.equals(showcase_entrance_info, o.showcase_entrance_info)
-        && Internal.equals(view_version, o.view_version);
+        && Internal.equals(view_version, o.view_version)
+        && Internal.equals(avatar_background_color, o.avatar_background_color)
+        && Internal.equals(avatar_style_version, o.avatar_style_version);
   }
 
   @Override
@@ -144,6 +172,8 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
       result = result * 37 + (shop_entrance_info != null ? shop_entrance_info.hashCode() : 0);
       result = result * 37 + (showcase_entrance_info != null ? showcase_entrance_info.hashCode() : 0);
       result = result * 37 + (view_version != null ? view_version.hashCode() : 0);
+      result = result * 37 + (avatar_background_color != null ? avatar_background_color.hashCode() : 0);
+      result = result * 37 + Integer.hashCode(avatar_style_version);
       super.hashCode = result;
     }
     return result;
@@ -158,6 +188,8 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
     if (shop_entrance_info != null) builder.append(", shop_entrance_info=").append(shop_entrance_info);
     if (showcase_entrance_info != null) builder.append(", showcase_entrance_info=").append(showcase_entrance_info);
     if (view_version != null) builder.append(", view_version=").append(view_version);
+    if (avatar_background_color != null) builder.append(", avatar_background_color=").append(Internal.sanitize(avatar_background_color));
+    builder.append(", avatar_style_version=").append(avatar_style_version);
     return builder.replace(0, 2, "EcommerceEntrance{").append('}').toString();
   }
 
@@ -174,11 +206,17 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
 
     public User_EcommerceEntrance_ViewVersion view_version;
 
+    public String avatar_background_color;
+
+    public int avatar_style_version;
+
     public Builder() {
       entrance_type = User_EcommerceEntrance_EntranceType.PROFILE;
       creator_type = User_EcommerceEntrance_CreatorType.UNDEFINED;
       schema = "";
       view_version = User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN;
+      avatar_background_color = "";
+      avatar_style_version = 0;
     }
 
     public Builder entrance_type(User_EcommerceEntrance_EntranceType entrance_type) {
@@ -211,9 +249,19 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
       return this;
     }
 
+    public Builder avatar_background_color(String avatar_background_color) {
+      this.avatar_background_color = avatar_background_color;
+      return this;
+    }
+
+    public Builder avatar_style_version(int avatar_style_version) {
+      this.avatar_style_version = avatar_style_version;
+      return this;
+    }
+
     @Override
     public EcommerceEntrance build() {
-      return new EcommerceEntrance(entrance_type, creator_type, schema, shop_entrance_info, showcase_entrance_info, view_version, super.buildUnknownFields());
+      return new EcommerceEntrance(entrance_type, creator_type, schema, shop_entrance_info, showcase_entrance_info, view_version, avatar_background_color, avatar_style_version, super.buildUnknownFields());
     }
   }
 
@@ -243,6 +291,12 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
       if (!Objects.equals(value.view_version, User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN)) {
         result += User_EcommerceEntrance_ViewVersion.ADAPTER.encodedSizeWithTag(6, value.view_version);
       }
+      if (!Objects.equals(value.avatar_background_color, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.avatar_background_color);
+      }
+      if (!Objects.equals(value.avatar_style_version, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(8, value.avatar_style_version);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -255,12 +309,16 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
       if (!Objects.equals(value.shop_entrance_info, null)) ShopEntranceInfo.ADAPTER.encodeWithTag(writer, 4, value.shop_entrance_info);
       if (!Objects.equals(value.showcase_entrance_info, null)) ShowcaseEntranceInfo.ADAPTER.encodeWithTag(writer, 5, value.showcase_entrance_info);
       if (!Objects.equals(value.view_version, User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN)) User_EcommerceEntrance_ViewVersion.ADAPTER.encodeWithTag(writer, 6, value.view_version);
+      if (!Objects.equals(value.avatar_background_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.avatar_background_color);
+      if (!Objects.equals(value.avatar_style_version, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 8, value.avatar_style_version);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, EcommerceEntrance value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.avatar_style_version, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 8, value.avatar_style_version);
+      if (!Objects.equals(value.avatar_background_color, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.avatar_background_color);
       if (!Objects.equals(value.view_version, User_EcommerceEntrance_ViewVersion.VIEW_VERSION_UNKNOWN)) User_EcommerceEntrance_ViewVersion.ADAPTER.encodeWithTag(writer, 6, value.view_version);
       if (!Objects.equals(value.showcase_entrance_info, null)) ShowcaseEntranceInfo.ADAPTER.encodeWithTag(writer, 5, value.showcase_entrance_info);
       if (!Objects.equals(value.shop_entrance_info, null)) ShopEntranceInfo.ADAPTER.encodeWithTag(writer, 4, value.shop_entrance_info);
@@ -302,6 +360,8 @@ public final class EcommerceEntrance extends Message<EcommerceEntrance, Ecommerc
             }
             break;
           }
+          case 7: builder.avatar_background_color(ProtoAdapter.STRING.decode(reader)); break;
+          case 8: builder.avatar_style_version(ProtoAdapter.INT32.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

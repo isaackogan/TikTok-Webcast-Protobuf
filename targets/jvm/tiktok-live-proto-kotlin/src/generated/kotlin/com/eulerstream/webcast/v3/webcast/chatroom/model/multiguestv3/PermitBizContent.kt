@@ -105,6 +105,22 @@ public class PermitBizContent(
     schemaIndex = 8,
   )
   public val is_quick_call_auto_approved: Boolean = false,
+  @field:WireField(
+    tag = 10,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "mgMatchType",
+    schemaIndex = 9,
+  )
+  public val mg_match_type: Int = 0,
+  @field:WireField(
+    tag = 11,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "linkedSubReason",
+    schemaIndex = 10,
+  )
+  public val linked_sub_reason: Int = 0,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<PermitBizContent, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -126,6 +142,8 @@ public class PermitBizContent(
     if (link_type_permission != other.link_type_permission) return false
     if (is_full_position_pre_approved != other.is_full_position_pre_approved) return false
     if (is_quick_call_auto_approved != other.is_quick_call_auto_approved) return false
+    if (mg_match_type != other.mg_match_type) return false
+    if (linked_sub_reason != other.linked_sub_reason) return false
     return true
   }
 
@@ -142,6 +160,8 @@ public class PermitBizContent(
       result = result * 37 + link_type_permission.hashCode()
       result = result * 37 + is_full_position_pre_approved.hashCode()
       result = result * 37 + is_quick_call_auto_approved.hashCode()
+      result = result * 37 + mg_match_type.hashCode()
+      result = result * 37 + linked_sub_reason.hashCode()
       super.hashCode = result
     }
     return result
@@ -158,6 +178,8 @@ public class PermitBizContent(
     result += """link_type_permission=$link_type_permission"""
     result += """is_full_position_pre_approved=$is_full_position_pre_approved"""
     result += """is_quick_call_auto_approved=$is_quick_call_auto_approved"""
+    result += """mg_match_type=$mg_match_type"""
+    result += """linked_sub_reason=$linked_sub_reason"""
     return result.joinToString(prefix = "PermitBizContent{", separator = ", ", postfix = "}")
   }
 
@@ -171,8 +193,10 @@ public class PermitBizContent(
     link_type_permission: Long = this.link_type_permission,
     is_full_position_pre_approved: Boolean = this.is_full_position_pre_approved,
     is_quick_call_auto_approved: Boolean = this.is_quick_call_auto_approved,
+    mg_match_type: Int = this.mg_match_type,
+    linked_sub_reason: Int = this.linked_sub_reason,
     unknownFields: ByteString = this.unknownFields,
-  ): PermitBizContent = PermitBizContent(anchor_setting_info, expire_timestamp, operator_user_info, operator_link_admin_type, link_user_type, is_apply_auto_approved, link_type_permission, is_full_position_pre_approved, is_quick_call_auto_approved, unknownFields)
+  ): PermitBizContent = PermitBizContent(anchor_setting_info, expire_timestamp, operator_user_info, operator_link_admin_type, link_user_type, is_apply_auto_approved, link_type_permission, is_full_position_pre_approved, is_quick_call_auto_approved, mg_match_type, linked_sub_reason, unknownFields)
 
   public companion object {
     @JvmField
@@ -213,6 +237,12 @@ public class PermitBizContent(
         if (value.is_quick_call_auto_approved != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(9, value.is_quick_call_auto_approved)
         }
+        if (value.mg_match_type != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(10, value.mg_match_type)
+        }
+        if (value.linked_sub_reason != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(11, value.linked_sub_reason)
+        }
         return size
       }
 
@@ -244,11 +274,23 @@ public class PermitBizContent(
         if (value.is_quick_call_auto_approved != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 9, value.is_quick_call_auto_approved)
         }
+        if (value.mg_match_type != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 10, value.mg_match_type)
+        }
+        if (value.linked_sub_reason != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 11, value.linked_sub_reason)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: PermitBizContent) {
         writer.writeBytes(value.unknownFields)
+        if (value.linked_sub_reason != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 11, value.linked_sub_reason)
+        }
+        if (value.mg_match_type != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 10, value.mg_match_type)
+        }
         if (value.is_quick_call_auto_approved != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 9, value.is_quick_call_auto_approved)
         }
@@ -288,6 +330,8 @@ public class PermitBizContent(
         var link_type_permission: Long = 0L
         var is_full_position_pre_approved: Boolean = false
         var is_quick_call_auto_approved: Boolean = false
+        var mg_match_type: Int = 0
+        var linked_sub_reason: Int = 0
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> anchor_setting_info = MultiLiveAnchorPanelSettings.ADAPTER.decode(reader)
@@ -307,6 +351,8 @@ public class PermitBizContent(
             7 -> link_type_permission = ProtoAdapter.INT64.decode(reader)
             8 -> is_full_position_pre_approved = ProtoAdapter.BOOL.decode(reader)
             9 -> is_quick_call_auto_approved = ProtoAdapter.BOOL.decode(reader)
+            10 -> mg_match_type = ProtoAdapter.INT32.decode(reader)
+            11 -> linked_sub_reason = ProtoAdapter.INT32.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -320,6 +366,8 @@ public class PermitBizContent(
           link_type_permission = link_type_permission,
           is_full_position_pre_approved = is_full_position_pre_approved,
           is_quick_call_auto_approved = is_quick_call_auto_approved,
+          mg_match_type = mg_match_type,
+          linked_sub_reason = linked_sub_reason,
           unknownFields = unknownFields
         )
       }

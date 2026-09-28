@@ -12,6 +12,7 @@ import com.squareup.wire.Syntax;
 import com.squareup.wire.WireField;
 import com.squareup.wire.internal.Internal;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -39,12 +40,37 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
   )
   public final String instruction_desc_key;
 
-  public GiftPickExtraGameInteractionStorage(String instruction, String instruction_desc_key) {
-    this(instruction, instruction_desc_key, ByteString.EMPTY);
+  @WireField(
+      tag = 3,
+      adapter = "com.squareup.wire.ProtoAdapter#INT32",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "protocolVersion"
+  )
+  public final int protocol_version;
+
+  @WireField(
+      tag = 4,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "effectId"
+  )
+  public final String effect_id;
+
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "effectVersion"
+  )
+  public final String effect_version;
+
+  public GiftPickExtraGameInteractionStorage(String instruction, String instruction_desc_key,
+      int protocol_version, String effect_id, String effect_version) {
+    this(instruction, instruction_desc_key, protocol_version, effect_id, effect_version, ByteString.EMPTY);
   }
 
   public GiftPickExtraGameInteractionStorage(String instruction, String instruction_desc_key,
-      ByteString unknownFields) {
+      int protocol_version, String effect_id, String effect_version, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (instruction == null) {
       throw new IllegalArgumentException("instruction == null");
@@ -54,6 +80,15 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
       throw new IllegalArgumentException("instruction_desc_key == null");
     }
     this.instruction_desc_key = instruction_desc_key;
+    this.protocol_version = protocol_version;
+    if (effect_id == null) {
+      throw new IllegalArgumentException("effect_id == null");
+    }
+    this.effect_id = effect_id;
+    if (effect_version == null) {
+      throw new IllegalArgumentException("effect_version == null");
+    }
+    this.effect_version = effect_version;
   }
 
   @Override
@@ -61,6 +96,9 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
     Builder builder = new Builder();
     builder.instruction = instruction;
     builder.instruction_desc_key = instruction_desc_key;
+    builder.protocol_version = protocol_version;
+    builder.effect_id = effect_id;
+    builder.effect_version = effect_version;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -72,7 +110,10 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
     GiftPickExtraGameInteractionStorage o = (GiftPickExtraGameInteractionStorage) other;
     return unknownFields().equals(o.unknownFields())
         && Internal.equals(instruction, o.instruction)
-        && Internal.equals(instruction_desc_key, o.instruction_desc_key);
+        && Internal.equals(instruction_desc_key, o.instruction_desc_key)
+        && Internal.equals(protocol_version, o.protocol_version)
+        && Internal.equals(effect_id, o.effect_id)
+        && Internal.equals(effect_version, o.effect_version);
   }
 
   @Override
@@ -82,6 +123,9 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
       result = unknownFields().hashCode();
       result = result * 37 + (instruction != null ? instruction.hashCode() : 0);
       result = result * 37 + (instruction_desc_key != null ? instruction_desc_key.hashCode() : 0);
+      result = result * 37 + Integer.hashCode(protocol_version);
+      result = result * 37 + (effect_id != null ? effect_id.hashCode() : 0);
+      result = result * 37 + (effect_version != null ? effect_version.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -92,6 +136,9 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
     StringBuilder builder = new StringBuilder();
     if (instruction != null) builder.append(", instruction=").append(Internal.sanitize(instruction));
     if (instruction_desc_key != null) builder.append(", instruction_desc_key=").append(Internal.sanitize(instruction_desc_key));
+    builder.append(", protocol_version=").append(protocol_version);
+    if (effect_id != null) builder.append(", effect_id=").append(Internal.sanitize(effect_id));
+    if (effect_version != null) builder.append(", effect_version=").append(Internal.sanitize(effect_version));
     return builder.replace(0, 2, "GiftPickExtraGameInteractionStorage{").append('}').toString();
   }
 
@@ -100,9 +147,18 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
 
     public String instruction_desc_key;
 
+    public int protocol_version;
+
+    public String effect_id;
+
+    public String effect_version;
+
     public Builder() {
       instruction = "";
       instruction_desc_key = "";
+      protocol_version = 0;
+      effect_id = "";
+      effect_version = "";
     }
 
     public Builder instruction(String instruction) {
@@ -115,9 +171,24 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
       return this;
     }
 
+    public Builder protocol_version(int protocol_version) {
+      this.protocol_version = protocol_version;
+      return this;
+    }
+
+    public Builder effect_id(String effect_id) {
+      this.effect_id = effect_id;
+      return this;
+    }
+
+    public Builder effect_version(String effect_version) {
+      this.effect_version = effect_version;
+      return this;
+    }
+
     @Override
     public GiftPickExtraGameInteractionStorage build() {
-      return new GiftPickExtraGameInteractionStorage(instruction, instruction_desc_key, super.buildUnknownFields());
+      return new GiftPickExtraGameInteractionStorage(instruction, instruction_desc_key, protocol_version, effect_id, effect_version, super.buildUnknownFields());
     }
   }
 
@@ -135,6 +206,15 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
       if (!Objects.equals(value.instruction_desc_key, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(2, value.instruction_desc_key);
       }
+      if (!Objects.equals(value.protocol_version, 0)) {
+        result += ProtoAdapter.INT32.encodedSizeWithTag(3, value.protocol_version);
+      }
+      if (!Objects.equals(value.effect_id, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(4, value.effect_id);
+      }
+      if (!Objects.equals(value.effect_version, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(8, value.effect_version);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -144,6 +224,9 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
         IOException {
       if (!Objects.equals(value.instruction, "")) ProtoAdapter.STRING.encodeWithTag(writer, 1, value.instruction);
       if (!Objects.equals(value.instruction_desc_key, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.instruction_desc_key);
+      if (!Objects.equals(value.protocol_version, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 3, value.protocol_version);
+      if (!Objects.equals(value.effect_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 4, value.effect_id);
+      if (!Objects.equals(value.effect_version, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.effect_version);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -151,6 +234,9 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
     public void encode(ReverseProtoWriter writer, GiftPickExtraGameInteractionStorage value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.effect_version, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.effect_version);
+      if (!Objects.equals(value.effect_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 4, value.effect_id);
+      if (!Objects.equals(value.protocol_version, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 3, value.protocol_version);
       if (!Objects.equals(value.instruction_desc_key, "")) ProtoAdapter.STRING.encodeWithTag(writer, 2, value.instruction_desc_key);
       if (!Objects.equals(value.instruction, "")) ProtoAdapter.STRING.encodeWithTag(writer, 1, value.instruction);
     }
@@ -163,6 +249,9 @@ public final class GiftPickExtraGameInteractionStorage extends Message<GiftPickE
         switch (tag) {
           case 1: builder.instruction(ProtoAdapter.STRING.decode(reader)); break;
           case 2: builder.instruction_desc_key(ProtoAdapter.STRING.decode(reader)); break;
+          case 3: builder.protocol_version(ProtoAdapter.INT32.decode(reader)); break;
+          case 4: builder.effect_id(ProtoAdapter.STRING.decode(reader)); break;
+          case 8: builder.effect_version(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

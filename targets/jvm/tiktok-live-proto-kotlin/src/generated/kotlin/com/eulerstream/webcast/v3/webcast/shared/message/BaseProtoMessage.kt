@@ -83,6 +83,30 @@ public class BaseProtoMessage(
     schemaIndex = 6,
   )
   public val sample_flag: Int = 0,
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#INT32",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "methodId",
+    schemaIndex = 7,
+  )
+  public val method_id: Int = 0,
+  @field:WireField(
+    tag = 9,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "groupKey",
+    schemaIndex = 8,
+  )
+  public val group_key: String = "",
+  @field:WireField(
+    tag = 10,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "groupScene",
+    schemaIndex = 9,
+  )
+  public val group_scene: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<BaseProtoMessage, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -102,6 +126,9 @@ public class BaseProtoMessage(
     if (offset != other.offset) return false
     if (is_history != other.is_history) return false
     if (sample_flag != other.sample_flag) return false
+    if (method_id != other.method_id) return false
+    if (group_key != other.group_key) return false
+    if (group_scene != other.group_scene) return false
     return true
   }
 
@@ -116,6 +143,9 @@ public class BaseProtoMessage(
       result = result * 37 + offset.hashCode()
       result = result * 37 + is_history.hashCode()
       result = result * 37 + sample_flag.hashCode()
+      result = result * 37 + method_id.hashCode()
+      result = result * 37 + group_key.hashCode()
+      result = result * 37 + group_scene.hashCode()
       super.hashCode = result
     }
     return result
@@ -130,6 +160,9 @@ public class BaseProtoMessage(
     result += """offset=$offset"""
     result += """is_history=$is_history"""
     result += """sample_flag=$sample_flag"""
+    result += """method_id=$method_id"""
+    result += """group_key=${sanitize(group_key)}"""
+    result += """group_scene=${sanitize(group_scene)}"""
     return result.joinToString(prefix = "BaseProtoMessage{", separator = ", ", postfix = "}")
   }
 
@@ -141,8 +174,11 @@ public class BaseProtoMessage(
     offset: Long = this.offset,
     is_history: Boolean = this.is_history,
     sample_flag: Int = this.sample_flag,
+    method_id: Int = this.method_id,
+    group_key: String = this.group_key,
+    group_scene: String = this.group_scene,
     unknownFields: ByteString = this.unknownFields,
-  ): BaseProtoMessage = BaseProtoMessage(method, payload, msg_id, msg_type, offset, is_history, sample_flag, unknownFields)
+  ): BaseProtoMessage = BaseProtoMessage(method, payload, msg_id, msg_type, offset, is_history, sample_flag, method_id, group_key, group_scene, unknownFields)
 
   public companion object {
     @JvmField
@@ -177,6 +213,15 @@ public class BaseProtoMessage(
         if (value.sample_flag != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(7, value.sample_flag)
         }
+        if (value.method_id != 0) {
+          size += ProtoAdapter.INT32.encodedSizeWithTag(8, value.method_id)
+        }
+        if (value.group_key != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(9, value.group_key)
+        }
+        if (value.group_scene != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(10, value.group_scene)
+        }
         return size
       }
 
@@ -202,11 +247,29 @@ public class BaseProtoMessage(
         if (value.sample_flag != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 7, value.sample_flag)
         }
+        if (value.method_id != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 8, value.method_id)
+        }
+        if (value.group_key != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 9, value.group_key)
+        }
+        if (value.group_scene != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 10, value.group_scene)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: BaseProtoMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.group_scene != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 10, value.group_scene)
+        }
+        if (value.group_key != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 9, value.group_key)
+        }
+        if (value.method_id != 0) {
+          ProtoAdapter.INT32.encodeWithTag(writer, 8, value.method_id)
+        }
         if (value.sample_flag != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 7, value.sample_flag)
         }
@@ -238,6 +301,9 @@ public class BaseProtoMessage(
         var offset: Long = 0L
         var is_history: Boolean = false
         var sample_flag: Int = 0
+        var method_id: Int = 0
+        var group_key: String = ""
+        var group_scene: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> method = ProtoAdapter.STRING.decode(reader)
@@ -247,6 +313,9 @@ public class BaseProtoMessage(
             5 -> offset = ProtoAdapter.INT64.decode(reader)
             6 -> is_history = ProtoAdapter.BOOL.decode(reader)
             7 -> sample_flag = ProtoAdapter.INT32.decode(reader)
+            8 -> method_id = ProtoAdapter.INT32.decode(reader)
+            9 -> group_key = ProtoAdapter.STRING.decode(reader)
+            10 -> group_scene = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -258,6 +327,9 @@ public class BaseProtoMessage(
           offset = offset,
           is_history = is_history,
           sample_flag = sample_flag,
+          method_id = method_id,
+          group_key = group_key,
+          group_scene = group_scene,
           unknownFields = unknownFields
         )
       }

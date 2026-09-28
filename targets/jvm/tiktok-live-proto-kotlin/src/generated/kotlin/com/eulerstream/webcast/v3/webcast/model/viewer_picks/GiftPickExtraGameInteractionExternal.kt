@@ -14,6 +14,7 @@ import com.squareup.wire.ProtoReader
 import com.squareup.wire.ProtoWriter
 import com.squareup.wire.ReverseProtoWriter
 import com.squareup.wire.Syntax.PROTO_3
+import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
 import kotlin.Any
 import kotlin.AssertionError
@@ -28,6 +29,14 @@ import kotlin.Suppress
 import okio.ByteString
 
 public class GiftPickExtraGameInteractionExternal(
+  @field:WireField(
+    tag = 1,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.viewer_picks.GameInteractionEffectInfo#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "effectInfo",
+    schemaIndex = 0,
+  )
+  public val effect_info: GameInteractionEffectInfo? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<GiftPickExtraGameInteractionExternal, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -40,14 +49,27 @@ public class GiftPickExtraGameInteractionExternal(
     if (other === this) return true
     if (other !is GiftPickExtraGameInteractionExternal) return false
     if (unknownFields != other.unknownFields) return false
+    if (effect_info != other.effect_info) return false
     return true
   }
 
-  override fun hashCode(): Int = unknownFields.hashCode()
+  override fun hashCode(): Int {
+    var result = super.hashCode
+    if (result == 0) {
+      result = unknownFields.hashCode()
+      result = result * 37 + (effect_info?.hashCode() ?: 0)
+      super.hashCode = result
+    }
+    return result
+  }
 
-  override fun toString(): String = "GiftPickExtraGameInteractionExternal{}"
+  override fun toString(): String {
+    val result = mutableListOf<String>()
+    if (effect_info != null) result += """effect_info=$effect_info"""
+    return result.joinToString(prefix = "GiftPickExtraGameInteractionExternal{", separator = ", ", postfix = "}")
+  }
 
-  public fun copy(unknownFields: ByteString = this.unknownFields): GiftPickExtraGameInteractionExternal = GiftPickExtraGameInteractionExternal(unknownFields)
+  public fun copy(effect_info: GameInteractionEffectInfo? = this.effect_info, unknownFields: ByteString = this.unknownFields): GiftPickExtraGameInteractionExternal = GiftPickExtraGameInteractionExternal(effect_info, unknownFields)
 
   public companion object {
     @JvmField
@@ -62,25 +84,42 @@ public class GiftPickExtraGameInteractionExternal(
     ) {
       override fun encodedSize(`value`: GiftPickExtraGameInteractionExternal): Int {
         var size = value.unknownFields.size
+        if (value.effect_info != null) {
+          size += GameInteractionEffectInfo.ADAPTER.encodedSizeWithTag(1, value.effect_info)
+        }
         return size
       }
 
       override fun encode(writer: ProtoWriter, `value`: GiftPickExtraGameInteractionExternal) {
+        if (value.effect_info != null) {
+          GameInteractionEffectInfo.ADAPTER.encodeWithTag(writer, 1, value.effect_info)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: GiftPickExtraGameInteractionExternal) {
         writer.writeBytes(value.unknownFields)
+        if (value.effect_info != null) {
+          GameInteractionEffectInfo.ADAPTER.encodeWithTag(writer, 1, value.effect_info)
+        }
       }
 
       override fun decode(reader: ProtoReader): GiftPickExtraGameInteractionExternal {
-        val unknownFields = reader.forEachTag(reader::readUnknownField)
+        var effect_info: GameInteractionEffectInfo? = null
+        val unknownFields = reader.forEachTag { tag ->
+          when (tag) {
+            1 -> effect_info = GameInteractionEffectInfo.ADAPTER.decode(reader)
+            else -> reader.readUnknownField(tag)
+          }
+        }
         return GiftPickExtraGameInteractionExternal(
+          effect_info = effect_info,
           unknownFields = unknownFields
         )
       }
 
       override fun redact(`value`: GiftPickExtraGameInteractionExternal): GiftPickExtraGameInteractionExternal = value.copy(
+        effect_info = value.effect_info?.let(GameInteractionEffectInfo.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }

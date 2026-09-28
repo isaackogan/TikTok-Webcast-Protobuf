@@ -311,6 +311,14 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
   )
   public final HitABStatus hit_ab_status;
 
+  @WireField(
+      tag = 36,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "drawerLiveType"
+  )
+  public final String drawer_live_type;
+
   public WebcastMemberMessage(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.common = builder.common;
@@ -381,6 +389,10 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
       throw new IllegalArgumentException("builder.hit_ab_status == null");
     }
     this.hit_ab_status = builder.hit_ab_status;
+    if (builder.drawer_live_type == null) {
+      throw new IllegalArgumentException("builder.drawer_live_type == null");
+    }
+    this.drawer_live_type = builder.drawer_live_type;
   }
 
   @Override
@@ -421,6 +433,7 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
     builder.show_wave = show_wave;
     builder.wave_algorithm_data = wave_algorithm_data;
     builder.hit_ab_status = hit_ab_status;
+    builder.drawer_live_type = drawer_live_type;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -465,7 +478,8 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
         && Internal.equals(ec_streamer_key, o.ec_streamer_key)
         && Internal.equals(show_wave, o.show_wave)
         && Internal.equals(wave_algorithm_data, o.wave_algorithm_data)
-        && Internal.equals(hit_ab_status, o.hit_ab_status);
+        && Internal.equals(hit_ab_status, o.hit_ab_status)
+        && Internal.equals(drawer_live_type, o.drawer_live_type);
   }
 
   @Override
@@ -508,6 +522,7 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
       result = result * 37 + Long.hashCode(show_wave);
       result = result * 37 + (wave_algorithm_data != null ? wave_algorithm_data.hashCode() : 0);
       result = result * 37 + (hit_ab_status != null ? hit_ab_status.hashCode() : 0);
+      result = result * 37 + (drawer_live_type != null ? drawer_live_type.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -551,6 +566,7 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
     builder.append(", show_wave=").append(show_wave);
     if (wave_algorithm_data != null) builder.append(", wave_algorithm_data=").append(wave_algorithm_data);
     if (hit_ab_status != null) builder.append(", hit_ab_status=").append(hit_ab_status);
+    if (drawer_live_type != null) builder.append(", drawer_live_type=").append(Internal.sanitize(drawer_live_type));
     return builder.replace(0, 2, "WebcastMemberMessage{").append('}').toString();
   }
 
@@ -625,6 +641,8 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
 
     public HitABStatus hit_ab_status;
 
+    public String drawer_live_type;
+
     public Builder() {
       member_count = 0;
       is_set_to_admin = false;
@@ -652,6 +670,7 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
       ec_streamer_key = "";
       show_wave = 0L;
       hit_ab_status = HitABStatus.NO_HIT;
+      drawer_live_type = "";
     }
 
     public Builder common(CommonMessageData common) {
@@ -830,6 +849,11 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
       return this;
     }
 
+    public Builder drawer_live_type(String drawer_live_type) {
+      this.drawer_live_type = drawer_live_type;
+      return this;
+    }
+
     @Override
     public WebcastMemberMessage build() {
       return new WebcastMemberMessage(this, super.buildUnknownFields());
@@ -949,6 +973,9 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
       if (!Objects.equals(value.hit_ab_status, HitABStatus.NO_HIT)) {
         result += HitABStatus.ADAPTER.encodedSizeWithTag(35, value.hit_ab_status);
       }
+      if (!Objects.equals(value.drawer_live_type, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(36, value.drawer_live_type);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -990,12 +1017,14 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
       if (!Objects.equals(value.show_wave, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 33, value.show_wave);
       if (!Objects.equals(value.wave_algorithm_data, null)) WaveAlgorithmData.ADAPTER.encodeWithTag(writer, 34, value.wave_algorithm_data);
       if (!Objects.equals(value.hit_ab_status, HitABStatus.NO_HIT)) HitABStatus.ADAPTER.encodeWithTag(writer, 35, value.hit_ab_status);
+      if (!Objects.equals(value.drawer_live_type, "")) ProtoAdapter.STRING.encodeWithTag(writer, 36, value.drawer_live_type);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, WebcastMemberMessage value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.drawer_live_type, "")) ProtoAdapter.STRING.encodeWithTag(writer, 36, value.drawer_live_type);
       if (!Objects.equals(value.hit_ab_status, HitABStatus.NO_HIT)) HitABStatus.ADAPTER.encodeWithTag(writer, 35, value.hit_ab_status);
       if (!Objects.equals(value.wave_algorithm_data, null)) WaveAlgorithmData.ADAPTER.encodeWithTag(writer, 34, value.wave_algorithm_data);
       if (!Objects.equals(value.show_wave, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 33, value.show_wave);
@@ -1095,6 +1124,7 @@ public final class WebcastMemberMessage extends Message<WebcastMemberMessage, We
             }
             break;
           }
+          case 36: builder.drawer_live_type(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

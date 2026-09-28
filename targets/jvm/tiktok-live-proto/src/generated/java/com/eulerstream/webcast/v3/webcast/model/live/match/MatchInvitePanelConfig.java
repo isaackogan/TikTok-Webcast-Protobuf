@@ -2,6 +2,7 @@
 // Source: webcast.model.live.match.MatchInvitePanelConfig in webcast/model/live_match.proto
 package com.eulerstream.webcast.v3.webcast.model.live.match;
 
+import com.eulerstream.webcast.v3.webcast.model.base.ImageModel;
 import com.eulerstream.webcast.v3.webcast.model.message.common.Text;
 import com.squareup.wire.FieldEncoding;
 import com.squareup.wire.Message;
@@ -57,18 +58,37 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
   )
   public final Text desc_text_dark_mode;
 
+  @WireField(
+      tag = 5,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "descIcon"
+  )
+  public final ImageModel desc_icon;
+
+  @WireField(
+      tag = 6,
+      adapter = "com.eulerstream.webcast.v3.webcast.model.base.ImageModel#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "descIconDarkMode"
+  )
+  public final ImageModel desc_icon_dark_mode;
+
   public MatchInvitePanelConfig(Text header_text, Text header_text_dark_mode, Text desc_text,
-      Text desc_text_dark_mode) {
-    this(header_text, header_text_dark_mode, desc_text, desc_text_dark_mode, ByteString.EMPTY);
+      Text desc_text_dark_mode, ImageModel desc_icon, ImageModel desc_icon_dark_mode) {
+    this(header_text, header_text_dark_mode, desc_text, desc_text_dark_mode, desc_icon, desc_icon_dark_mode, ByteString.EMPTY);
   }
 
   public MatchInvitePanelConfig(Text header_text, Text header_text_dark_mode, Text desc_text,
-      Text desc_text_dark_mode, ByteString unknownFields) {
+      Text desc_text_dark_mode, ImageModel desc_icon, ImageModel desc_icon_dark_mode,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.header_text = header_text;
     this.header_text_dark_mode = header_text_dark_mode;
     this.desc_text = desc_text;
     this.desc_text_dark_mode = desc_text_dark_mode;
+    this.desc_icon = desc_icon;
+    this.desc_icon_dark_mode = desc_icon_dark_mode;
   }
 
   @Override
@@ -78,6 +98,8 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
     builder.header_text_dark_mode = header_text_dark_mode;
     builder.desc_text = desc_text;
     builder.desc_text_dark_mode = desc_text_dark_mode;
+    builder.desc_icon = desc_icon;
+    builder.desc_icon_dark_mode = desc_icon_dark_mode;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -91,7 +113,9 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
         && Internal.equals(header_text, o.header_text)
         && Internal.equals(header_text_dark_mode, o.header_text_dark_mode)
         && Internal.equals(desc_text, o.desc_text)
-        && Internal.equals(desc_text_dark_mode, o.desc_text_dark_mode);
+        && Internal.equals(desc_text_dark_mode, o.desc_text_dark_mode)
+        && Internal.equals(desc_icon, o.desc_icon)
+        && Internal.equals(desc_icon_dark_mode, o.desc_icon_dark_mode);
   }
 
   @Override
@@ -103,6 +127,8 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
       result = result * 37 + (header_text_dark_mode != null ? header_text_dark_mode.hashCode() : 0);
       result = result * 37 + (desc_text != null ? desc_text.hashCode() : 0);
       result = result * 37 + (desc_text_dark_mode != null ? desc_text_dark_mode.hashCode() : 0);
+      result = result * 37 + (desc_icon != null ? desc_icon.hashCode() : 0);
+      result = result * 37 + (desc_icon_dark_mode != null ? desc_icon_dark_mode.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -115,6 +141,8 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
     if (header_text_dark_mode != null) builder.append(", header_text_dark_mode=").append(header_text_dark_mode);
     if (desc_text != null) builder.append(", desc_text=").append(desc_text);
     if (desc_text_dark_mode != null) builder.append(", desc_text_dark_mode=").append(desc_text_dark_mode);
+    if (desc_icon != null) builder.append(", desc_icon=").append(desc_icon);
+    if (desc_icon_dark_mode != null) builder.append(", desc_icon_dark_mode=").append(desc_icon_dark_mode);
     return builder.replace(0, 2, "MatchInvitePanelConfig{").append('}').toString();
   }
 
@@ -126,6 +154,10 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
     public Text desc_text;
 
     public Text desc_text_dark_mode;
+
+    public ImageModel desc_icon;
+
+    public ImageModel desc_icon_dark_mode;
 
     public Builder() {
     }
@@ -150,9 +182,19 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
       return this;
     }
 
+    public Builder desc_icon(ImageModel desc_icon) {
+      this.desc_icon = desc_icon;
+      return this;
+    }
+
+    public Builder desc_icon_dark_mode(ImageModel desc_icon_dark_mode) {
+      this.desc_icon_dark_mode = desc_icon_dark_mode;
+      return this;
+    }
+
     @Override
     public MatchInvitePanelConfig build() {
-      return new MatchInvitePanelConfig(header_text, header_text_dark_mode, desc_text, desc_text_dark_mode, super.buildUnknownFields());
+      return new MatchInvitePanelConfig(header_text, header_text_dark_mode, desc_text, desc_text_dark_mode, desc_icon, desc_icon_dark_mode, super.buildUnknownFields());
     }
   }
 
@@ -176,6 +218,12 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
       if (!Objects.equals(value.desc_text_dark_mode, null)) {
         result += Text.ADAPTER.encodedSizeWithTag(4, value.desc_text_dark_mode);
       }
+      if (!Objects.equals(value.desc_icon, null)) {
+        result += ImageModel.ADAPTER.encodedSizeWithTag(5, value.desc_icon);
+      }
+      if (!Objects.equals(value.desc_icon_dark_mode, null)) {
+        result += ImageModel.ADAPTER.encodedSizeWithTag(6, value.desc_icon_dark_mode);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -186,12 +234,16 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
       if (!Objects.equals(value.header_text_dark_mode, null)) Text.ADAPTER.encodeWithTag(writer, 2, value.header_text_dark_mode);
       if (!Objects.equals(value.desc_text, null)) Text.ADAPTER.encodeWithTag(writer, 3, value.desc_text);
       if (!Objects.equals(value.desc_text_dark_mode, null)) Text.ADAPTER.encodeWithTag(writer, 4, value.desc_text_dark_mode);
+      if (!Objects.equals(value.desc_icon, null)) ImageModel.ADAPTER.encodeWithTag(writer, 5, value.desc_icon);
+      if (!Objects.equals(value.desc_icon_dark_mode, null)) ImageModel.ADAPTER.encodeWithTag(writer, 6, value.desc_icon_dark_mode);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, MatchInvitePanelConfig value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.desc_icon_dark_mode, null)) ImageModel.ADAPTER.encodeWithTag(writer, 6, value.desc_icon_dark_mode);
+      if (!Objects.equals(value.desc_icon, null)) ImageModel.ADAPTER.encodeWithTag(writer, 5, value.desc_icon);
       if (!Objects.equals(value.desc_text_dark_mode, null)) Text.ADAPTER.encodeWithTag(writer, 4, value.desc_text_dark_mode);
       if (!Objects.equals(value.desc_text, null)) Text.ADAPTER.encodeWithTag(writer, 3, value.desc_text);
       if (!Objects.equals(value.header_text_dark_mode, null)) Text.ADAPTER.encodeWithTag(writer, 2, value.header_text_dark_mode);
@@ -208,6 +260,8 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
           case 2: builder.header_text_dark_mode(Text.ADAPTER.decode(reader)); break;
           case 3: builder.desc_text(Text.ADAPTER.decode(reader)); break;
           case 4: builder.desc_text_dark_mode(Text.ADAPTER.decode(reader)); break;
+          case 5: builder.desc_icon(ImageModel.ADAPTER.decode(reader)); break;
+          case 6: builder.desc_icon_dark_mode(ImageModel.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -224,6 +278,8 @@ public final class MatchInvitePanelConfig extends Message<MatchInvitePanelConfig
       if (builder.header_text_dark_mode != null) builder.header_text_dark_mode = Text.ADAPTER.redact(builder.header_text_dark_mode);
       if (builder.desc_text != null) builder.desc_text = Text.ADAPTER.redact(builder.desc_text);
       if (builder.desc_text_dark_mode != null) builder.desc_text_dark_mode = Text.ADAPTER.redact(builder.desc_text_dark_mode);
+      if (builder.desc_icon != null) builder.desc_icon = ImageModel.ADAPTER.redact(builder.desc_icon);
+      if (builder.desc_icon_dark_mode != null) builder.desc_icon_dark_mode = ImageModel.ADAPTER.redact(builder.desc_icon_dark_mode);
       builder.clearUnknownFields();
       return builder.build();
     }

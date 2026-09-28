@@ -69,6 +69,14 @@ public class LinkMicAudienceInviteGuide(
     schemaIndex = 4,
   )
   public val linkmic_audience_invite_notice_reason: String = "",
+  @field:WireField(
+    tag = 6,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "linkerSessionId",
+    schemaIndex = 5,
+  )
+  public val linker_session_id: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<LinkMicAudienceInviteGuide, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -86,6 +94,7 @@ public class LinkMicAudienceInviteGuide(
     if (user != other.user) return false
     if (display_strategy != other.display_strategy) return false
     if (linkmic_audience_invite_notice_reason != other.linkmic_audience_invite_notice_reason) return false
+    if (linker_session_id != other.linker_session_id) return false
     return true
   }
 
@@ -98,6 +107,7 @@ public class LinkMicAudienceInviteGuide(
       result = result * 37 + (user?.hashCode() ?: 0)
       result = result * 37 + display_strategy.hashCode()
       result = result * 37 + linkmic_audience_invite_notice_reason.hashCode()
+      result = result * 37 + linker_session_id.hashCode()
       super.hashCode = result
     }
     return result
@@ -110,6 +120,7 @@ public class LinkMicAudienceInviteGuide(
     if (user != null) result += """user=$user"""
     result += """display_strategy=$display_strategy"""
     result += """linkmic_audience_invite_notice_reason=${sanitize(linkmic_audience_invite_notice_reason)}"""
+    result += """linker_session_id=${sanitize(linker_session_id)}"""
     return result.joinToString(prefix = "LinkMicAudienceInviteGuide{", separator = ", ", postfix = "}")
   }
 
@@ -119,8 +130,9 @@ public class LinkMicAudienceInviteGuide(
     user: User? = this.user,
     display_strategy: Int = this.display_strategy,
     linkmic_audience_invite_notice_reason: String = this.linkmic_audience_invite_notice_reason,
+    linker_session_id: String = this.linker_session_id,
     unknownFields: ByteString = this.unknownFields,
-  ): LinkMicAudienceInviteGuide = LinkMicAudienceInviteGuide(content, button_content, user, display_strategy, linkmic_audience_invite_notice_reason, unknownFields)
+  ): LinkMicAudienceInviteGuide = LinkMicAudienceInviteGuide(content, button_content, user, display_strategy, linkmic_audience_invite_notice_reason, linker_session_id, unknownFields)
 
   public companion object {
     @JvmField
@@ -150,6 +162,9 @@ public class LinkMicAudienceInviteGuide(
         if (value.linkmic_audience_invite_notice_reason != "") {
           size += ProtoAdapter.STRING.encodedSizeWithTag(5, value.linkmic_audience_invite_notice_reason)
         }
+        if (value.linker_session_id != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(6, value.linker_session_id)
+        }
         return size
       }
 
@@ -169,11 +184,17 @@ public class LinkMicAudienceInviteGuide(
         if (value.linkmic_audience_invite_notice_reason != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 5, value.linkmic_audience_invite_notice_reason)
         }
+        if (value.linker_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.linker_session_id)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: LinkMicAudienceInviteGuide) {
         writer.writeBytes(value.unknownFields)
+        if (value.linker_session_id != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 6, value.linker_session_id)
+        }
         if (value.linkmic_audience_invite_notice_reason != "") {
           ProtoAdapter.STRING.encodeWithTag(writer, 5, value.linkmic_audience_invite_notice_reason)
         }
@@ -197,6 +218,7 @@ public class LinkMicAudienceInviteGuide(
         var user: User? = null
         var display_strategy: Int = 0
         var linkmic_audience_invite_notice_reason: String = ""
+        var linker_session_id: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> content = LinkMicAudienceNoticeText.ADAPTER.decode(reader)
@@ -204,6 +226,7 @@ public class LinkMicAudienceInviteGuide(
             3 -> user = User.ADAPTER.decode(reader)
             4 -> display_strategy = ProtoAdapter.INT32.decode(reader)
             5 -> linkmic_audience_invite_notice_reason = ProtoAdapter.STRING.decode(reader)
+            6 -> linker_session_id = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -213,6 +236,7 @@ public class LinkMicAudienceInviteGuide(
           user = user,
           display_strategy = display_strategy,
           linkmic_audience_invite_notice_reason = linkmic_audience_invite_notice_reason,
+          linker_session_id = linker_session_id,
           unknownFields = unknownFields
         )
       }

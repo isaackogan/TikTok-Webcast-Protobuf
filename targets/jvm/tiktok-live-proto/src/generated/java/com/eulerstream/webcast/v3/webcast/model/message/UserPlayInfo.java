@@ -74,13 +74,21 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
   )
   public final PlayUserTag user_tag;
 
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#INT64",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "playRoundId"
+  )
+  public final long play_round_id;
+
   public UserPlayInfo(long play_id, PlayScene play_scene, long score, int rank, long target_score,
-      PlayUserTag user_tag) {
-    this(play_id, play_scene, score, rank, target_score, user_tag, ByteString.EMPTY);
+      PlayUserTag user_tag, long play_round_id) {
+    this(play_id, play_scene, score, rank, target_score, user_tag, play_round_id, ByteString.EMPTY);
   }
 
   public UserPlayInfo(long play_id, PlayScene play_scene, long score, int rank, long target_score,
-      PlayUserTag user_tag, ByteString unknownFields) {
+      PlayUserTag user_tag, long play_round_id, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.play_id = play_id;
     if (play_scene == null) {
@@ -94,6 +102,7 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
       throw new IllegalArgumentException("user_tag == null");
     }
     this.user_tag = user_tag;
+    this.play_round_id = play_round_id;
   }
 
   @Override
@@ -105,6 +114,7 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
     builder.rank = rank;
     builder.target_score = target_score;
     builder.user_tag = user_tag;
+    builder.play_round_id = play_round_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -120,7 +130,8 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
         && Internal.equals(score, o.score)
         && Internal.equals(rank, o.rank)
         && Internal.equals(target_score, o.target_score)
-        && Internal.equals(user_tag, o.user_tag);
+        && Internal.equals(user_tag, o.user_tag)
+        && Internal.equals(play_round_id, o.play_round_id);
   }
 
   @Override
@@ -134,6 +145,7 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
       result = result * 37 + Integer.hashCode(rank);
       result = result * 37 + Long.hashCode(target_score);
       result = result * 37 + (user_tag != null ? user_tag.hashCode() : 0);
+      result = result * 37 + Long.hashCode(play_round_id);
       super.hashCode = result;
     }
     return result;
@@ -148,6 +160,7 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
     builder.append(", rank=").append(rank);
     builder.append(", target_score=").append(target_score);
     if (user_tag != null) builder.append(", user_tag=").append(user_tag);
+    builder.append(", play_round_id=").append(play_round_id);
     return builder.replace(0, 2, "UserPlayInfo{").append('}').toString();
   }
 
@@ -164,6 +177,8 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
 
     public PlayUserTag user_tag;
 
+    public long play_round_id;
+
     public Builder() {
       play_id = 0L;
       play_scene = PlayScene.UNKNOWN;
@@ -171,6 +186,7 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
       rank = 0;
       target_score = 0L;
       user_tag = PlayUserTag.PLAY_USER_TAG_UNKNOWN;
+      play_round_id = 0L;
     }
 
     public Builder play_id(long play_id) {
@@ -203,9 +219,14 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
       return this;
     }
 
+    public Builder play_round_id(long play_round_id) {
+      this.play_round_id = play_round_id;
+      return this;
+    }
+
     @Override
     public UserPlayInfo build() {
-      return new UserPlayInfo(play_id, play_scene, score, rank, target_score, user_tag, super.buildUnknownFields());
+      return new UserPlayInfo(play_id, play_scene, score, rank, target_score, user_tag, play_round_id, super.buildUnknownFields());
     }
   }
 
@@ -235,6 +256,9 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
       if (!Objects.equals(value.user_tag, PlayUserTag.PLAY_USER_TAG_UNKNOWN)) {
         result += PlayUserTag.ADAPTER.encodedSizeWithTag(6, value.user_tag);
       }
+      if (!Objects.equals(value.play_round_id, 0L)) {
+        result += ProtoAdapter.INT64.encodedSizeWithTag(7, value.play_round_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -247,12 +271,14 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
       if (!Objects.equals(value.rank, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.rank);
       if (!Objects.equals(value.target_score, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.target_score);
       if (!Objects.equals(value.user_tag, PlayUserTag.PLAY_USER_TAG_UNKNOWN)) PlayUserTag.ADAPTER.encodeWithTag(writer, 6, value.user_tag);
+      if (!Objects.equals(value.play_round_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 7, value.play_round_id);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, UserPlayInfo value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.play_round_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 7, value.play_round_id);
       if (!Objects.equals(value.user_tag, PlayUserTag.PLAY_USER_TAG_UNKNOWN)) PlayUserTag.ADAPTER.encodeWithTag(writer, 6, value.user_tag);
       if (!Objects.equals(value.target_score, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 5, value.target_score);
       if (!Objects.equals(value.rank, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.rank);
@@ -287,6 +313,7 @@ public final class UserPlayInfo extends Message<UserPlayInfo, UserPlayInfo.Build
             }
             break;
           }
+          case 7: builder.play_round_id(ProtoAdapter.INT64.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

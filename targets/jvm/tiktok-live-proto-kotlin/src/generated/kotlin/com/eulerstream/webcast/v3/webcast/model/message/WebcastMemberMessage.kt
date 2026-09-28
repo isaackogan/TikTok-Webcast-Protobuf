@@ -310,6 +310,14 @@ public class WebcastMemberMessage(
     schemaIndex = 34,
   )
   public val hit_ab_status: HitABStatus = HitABStatus.NO_HIT,
+  @field:WireField(
+    tag = 36,
+    adapter = "com.squareup.wire.ProtoAdapter#STRING",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "drawerLiveType",
+    schemaIndex = 35,
+  )
+  public val drawer_live_type: String = "",
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastMemberMessage, Nothing>(ADAPTER, unknownFields) {
   @field:WireField(
@@ -367,6 +375,7 @@ public class WebcastMemberMessage(
     if (show_wave != other.show_wave) return false
     if (wave_algorithm_data != other.wave_algorithm_data) return false
     if (hit_ab_status != other.hit_ab_status) return false
+    if (drawer_live_type != other.drawer_live_type) return false
     return true
   }
 
@@ -409,6 +418,7 @@ public class WebcastMemberMessage(
       result = result * 37 + show_wave.hashCode()
       result = result * 37 + (wave_algorithm_data?.hashCode() ?: 0)
       result = result * 37 + hit_ab_status.hashCode()
+      result = result * 37 + drawer_live_type.hashCode()
       super.hashCode = result
     }
     return result
@@ -451,6 +461,7 @@ public class WebcastMemberMessage(
     result += """show_wave=$show_wave"""
     if (wave_algorithm_data != null) result += """wave_algorithm_data=$wave_algorithm_data"""
     result += """hit_ab_status=$hit_ab_status"""
+    result += """drawer_live_type=${sanitize(drawer_live_type)}"""
     return result.joinToString(prefix = "WebcastMemberMessage{", separator = ", ", postfix = "}")
   }
 
@@ -490,8 +501,9 @@ public class WebcastMemberMessage(
     show_wave: Long = this.show_wave,
     wave_algorithm_data: WaveAlgorithmData? = this.wave_algorithm_data,
     hit_ab_status: HitABStatus = this.hit_ab_status,
+    drawer_live_type: String = this.drawer_live_type,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastMemberMessage = WebcastMemberMessage(common, user, member_count, operator_, is_set_to_admin, is_top_user, rank_score, top_user_no, enter_type, action, action_description, user_id, effect_config, pop_str, enter_effect_config, background_image, background_image_v2, anchor_display_text, client_enter_source, client_enter_type, client_live_reason, action_duration, user_share_type, display_style, admin_permissions, kick_source, allow_preview_time, last_subscription_action, public_area_message_common, live_sub_only_tier, live_sub_only_month, ec_streamer_key, show_wave, wave_algorithm_data, hit_ab_status, unknownFields)
+  ): WebcastMemberMessage = WebcastMemberMessage(common, user, member_count, operator_, is_set_to_admin, is_top_user, rank_score, top_user_no, enter_type, action, action_description, user_id, effect_config, pop_str, enter_effect_config, background_image, background_image_v2, anchor_display_text, client_enter_source, client_enter_type, client_live_reason, action_duration, user_share_type, display_style, admin_permissions, kick_source, allow_preview_time, last_subscription_action, public_area_message_common, live_sub_only_tier, live_sub_only_month, ec_streamer_key, show_wave, wave_algorithm_data, hit_ab_status, drawer_live_type, unknownFields)
 
   public companion object {
     @JvmField
@@ -612,6 +624,9 @@ public class WebcastMemberMessage(
         if (value.hit_ab_status != com.eulerstream.webcast.v3.webcast.im.HitABStatus.NO_HIT) {
           size += HitABStatus.ADAPTER.encodedSizeWithTag(35, value.hit_ab_status)
         }
+        if (value.drawer_live_type != "") {
+          size += ProtoAdapter.STRING.encodedSizeWithTag(36, value.drawer_live_type)
+        }
         return size
       }
 
@@ -719,11 +734,17 @@ public class WebcastMemberMessage(
         if (value.hit_ab_status != com.eulerstream.webcast.v3.webcast.im.HitABStatus.NO_HIT) {
           HitABStatus.ADAPTER.encodeWithTag(writer, 35, value.hit_ab_status)
         }
+        if (value.drawer_live_type != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 36, value.drawer_live_type)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastMemberMessage) {
         writer.writeBytes(value.unknownFields)
+        if (value.drawer_live_type != "") {
+          ProtoAdapter.STRING.encodeWithTag(writer, 36, value.drawer_live_type)
+        }
         if (value.hit_ab_status != com.eulerstream.webcast.v3.webcast.im.HitABStatus.NO_HIT) {
           HitABStatus.ADAPTER.encodeWithTag(writer, 35, value.hit_ab_status)
         }
@@ -865,6 +886,7 @@ public class WebcastMemberMessage(
         var show_wave: Long = 0L
         var wave_algorithm_data: WaveAlgorithmData? = null
         var hit_ab_status: HitABStatus = HitABStatus.NO_HIT
+        var drawer_live_type: String = ""
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -914,6 +936,7 @@ public class WebcastMemberMessage(
             } catch (e: ProtoAdapter.EnumConstantNotFoundException) {
               reader.addUnknownField(tag, FieldEncoding.VARINT, e.value.toLong())
             }
+            36 -> drawer_live_type = ProtoAdapter.STRING.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -953,6 +976,7 @@ public class WebcastMemberMessage(
           show_wave = show_wave,
           wave_algorithm_data = wave_algorithm_data,
           hit_ab_status = hit_ab_status,
+          drawer_live_type = drawer_live_type,
           unknownFields = unknownFields
         )
       }

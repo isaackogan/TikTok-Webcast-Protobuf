@@ -28,23 +28,24 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
   @WireField(
       tag = 1,
       adapter = "com.eulerstream.webcast.v3.webcast.model.live.match.BattleBonusConfig#ADAPTER",
-      label = WireField.Label.OMIT_IDENTITY
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "battleBonusConfig"
   )
-  public final BattleBonusConfig config;
+  public final BattleBonusConfig battle_bonus_config;
 
-  public BattleTaskStart(BattleBonusConfig config) {
-    this(config, ByteString.EMPTY);
+  public BattleTaskStart(BattleBonusConfig battle_bonus_config) {
+    this(battle_bonus_config, ByteString.EMPTY);
   }
 
-  public BattleTaskStart(BattleBonusConfig config, ByteString unknownFields) {
+  public BattleTaskStart(BattleBonusConfig battle_bonus_config, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
-    this.config = config;
+    this.battle_bonus_config = battle_bonus_config;
   }
 
   @Override
   public Builder newBuilder() {
     Builder builder = new Builder();
-    builder.config = config;
+    builder.battle_bonus_config = battle_bonus_config;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -55,7 +56,7 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
     if (!(other instanceof BattleTaskStart)) return false;
     BattleTaskStart o = (BattleTaskStart) other;
     return unknownFields().equals(o.unknownFields())
-        && Internal.equals(config, o.config);
+        && Internal.equals(battle_bonus_config, o.battle_bonus_config);
   }
 
   @Override
@@ -63,7 +64,7 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
     int result = super.hashCode;
     if (result == 0) {
       result = unknownFields().hashCode();
-      result = result * 37 + (config != null ? config.hashCode() : 0);
+      result = result * 37 + (battle_bonus_config != null ? battle_bonus_config.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -72,24 +73,24 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    if (config != null) builder.append(", config=").append(config);
+    if (battle_bonus_config != null) builder.append(", battle_bonus_config=").append(battle_bonus_config);
     return builder.replace(0, 2, "BattleTaskStart{").append('}').toString();
   }
 
   public static final class Builder extends Message.Builder<BattleTaskStart, Builder> {
-    public BattleBonusConfig config;
+    public BattleBonusConfig battle_bonus_config;
 
     public Builder() {
     }
 
-    public Builder config(BattleBonusConfig config) {
-      this.config = config;
+    public Builder battle_bonus_config(BattleBonusConfig battle_bonus_config) {
+      this.battle_bonus_config = battle_bonus_config;
       return this;
     }
 
     @Override
     public BattleTaskStart build() {
-      return new BattleTaskStart(config, super.buildUnknownFields());
+      return new BattleTaskStart(battle_bonus_config, super.buildUnknownFields());
     }
   }
 
@@ -101,8 +102,8 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
     @Override
     public int encodedSize(BattleTaskStart value) {
       int result = 0;
-      if (!Objects.equals(value.config, null)) {
-        result += BattleBonusConfig.ADAPTER.encodedSizeWithTag(1, value.config);
+      if (!Objects.equals(value.battle_bonus_config, null)) {
+        result += BattleBonusConfig.ADAPTER.encodedSizeWithTag(1, value.battle_bonus_config);
       }
       result += value.unknownFields().size();
       return result;
@@ -110,14 +111,14 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
 
     @Override
     public void encode(ProtoWriter writer, BattleTaskStart value) throws IOException {
-      if (!Objects.equals(value.config, null)) BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.config);
+      if (!Objects.equals(value.battle_bonus_config, null)) BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.battle_bonus_config);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, BattleTaskStart value) throws IOException {
       writer.writeBytes(value.unknownFields());
-      if (!Objects.equals(value.config, null)) BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.config);
+      if (!Objects.equals(value.battle_bonus_config, null)) BattleBonusConfig.ADAPTER.encodeWithTag(writer, 1, value.battle_bonus_config);
     }
 
     @Override
@@ -126,7 +127,7 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
       long token = reader.beginMessage();
       for (int tag; (tag = reader.nextTag()) != -1;) {
         switch (tag) {
-          case 1: builder.config(BattleBonusConfig.ADAPTER.decode(reader)); break;
+          case 1: builder.battle_bonus_config(BattleBonusConfig.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -139,7 +140,7 @@ public final class BattleTaskStart extends Message<BattleTaskStart, BattleTaskSt
     @Override
     public BattleTaskStart redact(BattleTaskStart value) {
       Builder builder = value.newBuilder();
-      if (builder.config != null) builder.config = BattleBonusConfig.ADAPTER.redact(builder.config);
+      if (builder.battle_bonus_config != null) builder.battle_bonus_config = BattleBonusConfig.ADAPTER.redact(builder.battle_bonus_config);
       builder.clearUnknownFields();
       return builder.build();
     }

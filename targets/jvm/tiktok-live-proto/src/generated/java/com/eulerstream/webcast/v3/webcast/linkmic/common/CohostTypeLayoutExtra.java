@@ -14,6 +14,7 @@ import com.squareup.wire.internal.Internal;
 import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -81,15 +82,23 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
   )
   public final int rematch_spot_id;
 
+  @WireField(
+      tag = 8,
+      adapter = "com.squareup.wire.ProtoAdapter#INT64",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "screenShareUserId"
+  )
+  public final long screen_share_user_id;
+
   public CohostTypeLayoutExtra(int is_zoom_layout, int offset_y, int scene,
       boolean local_layout_only, int is_enlarge_mode, boolean disable_match_component,
-      int rematch_spot_id) {
-    this(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, ByteString.EMPTY);
+      int rematch_spot_id, long screen_share_user_id) {
+    this(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, screen_share_user_id, ByteString.EMPTY);
   }
 
   public CohostTypeLayoutExtra(int is_zoom_layout, int offset_y, int scene,
       boolean local_layout_only, int is_enlarge_mode, boolean disable_match_component,
-      int rematch_spot_id, ByteString unknownFields) {
+      int rematch_spot_id, long screen_share_user_id, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.is_zoom_layout = is_zoom_layout;
     this.offset_y = offset_y;
@@ -98,6 +107,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
     this.is_enlarge_mode = is_enlarge_mode;
     this.disable_match_component = disable_match_component;
     this.rematch_spot_id = rematch_spot_id;
+    this.screen_share_user_id = screen_share_user_id;
   }
 
   @Override
@@ -110,6 +120,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
     builder.is_enlarge_mode = is_enlarge_mode;
     builder.disable_match_component = disable_match_component;
     builder.rematch_spot_id = rematch_spot_id;
+    builder.screen_share_user_id = screen_share_user_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -126,7 +137,8 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
         && Internal.equals(local_layout_only, o.local_layout_only)
         && Internal.equals(is_enlarge_mode, o.is_enlarge_mode)
         && Internal.equals(disable_match_component, o.disable_match_component)
-        && Internal.equals(rematch_spot_id, o.rematch_spot_id);
+        && Internal.equals(rematch_spot_id, o.rematch_spot_id)
+        && Internal.equals(screen_share_user_id, o.screen_share_user_id);
   }
 
   @Override
@@ -141,6 +153,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       result = result * 37 + Integer.hashCode(is_enlarge_mode);
       result = result * 37 + Boolean.hashCode(disable_match_component);
       result = result * 37 + Integer.hashCode(rematch_spot_id);
+      result = result * 37 + Long.hashCode(screen_share_user_id);
       super.hashCode = result;
     }
     return result;
@@ -156,6 +169,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
     builder.append(", is_enlarge_mode=").append(is_enlarge_mode);
     builder.append(", disable_match_component=").append(disable_match_component);
     builder.append(", rematch_spot_id=").append(rematch_spot_id);
+    builder.append(", screen_share_user_id=").append(screen_share_user_id);
     return builder.replace(0, 2, "CohostTypeLayoutExtra{").append('}').toString();
   }
 
@@ -174,6 +188,8 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
 
     public int rematch_spot_id;
 
+    public long screen_share_user_id;
+
     public Builder() {
       is_zoom_layout = 0;
       offset_y = 0;
@@ -182,6 +198,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       is_enlarge_mode = 0;
       disable_match_component = false;
       rematch_spot_id = 0;
+      screen_share_user_id = 0L;
     }
 
     public Builder is_zoom_layout(int is_zoom_layout) {
@@ -219,9 +236,14 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       return this;
     }
 
+    public Builder screen_share_user_id(long screen_share_user_id) {
+      this.screen_share_user_id = screen_share_user_id;
+      return this;
+    }
+
     @Override
     public CohostTypeLayoutExtra build() {
-      return new CohostTypeLayoutExtra(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, super.buildUnknownFields());
+      return new CohostTypeLayoutExtra(is_zoom_layout, offset_y, scene, local_layout_only, is_enlarge_mode, disable_match_component, rematch_spot_id, screen_share_user_id, super.buildUnknownFields());
     }
   }
 
@@ -254,6 +276,9 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       if (!Objects.equals(value.rematch_spot_id, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(7, value.rematch_spot_id);
       }
+      if (!Objects.equals(value.screen_share_user_id, 0L)) {
+        result += ProtoAdapter.INT64.encodedSizeWithTag(8, value.screen_share_user_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -267,12 +292,14 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
       if (!Objects.equals(value.is_enlarge_mode, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 5, value.is_enlarge_mode);
       if (!Objects.equals(value.disable_match_component, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.disable_match_component);
       if (!Objects.equals(value.rematch_spot_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.rematch_spot_id);
+      if (!Objects.equals(value.screen_share_user_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 8, value.screen_share_user_id);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, CohostTypeLayoutExtra value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.screen_share_user_id, 0L)) ProtoAdapter.INT64.encodeWithTag(writer, 8, value.screen_share_user_id);
       if (!Objects.equals(value.rematch_spot_id, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 7, value.rematch_spot_id);
       if (!Objects.equals(value.disable_match_component, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.disable_match_component);
       if (!Objects.equals(value.is_enlarge_mode, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 5, value.is_enlarge_mode);
@@ -295,6 +322,7 @@ public final class CohostTypeLayoutExtra extends Message<CohostTypeLayoutExtra, 
           case 5: builder.is_enlarge_mode(ProtoAdapter.INT32.decode(reader)); break;
           case 6: builder.disable_match_component(ProtoAdapter.BOOL.decode(reader)); break;
           case 7: builder.rematch_spot_id(ProtoAdapter.INT32.decode(reader)); break;
+          case 8: builder.screen_share_user_id(ProtoAdapter.INT64.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }

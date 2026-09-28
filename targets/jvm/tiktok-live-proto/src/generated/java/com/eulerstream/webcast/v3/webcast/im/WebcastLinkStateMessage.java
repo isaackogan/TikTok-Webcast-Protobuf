@@ -4,6 +4,7 @@ package com.eulerstream.webcast.v3.webcast.im;
 
 import com.eulerstream.webcast.v3.webcast.linkmic.common.BackGroundImageState;
 import com.eulerstream.webcast.v3.webcast.linkmic.common.LayoutState;
+import com.eulerstream.webcast.v3.webcast.linkmic.common.LinkStateMultiGuestBizExtra;
 import com.eulerstream.webcast.v3.webcast.linkmic.common.LinkUserState;
 import com.eulerstream.webcast.v3.webcast.linkmic.common.PosIdentity;
 import com.eulerstream.webcast.v3.webcast.linkmic.common.Scene;
@@ -150,44 +151,41 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
   )
   public final int linker_mode;
 
-  public WebcastLinkStateMessage(CommonMessageData common, long channel_id, Scene scene,
-      long version, int need_ack, LayoutState layout, List<LinkUserState> user_states,
-      long client_send_time, StateType state_type, BackGroundImageState background,
-      String wallpaper_url, List<PosIdentity> ui_pos, List<SpotInfo> spot_list,
-      List<Long> audio_muted_remote_channels, int linker_mode) {
-    this(common, channel_id, scene, version, need_ack, layout, user_states, client_send_time, state_type, background, wallpaper_url, ui_pos, spot_list, audio_muted_remote_channels, linker_mode, ByteString.EMPTY);
-  }
+  @WireField(
+      tag = 17,
+      adapter = "com.eulerstream.webcast.v3.webcast.linkmic.common.LinkStateMultiGuestBizExtra#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "multiGuestBizInfo"
+  )
+  public final LinkStateMultiGuestBizExtra multi_guest_biz_info;
 
-  public WebcastLinkStateMessage(CommonMessageData common, long channel_id, Scene scene,
-      long version, int need_ack, LayoutState layout, List<LinkUserState> user_states,
-      long client_send_time, StateType state_type, BackGroundImageState background,
-      String wallpaper_url, List<PosIdentity> ui_pos, List<SpotInfo> spot_list,
-      List<Long> audio_muted_remote_channels, int linker_mode, ByteString unknownFields) {
+  public WebcastLinkStateMessage(Builder builder, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
-    this.common = common;
-    this.channel_id = channel_id;
-    if (scene == null) {
-      throw new IllegalArgumentException("scene == null");
+    this.common = builder.common;
+    this.channel_id = builder.channel_id;
+    if (builder.scene == null) {
+      throw new IllegalArgumentException("builder.scene == null");
     }
-    this.scene = scene;
-    this.version = version;
-    this.need_ack = need_ack;
-    this.layout = layout;
-    this.user_states = Internal.immutableCopyOf("user_states", user_states);
-    this.client_send_time = client_send_time;
-    if (state_type == null) {
-      throw new IllegalArgumentException("state_type == null");
+    this.scene = builder.scene;
+    this.version = builder.version;
+    this.need_ack = builder.need_ack;
+    this.layout = builder.layout;
+    this.user_states = Internal.immutableCopyOf("user_states", builder.user_states);
+    this.client_send_time = builder.client_send_time;
+    if (builder.state_type == null) {
+      throw new IllegalArgumentException("builder.state_type == null");
     }
-    this.state_type = state_type;
-    this.background = background;
-    if (wallpaper_url == null) {
-      throw new IllegalArgumentException("wallpaper_url == null");
+    this.state_type = builder.state_type;
+    this.background = builder.background;
+    if (builder.wallpaper_url == null) {
+      throw new IllegalArgumentException("builder.wallpaper_url == null");
     }
-    this.wallpaper_url = wallpaper_url;
-    this.ui_pos = Internal.immutableCopyOf("ui_pos", ui_pos);
-    this.spot_list = Internal.immutableCopyOf("spot_list", spot_list);
-    this.audio_muted_remote_channels = Internal.immutableCopyOf("audio_muted_remote_channels", audio_muted_remote_channels);
-    this.linker_mode = linker_mode;
+    this.wallpaper_url = builder.wallpaper_url;
+    this.ui_pos = Internal.immutableCopyOf("ui_pos", builder.ui_pos);
+    this.spot_list = Internal.immutableCopyOf("spot_list", builder.spot_list);
+    this.audio_muted_remote_channels = Internal.immutableCopyOf("audio_muted_remote_channels", builder.audio_muted_remote_channels);
+    this.linker_mode = builder.linker_mode;
+    this.multi_guest_biz_info = builder.multi_guest_biz_info;
   }
 
   @Override
@@ -208,6 +206,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
     builder.spot_list = Internal.copyOf(spot_list);
     builder.audio_muted_remote_channels = Internal.copyOf(audio_muted_remote_channels);
     builder.linker_mode = linker_mode;
+    builder.multi_guest_biz_info = multi_guest_biz_info;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -232,7 +231,8 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
         && ui_pos.equals(o.ui_pos)
         && spot_list.equals(o.spot_list)
         && audio_muted_remote_channels.equals(o.audio_muted_remote_channels)
-        && Internal.equals(linker_mode, o.linker_mode);
+        && Internal.equals(linker_mode, o.linker_mode)
+        && Internal.equals(multi_guest_biz_info, o.multi_guest_biz_info);
   }
 
   @Override
@@ -255,6 +255,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
       result = result * 37 + spot_list.hashCode();
       result = result * 37 + audio_muted_remote_channels.hashCode();
       result = result * 37 + Integer.hashCode(linker_mode);
+      result = result * 37 + (multi_guest_biz_info != null ? multi_guest_biz_info.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -278,6 +279,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
     if (!spot_list.isEmpty()) builder.append(", spot_list=").append(spot_list);
     if (!audio_muted_remote_channels.isEmpty()) builder.append(", audio_muted_remote_channels=").append(audio_muted_remote_channels);
     builder.append(", linker_mode=").append(linker_mode);
+    if (multi_guest_biz_info != null) builder.append(", multi_guest_biz_info=").append(multi_guest_biz_info);
     return builder.replace(0, 2, "WebcastLinkStateMessage{").append('}').toString();
   }
 
@@ -311,6 +313,8 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
     public List<Long> audio_muted_remote_channels;
 
     public int linker_mode;
+
+    public LinkStateMultiGuestBizExtra multi_guest_biz_info;
 
     public Builder() {
       channel_id = 0L;
@@ -406,9 +410,14 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
       return this;
     }
 
+    public Builder multi_guest_biz_info(LinkStateMultiGuestBizExtra multi_guest_biz_info) {
+      this.multi_guest_biz_info = multi_guest_biz_info;
+      return this;
+    }
+
     @Override
     public WebcastLinkStateMessage build() {
-      return new WebcastLinkStateMessage(common, channel_id, scene, version, need_ack, layout, user_states, client_send_time, state_type, background, wallpaper_url, ui_pos, spot_list, audio_muted_remote_channels, linker_mode, super.buildUnknownFields());
+      return new WebcastLinkStateMessage(this, super.buildUnknownFields());
     }
   }
 
@@ -457,6 +466,9 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
       if (!Objects.equals(value.linker_mode, 0)) {
         result += ProtoAdapter.INT32.encodedSizeWithTag(16, value.linker_mode);
       }
+      if (!Objects.equals(value.multi_guest_biz_info, null)) {
+        result += LinkStateMultiGuestBizExtra.ADAPTER.encodedSizeWithTag(17, value.multi_guest_biz_info);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -478,6 +490,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
       SpotInfo.ADAPTER.asRepeated().encodeWithTag(writer, 14, value.spot_list);
       ProtoAdapter.INT64.asPacked().encodeWithTag(writer, 15, value.audio_muted_remote_channels);
       if (!Objects.equals(value.linker_mode, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 16, value.linker_mode);
+      if (!Objects.equals(value.multi_guest_biz_info, null)) LinkStateMultiGuestBizExtra.ADAPTER.encodeWithTag(writer, 17, value.multi_guest_biz_info);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -485,6 +498,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
     public void encode(ReverseProtoWriter writer, WebcastLinkStateMessage value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.multi_guest_biz_info, null)) LinkStateMultiGuestBizExtra.ADAPTER.encodeWithTag(writer, 17, value.multi_guest_biz_info);
       if (!Objects.equals(value.linker_mode, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 16, value.linker_mode);
       ProtoAdapter.INT64.asPacked().encodeWithTag(writer, 15, value.audio_muted_remote_channels);
       SpotInfo.ADAPTER.asRepeated().encodeWithTag(writer, 14, value.spot_list);
@@ -537,6 +551,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
           case 14: builder.spot_list.add(SpotInfo.ADAPTER.decode(reader)); break;
           case 15: builder.audio_muted_remote_channels.add(ProtoAdapter.INT64.decode(reader)); break;
           case 16: builder.linker_mode(ProtoAdapter.INT32.decode(reader)); break;
+          case 17: builder.multi_guest_biz_info(LinkStateMultiGuestBizExtra.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -555,6 +570,7 @@ public final class WebcastLinkStateMessage extends Message<WebcastLinkStateMessa
       if (builder.background != null) builder.background = BackGroundImageState.ADAPTER.redact(builder.background);
       Internal.redactElements(builder.ui_pos, PosIdentity.ADAPTER);
       Internal.redactElements(builder.spot_list, SpotInfo.ADAPTER);
+      if (builder.multi_guest_biz_info != null) builder.multi_guest_biz_info = LinkStateMultiGuestBizExtra.ADAPTER.redact(builder.multi_guest_biz_info);
       builder.clearUnknownFields();
       return builder.build();
     }

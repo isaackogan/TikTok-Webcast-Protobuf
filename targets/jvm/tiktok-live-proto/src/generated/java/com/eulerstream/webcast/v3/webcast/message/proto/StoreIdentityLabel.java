@@ -106,14 +106,22 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
   )
   public final String shop_identity_label_key;
 
+  @WireField(
+      tag = 11,
+      adapter = "com.eulerstream.webcast.v3.webcast.message.proto.ShopThemedImage#ADAPTER",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "identityImageLogo"
+  )
+  public final ShopThemedImage identity_image_logo;
+
   public StoreIdentityLabel(
       User_EcommerceEntrance_ShopEntranceInfo_StoreLabel_ShopIdentityLabelType label_type,
       String identity_label_text, ShopLabelImage identity_logo_light,
       ShopLabelImage identity_logo_dark, String identity_label_bg_color_light,
       String identity_label_bg_color_dark, String identity_label_text_color_light,
       String identity_label_text_color_dark, String shop_explanation_page_schema,
-      String shop_identity_label_key) {
-    this(label_type, identity_label_text, identity_logo_light, identity_logo_dark, identity_label_bg_color_light, identity_label_bg_color_dark, identity_label_text_color_light, identity_label_text_color_dark, shop_explanation_page_schema, shop_identity_label_key, ByteString.EMPTY);
+      String shop_identity_label_key, ShopThemedImage identity_image_logo) {
+    this(label_type, identity_label_text, identity_logo_light, identity_logo_dark, identity_label_bg_color_light, identity_label_bg_color_dark, identity_label_text_color_light, identity_label_text_color_dark, shop_explanation_page_schema, shop_identity_label_key, identity_image_logo, ByteString.EMPTY);
   }
 
   public StoreIdentityLabel(
@@ -122,7 +130,8 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       ShopLabelImage identity_logo_dark, String identity_label_bg_color_light,
       String identity_label_bg_color_dark, String identity_label_text_color_light,
       String identity_label_text_color_dark, String shop_explanation_page_schema,
-      String shop_identity_label_key, ByteString unknownFields) {
+      String shop_identity_label_key, ShopThemedImage identity_image_logo,
+      ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (label_type == null) {
       throw new IllegalArgumentException("label_type == null");
@@ -158,6 +167,7 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       throw new IllegalArgumentException("shop_identity_label_key == null");
     }
     this.shop_identity_label_key = shop_identity_label_key;
+    this.identity_image_logo = identity_image_logo;
   }
 
   @Override
@@ -173,6 +183,7 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
     builder.identity_label_text_color_dark = identity_label_text_color_dark;
     builder.shop_explanation_page_schema = shop_explanation_page_schema;
     builder.shop_identity_label_key = shop_identity_label_key;
+    builder.identity_image_logo = identity_image_logo;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -192,7 +203,8 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
         && Internal.equals(identity_label_text_color_light, o.identity_label_text_color_light)
         && Internal.equals(identity_label_text_color_dark, o.identity_label_text_color_dark)
         && Internal.equals(shop_explanation_page_schema, o.shop_explanation_page_schema)
-        && Internal.equals(shop_identity_label_key, o.shop_identity_label_key);
+        && Internal.equals(shop_identity_label_key, o.shop_identity_label_key)
+        && Internal.equals(identity_image_logo, o.identity_image_logo);
   }
 
   @Override
@@ -210,6 +222,7 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       result = result * 37 + (identity_label_text_color_dark != null ? identity_label_text_color_dark.hashCode() : 0);
       result = result * 37 + (shop_explanation_page_schema != null ? shop_explanation_page_schema.hashCode() : 0);
       result = result * 37 + (shop_identity_label_key != null ? shop_identity_label_key.hashCode() : 0);
+      result = result * 37 + (identity_image_logo != null ? identity_image_logo.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -228,6 +241,7 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
     if (identity_label_text_color_dark != null) builder.append(", identity_label_text_color_dark=").append(Internal.sanitize(identity_label_text_color_dark));
     if (shop_explanation_page_schema != null) builder.append(", shop_explanation_page_schema=").append(Internal.sanitize(shop_explanation_page_schema));
     if (shop_identity_label_key != null) builder.append(", shop_identity_label_key=").append(Internal.sanitize(shop_identity_label_key));
+    if (identity_image_logo != null) builder.append(", identity_image_logo=").append(identity_image_logo);
     return builder.replace(0, 2, "StoreIdentityLabel{").append('}').toString();
   }
 
@@ -251,6 +265,8 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
     public String shop_explanation_page_schema;
 
     public String shop_identity_label_key;
+
+    public ShopThemedImage identity_image_logo;
 
     public Builder() {
       label_type = User_EcommerceEntrance_ShopEntranceInfo_StoreLabel_ShopIdentityLabelType.USER_ECOMMERCE_ENTRANCE_SHOP_ENTRANCE_INFO_STORE_LABEL_SHOP_IDENTITY_LABEL_TYPE_UNKNOWN;
@@ -314,9 +330,14 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       return this;
     }
 
+    public Builder identity_image_logo(ShopThemedImage identity_image_logo) {
+      this.identity_image_logo = identity_image_logo;
+      return this;
+    }
+
     @Override
     public StoreIdentityLabel build() {
-      return new StoreIdentityLabel(label_type, identity_label_text, identity_logo_light, identity_logo_dark, identity_label_bg_color_light, identity_label_bg_color_dark, identity_label_text_color_light, identity_label_text_color_dark, shop_explanation_page_schema, shop_identity_label_key, super.buildUnknownFields());
+      return new StoreIdentityLabel(label_type, identity_label_text, identity_logo_light, identity_logo_dark, identity_label_bg_color_light, identity_label_bg_color_dark, identity_label_text_color_light, identity_label_text_color_dark, shop_explanation_page_schema, shop_identity_label_key, identity_image_logo, super.buildUnknownFields());
     }
   }
 
@@ -358,6 +379,9 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       if (!Objects.equals(value.shop_identity_label_key, "")) {
         result += ProtoAdapter.STRING.encodedSizeWithTag(10, value.shop_identity_label_key);
       }
+      if (!Objects.equals(value.identity_image_logo, null)) {
+        result += ShopThemedImage.ADAPTER.encodedSizeWithTag(11, value.identity_image_logo);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -374,12 +398,14 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       if (!Objects.equals(value.identity_label_text_color_dark, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.identity_label_text_color_dark);
       if (!Objects.equals(value.shop_explanation_page_schema, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.shop_explanation_page_schema);
       if (!Objects.equals(value.shop_identity_label_key, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.shop_identity_label_key);
+      if (!Objects.equals(value.identity_image_logo, null)) ShopThemedImage.ADAPTER.encodeWithTag(writer, 11, value.identity_image_logo);
       writer.writeBytes(value.unknownFields());
     }
 
     @Override
     public void encode(ReverseProtoWriter writer, StoreIdentityLabel value) throws IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.identity_image_logo, null)) ShopThemedImage.ADAPTER.encodeWithTag(writer, 11, value.identity_image_logo);
       if (!Objects.equals(value.shop_identity_label_key, "")) ProtoAdapter.STRING.encodeWithTag(writer, 10, value.shop_identity_label_key);
       if (!Objects.equals(value.shop_explanation_page_schema, "")) ProtoAdapter.STRING.encodeWithTag(writer, 9, value.shop_explanation_page_schema);
       if (!Objects.equals(value.identity_label_text_color_dark, "")) ProtoAdapter.STRING.encodeWithTag(writer, 8, value.identity_label_text_color_dark);
@@ -415,6 +441,7 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
           case 8: builder.identity_label_text_color_dark(ProtoAdapter.STRING.decode(reader)); break;
           case 9: builder.shop_explanation_page_schema(ProtoAdapter.STRING.decode(reader)); break;
           case 10: builder.shop_identity_label_key(ProtoAdapter.STRING.decode(reader)); break;
+          case 11: builder.identity_image_logo(ShopThemedImage.ADAPTER.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -429,6 +456,7 @@ public final class StoreIdentityLabel extends Message<StoreIdentityLabel, StoreI
       Builder builder = value.newBuilder();
       if (builder.identity_logo_light != null) builder.identity_logo_light = ShopLabelImage.ADAPTER.redact(builder.identity_logo_light);
       if (builder.identity_logo_dark != null) builder.identity_logo_dark = ShopLabelImage.ADAPTER.redact(builder.identity_logo_dark);
+      if (builder.identity_image_logo != null) builder.identity_image_logo = ShopThemedImage.ADAPTER.redact(builder.identity_image_logo);
       builder.clearUnknownFields();
       return builder.build();
     }

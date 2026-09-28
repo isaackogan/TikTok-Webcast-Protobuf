@@ -20,6 +20,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.StringBuilder;
+import java.util.Map;
 import java.util.Objects;
 import okio.ByteString;
 
@@ -68,15 +69,33 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
   )
   public final QuickCohostInviteeUserInfo quick_cohost_invitee_user_info;
 
+  @WireField(
+      tag = 6,
+      keyAdapter = "com.squareup.wire.ProtoAdapter#STRING",
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      jsonName = "inviteeTrace"
+  )
+  public final Map<String, String> invitee_trace;
+
+  @WireField(
+      tag = 7,
+      adapter = "com.squareup.wire.ProtoAdapter#STRING",
+      label = WireField.Label.OMIT_IDENTITY,
+      jsonName = "joinSessionId"
+  )
+  public final String join_session_id;
+
   public PermitJoinGroupBizContent(ReplyStatus reply_status, SourceType source_type,
       boolean skip_cancel_match, int matched_preference_tag,
-      QuickCohostInviteeUserInfo quick_cohost_invitee_user_info) {
-    this(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, ByteString.EMPTY);
+      QuickCohostInviteeUserInfo quick_cohost_invitee_user_info, Map<String, String> invitee_trace,
+      String join_session_id) {
+    this(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, invitee_trace, join_session_id, ByteString.EMPTY);
   }
 
   public PermitJoinGroupBizContent(ReplyStatus reply_status, SourceType source_type,
       boolean skip_cancel_match, int matched_preference_tag,
-      QuickCohostInviteeUserInfo quick_cohost_invitee_user_info, ByteString unknownFields) {
+      QuickCohostInviteeUserInfo quick_cohost_invitee_user_info, Map<String, String> invitee_trace,
+      String join_session_id, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     if (reply_status == null) {
       throw new IllegalArgumentException("reply_status == null");
@@ -89,6 +108,11 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     this.skip_cancel_match = skip_cancel_match;
     this.matched_preference_tag = matched_preference_tag;
     this.quick_cohost_invitee_user_info = quick_cohost_invitee_user_info;
+    this.invitee_trace = Internal.immutableCopyOf("invitee_trace", invitee_trace);
+    if (join_session_id == null) {
+      throw new IllegalArgumentException("join_session_id == null");
+    }
+    this.join_session_id = join_session_id;
   }
 
   @Override
@@ -99,6 +123,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     builder.skip_cancel_match = skip_cancel_match;
     builder.matched_preference_tag = matched_preference_tag;
     builder.quick_cohost_invitee_user_info = quick_cohost_invitee_user_info;
+    builder.invitee_trace = Internal.copyOf(invitee_trace);
+    builder.join_session_id = join_session_id;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -113,7 +139,9 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
         && Internal.equals(source_type, o.source_type)
         && Internal.equals(skip_cancel_match, o.skip_cancel_match)
         && Internal.equals(matched_preference_tag, o.matched_preference_tag)
-        && Internal.equals(quick_cohost_invitee_user_info, o.quick_cohost_invitee_user_info);
+        && Internal.equals(quick_cohost_invitee_user_info, o.quick_cohost_invitee_user_info)
+        && invitee_trace.equals(o.invitee_trace)
+        && Internal.equals(join_session_id, o.join_session_id);
   }
 
   @Override
@@ -126,6 +154,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       result = result * 37 + Boolean.hashCode(skip_cancel_match);
       result = result * 37 + Integer.hashCode(matched_preference_tag);
       result = result * 37 + (quick_cohost_invitee_user_info != null ? quick_cohost_invitee_user_info.hashCode() : 0);
+      result = result * 37 + invitee_trace.hashCode();
+      result = result * 37 + (join_session_id != null ? join_session_id.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -139,6 +169,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     builder.append(", skip_cancel_match=").append(skip_cancel_match);
     builder.append(", matched_preference_tag=").append(matched_preference_tag);
     if (quick_cohost_invitee_user_info != null) builder.append(", quick_cohost_invitee_user_info=").append(quick_cohost_invitee_user_info);
+    if (!invitee_trace.isEmpty()) builder.append(", invitee_trace=").append(invitee_trace);
+    if (join_session_id != null) builder.append(", join_session_id=").append(Internal.sanitize(join_session_id));
     return builder.replace(0, 2, "PermitJoinGroupBizContent{").append('}').toString();
   }
 
@@ -153,11 +185,17 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
 
     public QuickCohostInviteeUserInfo quick_cohost_invitee_user_info;
 
+    public Map<String, String> invitee_trace;
+
+    public String join_session_id;
+
     public Builder() {
       reply_status = ReplyStatus.REPLY_STATUS_UNKNOWN;
       source_type = SourceType.SOURCE_TYPE_UNKNOWN;
       skip_cancel_match = false;
       matched_preference_tag = 0;
+      invitee_trace = Internal.newMutableMap();
+      join_session_id = "";
     }
 
     public Builder reply_status(ReplyStatus reply_status) {
@@ -186,13 +224,26 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       return this;
     }
 
+    public Builder invitee_trace(Map<String, String> invitee_trace) {
+      Internal.checkElementsNotNull(invitee_trace);
+      this.invitee_trace = invitee_trace;
+      return this;
+    }
+
+    public Builder join_session_id(String join_session_id) {
+      this.join_session_id = join_session_id;
+      return this;
+    }
+
     @Override
     public PermitJoinGroupBizContent build() {
-      return new PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, super.buildUnknownFields());
+      return new PermitJoinGroupBizContent(reply_status, source_type, skip_cancel_match, matched_preference_tag, quick_cohost_invitee_user_info, invitee_trace, join_session_id, super.buildUnknownFields());
     }
   }
 
   private static final class ProtoAdapter_PermitJoinGroupBizContent extends ProtoAdapter<PermitJoinGroupBizContent> {
+    private ProtoAdapter<Map<String, String>> invitee_trace;
+
     public ProtoAdapter_PermitJoinGroupBizContent() {
       super(FieldEncoding.LENGTH_DELIMITED, PermitJoinGroupBizContent.class, "type.googleapis.com/webcast.im.PermitJoinGroupBizContent", Syntax.PROTO_3, null, "webcast/im.proto");
     }
@@ -215,6 +266,10 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       if (!Objects.equals(value.quick_cohost_invitee_user_info, null)) {
         result += QuickCohostInviteeUserInfo.ADAPTER.encodedSizeWithTag(5, value.quick_cohost_invitee_user_info);
       }
+      result += invitee_traceAdapter().encodedSizeWithTag(6, value.invitee_trace);
+      if (!Objects.equals(value.join_session_id, "")) {
+        result += ProtoAdapter.STRING.encodedSizeWithTag(7, value.join_session_id);
+      }
       result += value.unknownFields().size();
       return result;
     }
@@ -226,6 +281,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       if (!Objects.equals(value.skip_cancel_match, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.skip_cancel_match);
       if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.matched_preference_tag);
       if (!Objects.equals(value.quick_cohost_invitee_user_info, null)) QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info);
+      invitee_traceAdapter().encodeWithTag(writer, 6, value.invitee_trace);
+      if (!Objects.equals(value.join_session_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.join_session_id);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -233,6 +290,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
     public void encode(ReverseProtoWriter writer, PermitJoinGroupBizContent value) throws
         IOException {
       writer.writeBytes(value.unknownFields());
+      if (!Objects.equals(value.join_session_id, "")) ProtoAdapter.STRING.encodeWithTag(writer, 7, value.join_session_id);
+      invitee_traceAdapter().encodeWithTag(writer, 6, value.invitee_trace);
       if (!Objects.equals(value.quick_cohost_invitee_user_info, null)) QuickCohostInviteeUserInfo.ADAPTER.encodeWithTag(writer, 5, value.quick_cohost_invitee_user_info);
       if (!Objects.equals(value.matched_preference_tag, 0)) ProtoAdapter.INT32.encodeWithTag(writer, 4, value.matched_preference_tag);
       if (!Objects.equals(value.skip_cancel_match, false)) ProtoAdapter.BOOL.encodeWithTag(writer, 3, value.skip_cancel_match);
@@ -265,6 +324,8 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
           case 3: builder.skip_cancel_match(ProtoAdapter.BOOL.decode(reader)); break;
           case 4: builder.matched_preference_tag(ProtoAdapter.INT32.decode(reader)); break;
           case 5: builder.quick_cohost_invitee_user_info(QuickCohostInviteeUserInfo.ADAPTER.decode(reader)); break;
+          case 6: builder.invitee_trace.putAll(invitee_traceAdapter().decode(reader)); break;
+          case 7: builder.join_session_id(ProtoAdapter.STRING.decode(reader)); break;
           default: {
             reader.readUnknownField(tag);
           }
@@ -280,6 +341,15 @@ public final class PermitJoinGroupBizContent extends Message<PermitJoinGroupBizC
       if (builder.quick_cohost_invitee_user_info != null) builder.quick_cohost_invitee_user_info = QuickCohostInviteeUserInfo.ADAPTER.redact(builder.quick_cohost_invitee_user_info);
       builder.clearUnknownFields();
       return builder.build();
+    }
+
+    private ProtoAdapter<Map<String, String>> invitee_traceAdapter() {
+      ProtoAdapter<Map<String, String>> result = invitee_trace;
+      if (result == null) {
+        result = ProtoAdapter.newMapAdapter(ProtoAdapter.STRING, ProtoAdapter.STRING);
+        invitee_trace = result;
+      }
+      return result;
     }
   }
 }

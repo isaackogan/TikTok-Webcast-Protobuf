@@ -69,6 +69,30 @@ public class CohostABInfo(
     schemaIndex = 4,
   )
   public val is_match_playbook_optimisation_enabled: Boolean = false,
+  @field:WireField(
+    tag = 6,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "isMatchPlaybookUsabilityEnabled",
+    schemaIndex = 5,
+  )
+  public val is_match_playbook_usability_enabled: Boolean = false,
+  @field:WireField(
+    tag = 7,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "isMatchPlaybookReminderEnabled",
+    schemaIndex = 6,
+  )
+  public val is_match_playbook_reminder_enabled: Boolean = false,
+  @field:WireField(
+    tag = 8,
+    adapter = "com.squareup.wire.ProtoAdapter#BOOL",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "isMatchGoofyEffectEnabled",
+    schemaIndex = 7,
+  )
+  public val is_match_goofy_effect_enabled: Boolean = false,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<CohostABInfo, Nothing>(ADAPTER, unknownFields) {
   @Deprecated(
@@ -86,6 +110,9 @@ public class CohostABInfo(
     if (is_match_playbook_enabled != other.is_match_playbook_enabled) return false
     if (is_cohost_during_multiguest_enabled != other.is_cohost_during_multiguest_enabled) return false
     if (is_match_playbook_optimisation_enabled != other.is_match_playbook_optimisation_enabled) return false
+    if (is_match_playbook_usability_enabled != other.is_match_playbook_usability_enabled) return false
+    if (is_match_playbook_reminder_enabled != other.is_match_playbook_reminder_enabled) return false
+    if (is_match_goofy_effect_enabled != other.is_match_goofy_effect_enabled) return false
     return true
   }
 
@@ -98,6 +125,9 @@ public class CohostABInfo(
       result = result * 37 + is_match_playbook_enabled.hashCode()
       result = result * 37 + is_cohost_during_multiguest_enabled.hashCode()
       result = result * 37 + is_match_playbook_optimisation_enabled.hashCode()
+      result = result * 37 + is_match_playbook_usability_enabled.hashCode()
+      result = result * 37 + is_match_playbook_reminder_enabled.hashCode()
+      result = result * 37 + is_match_goofy_effect_enabled.hashCode()
       super.hashCode = result
     }
     return result
@@ -110,6 +140,9 @@ public class CohostABInfo(
     result += """is_match_playbook_enabled=$is_match_playbook_enabled"""
     result += """is_cohost_during_multiguest_enabled=$is_cohost_during_multiguest_enabled"""
     result += """is_match_playbook_optimisation_enabled=$is_match_playbook_optimisation_enabled"""
+    result += """is_match_playbook_usability_enabled=$is_match_playbook_usability_enabled"""
+    result += """is_match_playbook_reminder_enabled=$is_match_playbook_reminder_enabled"""
+    result += """is_match_goofy_effect_enabled=$is_match_goofy_effect_enabled"""
     return result.joinToString(prefix = "CohostABInfo{", separator = ", ", postfix = "}")
   }
 
@@ -119,8 +152,11 @@ public class CohostABInfo(
     is_match_playbook_enabled: Boolean = this.is_match_playbook_enabled,
     is_cohost_during_multiguest_enabled: Boolean = this.is_cohost_during_multiguest_enabled,
     is_match_playbook_optimisation_enabled: Boolean = this.is_match_playbook_optimisation_enabled,
+    is_match_playbook_usability_enabled: Boolean = this.is_match_playbook_usability_enabled,
+    is_match_playbook_reminder_enabled: Boolean = this.is_match_playbook_reminder_enabled,
+    is_match_goofy_effect_enabled: Boolean = this.is_match_goofy_effect_enabled,
     unknownFields: ByteString = this.unknownFields,
-  ): CohostABInfo = CohostABInfo(live_match_button_opt, is_cohost_multiguest, is_match_playbook_enabled, is_cohost_during_multiguest_enabled, is_match_playbook_optimisation_enabled, unknownFields)
+  ): CohostABInfo = CohostABInfo(live_match_button_opt, is_cohost_multiguest, is_match_playbook_enabled, is_cohost_during_multiguest_enabled, is_match_playbook_optimisation_enabled, is_match_playbook_usability_enabled, is_match_playbook_reminder_enabled, is_match_goofy_effect_enabled, unknownFields)
 
   public companion object {
     @JvmField
@@ -149,6 +185,15 @@ public class CohostABInfo(
         if (value.is_match_playbook_optimisation_enabled != false) {
           size += ProtoAdapter.BOOL.encodedSizeWithTag(5, value.is_match_playbook_optimisation_enabled)
         }
+        if (value.is_match_playbook_usability_enabled != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(6, value.is_match_playbook_usability_enabled)
+        }
+        if (value.is_match_playbook_reminder_enabled != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(7, value.is_match_playbook_reminder_enabled)
+        }
+        if (value.is_match_goofy_effect_enabled != false) {
+          size += ProtoAdapter.BOOL.encodedSizeWithTag(8, value.is_match_goofy_effect_enabled)
+        }
         return size
       }
 
@@ -168,11 +213,29 @@ public class CohostABInfo(
         if (value.is_match_playbook_optimisation_enabled != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 5, value.is_match_playbook_optimisation_enabled)
         }
+        if (value.is_match_playbook_usability_enabled != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.is_match_playbook_usability_enabled)
+        }
+        if (value.is_match_playbook_reminder_enabled != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 7, value.is_match_playbook_reminder_enabled)
+        }
+        if (value.is_match_goofy_effect_enabled != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_match_goofy_effect_enabled)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: CohostABInfo) {
         writer.writeBytes(value.unknownFields)
+        if (value.is_match_goofy_effect_enabled != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 8, value.is_match_goofy_effect_enabled)
+        }
+        if (value.is_match_playbook_reminder_enabled != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 7, value.is_match_playbook_reminder_enabled)
+        }
+        if (value.is_match_playbook_usability_enabled != false) {
+          ProtoAdapter.BOOL.encodeWithTag(writer, 6, value.is_match_playbook_usability_enabled)
+        }
         if (value.is_match_playbook_optimisation_enabled != false) {
           ProtoAdapter.BOOL.encodeWithTag(writer, 5, value.is_match_playbook_optimisation_enabled)
         }
@@ -196,6 +259,9 @@ public class CohostABInfo(
         var is_match_playbook_enabled: Boolean = false
         var is_cohost_during_multiguest_enabled: Boolean = false
         var is_match_playbook_optimisation_enabled: Boolean = false
+        var is_match_playbook_usability_enabled: Boolean = false
+        var is_match_playbook_reminder_enabled: Boolean = false
+        var is_match_goofy_effect_enabled: Boolean = false
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> live_match_button_opt = ProtoAdapter.BOOL.decode(reader)
@@ -203,6 +269,9 @@ public class CohostABInfo(
             3 -> is_match_playbook_enabled = ProtoAdapter.BOOL.decode(reader)
             4 -> is_cohost_during_multiguest_enabled = ProtoAdapter.BOOL.decode(reader)
             5 -> is_match_playbook_optimisation_enabled = ProtoAdapter.BOOL.decode(reader)
+            6 -> is_match_playbook_usability_enabled = ProtoAdapter.BOOL.decode(reader)
+            7 -> is_match_playbook_reminder_enabled = ProtoAdapter.BOOL.decode(reader)
+            8 -> is_match_goofy_effect_enabled = ProtoAdapter.BOOL.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -212,6 +281,9 @@ public class CohostABInfo(
           is_match_playbook_enabled = is_match_playbook_enabled,
           is_cohost_during_multiguest_enabled = is_cohost_during_multiguest_enabled,
           is_match_playbook_optimisation_enabled = is_match_playbook_optimisation_enabled,
+          is_match_playbook_usability_enabled = is_match_playbook_usability_enabled,
+          is_match_playbook_reminder_enabled = is_match_playbook_reminder_enabled,
+          is_match_goofy_effect_enabled = is_match_goofy_effect_enabled,
           unknownFields = unknownFields
         )
       }

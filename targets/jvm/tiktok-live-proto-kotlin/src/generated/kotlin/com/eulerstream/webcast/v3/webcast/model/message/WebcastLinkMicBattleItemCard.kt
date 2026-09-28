@@ -8,6 +8,7 @@
 package com.eulerstream.webcast.v3.webcast.model.message
 
 import com.eulerstream.webcast.v3.webcast.im.BattleCardMsgType
+import com.eulerstream.webcast.v3.webcast.model.live.match.EffectingCardQueue
 import com.eulerstream.webcast.v3.webcast.shared.message.CommonMessageData
 import com.squareup.wire.FieldEncoding
 import com.squareup.wire.Message
@@ -18,6 +19,8 @@ import com.squareup.wire.ReverseProtoWriter
 import com.squareup.wire.Syntax.PROTO_3
 import com.squareup.wire.WireField
 import com.squareup.wire.`internal`.JvmField
+import com.squareup.wire.`internal`.immutableCopyOf
+import com.squareup.wire.`internal`.redactElements
 import kotlin.Any
 import kotlin.AssertionError
 import kotlin.Boolean
@@ -28,6 +31,8 @@ import kotlin.Long
 import kotlin.Nothing
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.Map
+import kotlin.lazy
 import okio.ByteString
 
 public class WebcastLinkMicBattleItemCard(
@@ -158,8 +163,51 @@ public class WebcastLinkMicBattleItemCard(
     schemaIndex = 15,
   )
   public val award_reason: Int = 0,
+  @field:WireField(
+    tag = 17,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.message.UseMusicCard#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "useMusicCard",
+    schemaIndex = 16,
+  )
+  public val use_music_card: UseMusicCard? = null,
+  @field:WireField(
+    tag = 18,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.message.MusicAwardNotice#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "musicAwardNotice",
+    schemaIndex = 17,
+  )
+  public val music_award_notice: MusicAwardNotice? = null,
+  @field:WireField(
+    tag = 19,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.message.MusicEffectNotice#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "musicEffectNotice",
+    schemaIndex = 18,
+  )
+  public val music_effect_notice: MusicEffectNotice? = null,
+  card_queue_map: Map<Long, EffectingCardQueue> = emptyMap(),
+  @field:WireField(
+    tag = 21,
+    adapter = "com.eulerstream.webcast.v3.webcast.model.message.AnchorLeftCardRefundNotice#ADAPTER",
+    label = WireField.Label.OMIT_IDENTITY,
+    jsonName = "anchorLeftCardRefundNotice",
+    schemaIndex = 20,
+  )
+  public val anchor_left_card_refund_notice: AnchorLeftCardRefundNotice? = null,
   unknownFields: ByteString = ByteString.EMPTY,
 ) : Message<WebcastLinkMicBattleItemCard, Nothing>(ADAPTER, unknownFields) {
+  @field:WireField(
+    tag = 20,
+    keyAdapter = "com.squareup.wire.ProtoAdapter#INT64",
+    adapter = "com.eulerstream.webcast.v3.webcast.model.live.match.EffectingCardQueue#ADAPTER",
+    jsonName = "cardQueueMap",
+    schemaIndex = 19,
+  )
+  public val card_queue_map: Map<Long, EffectingCardQueue> =
+      immutableCopyOf("card_queue_map", card_queue_map)
+
   @Deprecated(
     message = "Shouldn't be used in Kotlin",
     level = DeprecationLevel.HIDDEN,
@@ -186,6 +234,11 @@ public class WebcastLinkMicBattleItemCard(
     if (use_top3_card != other.use_top3_card) return false
     if (use_vault_glove_card != other.use_vault_glove_card) return false
     if (award_reason != other.award_reason) return false
+    if (use_music_card != other.use_music_card) return false
+    if (music_award_notice != other.music_award_notice) return false
+    if (music_effect_notice != other.music_effect_notice) return false
+    if (card_queue_map != other.card_queue_map) return false
+    if (anchor_left_card_refund_notice != other.anchor_left_card_refund_notice) return false
     return true
   }
 
@@ -209,6 +262,11 @@ public class WebcastLinkMicBattleItemCard(
       result = result * 37 + (use_top3_card?.hashCode() ?: 0)
       result = result * 37 + (use_vault_glove_card?.hashCode() ?: 0)
       result = result * 37 + award_reason.hashCode()
+      result = result * 37 + (use_music_card?.hashCode() ?: 0)
+      result = result * 37 + (music_award_notice?.hashCode() ?: 0)
+      result = result * 37 + (music_effect_notice?.hashCode() ?: 0)
+      result = result * 37 + card_queue_map.hashCode()
+      result = result * 37 + (anchor_left_card_refund_notice?.hashCode() ?: 0)
       super.hashCode = result
     }
     return result
@@ -232,6 +290,11 @@ public class WebcastLinkMicBattleItemCard(
     if (use_top3_card != null) result += """use_top3_card=$use_top3_card"""
     if (use_vault_glove_card != null) result += """use_vault_glove_card=$use_vault_glove_card"""
     result += """award_reason=$award_reason"""
+    if (use_music_card != null) result += """use_music_card=$use_music_card"""
+    if (music_award_notice != null) result += """music_award_notice=$music_award_notice"""
+    if (music_effect_notice != null) result += """music_effect_notice=$music_effect_notice"""
+    if (card_queue_map.isNotEmpty()) result += """card_queue_map=$card_queue_map"""
+    if (anchor_left_card_refund_notice != null) result += """anchor_left_card_refund_notice=$anchor_left_card_refund_notice"""
     return result.joinToString(prefix = "WebcastLinkMicBattleItemCard{", separator = ", ", postfix = "}")
   }
 
@@ -252,8 +315,13 @@ public class WebcastLinkMicBattleItemCard(
     use_top3_card: UseTop3Card? = this.use_top3_card,
     use_vault_glove_card: UseVaultGloveCard? = this.use_vault_glove_card,
     award_reason: Int = this.award_reason,
+    use_music_card: UseMusicCard? = this.use_music_card,
+    music_award_notice: MusicAwardNotice? = this.music_award_notice,
+    music_effect_notice: MusicEffectNotice? = this.music_effect_notice,
+    card_queue_map: Map<Long, EffectingCardQueue> = this.card_queue_map,
+    anchor_left_card_refund_notice: AnchorLeftCardRefundNotice? = this.anchor_left_card_refund_notice,
     unknownFields: ByteString = this.unknownFields,
-  ): WebcastLinkMicBattleItemCard = WebcastLinkMicBattleItemCard(common, battle_id, msg_type, card_obtain_guide, use_critical_strike_card, use_smoke_card, award_card_notice, use_extra_time_card, use_special_effect_card, use_potion_card, use_wave_card, special_effect_notice, use_top2_card, use_top3_card, use_vault_glove_card, award_reason, unknownFields)
+  ): WebcastLinkMicBattleItemCard = WebcastLinkMicBattleItemCard(common, battle_id, msg_type, card_obtain_guide, use_critical_strike_card, use_smoke_card, award_card_notice, use_extra_time_card, use_special_effect_card, use_potion_card, use_wave_card, special_effect_notice, use_top2_card, use_top3_card, use_vault_glove_card, award_reason, use_music_card, music_award_notice, music_effect_notice, card_queue_map, anchor_left_card_refund_notice, unknownFields)
 
   public companion object {
     @JvmField
@@ -266,6 +334,9 @@ public class WebcastLinkMicBattleItemCard(
       null, 
       "webcast/model/message/messages.proto"
     ) {
+      private val card_queue_mapAdapter: ProtoAdapter<Map<Long, EffectingCardQueue>> by
+          lazy { ProtoAdapter.newMapAdapter(ProtoAdapter.INT64, EffectingCardQueue.ADAPTER) }
+
       override fun encodedSize(`value`: WebcastLinkMicBattleItemCard): Int {
         var size = value.unknownFields.size
         if (value.common != null) {
@@ -315,6 +386,19 @@ public class WebcastLinkMicBattleItemCard(
         }
         if (value.award_reason != 0) {
           size += ProtoAdapter.INT32.encodedSizeWithTag(16, value.award_reason)
+        }
+        if (value.use_music_card != null) {
+          size += UseMusicCard.ADAPTER.encodedSizeWithTag(17, value.use_music_card)
+        }
+        if (value.music_award_notice != null) {
+          size += MusicAwardNotice.ADAPTER.encodedSizeWithTag(18, value.music_award_notice)
+        }
+        if (value.music_effect_notice != null) {
+          size += MusicEffectNotice.ADAPTER.encodedSizeWithTag(19, value.music_effect_notice)
+        }
+        size += card_queue_mapAdapter.encodedSizeWithTag(20, value.card_queue_map)
+        if (value.anchor_left_card_refund_notice != null) {
+          size += AnchorLeftCardRefundNotice.ADAPTER.encodedSizeWithTag(21, value.anchor_left_card_refund_notice)
         }
         return size
       }
@@ -368,11 +452,37 @@ public class WebcastLinkMicBattleItemCard(
         if (value.award_reason != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 16, value.award_reason)
         }
+        if (value.use_music_card != null) {
+          UseMusicCard.ADAPTER.encodeWithTag(writer, 17, value.use_music_card)
+        }
+        if (value.music_award_notice != null) {
+          MusicAwardNotice.ADAPTER.encodeWithTag(writer, 18, value.music_award_notice)
+        }
+        if (value.music_effect_notice != null) {
+          MusicEffectNotice.ADAPTER.encodeWithTag(writer, 19, value.music_effect_notice)
+        }
+        card_queue_mapAdapter.encodeWithTag(writer, 20, value.card_queue_map)
+        if (value.anchor_left_card_refund_notice != null) {
+          AnchorLeftCardRefundNotice.ADAPTER.encodeWithTag(writer, 21, value.anchor_left_card_refund_notice)
+        }
         writer.writeBytes(value.unknownFields)
       }
 
       override fun encode(writer: ReverseProtoWriter, `value`: WebcastLinkMicBattleItemCard) {
         writer.writeBytes(value.unknownFields)
+        if (value.anchor_left_card_refund_notice != null) {
+          AnchorLeftCardRefundNotice.ADAPTER.encodeWithTag(writer, 21, value.anchor_left_card_refund_notice)
+        }
+        card_queue_mapAdapter.encodeWithTag(writer, 20, value.card_queue_map)
+        if (value.music_effect_notice != null) {
+          MusicEffectNotice.ADAPTER.encodeWithTag(writer, 19, value.music_effect_notice)
+        }
+        if (value.music_award_notice != null) {
+          MusicAwardNotice.ADAPTER.encodeWithTag(writer, 18, value.music_award_notice)
+        }
+        if (value.use_music_card != null) {
+          UseMusicCard.ADAPTER.encodeWithTag(writer, 17, value.use_music_card)
+        }
         if (value.award_reason != 0) {
           ProtoAdapter.INT32.encodeWithTag(writer, 16, value.award_reason)
         }
@@ -440,6 +550,11 @@ public class WebcastLinkMicBattleItemCard(
         var use_top3_card: UseTop3Card? = null
         var use_vault_glove_card: UseVaultGloveCard? = null
         var award_reason: Int = 0
+        var use_music_card: UseMusicCard? = null
+        var music_award_notice: MusicAwardNotice? = null
+        var music_effect_notice: MusicEffectNotice? = null
+        val card_queue_map = mutableMapOf<Long, EffectingCardQueue>()
+        var anchor_left_card_refund_notice: AnchorLeftCardRefundNotice? = null
         val unknownFields = reader.forEachTag { tag ->
           when (tag) {
             1 -> common = CommonMessageData.ADAPTER.decode(reader)
@@ -462,6 +577,11 @@ public class WebcastLinkMicBattleItemCard(
             14 -> use_top3_card = UseTop3Card.ADAPTER.decode(reader)
             15 -> use_vault_glove_card = UseVaultGloveCard.ADAPTER.decode(reader)
             16 -> award_reason = ProtoAdapter.INT32.decode(reader)
+            17 -> use_music_card = UseMusicCard.ADAPTER.decode(reader)
+            18 -> music_award_notice = MusicAwardNotice.ADAPTER.decode(reader)
+            19 -> music_effect_notice = MusicEffectNotice.ADAPTER.decode(reader)
+            20 -> card_queue_map.putAll(card_queue_mapAdapter.decode(reader))
+            21 -> anchor_left_card_refund_notice = AnchorLeftCardRefundNotice.ADAPTER.decode(reader)
             else -> reader.readUnknownField(tag)
           }
         }
@@ -482,6 +602,11 @@ public class WebcastLinkMicBattleItemCard(
           use_top3_card = use_top3_card,
           use_vault_glove_card = use_vault_glove_card,
           award_reason = award_reason,
+          use_music_card = use_music_card,
+          music_award_notice = music_award_notice,
+          music_effect_notice = music_effect_notice,
+          card_queue_map = card_queue_map,
+          anchor_left_card_refund_notice = anchor_left_card_refund_notice,
           unknownFields = unknownFields
         )
       }
@@ -500,6 +625,11 @@ public class WebcastLinkMicBattleItemCard(
         use_top2_card = value.use_top2_card?.let(UseTop2Card.ADAPTER::redact),
         use_top3_card = value.use_top3_card?.let(UseTop3Card.ADAPTER::redact),
         use_vault_glove_card = value.use_vault_glove_card?.let(UseVaultGloveCard.ADAPTER::redact),
+        use_music_card = value.use_music_card?.let(UseMusicCard.ADAPTER::redact),
+        music_award_notice = value.music_award_notice?.let(MusicAwardNotice.ADAPTER::redact),
+        music_effect_notice = value.music_effect_notice?.let(MusicEffectNotice.ADAPTER::redact),
+        card_queue_map = value.card_queue_map.redactElements(EffectingCardQueue.ADAPTER),
+        anchor_left_card_refund_notice = value.anchor_left_card_refund_notice?.let(AnchorLeftCardRefundNotice.ADAPTER::redact),
         unknownFields = ByteString.EMPTY
       )
     }
