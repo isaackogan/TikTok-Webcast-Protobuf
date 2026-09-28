@@ -39,6 +39,7 @@ v3:
     OptPairInfo: MessageOptPairInfo
     ReserveInfo: MessageReserveInfo
     SponsorshipInfo: MessageSponsorshipInfo
+    UserBadge: MessageUserBadge
     UserInfo: MessageUserInfo
 
   webcast/model/base/emoji.ts:
@@ -46,3 +47,6 @@ v3:
 
   webcast/model/message/linker/linked_list_change_message.ts:
     ListUser: LinkerListUser
+
+  tikcast_api_creator_succ.ts:
+    ActionButton: CreatorSuccActionButton
