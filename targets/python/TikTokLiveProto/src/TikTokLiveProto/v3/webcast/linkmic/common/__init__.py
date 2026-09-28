@@ -10,6 +10,7 @@ __all__ = (
     "AnchorPanelLayoutTypeSetting",
     "AvatarState",
     "BackGroundImageState",
+    "BackgroundImageInfo",
     "CohostMode",
     "CohostStreamConfig",
     "CohostTypeLayoutExtra",
@@ -32,6 +33,7 @@ __all__ = (
     "LayoutStyle",
     "LinkEnvelopeMessagePayload",
     "LinkMicUserAdminType",
+    "LinkStateMultiGuestBizExtra",
     "LinkUserIdentity",
     "LinkUserState",
     "LinkerMediaChangeOperator",
@@ -546,6 +548,22 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class BackgroundImageInfo(betterproto2.Message):
+    info_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    image_info: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "BackgroundImageInfo", BackgroundImageInfo
+)
+
+
+@dataclass(eq=False, repr=False)
 class BackGroundImageState(betterproto2.Message):
     sticker_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         1, betterproto2.TYPE_STRING
@@ -609,6 +627,10 @@ class CohostTypeLayoutExtra(betterproto2.Message):
 
     rematch_spot_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         7, betterproto2.TYPE_INT32
+    )
+
+    screen_share_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        8, betterproto2.TYPE_INT64
     )
 
 
@@ -948,6 +970,18 @@ class LinkerMediaChangeOperator(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.linkmic.common", "LinkerMediaChangeOperator", LinkerMediaChangeOperator
+)
+
+
+@dataclass(eq=False, repr=False)
+class LinkStateMultiGuestBizExtra(betterproto2.Message):
+    background_image_info: "BackgroundImageInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.linkmic.common", "LinkStateMultiGuestBizExtra", LinkStateMultiGuestBizExtra
 )
 
 

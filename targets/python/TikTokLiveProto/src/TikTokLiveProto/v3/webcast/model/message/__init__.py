@@ -8,6 +8,7 @@ __all__ = (
     "ActionButton",
     "AddToCartButton",
     "AffiliatedInfo",
+    "AnchorLeftCardRefundNotice",
     "AnchorPair",
     "AnimationData",
     "AtmosphereTagInfo",
@@ -41,6 +42,7 @@ __all__ = (
     "CapsuleBizParamsRandomGift",
     "CaptionContent",
     "CardObtainGuide",
+    "CohostInviteStateNotifyContent",
     "CohostListChangeContent",
     "CommentLabelScore",
     "CommentQualityScore",
@@ -84,6 +86,8 @@ __all__ = (
     "LivePermissionInfo",
     "MessageDisplayInfo",
     "MessageEntity",
+    "MusicAwardNotice",
+    "MusicEffectNotice",
     "NotifyHighlightContent",
     "NotifyHighlightInfo",
     "OfflineGameInfo",
@@ -129,6 +133,7 @@ __all__ = (
     "UnionAnimationInfo",
     "UseCriticalStrikeCard",
     "UseExtraTimeCard",
+    "UseMusicCard",
     "UsePotionCard",
     "UseSmokeCard",
     "UseSpecialEffectCard",
@@ -327,6 +332,18 @@ class AffiliatedInfo(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "AffiliatedInfo", AffiliatedInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class AnchorLeftCardRefundNotice(betterproto2.Message):
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "AnchorLeftCardRefundNotice", AnchorLeftCardRefundNotice
 )
 
 
@@ -1119,6 +1136,32 @@ class CardObtainGuide(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "CardObtainGuide", CardObtainGuide
+)
+
+
+@dataclass(eq=False, repr=False)
+class CohostInviteStateNotifyContent(betterproto2.Message):
+    rival_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT64)
+    )
+
+    rival_room_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    group_channel_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT64
+    )
+
+    reason: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message",
+    "CohostInviteStateNotifyContent",
+    CohostInviteStateNotifyContent,
 )
 
 
@@ -1968,6 +2011,10 @@ class LinkmicAudienceApplyGuide(betterproto2.Message):
         9, betterproto2.TYPE_STRING
     )
 
+    linker_session_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "LinkmicAudienceApplyGuide", LinkmicAudienceApplyGuide
@@ -2016,6 +2063,10 @@ class LinkMicAudienceInviteGuide(betterproto2.Message):
 
     linkmic_audience_invite_notice_reason: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         5, betterproto2.TYPE_STRING
+    )
+
+    linker_session_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
     )
 
 
@@ -2149,6 +2200,52 @@ class MessageEntity(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.message", "MessageEntity", MessageEntity
+)
+
+
+@dataclass(eq=False, repr=False)
+class MusicAwardNotice(betterproto2.Message):
+    display_content: "common.Text | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    is_rewarded: "bool" = betterproto2.field(3, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "MusicAwardNotice", MusicAwardNotice
+)
+
+
+@dataclass(eq=False, repr=False)
+class MusicEffectNotice(betterproto2.Message):
+    effect_tier: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    to_anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    from_user_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    gift_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+    gift_price: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(5, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "MusicEffectNotice", MusicEffectNotice
 )
 
 
@@ -2388,6 +2485,10 @@ class PollBasicInfo(betterproto2.Message):
 
     template_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
         betterproto2.field(12, betterproto2.TYPE_INT64)
+    )
+
+    business_scene: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(13, betterproto2.TYPE_INT32)
     )
 
 
@@ -2724,6 +2825,10 @@ class PunishEventInfo(betterproto2.Message):
 
     show_reason: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         10, betterproto2.TYPE_STRING
+    )
+
+    end_time_v2: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(11, betterproto2.TYPE_INT64)
     )
 
 
@@ -3355,6 +3460,26 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class UseMusicCard(betterproto2.Message):
+    card_info: "_live__match__.MusicCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    anchor_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(2, betterproto2.TYPE_INT64)
+    )
+
+    display_content: "common.Text | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.message", "UseMusicCard", UseMusicCard
+)
+
+
+@dataclass(eq=False, repr=False)
 class UsePotionCard(betterproto2.Message):
     card_info: "_live__match__.PotionCardInfo | None" = betterproto2.field(
         1, betterproto2.TYPE_MESSAGE, optional=True
@@ -3556,6 +3681,10 @@ class UserPlayInfo(betterproto2.Message):
         6,
         betterproto2.TYPE_ENUM,
         default_factory=lambda: _data__multi_guest_play__.PlayUserTag(0),
+    )
+
+    play_round_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(7, betterproto2.TYPE_INT64)
     )
 
 
@@ -4684,6 +4813,10 @@ class WebcastGuideMessage(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    stream_time: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message", "WebcastGuideMessage", WebcastGuideMessage
@@ -4890,6 +5023,10 @@ class WebcastLinkMessage(betterproto2.Message):
         betterproto2.field(23, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
+    cohost_invite_state_notify_content: "CohostInviteStateNotifyContent | None" = (
+        betterproto2.field(24, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
     sys_kick_out_content: "LinkerSysKickOutContent | None" = betterproto2.field(
         101, betterproto2.TYPE_MESSAGE, optional=True
     )
@@ -5006,6 +5143,10 @@ class WebcastLinkMicArmies(betterproto2.Message):
 
     enigma_battle_extra_info: "_live__match__.EnigmaBattleExtraInfo | None" = (
         betterproto2.field(21, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    multiplier_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        22, betterproto2.TYPE_INT32
     )
 
 
@@ -5234,6 +5375,30 @@ class WebcastLinkMicBattleItemCard(betterproto2.Message):
 
     award_reason: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(16, betterproto2.TYPE_INT32)
+    )
+
+    use_music_card: "UseMusicCard | None" = betterproto2.field(
+        17, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    music_award_notice: "MusicAwardNotice | None" = betterproto2.field(
+        18, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    music_effect_notice: "MusicEffectNotice | None" = betterproto2.field(
+        19, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    card_queue_map: "dict[int, _live__match__.EffectingCardQueue]" = betterproto2.field(
+        20,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_INT64, betterproto2.TYPE_MESSAGE
+        ),
+    )
+
+    anchor_left_card_refund_notice: "AnchorLeftCardRefundNotice | None" = (
+        betterproto2.field(21, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
 
@@ -5766,6 +5931,10 @@ class WebcastMemberMessage(betterproto2.Message):
 
     hit_ab_status: "__im__.HitAbStatus" = betterproto2.field(
         35, betterproto2.TYPE_ENUM, default_factory=lambda: __im__.HitAbStatus(0)
+    )
+
+    drawer_live_type: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        36, betterproto2.TYPE_STRING
     )
 
 

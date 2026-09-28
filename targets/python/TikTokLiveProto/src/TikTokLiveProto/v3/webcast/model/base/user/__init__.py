@@ -5,6 +5,7 @@
 
 __all__ = (
     "ArrowConfig",
+    "AvatarHashInfo",
     "BadgeStruct",
     "BadgeText",
     "CombineBadgeBackground",
@@ -59,6 +60,22 @@ class ArrowConfig(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.base.user", "ArrowConfig", ArrowConfig
+)
+
+
+@dataclass(eq=False, repr=False)
+class AvatarHashInfo(betterproto2.Message):
+    avatar_hash_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT32
+    )
+
+    avatar_hash: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.base.user", "AvatarHashInfo", AvatarHashInfo
 )
 
 
@@ -1056,6 +1073,10 @@ class User(betterproto2.Message):
 
     fans_club_info: "FansClubInfo | None" = betterproto2.field(
         66, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    avatar_hash_info: "AvatarHashInfo | None" = betterproto2.field(
+        67, betterproto2.TYPE_MESSAGE, optional=True
     )
 
     deprecated19: "bool" = betterproto2.field(1001, betterproto2.TYPE_BOOL)

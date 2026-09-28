@@ -51,6 +51,10 @@ class WebcastAccessRecallMessage(betterproto2.Message):
         8, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    end_time_v2: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(9, betterproto2.TYPE_INT64)
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.game", "WebcastAccessRecallMessage", WebcastAccessRecallMessage

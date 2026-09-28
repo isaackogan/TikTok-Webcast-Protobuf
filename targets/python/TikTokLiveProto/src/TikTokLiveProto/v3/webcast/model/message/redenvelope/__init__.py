@@ -82,12 +82,20 @@ class MessageRedEnvelopInfo(betterproto2.Message):
         betterproto2.field(14, betterproto2.TYPE_INT32)
     )
 
-    sender_enigma_info: "___envelope__.EnvelopeEnigmaInfo | None" = betterproto2.field(
-        15, betterproto2.TYPE_MESSAGE, optional=True
+    sender_enigma_info: "___envelope__model__.EnvelopeEnigmaInfo | None" = (
+        betterproto2.field(15, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
     super_fan_count: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
         16, betterproto2.TYPE_INT32
+    )
+
+    reward_pool: "___envelope__model__.EnvelopeRewardPool | None" = betterproto2.field(
+        17, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    gift_infos: "list[___envelope__model__.EnvelopeGift]" = betterproto2.field(
+        18, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
 
@@ -122,7 +130,7 @@ default_message_pool.register_message(
 )
 
 
-from .... import envelope as ___envelope__
+from ....envelope import model as ___envelope__model__
 from ....shared import message as ___shared__message__
 from ... import base as __base__
 from ... import data as __data__

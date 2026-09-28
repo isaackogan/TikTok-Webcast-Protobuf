@@ -102,6 +102,22 @@ class TraceInfo(betterproto2.Message):
         betterproto2.field(3, betterproto2.TYPE_INT64)
     )
 
+    trace_time_map: "dict[str, int]" = betterproto2.field(
+        10,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_INT64
+        ),
+    )
+
+    da_info: "dict[str, str]" = betterproto2.field(
+        11,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message.ext", "TraceInfo", TraceInfo
@@ -196,6 +212,10 @@ class WebcastOecLiveShoppingMessage(betterproto2.Message):
 
     oec_live_shopping_message_v2: "__data__oec_msg__.OecLiveShoppingMessageV2 | None" = betterproto2.field(
         100, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    message_info: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        200, betterproto2.TYPE_STRING
     )
 
 

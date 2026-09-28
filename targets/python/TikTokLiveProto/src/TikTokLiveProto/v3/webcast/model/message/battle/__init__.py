@@ -179,6 +179,10 @@ class BattleSetting(betterproto2.Message):
         15, betterproto2.TYPE_MESSAGE, optional=True
     )
 
+    goofy_effect_info: "__live__match__.GoofyEffectInfo | None" = betterproto2.field(
+        16, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.message.battle", "BattleSetting", BattleSetting
@@ -209,8 +213,8 @@ default_message_pool.register_message(
 
 @dataclass(eq=False, repr=False)
 class BattleTaskStart(betterproto2.Message):
-    config: "__live__match__.BattleBonusConfig | None" = betterproto2.field(
-        1, betterproto2.TYPE_MESSAGE, optional=True
+    battle_bonus_config: "__live__match__.BattleBonusConfig | None" = (
+        betterproto2.field(1, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
 

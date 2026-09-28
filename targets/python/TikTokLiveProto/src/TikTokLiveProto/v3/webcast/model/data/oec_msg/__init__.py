@@ -248,6 +248,14 @@ class AuctionWinnerPopup(betterproto2.Message):
         7, betterproto2.TYPE_STRING
     )
 
+    popup_page_style: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        8, betterproto2.TYPE_INT32
+    )
+
+    lynx_popup_info: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.model.data.oec_msg", "AuctionWinnerPopup", AuctionWinnerPopup
@@ -326,6 +334,14 @@ class CommerceInfo(betterproto2.Message):
 
     auction_info: "AuctionInfo | None" = betterproto2.field(
         5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    lynx_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(6, betterproto2.TYPE_INT32)
+    )
+
+    lynx_info: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
     )
 
 

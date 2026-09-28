@@ -15,6 +15,7 @@ __all__ = (
     "GiftColorInfo",
     "GiftEffect",
     "GiftEffectCrossScreenStickerSpec",
+    "GiftEffectLiveGenSpec",
     "GiftEffectLynxSpec",
     "GiftEffectPrefabSpec",
     "GiftEffectSerialSpec",
@@ -295,6 +296,30 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class GiftEffectLiveGenSpec(betterproto2.Message):
+    resource_uri: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    md5: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+    fallback_asset_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT64
+    )
+
+    face_detection_asset_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT64
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.gift.model", "GiftEffectLiveGenSpec", GiftEffectLiveGenSpec
+)
+
+
+@dataclass(eq=False, repr=False)
 class GiftEffectLynxSpec(betterproto2.Message):
     asset_ids: "list[typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]]" = betterproto2.field(
         1, betterproto2.TYPE_INT64, repeated=True
@@ -354,6 +379,10 @@ class GiftEffectSpecs(betterproto2.Message):
 
     stream_effect_spec: "GiftEffectStreamSpec | None" = betterproto2.field(
         5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    live_gen_effect_spec: "GiftEffectLiveGenSpec | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 

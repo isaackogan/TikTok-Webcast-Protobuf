@@ -209,6 +209,14 @@ class PermitBizContent(betterproto2.Message):
 
     is_quick_call_auto_approved: "bool" = betterproto2.field(9, betterproto2.TYPE_BOOL)
 
+    mg_match_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(10, betterproto2.TYPE_INT32)
+    )
+
+    linked_sub_reason: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        11, betterproto2.TYPE_INT32
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.model.multiguestv3", "PermitBizContent", PermitBizContent

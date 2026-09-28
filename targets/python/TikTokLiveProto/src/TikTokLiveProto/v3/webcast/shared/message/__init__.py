@@ -49,6 +49,18 @@ class BaseProtoMessage(betterproto2.Message):
         betterproto2.field(7, betterproto2.TYPE_INT32)
     )
 
+    method_id: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(8, betterproto2.TYPE_INT32)
+    )
+
+    group_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+    group_scene: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        10, betterproto2.TYPE_STRING
+    )
+
 
 default_message_pool.register_message(
     "webcast.shared.message", "BaseProtoMessage", BaseProtoMessage

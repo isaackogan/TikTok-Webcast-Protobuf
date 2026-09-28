@@ -5,6 +5,8 @@
 
 __all__ = (
     "ControlChaosInfo",
+    "GameInteractionEffectInfo",
+    "GameInteractionText",
     "GameTricksShortcut",
     "GiftPick",
     "GiftPickExtra",
@@ -59,6 +61,78 @@ class ControlChaosInfo(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.viewer_picks", "ControlChaosInfo", ControlChaosInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class GameInteractionEffectInfo(betterproto2.Message):
+    instruction_icon_url: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    instruction_name: "GameInteractionText | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    instruction_desc: "GameInteractionText | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_type_name: "GameInteractionText | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    effect_mode: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    effect_mode_name: "GameInteractionText | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    instruction: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
+    )
+
+    effect_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        8, betterproto2.TYPE_STRING
+    )
+
+    effect_version: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        9, betterproto2.TYPE_STRING
+    )
+
+    protocol_version: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        10, betterproto2.TYPE_INT32
+    )
+
+    gift_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        11, betterproto2.TYPE_STRING
+    )
+
+    effect_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(12, betterproto2.TYPE_INT32)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks", "GameInteractionEffectInfo", GameInteractionEffectInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class GameInteractionText(betterproto2.Message):
+    default_pattern: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.viewer_picks", "GameInteractionText", GameInteractionText
 )
 
 
@@ -152,7 +226,9 @@ default_message_pool.register_message(
 
 @dataclass(eq=False, repr=False)
 class GiftPickExtraGameInteractionExternal(betterproto2.Message):
-    pass
+    effect_info: "GameInteractionEffectInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
 
 
 default_message_pool.register_message(
@@ -170,6 +246,18 @@ class GiftPickExtraGameInteractionStorage(betterproto2.Message):
 
     instruction_desc_key: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         2, betterproto2.TYPE_STRING
+    )
+
+    protocol_version: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        3, betterproto2.TYPE_INT32
+    )
+
+    effect_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        4, betterproto2.TYPE_STRING
+    )
+
+    effect_version: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        8, betterproto2.TYPE_STRING
     )
 
 
@@ -356,6 +444,10 @@ class ProfileExtraGameInteractionStorage(betterproto2.Message):
 
     template_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
         2, betterproto2.TYPE_STRING
+    )
+
+    mode: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
     )
 
 

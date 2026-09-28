@@ -29,12 +29,15 @@ __all__ = (
     "CommunityActiveDecoration",
     "CommunityHeartMeInfo",
     "CriticalStrikeCardInfo",
+    "EffectingCardQueue",
+    "EffectingCardQueueItem",
     "EnigmaBattleExtraInfo",
     "EnigmaBattleSetting",
     "ExtraTimeCardInfo",
     "GiftModeMeta",
     "GiftModeMetaList",
     "GiftModeMetaV2",
+    "GoofyEffectInfo",
     "HighScoreControlCfg",
     "LeagueScoreInfo",
     "MatchInvitePanelConfig",
@@ -45,6 +48,7 @@ __all__ = (
     "MatchTitleBarConfig",
     "MatchTitleBarDisplayRule",
     "MatchTitleBarTrigger",
+    "MusicCardInfo",
     "PlaybookBizExtra",
     "PotionCardInfo",
     "PreviewPeriod",
@@ -694,6 +698,78 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class EffectingCardQueue(betterproto2.Message):
+    queue_type: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(1, betterproto2.TYPE_INT32)
+    )
+
+    valid_card_types: "list[typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]]" = betterproto2.field(
+        2, betterproto2.TYPE_INT32, repeated=True
+    )
+
+    card_queue: "list[EffectingCardQueueItem]" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    queue_version: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(4, betterproto2.TYPE_INT64)
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "EffectingCardQueue", EffectingCardQueue
+)
+
+
+@dataclass(eq=False, repr=False)
+class EffectingCardQueueItem(betterproto2.Message):
+    critical_strike_cards: "CriticalStrikeCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    smoke_cards: "SmokeCardInfo | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    extra_time_cards: "ExtraTimeCardInfo | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    special_effect_cards: "SpecialEffectCardInfo | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    potion_cards: "PotionCardInfo | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    wave_cards: "WaveCardInfo | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    top2_cards: "Top2CardInfo | None" = betterproto2.field(
+        7, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    top3_cards: "Top3CardInfo | None" = betterproto2.field(
+        8, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    vault_gloves_cards: "VaultGloveCardInfo | None" = betterproto2.field(
+        9, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    music_cards: "MusicCardInfo | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "EffectingCardQueueItem", EffectingCardQueueItem
+)
+
+
+@dataclass(eq=False, repr=False)
 class EnigmaBattleExtraInfo(betterproto2.Message):
     has_started: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -834,6 +910,20 @@ default_message_pool.register_message(
 
 
 @dataclass(eq=False, repr=False)
+class GoofyEffectInfo(betterproto2.Message):
+    specific_resource_id: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        1, betterproto2.TYPE_INT64
+    )
+
+    is_random_effect: "bool" = betterproto2.field(2, betterproto2.TYPE_BOOL)
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "GoofyEffectInfo", GoofyEffectInfo
+)
+
+
+@dataclass(eq=False, repr=False)
 class HighScoreControlCfg(betterproto2.Message):
     normal_control_applied: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
 
@@ -909,6 +999,14 @@ class MatchInvitePanelConfig(betterproto2.Message):
 
     desc_text_dark_mode: "__message__common__.Text | None" = betterproto2.field(
         4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    desc_icon: "__base__.ImageModel | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    desc_icon_dark_mode: "__base__.ImageModel | None" = betterproto2.field(
+        6, betterproto2.TYPE_MESSAGE, optional=True
     )
 
 
@@ -1038,6 +1136,38 @@ class MatchTitleBarTrigger(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.model.live.match", "MatchTitleBarTrigger", MatchTitleBarTrigger
+)
+
+
+@dataclass(eq=False, repr=False)
+class MusicCardInfo(betterproto2.Message):
+    common: "CommonCardInfo | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    award_start_time_sec: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        2, betterproto2.TYPE_INT64
+    )
+
+    multiple: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = (
+        betterproto2.field(3, betterproto2.TYPE_INT64)
+    )
+
+    critical_strike_rate_low: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        4, betterproto2.TYPE_INT64
+    )
+
+    critical_strike_rate_high: "typing.Annotated[int, pydantic.Field(ge=-2**63, le=2**63 - 1)]" = betterproto2.field(
+        5, betterproto2.TYPE_INT64
+    )
+
+    detection_result: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        6, betterproto2.TYPE_INT32
+    )
+
+
+default_message_pool.register_message(
+    "webcast.model.live.match", "MusicCardInfo", MusicCardInfo
 )
 
 

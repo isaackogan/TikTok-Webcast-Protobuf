@@ -161,6 +161,18 @@ class CohostAbInfo(betterproto2.Message):
         5, betterproto2.TYPE_BOOL
     )
 
+    is_match_playbook_usability_enabled: "bool" = betterproto2.field(
+        6, betterproto2.TYPE_BOOL
+    )
+
+    is_match_playbook_reminder_enabled: "bool" = betterproto2.field(
+        7, betterproto2.TYPE_BOOL
+    )
+
+    is_match_goofy_effect_enabled: "bool" = betterproto2.field(
+        8, betterproto2.TYPE_BOOL
+    )
+
 
 default_message_pool.register_message(
     "webcast.chatroom.model.interact", "CohostABInfo", CohostAbInfo

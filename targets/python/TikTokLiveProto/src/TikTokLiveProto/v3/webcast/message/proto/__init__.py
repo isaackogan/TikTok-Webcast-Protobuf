@@ -11,11 +11,15 @@ __all__ = (
     "RankUserEnigmaInfo",
     "SellingPoint",
     "ShopEntranceInfo",
+    "ShopThemeColor",
+    "ShopThemedImage",
     "ShowResult",
     "ShowcaseEntranceInfo",
     "StoreIdentityLabel",
     "StoreLabel",
     "StoreOfficialLabel",
+    "TopRatedInfo",
+    "TopRatedStyle",
 )
 
 import typing
@@ -100,6 +104,14 @@ class EcommerceEntrance(betterproto2.Message):
             betterproto2.TYPE_ENUM,
             default_factory=lambda: __model__data__.UserEcommerceEntranceViewVersion(0),
         )
+    )
+
+    avatar_background_color: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
+    )
+
+    avatar_style_version: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = betterproto2.field(
+        8, betterproto2.TYPE_INT32
     )
 
 
@@ -256,9 +268,45 @@ class ShopEntranceInfo(betterproto2.Message):
         11, betterproto2.TYPE_MESSAGE, repeated=True
     )
 
+    top_rated_info: "TopRatedInfo | None" = betterproto2.field(
+        12, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.message.proto", "ShopEntranceInfo", ShopEntranceInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class ShopThemeColor(betterproto2.Message):
+    light: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    dark: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        2, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.message.proto", "ShopThemeColor", ShopThemeColor
+)
+
+
+@dataclass(eq=False, repr=False)
+class ShopThemedImage(betterproto2.Message):
+    light: "__shared__.ShopLabelImage | None" = betterproto2.field(
+        1, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    dark: "__shared__.ShopLabelImage | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+
+default_message_pool.register_message(
+    "webcast.message.proto", "ShopThemedImage", ShopThemedImage
 )
 
 
@@ -344,6 +392,10 @@ class StoreIdentityLabel(betterproto2.Message):
         10, betterproto2.TYPE_STRING
     )
 
+    identity_image_logo: "ShopThemedImage | None" = betterproto2.field(
+        11, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
 
 default_message_pool.register_message(
     "webcast.message.proto", "StoreIdentityLabel", StoreIdentityLabel
@@ -391,6 +443,56 @@ class StoreOfficialLabel(betterproto2.Message):
 
 default_message_pool.register_message(
     "webcast.message.proto", "StoreOfficialLabel", StoreOfficialLabel
+)
+
+
+@dataclass(eq=False, repr=False)
+class TopRatedInfo(betterproto2.Message):
+    is_top_rated: "bool" = betterproto2.field(1, betterproto2.TYPE_BOOL)
+
+    top_rated_style: "TopRatedStyle | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    schema: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        3, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.message.proto", "TopRatedInfo", TopRatedInfo
+)
+
+
+@dataclass(eq=False, repr=False)
+class TopRatedStyle(betterproto2.Message):
+    text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        1, betterproto2.TYPE_STRING
+    )
+
+    text_color: "ShopThemeColor | None" = betterproto2.field(
+        2, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    background_color: "ShopThemeColor | None" = betterproto2.field(
+        3, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    overlay_text_color: "ShopThemeColor | None" = betterproto2.field(
+        4, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    overlay_background_color: "ShopThemeColor | None" = betterproto2.field(
+        5, betterproto2.TYPE_MESSAGE, optional=True
+    )
+
+    long_text: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+
+default_message_pool.register_message(
+    "webcast.message.proto", "TopRatedStyle", TopRatedStyle
 )
 
 

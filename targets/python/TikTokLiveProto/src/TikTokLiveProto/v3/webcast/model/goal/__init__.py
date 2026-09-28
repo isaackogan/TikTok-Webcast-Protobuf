@@ -78,6 +78,20 @@ class GoalReward(betterproto2.Message):
         betterproto2.field(4, betterproto2.TYPE_INT32)
     )
 
+    reward_direct_message: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        5, betterproto2.TYPE_STRING
+    )
+
+    reward_template_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        6, betterproto2.TYPE_STRING
+    )
+
+    reward_source: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
+        betterproto2.field(7, betterproto2.TYPE_INT32)
+    )
+
+    is_hit_opt_ab: "bool" = betterproto2.field(8, betterproto2.TYPE_BOOL)
+
 
 default_message_pool.register_message("webcast.model.goal", "GoalReward", GoalReward)
 

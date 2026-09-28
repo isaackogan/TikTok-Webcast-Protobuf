@@ -510,24 +510,184 @@ class LinkMicBattlePunishFinishReason(betterproto2.Enum):
 class MemberMessageAction(betterproto2.Enum):
     UNKNOWN = 0
 
-    JOINED = 1
+    ENTER = 1
 
-    SUBSCRIBED = 3
+    LEAVE = 2
+
+    BAN_TALK = 3
+
+    BAN_TALK_CANCEL = 4
+
+    ADMIN = 5
+
+    ADMIN_CANCEL = 6
+
+    KICKOUT = 7
+
+    BEING_TOP_USER = 8
+
+    BAN_BY_ADMIN = 9
+
+    UNBAN_BY_ADMIN = 10
+
+    USER_KICKOUT = 11
+
+    ADMIN_PROMPT_ENABLE = 17
+
+    ADMIN_PROMPT_REVOKE = 18
+
+    ADMIN_PERMISSIONS_UPDATE = 20
+
+    UNBLOCK = 21
+
+    COMMENTS_ON = 22
+
+    COMMENTS_OFF = 23
+
+    KEYWORDS_EDITED = 24
+
+    KEYWORDS_EDITED_2 = 25
+
+    PINNED_COMMENT = 26
+
+    SUB_ONLY_LIVE_ON = 28
+
+    CHAT_L2_ON = 30
+
+    CHAT_L2_OFF = 31
+
+    COMMENT_FLAGGED_ON = 32
+
+    COMMENT_FLAGGED_OFF = 33
+
+    COMMENT_FLAGGED_REVIEW_ON = 34
+
+    COMMENT_FLAGGED_REVIEW_OFF = 35
+
+    SUB_ONLY_PREVIEW_DISABLED = 36
+
+    HOST_NAME_FRAME_UPDATED = 38
+
+    SPAM_COMMENTS_ON = 39
+
+    SPAM_COMMENTS_OFF = 40
+
+    HOST_NAME_FRAME_REMOVED = 41
+
+    HOST_NAME_FRAME_UPGRADED = 42
+
+    ENIGMA_COMMENTS_ON = 43
+
+    ENIGMA_COMMENTS_OFF = 44
+
+    NEW_VIEWER_NOT_FOLLOWING = 46
+
+    NEARBY_ENTER = 47
+
+    GUARDIAN = 48
+
+    EFFECT_MOCK_MIDDLE_TOUCH_EXPAND = 2000
+
+    EFFECT_MOCK_BANNER_EXPAND = 2001
+
+    EFFECT_MOCK_BANNER_MARQUEE = 2003
+
+    EFFECT_MOCK_QUEUED = 2004
 
     @classmethod
     def betterproto_value_to_renamed_proto_names(cls) -> dict[int, str]:
         return {
             0: "MEMBER_MESSAGE_ACTION_UNKNOWN",
-            1: "MEMBER_MESSAGE_ACTION_JOINED",
-            3: "MEMBER_MESSAGE_ACTION_SUBSCRIBED",
+            1: "MEMBER_MESSAGE_ACTION_ENTER",
+            2: "MEMBER_MESSAGE_ACTION_LEAVE",
+            3: "MEMBER_MESSAGE_ACTION_BAN_TALK",
+            4: "MEMBER_MESSAGE_ACTION_BAN_TALK_CANCEL",
+            5: "MEMBER_MESSAGE_ACTION_ADMIN",
+            6: "MEMBER_MESSAGE_ACTION_ADMIN_CANCEL",
+            7: "MEMBER_MESSAGE_ACTION_KICKOUT",
+            8: "MEMBER_MESSAGE_ACTION_BEING_TOP_USER",
+            9: "MEMBER_MESSAGE_ACTION_BAN_BY_ADMIN",
+            10: "MEMBER_MESSAGE_ACTION_UNBAN_BY_ADMIN",
+            11: "MEMBER_MESSAGE_ACTION_USER_KICKOUT",
+            17: "MEMBER_MESSAGE_ACTION_ADMIN_PROMPT_ENABLE",
+            18: "MEMBER_MESSAGE_ACTION_ADMIN_PROMPT_REVOKE",
+            20: "MEMBER_MESSAGE_ACTION_ADMIN_PERMISSIONS_UPDATE",
+            21: "MEMBER_MESSAGE_ACTION_UNBLOCK",
+            22: "MEMBER_MESSAGE_ACTION_COMMENTS_ON",
+            23: "MEMBER_MESSAGE_ACTION_COMMENTS_OFF",
+            24: "MEMBER_MESSAGE_ACTION_KEYWORDS_EDITED",
+            25: "MEMBER_MESSAGE_ACTION_KEYWORDS_EDITED_2",
+            26: "MEMBER_MESSAGE_ACTION_PINNED_COMMENT",
+            28: "MEMBER_MESSAGE_ACTION_SUB_ONLY_LIVE_ON",
+            30: "MEMBER_MESSAGE_ACTION_CHAT_L2_ON",
+            31: "MEMBER_MESSAGE_ACTION_CHAT_L2_OFF",
+            32: "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_ON",
+            33: "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_OFF",
+            34: "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_REVIEW_ON",
+            35: "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_REVIEW_OFF",
+            36: "MEMBER_MESSAGE_ACTION_SUB_ONLY_PREVIEW_DISABLED",
+            38: "MEMBER_MESSAGE_ACTION_HOST_NAME_FRAME_UPDATED",
+            39: "MEMBER_MESSAGE_ACTION_SPAM_COMMENTS_ON",
+            40: "MEMBER_MESSAGE_ACTION_SPAM_COMMENTS_OFF",
+            41: "MEMBER_MESSAGE_ACTION_HOST_NAME_FRAME_REMOVED",
+            42: "MEMBER_MESSAGE_ACTION_HOST_NAME_FRAME_UPGRADED",
+            43: "MEMBER_MESSAGE_ACTION_ENIGMA_COMMENTS_ON",
+            44: "MEMBER_MESSAGE_ACTION_ENIGMA_COMMENTS_OFF",
+            46: "MEMBER_MESSAGE_ACTION_NEW_VIEWER_NOT_FOLLOWING",
+            47: "MEMBER_MESSAGE_ACTION_NEARBY_ENTER",
+            48: "MEMBER_MESSAGE_ACTION_GUARDIAN",
+            2000: "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_MIDDLE_TOUCH_EXPAND",
+            2001: "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_BANNER_EXPAND",
+            2003: "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_BANNER_MARQUEE",
+            2004: "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_QUEUED",
         }
 
     @classmethod
     def betterproto_renamed_proto_names_to_value(cls) -> dict[str, int]:
         return {
             "MEMBER_MESSAGE_ACTION_UNKNOWN": 0,
-            "MEMBER_MESSAGE_ACTION_JOINED": 1,
-            "MEMBER_MESSAGE_ACTION_SUBSCRIBED": 3,
+            "MEMBER_MESSAGE_ACTION_ENTER": 1,
+            "MEMBER_MESSAGE_ACTION_LEAVE": 2,
+            "MEMBER_MESSAGE_ACTION_BAN_TALK": 3,
+            "MEMBER_MESSAGE_ACTION_BAN_TALK_CANCEL": 4,
+            "MEMBER_MESSAGE_ACTION_ADMIN": 5,
+            "MEMBER_MESSAGE_ACTION_ADMIN_CANCEL": 6,
+            "MEMBER_MESSAGE_ACTION_KICKOUT": 7,
+            "MEMBER_MESSAGE_ACTION_BEING_TOP_USER": 8,
+            "MEMBER_MESSAGE_ACTION_BAN_BY_ADMIN": 9,
+            "MEMBER_MESSAGE_ACTION_UNBAN_BY_ADMIN": 10,
+            "MEMBER_MESSAGE_ACTION_USER_KICKOUT": 11,
+            "MEMBER_MESSAGE_ACTION_ADMIN_PROMPT_ENABLE": 17,
+            "MEMBER_MESSAGE_ACTION_ADMIN_PROMPT_REVOKE": 18,
+            "MEMBER_MESSAGE_ACTION_ADMIN_PERMISSIONS_UPDATE": 20,
+            "MEMBER_MESSAGE_ACTION_UNBLOCK": 21,
+            "MEMBER_MESSAGE_ACTION_COMMENTS_ON": 22,
+            "MEMBER_MESSAGE_ACTION_COMMENTS_OFF": 23,
+            "MEMBER_MESSAGE_ACTION_KEYWORDS_EDITED": 24,
+            "MEMBER_MESSAGE_ACTION_KEYWORDS_EDITED_2": 25,
+            "MEMBER_MESSAGE_ACTION_PINNED_COMMENT": 26,
+            "MEMBER_MESSAGE_ACTION_SUB_ONLY_LIVE_ON": 28,
+            "MEMBER_MESSAGE_ACTION_CHAT_L2_ON": 30,
+            "MEMBER_MESSAGE_ACTION_CHAT_L2_OFF": 31,
+            "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_ON": 32,
+            "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_OFF": 33,
+            "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_REVIEW_ON": 34,
+            "MEMBER_MESSAGE_ACTION_COMMENT_FLAGGED_REVIEW_OFF": 35,
+            "MEMBER_MESSAGE_ACTION_SUB_ONLY_PREVIEW_DISABLED": 36,
+            "MEMBER_MESSAGE_ACTION_HOST_NAME_FRAME_UPDATED": 38,
+            "MEMBER_MESSAGE_ACTION_SPAM_COMMENTS_ON": 39,
+            "MEMBER_MESSAGE_ACTION_SPAM_COMMENTS_OFF": 40,
+            "MEMBER_MESSAGE_ACTION_HOST_NAME_FRAME_REMOVED": 41,
+            "MEMBER_MESSAGE_ACTION_HOST_NAME_FRAME_UPGRADED": 42,
+            "MEMBER_MESSAGE_ACTION_ENIGMA_COMMENTS_ON": 43,
+            "MEMBER_MESSAGE_ACTION_ENIGMA_COMMENTS_OFF": 44,
+            "MEMBER_MESSAGE_ACTION_NEW_VIEWER_NOT_FOLLOWING": 46,
+            "MEMBER_MESSAGE_ACTION_NEARBY_ENTER": 47,
+            "MEMBER_MESSAGE_ACTION_GUARDIAN": 48,
+            "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_MIDDLE_TOUCH_EXPAND": 2000,
+            "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_BANNER_EXPAND": 2001,
+            "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_BANNER_MARQUEE": 2003,
+            "MEMBER_MESSAGE_ACTION_EFFECT_MOCK_QUEUED": 2004,
         }
 
 
@@ -961,6 +1121,10 @@ class JoinGroupBizContent(betterproto2.Message):
         13, betterproto2.TYPE_INT32
     )
 
+    join_session_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        14, betterproto2.TYPE_STRING
+    )
+
     join_group_msg_extra: "JoinGroupMessageExtra | None" = betterproto2.field(
         101, betterproto2.TYPE_MESSAGE, optional=True
     )
@@ -1117,6 +1281,10 @@ class JoinRoomDirectContent(betterproto2.Message):
 
     ui_pos: "list[_linkmic__common__.PosIdentity]" = betterproto2.field(
         6, betterproto2.TYPE_MESSAGE, repeated=True
+    )
+
+    joiner_linker_session_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
     )
 
 
@@ -1335,6 +1503,18 @@ class PermitJoinGroupBizContent(betterproto2.Message):
 
     quick_cohost_invitee_user_info: "QuickCohostInviteeUserInfo | None" = (
         betterproto2.field(5, betterproto2.TYPE_MESSAGE, optional=True)
+    )
+
+    invitee_trace: "dict[str, str]" = betterproto2.field(
+        6,
+        betterproto2.TYPE_MAP,
+        map_meta=betterproto2.map_meta(
+            betterproto2.TYPE_STRING, betterproto2.TYPE_STRING
+        ),
+    )
+
+    join_session_id: "typing.Annotated[str, pydantic.AfterValidator(betterproto2.validators.validate_string)]" = betterproto2.field(
+        7, betterproto2.TYPE_STRING
     )
 
 
@@ -1707,6 +1887,10 @@ class WebcastLinkStateMessage(betterproto2.Message):
 
     linker_mode: "typing.Annotated[int, pydantic.Field(ge=-2**31, le=2**31 - 1)]" = (
         betterproto2.field(16, betterproto2.TYPE_INT32)
+    )
+
+    multi_guest_biz_info: "_linkmic__common__.LinkStateMultiGuestBizExtra | None" = (
+        betterproto2.field(17, betterproto2.TYPE_MESSAGE, optional=True)
     )
 
 
