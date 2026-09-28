@@ -46,9 +46,63 @@ export interface GiftColorInfo {
   colorImage: ImageModel | undefined;
   colorImageSize: string;
   colorName: string;
+  colorNameEnglish: string;
+  colorReason: string[];
   colorValues: string[];
+  giftDescribe: string;
   giftImage: ImageModel | undefined;
   isDefault: boolean;
+}
+export interface GiftEffectCrossScreenStickerSpec {
+  actionAssetIds: {
+    [key: string]: number;
+  };
+  reactionAssetIds: {
+    [key: string]: number;
+  };
+  singleActionAssetIds: {
+    [key: string]: number;
+  };
+}
+export interface GiftEffectCrossScreenStickerSpec_SingleActionAssetIdsEntry {
+  key: string;
+  value: number;
+}
+export interface GiftEffectCrossScreenStickerSpec_ActionAssetIdsEntry {
+  key: string;
+  value: number;
+}
+export interface GiftEffectCrossScreenStickerSpec_ReactionAssetIdsEntry {
+  key: string;
+  value: number;
+}
+export interface GiftEffectLiveGenSpec {
+  faceDetectionAssetId: string;
+  fallbackAssetId: string;
+  md5: string;
+  resourceUri: string;
+}
+export interface GiftEffectLynxSpec {
+  assetIds: string[];
+}
+export interface GiftEffectPrefabSpec {
+  prefabAssetIds: string[];
+  templateAssetId: string;
+}
+export interface GiftEffectSerialSpec {
+  serialAssetIds: string[];
+}
+export interface GiftEffectSpecs {
+  crossScreenSticker: GiftEffectCrossScreenStickerSpec | undefined;
+  liveGenEffectSpec: GiftEffectLiveGenSpec | undefined;
+  lynx: GiftEffectLynxSpec | undefined;
+  prefab: GiftEffectPrefabSpec | undefined;
+  serialSpec: GiftEffectSerialSpec | undefined;
+  streamEffectSpec: GiftEffectStreamSpec | undefined;
+}
+export interface GiftEffectStreamSpec {
+  basicAssetId: string;
+  extraAssetIds: string[];
 }
 export interface GiftNotice {
   bizType: number;
@@ -169,6 +223,11 @@ export interface SceneRestriction {
   matchHiddenGids: string[];
   multiguestHiddenGids: string[];
   normalHiddenGids: string[];
+}
+export interface SecondaryEffectInfo {
+  builtinStrings: string[];
+  effectIds: string[];
+  minuteGameGameplayId: string;
 }
 export interface TransitionConfig {
   configId: string;

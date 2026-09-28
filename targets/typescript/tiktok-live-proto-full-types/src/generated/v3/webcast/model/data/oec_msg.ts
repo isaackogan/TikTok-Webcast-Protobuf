@@ -5,6 +5,7 @@
 // source: webcast/model/data/oec_msg.proto
 
 /* eslint-disable */
+import type { EnhancementTextInfo } from "../../shared/messages.js";
 import type { ImageModel } from "../base/messages.js";
 export const protobufPackage = "webcast.model.data.oec_msg";
 export interface AtmosphereInfo {
@@ -15,33 +16,53 @@ export interface AtomAction {
   type: number;
 }
 export interface AuctionInfo {
+  auctionCardBottomTextType: number;
+  auctionCardTitleTextType: number;
   auctionConfigId: string;
+  auctionConfigIdStr: string;
+  auctionEventTypeInt: number;
   auctionId: string;
+  auctionIdStr: string;
+  auctionKnockPerformBottomRightTextType: number;
+  auctionKnockPerformMiddleTextType: number;
   auctionStatus: number;
   auctionTextType: number;
   auctionTextTypeInt: number;
   auctionType: number;
   auctionWinner: UserInfo | undefined;
+  bidPanel: BidPanel | undefined;
   carouselCfg: CarouselCfg | undefined;
   drawingStateTextType: number;
   drawingStateTextTypeInt: number;
+  easterEgg: EasterEgg | undefined;
   endTime: string;
   extendAuctionCfg: ExtendAuctionCfg | undefined;
   isCarousel: boolean;
+  lynxCardInfo: string;
   nextBidPrice: PriceItem | undefined;
   productId: string;
   rewardItem: ScrollElement | undefined;
   scrollElementList: ScrollElement[];
   startTime: string;
   suffix: string;
+  surpriseSetRemainItemCount: number;
+  traceTimeMap: {
+    [key: string]: string;
+  };
   versionTime: string;
   versionTimeStr: string;
   winnerBidPrice: PriceItem | undefined;
 }
+export interface AuctionInfo_TraceTimeMapEntry {
+  key: string;
+  value: string;
+}
 export interface AuctionWinnerPopup {
   auctionId: string;
+  lynxPopupInfo: string;
   notifyType: number;
   paymentExpireTimestamp: string;
+  popupPageStyle: number;
   productId: string;
   productImg: ImageModel | undefined;
   schema: string;
@@ -50,6 +71,9 @@ export interface AuctionWinnerPopup {
 export interface BagIndex {
   value: number;
 }
+export interface BidPanel {
+  bidBtnTextTypeInt: number;
+}
 export interface CarouselCfg {
   intervalMs: string;
   textStatusList: number[];
@@ -57,6 +81,8 @@ export interface CarouselCfg {
 }
 export interface CommerceInfo {
   auctionInfo: AuctionInfo | undefined;
+  lynxInfo: string;
+  lynxType: number;
   popCardInfo: PopCardInfo | undefined;
   popupWindowInfo: PopupWindowInfo | undefined;
   productInfo: {
@@ -78,6 +104,14 @@ export interface DispersionParam {
   maxDelayMs: string;
   minDelayMs: string;
 }
+export interface EasterEgg {
+  winnerRank: string;
+  winnerRankTextType: number;
+  winnerRankTextTypeTail: number;
+  winnerRoomWinCnt: string;
+  winnerRoomWinCntTextType: number;
+  winnerRoomWinCntTextTypeTail: number;
+}
 export interface EcomLiveElementActions {
   atomActions: AtomAction[];
   version: string;
@@ -87,11 +121,19 @@ export interface ExtendAuctionCfg {
   isExtendAuctionSupported: boolean;
   shouldExtend: boolean;
 }
+export interface FlashSaleEnhancementInfo {
+  buyerInfos: UserInfo[];
+  enhancementTextInfo: EnhancementTextInfo | undefined;
+  stockShowStatus: number;
+}
 export interface LiveFlashSaleInfo {
   activityId: string;
   availableStock: number;
+  enhancementInfo: FlashSaleEnhancementInfo | undefined;
+  pdpViewerCount: number;
   status: number;
   stockStatus: number;
+  totalStock: number;
   type: number;
 }
 export interface MsgMeta {

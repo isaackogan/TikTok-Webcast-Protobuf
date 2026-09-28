@@ -25,7 +25,7 @@ import type { BaLeadsGenInfo, Creator, GameTag, Hashtag, InteractionQuestionInfo
 import type { PollInfo } from "../poll_info.js";
 import type { WarningTag } from "../warning_tag.js";
 import type { BattleInfoResponse } from "./match_battle_info_response.js";
-import type { AgeRestricted, ASRSummary, AudienceLinkmicRelation, BALinkStruct, BcToggleInfo, BoardUsingInfo, CaptionInfo, ChannelInfo, CommerceStruct, CommercialContentToggle, ContentSpotlightRankInfo, CustomTabInfo, ECLiveHeadToLiveRoomParams, EcommerceRoomHeadTag, EcommerceRoomTag, EffectInfo, EnlargeViewInfo, EnterNearByInfo, EpiphronDecision, FYPCommerceStruct, GiftSuspension, GroupLiveSession, GuestInfo, HighlightFragmentInfo, LikeIconInfo, LiveFilterMsgRule, LiveGiftBoostCardRoomStatus, LiveRecordConfig, M2GuideInfo, MsgNotifyComAvoidConfig, MsgNotifyQuota, MsgNotifyWatchContinuousQuota, MsgNotifyWatchEarlyQuota, MusicInfo, NearbyInfo, NotifyFCConfig, PaidContentInfo, PaidEvent, ParallelPullStreamInfo, PartnershipInfo, PinInfo, PollConf, PreviewCardCommentBox, PreviewCTA, PublicCommonDynamicText, QueueInfo, QuickGift, RegionalRestricted, RepostInfo, ResourceConfig, RoomCreateUserInfo, SecondaryPageInfo, Skin, SMBIndustryInfo, SMBInfo, SMBLivePreview, SMBToolInfo, StrategyPlatformFeatures, StreamSnapShot, StreamUrl, SubUpsellInfo, TaxonomyTagInfo, ToolbarConfig, TopFrameBannerInfo, TTLSRoomInfo } from "./messages.js";
+import type { ActivityToggleInfo, AgeRestricted, AIAnchorAboutMeInfo, ASRSummary, AudienceLinkmicRelation, BALinkStruct, BcToggleInfo, BoardUsingInfo, CaptionInfo, ChannelInfo, CollaborativeLiveInfo, CommerceStruct, CommercialContentToggle, ContentSpotlightRankInfo, CreateLinkmicInfo, CustomTabInfo, ECLiveHeadToLiveRoomParams, EcommerceActivityInfo, EcommerceRoomHeadTag, EcommerceRoomTag, EffectInfo, EnlargeViewInfo, EnterNearByInfo, EnterRoomDecisionInfo, EpiphronDecision, FYPCommerceStruct, GiftSuspension, GroupLiveSession, GuestInfo, HighlightFragmentInfo, LikeIconInfo, LinkmicLayoutConfig, LiveFilterMsgRule, LiveGiftBoostCardRoomStatus, LiveRecordConfig, LuminanceInfo, M2GuideInfo, MsgNotifyComAvoidConfig, MsgNotifyQuota, MsgNotifyWatchContinuousQuota, MsgNotifyWatchEarlyQuota, MusicInfo, NearbyInfo, NotifyFCConfig, PaidContentInfo, PaidEvent, ParallelPullStreamInfo, PartnershipInfo, PinInfo, PollConf, PreviewCardCommentBox, PreviewCTA, ProgrammedLiveRoomTagInfo, PublicCommonDynamicText, QueueInfo, QuickGift, RegionalRestricted, RepostInfo, ResourceConfig, RoomCreateUserInfo, SecondaryPageInfo, Skin, SMBIndustryInfo, SMBInfo, SMBLivePreview, SMBToolInfo, StrategyPlatformFeatures, StreamFeature, StreamSnapShot, StreamUrl, SubUpsellInfo, TaxonomyTagInfo, ToolbarConfig, TopFrameBannerInfo, TTLSRoomInfo, WatchReasonV2 } from "./messages.js";
 export const protobufPackage = "webcast.model.live";
 export interface AggregationData {
   audience: User | undefined;
@@ -113,6 +113,8 @@ export interface PictionaryStatistics {
   guessTotalPv: string;
 }
 export interface Room {
+  activityToggleInfo: ActivityToggleInfo | undefined;
+  addTtlsProductTs: string;
   adjustDisplayOrder: string;
   adminEcShowPermission: {
     [key: string]: string;
@@ -120,6 +122,7 @@ export interface Room {
   advancedPollInfo: PollInfo | undefined;
   ageRestricted: AgeRestricted | undefined;
   aggregationData: AggregationData | undefined;
+  aiAnchorAboutMeInfo: AIAnchorAboutMeInfo | undefined;
   aigcSelfDisclosureSwitch: boolean;
   aiLivePreviewHighlight: AILivePreviewHighlight | undefined;
   aiLivePreviewHighlightExpect: AILivePreviewHighlight | undefined;
@@ -144,6 +147,7 @@ export interface Room {
   boostStatus: LiveGiftBoostCardRoomStatus | undefined;
   captionInfo: CaptionInfo | undefined;
   clientVersion: string;
+  collaborativeLiveInfo: CollaborativeLiveInfo | undefined;
   commentHasTextEmojiEmote: number;
   commentNameMode: number;
   commerceInfo: CommerceStruct | undefined;
@@ -175,6 +179,7 @@ export interface Room {
   dynamicTextInfo: PublicCommonDynamicText | undefined;
   ecAgeInterval: number;
   ecLiveHeadParams: ECLiveHeadToLiveRoomParams | undefined;
+  ecommerceActivityInfo: EcommerceActivityInfo | undefined;
   ecommerceRoomHeadTag: EcommerceRoomHeadTag | undefined;
   ecommerceRoomTags: EcommerceRoomTag[];
   ecomRankInfo: EcomRankInfo | undefined;
@@ -185,14 +190,18 @@ export interface Room {
   enableOptimizeSensitiveWord: boolean;
   enableServerDrop: string;
   enableStreamEncryption: boolean;
+  enableStreamTranslation: boolean;
   enlargeViewInfo: EnlargeViewInfo | undefined;
   enterNearbyInfo: EnterNearByInfo | undefined;
   enterRoomBoostExtra: string;
+  enterRoomDecisionInfo: EnterRoomDecisionInfo | undefined;
   existedCommerceGoods: boolean;
+  existedCommerceGoodsTs: string;
   existedTtlsGoods: boolean;
   feedRoomLabel: ImageModel | undefined;
   feedRoomLabels: FeedRoomLabel[];
   filterMsgRules: LiveFilterMsgRule[];
+  finalAnchorType: number;
   finishTime: string;
   finishUrl: string;
   finishUrlV2: string;
@@ -216,6 +225,7 @@ export interface Room {
   hasCommerceGoods: boolean;
   hashtag: Hashtag | undefined;
   hasMoreHistoryComment: boolean;
+  hasTtlsGoods: boolean;
   hasTtlsLivePermission: boolean;
   hasUsedMusic: boolean;
   hasViewerWishesGameTricks: boolean;
@@ -239,6 +249,7 @@ export interface Room {
   isTag2SfvRelationPair: boolean;
   karaokeInfo: KaraokeInfo | undefined;
   layout: string;
+  leadsAdsPinCard: SubPinCard | undefined;
   likeAggOptimizeGroup: string;
   likeCount: string;
   likeEffect: LikeEffect | undefined;
@@ -299,6 +310,8 @@ export interface Room {
   previewCardCommentBox: PreviewCardCommentBox | undefined;
   previewCommentInfo: PreviewCommentInfo | undefined;
   previewCta: PreviewCTA | undefined;
+  programmedLiveRoomTagInfo: ProgrammedLiveRoomTagInfo | undefined;
+  programmedLiveShowTag: string;
   queueInfo: QueueInfo | undefined;
   quickChatInfo: QuickChatInfo | undefined;
   quickGift: QuickGift | undefined;
@@ -342,6 +355,8 @@ export interface Room {
   status: number;
   strategyPlatformFeatures: StrategyPlatformFeatures | undefined;
   streamCover: ImageModel | undefined;
+  streamCoverLuminanceInfo: LuminanceInfo | undefined;
+  streamFeatures: StreamFeature[];
   streamId: string;
   streamSnapshot: StreamSnapShot | undefined;
   streamSnapshotCover: ImageModel | undefined;
@@ -368,6 +383,7 @@ export interface Room {
   watchEarlyQuotaConfig: {
     [key: string]: MsgNotifyWatchEarlyQuota;
   };
+  watchReasonV2: WatchReasonV2 | undefined;
   webcastSdkVersion: string;
   withLinkmic: boolean;
 }
@@ -400,9 +416,12 @@ export interface RoomLinkInfo {
   battleInfo: BattleInfoResponse | undefined;
   channelId: string;
   channelInfo: ChannelInfo | undefined;
+  cohostAnchorsHash: string;
   cohostSettingsInfo: CohostSettingsInfo | undefined;
   competitionInfo: CompetitionInfo | undefined;
+  createLinkmicInfo: CreateLinkmicInfo | undefined;
   followedCount: string;
+  layoutConfig: LinkmicLayoutConfig | undefined;
   linkedUserList: User[];
   linkerMode: number;
   linkMicChannel: string;
@@ -411,6 +430,7 @@ export interface RoomLinkInfo {
   multiLiveEnum: string;
   rivalAnchorId: string;
   showUserList: User[];
+  subtitleEnable: number;
   topicInfo: CohostTopic | undefined;
   topicStatus: TopicSessionStatus | undefined;
 }

@@ -8,7 +8,7 @@
 import type { RankUserEnigmaInfo } from "../../message_proto.js";
 import type { FollowInfo } from "../../shared/anchor_info.js";
 import type { ImageModel } from "../base/messages.js";
-import type { BadgeStruct, PrivilegeLogExtra } from "../base/user.js";
+import type { AvatarHashInfo, BadgeStruct, PrivilegeLogExtra } from "../base/user.js";
 import type { User } from "../base/user_2.js";
 import type { KaraokeSong } from "../merged.js";
 import type { Text } from "../message/common.js";
@@ -73,10 +73,13 @@ export interface ListUser {
 }
 export interface MGEnterActionInfo {
   enterAction: number;
+  enterActionLinkerSessionId: string;
   enterActionOriginLinkmicId: string;
   enterActionReason: number;
   enterActionSourceRole: number;
+  enterActionSourceTimeMs: string;
   enterActionSourceUser: User | undefined;
+  joinAction: number;
 }
 export interface MultiGuestLinkmicInfo {
   fanTicketIconUrl: string;
@@ -85,6 +88,7 @@ export interface MultiGuestLinkmicInfo {
   requestUserStatus: number;
 }
 export interface RankUser {
+  avatarHashInfo: AvatarHashInfo | undefined;
   avatarThumb: ImageModel | undefined;
   badgeList: BadgeStruct[];
   border: Border | undefined;

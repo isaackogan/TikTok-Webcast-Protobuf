@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import type { TimerDetailAntidirtStatus, TimerDetailAuditStatus, TimerStatus } from "../model/data/messages.js";
-import type { TimerDetailAuditInfo } from "./api_audit_info_2.js";
+import type { TimerDetailAuditInfo } from "./api_audit_info.js";
 export const protobufPackage = "webcast.chatroom.api";
 export interface TimerDetail {
   anchorId: string;

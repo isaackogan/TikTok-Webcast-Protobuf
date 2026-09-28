@@ -12,6 +12,7 @@ import type { PollOptionInfo } from "./message/messages.js";
 import type { PollVoteLimit, UserVoteInfo } from "./messages.js";
 export const protobufPackage = "webcast.model";
 export interface PollData {
+  businessScene: number;
   endTime: string;
   endType: PollEndType;
   gift: Gift | undefined;

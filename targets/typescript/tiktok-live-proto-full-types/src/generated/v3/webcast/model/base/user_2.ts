@@ -10,7 +10,7 @@ import type { FollowInfo } from "../../shared/anchor_info.js";
 import type { LinkmicStatus } from "../data/messages.js";
 import type { ActivityRewardInfo, AnchorInfo, AnchorLevel, AuthenticationInfo, Author, BorderInfo, FansClubMember, LiveEventInfo, UserAttr, UserHonor } from "../messages.js";
 import type { ImageModel } from "./messages.js";
-import type { BadgeStruct, ComboBadgeInfo, EnigmaInfo, FansClubInfo, OwnRoom, SubscribeInfo } from "./user.js";
+import type { AvatarHashInfo, BadgeStruct, ComboBadgeInfo, EnigmaInfo, FansClubInfo, OwnRoom, SubscribeInfo } from "./user.js";
 export const protobufPackage = "webcast.model.base.user";
 export interface User {
   activityReward: ActivityRewardInfo | undefined;
@@ -28,6 +28,7 @@ export interface User {
   authenticationInfo: AuthenticationInfo | undefined;
   authorStats: Author | undefined;
   avatarBorder: ImageModel | undefined;
+  avatarHashInfo: AvatarHashInfo | undefined;
   avatarJpg: ImageModel | undefined;
   avatarLarge: ImageModel | undefined;
   avatarMedium: ImageModel | undefined;

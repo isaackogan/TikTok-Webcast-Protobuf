@@ -84,18 +84,50 @@ export interface CountdownUser {
   score: string;
   userId: string;
 }
+export interface ExecutorDispatch {
+  executorDataVersion: string;
+  executorType: number;
+  executorUniqueKey: string;
+  params: ExecutorParams | undefined;
+  persistenceType: number;
+  playId: string;
+  playNodeKey: string;
+  playRoundId: string;
+  reportPolicy: ExecutorReportPolicy | undefined;
+  roles: number[];
+  roomId: string;
+  stateVersion: string;
+  targetState: number;
+}
+export interface ExecutorDispatchBatch {
+  executorDispatches: ExecutorDispatch[];
+}
+export interface ExecutorParams {
+  animation: PlayAnimationParams | undefined;
+  nameCapsule: PlayNameCapsuleParams | undefined;
+  panel: PlayPanelParams | undefined;
+}
+export interface ExecutorReportPolicy {
+  needReportAck: boolean;
+  needReportStart: boolean;
+  resultNeedReport: boolean;
+}
 export interface GuestShowdownConfig {
   duration: string;
   loserNum: number;
+  winnerNum: number;
 }
 export interface GuestShowdownConfigChange {
   addDuration: string;
   loserNum: number;
   updateAddDuration: boolean;
   updateLoserNum: boolean;
+  updateWinnerNum: boolean;
+  winnerNum: number;
 }
 export interface GuestShowdownContent {
   channelId: string;
+  contributors: string[];
   leavePlayUsers: GuestShowdownUser[];
   partyStartTime: string;
   playConfig: GuestShowdownConfig | undefined;
@@ -137,6 +169,51 @@ export interface NoticeboardContent {
 export interface NoticeboardReviewInfo {
   mediaNodeId: string;
   reviewStatus: number;
+}
+export interface PlayAnimationParams {
+  animationName: number;
+}
+export interface PlayNameCapsuleParams {
+  targets: PlayNameCapsuleTarget[];
+}
+export interface PlayNameCapsuleTarget {
+  capsuleType: number;
+  linkMicId: string;
+}
+export interface PlayPanelParams {
+  autoOpen: boolean;
+  panelName: number;
+}
+export interface PlaySnapshot {
+  currentPlayNodeKey: string;
+  currentPlayRoundId: string;
+  currentStepName: number;
+  latestViewModel: PlayViewModel | undefined;
+  playId: string;
+  playScene: number;
+  playStatus: number;
+  stateVersion: string;
+}
+export interface PlayUserInfo {
+  avatarThumb: ImageModel | undefined;
+  displayId: string;
+  enigmaInfo: EnigmaInfo | undefined;
+  nickname: string;
+  secUserId: string;
+  userId: string;
+}
+export interface PlayViewModel {
+  announcingResultViewData: VibingAnnouncingResultViewData | undefined;
+  chattingViewData: VibingChattingViewData | undefined;
+  confirmResultViewData: VibingConfirmResultViewData | undefined;
+  finishedViewData: VibingFinishedViewData | undefined;
+  playId: string;
+  playNodeKey: string;
+  playRoundId: string;
+  roundNo: string;
+  serverTimeMs: string;
+  stepName: number;
+  waitingPairViewData: VibingWaitingPairViewData | undefined;
 }
 export interface PlaybookGroup {
   groupId: string;
@@ -188,6 +265,8 @@ export interface TextHeaderPlayContent {
 }
 export interface TextHeaderRecordInfo {
   mediaNodeId: string;
+  originMediaNodeId: string;
+  originRecordId: string;
   recordId: string;
   reviewStatus: number;
   textHeaderMaterialInfo: TextHeaderMaterialInfo | undefined;
@@ -208,6 +287,46 @@ export interface TransitionInfo {
   transitionDurationOfCurrent: string;
   transitionStartTime: string;
   userId: string;
+}
+export interface VibingAnnouncingResultViewData {
+  commonData: VibingRoundViewCommonData | undefined;
+  resultInfo: number;
+  transitionReason: number;
+}
+export interface VibingChattingViewData {
+  commonData: VibingRoundViewCommonData | undefined;
+}
+export interface VibingConfirmResultViewData {
+  commonData: VibingRoundViewCommonData | undefined;
+}
+export interface VibingFinishedViewData {
+  commonData: VibingRoundViewCommonData | undefined;
+  transitionReason: number;
+}
+export interface VibingPairInfo {
+  leftLinkMicId: string;
+  leftUser: PlayUserInfo | undefined;
+  rightLinkMicId: string;
+  rightUser: PlayUserInfo | undefined;
+}
+export interface VibingRoundViewCommonData {
+  chatStartTimeMs: string;
+  pair: VibingPairInfo | undefined;
+  showConfig: VibingShowConfig | undefined;
+  voteInfo: VoteInfo | undefined;
+}
+export interface VibingShowConfig {
+  autoLayoutEnabled: boolean;
+  chatDurationMs: string;
+  giftVoteEnabled: boolean;
+}
+export interface VibingWaitingPairViewData {
+  selectedPair: VibingPairInfo | undefined;
+  showConfig: VibingShowConfig | undefined;
+}
+export interface VoteInfo {
+  enabled: boolean;
+  pollId: string;
 }
 export interface WallpaperContent {
   channelId: string;

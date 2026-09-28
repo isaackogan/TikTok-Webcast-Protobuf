@@ -5,10 +5,11 @@
 // source: webcast/model/message/redenvelope.proto
 
 /* eslint-disable */
-import type { EnvelopeEnigmaInfo } from "../../envelope.js";
+import type { EnvelopeEnigmaInfo, EnvelopeGift, EnvelopeRewardPool } from "../../envelope_model.js";
 import type { CommonMessageData } from "../../shared/message.js";
 import type { ImageModel } from "../base/messages.js";
 import type { EnvelopeBusinessType, EnvelopeDisplay, EnvelopeFollowShowStatus } from "../data/messages.js";
+import type { PublicAreaMessageCommon } from "./merged.js";
 export const protobufPackage = "webcast.model.message.redenvelope";
 export interface MessageRedEnvelopInfo {
   businessType: EnvelopeBusinessType;
@@ -17,7 +18,9 @@ export interface MessageRedEnvelopInfo {
   envelopeId: string;
   envelopeIdc: string;
   followShowStatus: EnvelopeFollowShowStatus;
+  giftInfos: EnvelopeGift[];
   peopleCount: number;
+  rewardPool: EnvelopeRewardPool | undefined;
   roomId: string;
   senderEnigmaInfo: EnvelopeEnigmaInfo | undefined;
   sendUserAvatar: ImageModel | undefined;
@@ -32,4 +35,5 @@ export interface WebcastEnvelopeMessage {
   common: CommonMessageData | undefined;
   display: EnvelopeDisplay;
   envelopeInfo: MessageRedEnvelopInfo | undefined;
+  publicAreaMsgCommon: PublicAreaMessageCommon | undefined;
 }

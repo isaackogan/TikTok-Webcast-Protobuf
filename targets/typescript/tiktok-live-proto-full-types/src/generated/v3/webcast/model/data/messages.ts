@@ -5,6 +5,7 @@
 // source: webcast/model/data/messages.proto
 
 /* eslint-disable */
+import type { TPTuxImage } from "../../shared/anchor_info.js";
 import type { ImageModel } from "../base/messages.js";
 export const protobufPackage = "webcast.model.data";
 export enum ActionButtonType {
@@ -1258,6 +1259,44 @@ export enum WaveStatus {
   STRIKE = 3,
   UNRECOGNIZED = -1,
 }
+export interface AIBeautyColorCorrectionSetting {
+  addColor: AIBeautyItem | undefined;
+  brightness: AIBeautyItem | undefined;
+  contrast: AIBeautyItem | undefined;
+  gamma: AIBeautyItem | undefined;
+  hueShift: AIBeautyItem | undefined;
+  mulColor: AIBeautyItem | undefined;
+  opacity: AIBeautyItem | undefined;
+  saturation: AIBeautyItem | undefined;
+}
+export interface AIBeautyItem {
+  value: number;
+}
+export interface AIBeautySetting {
+  contour: AIBeautyItem | undefined;
+  contrast: AIBeautyItem | undefined;
+  eye: AIBeautyItem | undefined;
+  nose: AIBeautyItem | undefined;
+  shape: AIBeautyItem | undefined;
+  smooth: AIBeautyItem | undefined;
+  tooth: AIBeautyItem | undefined;
+}
+export interface AIBeautySettingKV {
+  key: string;
+  value: number;
+}
+export interface AIBeautySugContent {
+  beautySetting: AIBeautySetting | undefined;
+  beautySettingList: AIBeautySettingKV[];
+  colorCorrectionSetting: AIBeautyColorCorrectionSetting | undefined;
+  colorCorrectoinSettingList: AIBeautySettingKV[];
+  errorCode: string;
+  suggestion: AIBeautySuggestion[];
+}
+export interface AIBeautySuggestion {
+  content: string[];
+  title: string;
+}
 export interface AILivePreviewHighlight {
   createTimestamp: string;
   expireTimestamp: string;
@@ -1266,6 +1305,7 @@ export interface AILivePreviewHighlight {
   resultKey: string;
   sourceType: string;
   videoInfo: AILivePreviewHighlightVideoInfo | undefined;
+  videoType: number;
 }
 export interface AILivePreviewHighlightExtra {
   highlightExitKey: string;
@@ -1292,6 +1332,7 @@ export interface AILiveSummary {
   aiSummaryList: string[];
   audienceSideTitleLanguage: string;
   createTimestamp: string;
+  highlightRequired: boolean;
   openAiSummary: number;
   resultKey: string;
   roomLlmTitle: string;
@@ -1300,6 +1341,20 @@ export interface AIScriptTipSwitch {
   subType: number;
   value: number;
   valueV2: number;
+}
+export interface AiCoachImMessageControlSignalData {
+  closeWorker: boolean;
+}
+export interface AiCoachImMessageData {
+  controlSignalData: AiCoachImMessageControlSignalData | undefined;
+  debugInfoData: AiCoachImMessageDebugInfoData | undefined;
+  jumpSchemaData: AiCoachImMessageJumpSchemaData | undefined;
+}
+export interface AiCoachImMessageDebugInfoData {
+  debugInfo: string;
+}
+export interface AiCoachImMessageJumpSchemaData {
+  jumpSchema: string;
 }
 export interface AnchorGrowLevelImMsg {
   msgType: number;
@@ -1342,6 +1397,15 @@ export interface BannerImageContent {
   subTitle: string;
   title: string;
 }
+export interface BubbleCondition {
+  bagItemId: string;
+  bagItemType: string;
+  giftEffectId: string;
+  giftId: string;
+  resourceId: string;
+  type: number;
+  uri: string;
+}
 export interface CardTag {
   icon: ImageModel | undefined;
   key: string;
@@ -1357,6 +1421,10 @@ export interface ColdStartStatData {
   stats: ColdStartStat[];
   status: number;
   viewerCount: number;
+}
+export interface Conditions {
+  blockGiftIds: string[];
+  giftPrice: string;
 }
 export interface DailyRankingStickerAutoShowSwitch {
   value: number;
@@ -1426,6 +1494,12 @@ export interface EffectStruct {
 export interface EnlargeSetting {
   landscapeView: number;
   portraitView: number;
+}
+export interface EntryData {
+  bubbleCondition: BubbleCondition[];
+  conditions: Conditions | undefined;
+  entryType: string;
+  schemaUrl: string;
 }
 export interface EventUserInfo {
   avatarUri: string;
@@ -1538,6 +1612,7 @@ export interface LiveFragmentAutoPostItemVisibility {
   value: number;
 }
 export interface LiveFragmentAutoPostSwitch {
+  limited: number;
   value: number;
 }
 export interface LiveJourneyImMessage {
@@ -1573,6 +1648,12 @@ export interface MultiGuestPlayInfo {
 export interface MultiGuestPlayInfo_PlaySceneToConfigMapEntry {
   key: number;
   value: MultiGuestPlayConfig | undefined;
+}
+export interface MultiGuestShareRevenueSettingInfo {
+  revenueSetting: string;
+  revenueSettingRatio: string;
+  valid: string;
+  version: string;
 }
 export interface PaidEventPreview {
   allowPreview: string;
@@ -1653,6 +1734,7 @@ export interface RealtimeLiveCenterTips {
   eventTrackParams: {
     [key: string]: string;
   };
+  icon: string;
   randomTipKey: string;
   showFeedback: boolean;
   showTips: boolean;
@@ -1675,6 +1757,7 @@ export interface RealtimeLiveCenterTrafficToolInfoIM {
 export interface RealtimeLiveCenterWhiteBoxIM {
   showText: string;
   suggestionId: string;
+  suggestionTemplateId: string;
   viewer: string;
 }
 export interface RealtimeLiveCenterWhiteBoxPreviewIM {
@@ -1719,6 +1802,57 @@ export interface SubSplitStatus {
   curPeriod: SubSplitPeriod;
   isOldSubCreator: boolean;
 }
+export interface TPClickableText {
+  actionType: string;
+  alignment: number;
+  background: TouchPointBackground | undefined;
+  jsb: string;
+  schema: string;
+  text: TPText | undefined;
+}
+export interface TPCountDownConfig {
+  backgroundColor: TouchPointColor | undefined;
+  backgroundRadius: number;
+  endTime: string;
+  padding: TouchPointPadding | undefined;
+}
+export interface TPFormat {
+  color: string;
+  fontSize: number;
+  tuxFont: string;
+  weight: number;
+}
+export interface TPText {
+  extra: {
+    [key: string]: string;
+  };
+  format: TPFormat | undefined;
+  key: string;
+  pieces: TPTextPiece[];
+  stringValue: string;
+}
+export interface TPText_ExtraEntry {
+  key: string;
+  value: string;
+}
+export interface TPTextPiece {
+  clickSpan: TPClickableText[];
+  countdownConfig: TPCountDownConfig | undefined;
+  format: TPFormat | undefined;
+  imageValue: TPTextPieceImage | undefined;
+  key: string;
+  stringValue: string;
+  type: number;
+}
+export interface TPTextPieceImage {
+  image: ImageModel | undefined;
+  tuxIcon: TPTuxIcon | undefined;
+}
+export interface TPTuxIcon {
+  actionType: string;
+  schema: string;
+  tuxImage: TPTuxImage | undefined;
+}
 export interface Task {
   currentNum: string;
   key: string;
@@ -1728,11 +1862,24 @@ export interface Task {
 export interface TemplateEffectExtra {
   resourceId: string;
 }
+export interface TouchPointBackground {
+  color: TouchPointColor | undefined;
+  image: ImageModel | undefined;
+}
+export interface TouchPointColor {
+  dark: string;
+  light: string;
+}
+export interface TouchPointPadding {
+  horizontal: number;
+  vertical: number;
+}
 export interface TrafficDiagnose {
   body: string;
   diagnoseParams: {
     [key: string]: string;
   };
+  icon: string;
   title: string;
   type: number;
   viewerAdded: string;
@@ -1775,6 +1922,7 @@ export interface UserSetting {
   personaInboxNoticeSwitch: PersonaInboxNoticeSwitch | undefined;
   playTogetherAutoStartSwitch: PlayTogetherAutoStartSwitch | undefined;
   playTogetherShowBoardSwitch: PlayTogetherShowBoardSwitch | undefined;
+  privateStatus: number;
   revenueTipsSetting: RevenueTipsSetting | undefined;
   settingId: string;
   version: string;

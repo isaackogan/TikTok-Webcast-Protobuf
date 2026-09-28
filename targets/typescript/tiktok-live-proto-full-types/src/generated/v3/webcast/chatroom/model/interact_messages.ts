@@ -9,6 +9,19 @@ import type { ImageModel } from "../../model/base/messages.js";
 import type { CohostABTestType, CoHostPermissoinType, LinkmicPlayType, LinkmicUserStatus, OptPairStatus, TagV2TagClassification } from "../../model/data/messages.js";
 import type { UserInfo } from "../../shared/messages.js";
 export const protobufPackage = "webcast.chatroom.model.interact";
+export interface ActivityBadgeInfo {
+  backgroundColor: string;
+  backgroundColorDark: string;
+  badgeText: LinkmicDisplayText | undefined;
+  badgeTextDark: LinkmicDisplayText | undefined;
+  eventTrace: {
+    [key: string]: string;
+  };
+}
+export interface ActivityBadgeInfo_EventTraceEntry {
+  key: string;
+  value: string;
+}
 export interface BattleGamePlayContent {
   battleId: string;
   groupChannelId: string;
@@ -29,8 +42,11 @@ export interface BattleUserSettings {
 export interface CohostABInfo {
   isCohostDuringMultiguestEnabled: boolean;
   isCohostMultiguest: boolean;
+  isMatchGoofyEffectEnabled: boolean;
   isMatchPlaybookEnabled: boolean;
   isMatchPlaybookOptimisationEnabled: boolean;
+  isMatchPlaybookReminderEnabled: boolean;
+  isMatchPlaybookUsabilityEnabled: boolean;
   liveMatchButtonOpt: boolean;
 }
 export interface CohostABTest {
@@ -106,6 +122,21 @@ export interface LinkMicGiftGalleryDisplayText {
   content: string;
   darkModeColor: string;
 }
+export interface LinkmicDisplayText {
+  color: string;
+  defaultPattern: string;
+  key: string;
+  pieces: LinkmicDisplayTextPieces[];
+}
+export interface LinkmicDisplayTextPieces {
+  stringPiece: string;
+}
+export interface LinkmicShareRevenueSettingStruct {
+  enableSettingRatio: boolean;
+  linkmicShareRevenueSetting: number;
+  linkmicShareRevenueSettingRatio: number;
+  shareRevenueSettingVersionCode: string;
+}
 export interface OptPairInfo {
   expectedTimeSec: string;
   mappingId: string;
@@ -114,13 +145,16 @@ export interface OptPairInfo {
   teamInfo: TeamInfo[];
 }
 export interface RandomMatchContent {
+  matchedPreferenceTag: number;
   matchId: string;
   pairedGroupList: UserGroup[];
   pairedTime: string;
   sourceType: string;
 }
 export interface RandomMatchContentUserInfo {
+  avatarThumb: ImageModel | undefined;
   invitationRoleType: number;
+  nickname: string;
   roomId: string;
   userId: string;
 }
@@ -149,6 +183,14 @@ export interface SecondDegreeRelationContent {
 export interface SimilarInterestContent {
   contentId: string;
   displayText: string;
+}
+export interface SubtitleSettings {
+  enable: number;
+  expireDate: string;
+  hasRight: number;
+  labelText: string;
+  targetLanguage: string;
+  temporaryBan: number;
 }
 export interface TagV2 {
   cohostHistoryDay: string;
@@ -180,6 +222,7 @@ export interface UserGroup {
   userInfo: RandomMatchContentUserInfo[];
 }
 export interface UserSuggestionInfo {
+  detailPageLynx: string;
   voteCount: string;
   voterInfoList: UserInfo[];
 }

@@ -256,12 +256,34 @@ export interface AvatarState {
 export interface BackGroundImageState {
   stickerId: string;
 }
+export interface BackgroundImageInfo {
+  imageInfo: string;
+  infoType: number;
+}
 export interface CohostMode {
+  highestTakeTheStageVersionSupported: string;
   isTakeTheStageV2Supported: boolean;
 }
 export interface CohostStreamConfig {
   screenShareStreamId: string;
 }
+export interface CohostTypeLayoutExtra {
+  disableMatchComponent: boolean;
+  isEnlargeMode: number;
+  isZoomLayout: number;
+  localLayoutOnly: boolean;
+  offsetY: number;
+  rematchSpotId: number;
+  scene: number;
+  screenShareUserId: string;
+}
+export interface CohostTypeLayoutNonSeiExtra {}
+export interface CohostTypeSpotExtra {
+  contentType: number;
+  isEnlarged: boolean;
+  preEnlargeSpotId: number;
+}
+export interface CohostTypeSpotNonSeiExtra {}
 export interface CohostUserInfo {
   avatarThumb: ImageModel | undefined;
   bestTeammateUid: string;
@@ -298,11 +320,24 @@ export interface GuestUserInfo {
   roomId: string;
   userIdStr: string;
 }
+export interface LayoutData {
+  groupChannelId: string;
+  layout: LayoutState | undefined;
+  spotList: SpotInfo[];
+  uiPos: PosIdentity[];
+  version: string;
+}
 export interface LayoutState {
+  cohostLayoutExtra: CohostTypeLayoutExtra | undefined;
+  cohostLayoutNonSeiExtra: CohostTypeLayoutNonSeiExtra | undefined;
   layoutId: string;
   layoutKey: string;
   multiGuestLayoutExtra: MultiGuestLayoutExtra | undefined;
   multiGuestLayoutNonSeiExtra: MultiGuestLayoutNonSeiExtra | undefined;
+}
+export interface LinkEnvelopeMessagePayload {
+  messageType: number;
+  resolutionDemandPayload: ResolutionDemandPayload | undefined;
 }
 export interface LinkMicAdContent {
   adId: string;
@@ -310,6 +345,14 @@ export interface LinkMicAdContent {
   playTimes: string;
   roomId: string;
   url: string;
+}
+export interface LinkStateMultiGuestBizExtra {
+  backgroundImageInfo: BackgroundImageInfo | undefined;
+}
+export interface LinkUserIdentity {
+  channelId: string;
+  linkMicId: string;
+  player: Player | undefined;
 }
 export interface LinkUserState {
   audioMuted: MediaState;
@@ -363,6 +406,20 @@ export interface PosIdentity {
   type: PosIdentityType;
   value: string;
 }
+export interface PosIdentityExtra {
+  contentLinkmicID: string;
+}
+export interface ResolutionDemandPayload {
+  action: number;
+  canvasHeight: string;
+  canvasWidth: string;
+  configId: string;
+  heightRatio: number;
+  layoutKey: string;
+  spotId: string;
+  timestampMs: string;
+  widthRatio: number;
+}
 export interface SocialGameLayoutExtra {
   gameId: number;
   gameJustDanceStatus: number;
@@ -385,8 +442,11 @@ export interface SocialGameUserSpotNonSeiExtra {
   gameScore: number;
 }
 export interface SpotInfo {
+  cohostSpotExtra: CohostTypeSpotExtra | undefined;
+  cohostSpotNonSeiExtra: CohostTypeSpotNonSeiExtra | undefined;
   multiGuestSpotExtra: MultiGuestSpotExtra | undefined;
   multiGuestSpotNonSeiExtra: MultiGuestSpotNonSeiExtra | undefined;
   posIdentity: PosIdentity | undefined;
+  posIdentityExtra: PosIdentityExtra | undefined;
   spotId: number;
 }

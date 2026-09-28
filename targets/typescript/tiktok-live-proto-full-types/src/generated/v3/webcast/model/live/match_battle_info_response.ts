@@ -8,9 +8,10 @@
 import type { GiftGalleryBadgeInfo } from "../../chatroom/model/interact_messages.js";
 import type { BattleDisplayConfig, BattleResult, BattleUserArmies } from "../message/battle.js";
 import type { BattleSetting } from "../message/battle_setting.js";
-import type { AnchorMatchSettings, BattleComboInfo, BattleEffectInfos, BattleFeatureFlags, BattleTask, BattleTeamResult, BattleTeamUserArmies, BattleTruthOrDare, BattleUserInfo, EffectingCard, EnigmaBattleExtraInfo, EnigmaBattleSetting, HighScoreControlCfg, IceShowdownInfo, LeagueScoreInfo, TeamMatchCampaign } from "./match.js";
+import type { AnchorMatchSettings, BattleABTestSetting, BattleComboInfo, BattleEffectInfos, BattleFeatureFlags, BattleTask, BattleTeamResult, BattleTeamUserArmies, BattleTruthOrDare, BattleUserInfo, EffectingCard, EnigmaBattleExtraInfo, EnigmaBattleSetting, HighScoreControlCfg, IceShowdownInfo, LeagueScoreInfo, MatchThemeDisplayResource, TeamMatchCampaign, VirtualTicketEnvelopeInfoList } from "./match.js";
 export const protobufPackage = "webcast.model.live.match";
 export interface BattleInfoResponse {
+  abTestSetting: BattleABTestSetting[];
   anchorMatchSettings: {
     [key: string]: AnchorMatchSettings;
   };
@@ -50,6 +51,7 @@ export interface BattleInfoResponse {
   leagueScoreInfoMap: {
     [key: string]: LeagueScoreInfo;
   };
+  matchThemeDisplayResource: MatchThemeDisplayResource | undefined;
   supportedActions: {
     [key: string]: boolean;
   };
@@ -63,6 +65,9 @@ export interface BattleInfoResponse {
     [key: string]: BattleTeamResult;
   };
   teamMatchCampaign: TeamMatchCampaign | undefined;
+  teamVirtualTicketEnvelopes: {
+    [key: string]: VirtualTicketEnvelopeInfoList;
+  };
 }
 export interface BattleInfoResponse_ArmiesEntry {
   key: string;
@@ -111,4 +116,8 @@ export interface BattleInfoResponse_LeagueScoreInfoMapEntry {
 export interface BattleInfoResponse_AnchorMatchSettingsEntry {
   key: string;
   value: AnchorMatchSettings | undefined;
+}
+export interface BattleInfoResponse_TeamVirtualTicketEnvelopesEntry {
+  key: string;
+  value: VirtualTicketEnvelopeInfoList | undefined;
 }

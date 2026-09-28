@@ -7,7 +7,7 @@
 /* eslint-disable */
 import type { CohostLayoutMode, DetailBlockReason, LinkmicPlayType, ReserveReplyStatus, RivalExtraInfoAnchorLayer, RivalExtraInfoBattleInfoBattleInfoType, RivalExtraInfoInviteBlockReason, RivalExtraInfoTextType } from "../model/data/messages.js";
 import type { UserInfo } from "../shared/messages.js";
-import type { BattleUserSettings, GiftGalleryBadgeInfo, OptPairInfo, RivalsGameTag, TagV2, TopHostInfo, UserSuggestionInfo } from "./model/interact_messages.js";
+import type { ActivityBadgeInfo, BattleUserSettings, GiftGalleryBadgeInfo, OptPairInfo, RivalsGameTag, SubtitleSettings, TagV2, TopHostInfo, UserSuggestionInfo } from "./model/interact_messages.js";
 export const protobufPackage = "webcast.chatroom.interact.model";
 export interface AnchorLinkmicUserSettings {
   acceptMultiLinkmic: boolean;
@@ -30,6 +30,7 @@ export interface AnchorLinkmicUserSettings {
   receiveFriendMultiHostInvites: boolean;
   receiveNotFriendMultiHostApplication: boolean;
   receiveNotFriendMultiHostInvites: boolean;
+  subtitleSetting: SubtitleSettings | undefined;
 }
 export interface BattleInfo {
   infoType: RivalExtraInfoBattleInfoBattleInfoType;
@@ -53,12 +54,14 @@ export interface ReserveInfo {
   viewed: boolean;
 }
 export interface RivalExtraInfo {
+  activityBadgeInfo: ActivityBadgeInfo | undefined;
   anchorLayer: RivalExtraInfoAnchorLayer;
   battleInfo: BattleInfo | undefined;
   battleUserSettings: BattleUserSettings | undefined;
   cohostLayoutMode: CohostLayoutMode;
   detailBlockReason: DetailBlockReason;
   eoyLevel: string;
+  friendSuggestionInfo: UserSuggestionInfo | undefined;
   gameTag: RivalsGameTag | undefined;
   giftGalleryBadgeInfo: GiftGalleryBadgeInfo | undefined;
   inviteBlockReason: RivalExtraInfoInviteBlockReason;

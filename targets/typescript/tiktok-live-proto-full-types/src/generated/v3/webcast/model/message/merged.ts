@@ -9,7 +9,9 @@ import type { SubPinCard } from "../../chatroom/api.js";
 import type { GiftGalleryBadgeInfo, RivalOptPairLinkmicStatus } from "../../chatroom/model/interact_messages.js";
 import type { RivalLinkmicStatus } from "../../chatroom/model/interact_messages_rival_linkmic_status.js";
 import type { AudienceReserveType, BarrageMessageBarrageType, BarrageMessageIconDisplayType, BarrageMessageRenderType, BarrageMessageShowType, BattleCardMsgType, BattleNoticeType, BattleTaskMessageType, BeansBombBombType, BizType, CompetitionMessageType, CompetitionScoreChangeTriggerReason, DisplayStyle, EntranceGuidanceType, ExhibitionType, FansEventType, GameActionType, GameMomentMessageType, GameRankNotifyMessageMsgType, GiftMessageIgnoreConfig, GiftMessageVersion, GiftSource, GoodyBagMessageType, HitABStatus, JumpPage, LinkMicArmiesTriggerReason, LinkMicBattleBattleAction, LinkMicBattlePunishFinishReason, LinkScreenChangeMessageType, LiveInfoAuditContentType, LiveInfoAuditStatus, MessageDisplayStyle, MessageType, OldSubscribeStatus, OpType, PartnershipDropsUpdateMessageChangeMode, PartnershipGameOfflineMessageOfflineGameInfoOfflineType, PinMessageActionType, PlayTogetherMessageType, PreviewGameInfoType, PublicAreaMessageCommonCreatorSuccessInfoTopicDisplayLocation, PublicAreaMessageCommonPortraitInfoUserMetricsUserMetricsType, RankTextMessageRankTestMessageScene, ScoreType, ShowType, StarCommentAction, SubPinEventMessageActionType, SubscribeType, SubscribingStatus, TextType, UnionAnimationInfoType, WalletLiveRewardsRatioImMsgType, WhisperMessageContentEncoding } from "../../im.js";
+import type { LayoutData } from "../../linkmic/common.js";
 import type { DisplayControl, RankUserEnigmaInfo } from "../../message_proto.js";
+import type { MinuteGameGameplay } from "../../minute_game_model.js";
 import type { CommonMessageData } from "../../shared/message.js";
 import type { EmoteWithIndex as EmoteWithIndex1, RightLabel } from "../../shared/messages.js";
 import type { CommentTag, MemberMessageAction } from "../../synthetic_enums.js";
@@ -22,11 +24,12 @@ import type { EntranceGroupType, FansLevelUpgradeInfo, GamepadTaskType, GiftPerm
 import type { PlayScene } from "../data/multi_guest_play.js";
 import type { EsportsParticipantDynamicScore, GameEmotesTab, GameLiveFragment, GameServerFeature, GuessTemplate, GuessText, GuessWidgets, LiveGoalReward, PinCardView, PlayTogetherBasicInfo, PlayTogetherMember } from "../game.js";
 import type { AssetsModel } from "../gift/assets.js";
-import type { FlyingMicResources, LynxGiftExtra, MatchInfo } from "../gift/model.js";
+import type { FlyingMicResources, LynxGiftExtra, MatchInfo, SecondaryEffectInfo } from "../gift/model.js";
 import type { AssetBundle } from "../gift/model_asset_bundle.js";
+import type { GiftEffect } from "../gift/model_gift_effect.js";
 import type { GoodyBagBaseInfo, GoodyBagSkin, GoodyBagWinnerInfo } from "../goody_bag.js";
 import type { MultiLiveUpdateUserSettingContent } from "../linksetting.js";
-import type { AnchorMatchSettings, BattleABTestSetting, BattleComboInfo, BattleEffectInfos, BattleFeatureFlags, BattleTeamResult, BattleTeamUserArmies, EnigmaBattleExtraInfo, EnigmaBattleSetting, HighScoreControlCfg, LeagueScoreInfo, MatchPunishExtraInfo, TeamMatchCampaign } from "../live/match.js";
+import type { AnchorMatchSettings, BattleABTestSetting, BattleComboInfo, BattleEffectInfos, BattleFeatureFlags, BattleTeamResult, BattleTeamUserArmies, EffectingCardQueue, EnigmaBattleExtraInfo, EnigmaBattleSetting, HighScoreControlCfg, LeagueScoreInfo, MatchPunishExtraInfo, MatchThemeDisplayResource, TeamMatchCampaign } from "../live/match.js";
 import type { Room } from "../live/merged.js";
 import type { CompetitionCommon, CompetitionFinish, CompetitionInitiate, CompetitionReply, CompetitionResultsTeamInfo, CompetitionSettleEnd, CompetitionSettleStart, CompetitionSwitchTurn } from "../live_interact/competition_model.js";
 import type { Gift, GiftTrayInfo } from "../merged.js";
@@ -45,7 +48,7 @@ import type { LinkerListChangeContent } from "./linker/listchangemessage.js";
 import type { LinkerAcceptNoticeContent, LinkerCancelContent, LinkerEnterContent, LinkerKickOutContent, LinkerLeaveContent, LinkerMuteContent, LinkerRandomMatchContent } from "./linker/messages.js";
 import type { LinkerMicIdxUpdateContent } from "./linker/mic_update.js";
 import type { LinkerReplyContent } from "./linker/reply_message.js";
-import type { ActionButton, AnimationData, AudienceCancelContent, AudienceRejectContent, AudienceReplyContent, AudienceReserveContent, AudienceReserveUserInfo, AwardCardNotice, BarrageEvent, BarrageTypeEcomLiveParam, BarrageTypeFansLevelParam, BarrageTypeGiftGalleryParam, BarrageTypeUserGradeParam, BattleInviteeGiftPermission, BattleNoticeAnchorMatchSettings, BattleNoticeCommonGuide, BattleNoticeExtremeHighScoreNotice, BeansArtifacts, BeansAvatar, CapsuleBizParamsAnchorPinPerk, CapsuleBizParamsCohost, CapsuleBizParamsCommentFlaggedPrompt, CapsuleBizParamsCommentFlaggedPromptForNewUser, CapsuleBizParamsCommentMuteRulePrompt, CapsuleBizParamsEcom, CapsuleBizParamsModeratorGuide, CapsuleBizParamsMultiGuestApplyGuide, CapsuleBizParamsMultiGuestInviteGuide, CapsuleBizParamsNewAnchorEffect, CapsuleBizParamsRandomGift, CardObtainGuide, CohostListChangeContent, CommentLabelScore, CommentQualityScore, CompetitionScoreChangeTakeTheStageBiz, CompetitionStart, EffectConfigBean, EnlargePositionStatusSynContent, EntranceGuidanceContainer, ExpChangeData, FrequencyControl, GalleryGoalData, GalleryMiddleTouchMessage, GetUnclaimedPoints, GiftIMPriority, GiftMonitorInfo, LinkerCloseContent, LinkerCreateContent, LinkerEnlargeStatusSynContent, LinkerGuestCancelEnlargeContent, LinkerMediaChangeContent, LinkerSysKickOutContent, LinkerUpdateUserContent, LinkerWaitingListChangeContent, LinkmicUserToastContent, MessageDisplayInfo, MultiLangContent, NewFansData, OperationInfo, PersonalisedGift, PlayTogetherPermitNoticeContent, PortraitTag, PublicAreaCommon, PunishEventInfo, RankListTabInfo, RankUpdate, RecommendComment, RoomNotifyMessageEventTracking, SpecialEffectNotice, SpecifiedDisplayText, SponsorshipInfo, StarCommentMessage, StatusText, StreamGoalData, SubGoalData, SubQueueData, SubWaveData, TagItem, TaskCompleteData, TeamRankUpdate, TeamUsersInfo, TextEffect, UnifiedGoalData, UseCriticalStrikeCard, UseExtraTimeCard, UsePotionCard, UserFanTicket, UserInteractionInfo, UseSmokeCard, UseSpecialEffectCard, UseTop2Card, UseTop3Card, UseVaultGloveCard, UseWaveCard, ValidRanks, WalletLiveRewardsRatioImMsgNotification, WaveAlgorithmData } from "./messages.js";
+import type { ActionButton, AnchorLeftCardRefundNotice, AnimationData, AudienceCancelContent, AudienceRejectContent, AudienceReplyContent, AudienceReserveContent, AudienceReserveUserInfo, AwardCardNotice, BarrageEvent, BarrageTypeEcomLiveParam, BarrageTypeFansLevelParam, BarrageTypeGiftGalleryParam, BarrageTypeUserGradeParam, BattleInviteeGiftPermission, BattleNoticeAnchorMatchSettings, BattleNoticeCommonGuide, BattleNoticeExtremeHighScoreNotice, BeansArtifacts, BeansAvatar, CapsuleBizParamsAnchorPinPerk, CapsuleBizParamsCohost, CapsuleBizParamsCommentFlaggedPrompt, CapsuleBizParamsCommentFlaggedPromptForNewUser, CapsuleBizParamsCommentMuteRulePrompt, CapsuleBizParamsEcom, CapsuleBizParamsModeratorGuide, CapsuleBizParamsMultiGuestApplyGuide, CapsuleBizParamsMultiGuestInviteGuide, CapsuleBizParamsNewAnchorEffect, CapsuleBizParamsRandomGift, CardObtainGuide, CohostInviteStateNotifyContent, CohostListChangeContent, CommentLabelScore, CommentQualityScore, CompetitionScoreChangeTakeTheStageBiz, CompetitionStart, EffectConfigBean, EnlargePositionStatusSynContent, EntranceGuidanceContainer, ExpChangeData, FrequencyControl, GalleryGoalData, GalleryMiddleTouchMessage, GetUnclaimedPoints, GiftGalleryMessageGiftInfo, GiftIMPriority, GiftMonitorInfo, LinkerCloseContent, LinkerCreateContent, LinkerEnlargeStatusSynContent, LinkerGuestCancelEnlargeContent, LinkerMediaChangeContent, LinkerSysKickOutContent, LinkerUpdateUserContent, LinkerWaitingListChangeContent, LinkmicUserToastContent, MessageDisplayInfo, MultiLangContent, MusicAwardNotice, MusicEffectNotice, NewFansData, OperationInfo, PersonalisedGift, PlayTogetherPermitNoticeContent, PortraitTag, PublicAreaCommon, PunishEventInfo, RankListTabInfo, RankUpdate, RecommendComment, RoomNotifyMessageEventTracking, SpecialEffectNotice, SpecifiedDisplayText, SponsorshipInfo, StarCommentMessage, StatusText, StreamGoalData, SubGoalData, SubQueueData, SubWaveData, TagItem, TaskCompleteData, TeamRankUpdate, TeamUsersInfo, TextEffect, UnifiedGoalData, UseCriticalStrikeCard, UseExtraTimeCard, UseMusicCard, UsePotionCard, UserFanTicket, UserInteractionInfo, UseSmokeCard, UseSpecialEffectCard, UseTop2Card, UseTop3Card, UseVaultGloveCard, UseWaveCard, ValidRanks, WalletLiveRewardsRatioImMsgNotification, WaveAlgorithmData } from "./messages.js";
 export const protobufPackage = "webcast.model.message";
 export interface BarrageTypeSubscribeGiftParam {
   giftSource: GiftSource;
@@ -203,8 +206,13 @@ export interface PublicAreaMessageCommon {
   scrollGapCount: string;
   userInteractionInfo: UserInteractionInfo | undefined;
 }
+export interface TimedPropData {
+  giftMessage: WebcastGiftMessage | undefined;
+}
 export interface Topic {
   actionButton: ActionButton | undefined;
+  bizName: string;
+  disableCountFrequencyControl: boolean;
   displayLocation: PublicAreaMessageCommonCreatorSuccessInfoTopicDisplayLocation;
   eventTrackingFields: {
     [key: string]: string;
@@ -389,6 +397,7 @@ export interface WebcastCompetitionMessage {
   beansBomb: BeansBomb | undefined;
   bizCommon: CompetitionCommon | undefined;
   common: CommonMessageData | undefined;
+  crossRoomLayout: LayoutData | undefined;
   finish: CompetitionFinish | undefined;
   initiate: CompetitionInitiate | undefined;
   reply: CompetitionReply | undefined;
@@ -457,6 +466,9 @@ export interface WebcastGameRevenueTipsMessage {
   action: GameAction | undefined;
   buttonText: Text | undefined;
   common: CommonMessageData | undefined;
+  extra: {
+    [key: string]: string;
+  };
   fillinText: string[];
   priority: string;
   ruleId: string;
@@ -465,9 +477,24 @@ export interface WebcastGameRevenueTipsMessage {
   tipsText: Text | undefined;
   titleText: Text | undefined;
 }
+export interface WebcastGameRevenueTipsMessage_ExtraEntry {
+  key: string;
+  value: string;
+}
 export interface WebcastGameServerFeatureMessage {
   allFeatures: GameServerFeature[];
   common: CommonMessageData | undefined;
+}
+export interface WebcastGiftGalleryMessage {
+  allSponsored: boolean;
+  common: CommonMessageData | undefined;
+  giftInfo: GiftGalleryMessageGiftInfo | undefined;
+  logId: string;
+  msgType: number;
+  priority: GiftIMPriority | undefined;
+  publicAreaMsgCommon: PublicAreaMessageCommon | undefined;
+  toUser: User | undefined;
+  user: User | undefined;
 }
 export interface WebcastGiftMessage {
   asset: AssetsModel | undefined;
@@ -486,8 +513,10 @@ export interface WebcastGiftMessage {
   flyingMicResources: FlyingMicResources | undefined;
   flyingMicResourcesV2: FlyingMicResources | undefined;
   gift: Gift | undefined;
+  giftEffect: GiftEffect | undefined;
   giftId: string;
   giftsInBox: GiftsBoxInfo | undefined;
+  giftVariantId: number;
   groupCount: number;
   groupId: string;
   incomeTaskgifts: string;
@@ -509,7 +538,9 @@ export interface WebcastGiftMessage {
   repeatCount: number;
   repeatEnd: number;
   roomFanTicketCount: string;
+  secondaryEffectInfo: SecondaryEffectInfo | undefined;
   sendType: string;
+  shinyCardUnlockToken: string;
   signature: string;
   signatureVersion: string;
   sponsorshipInfo: SponsorshipInfo[];
@@ -556,6 +587,7 @@ export interface WebcastLikeMessage {
 export interface WebcastLinkMessage {
   cancelContent: LinkerCancelContent | undefined;
   closeContent: LinkerCloseContent | undefined;
+  cohostInviteStateNotifyContent: CohostInviteStateNotifyContent | undefined;
   cohostListChangeContent: CohostListChangeContent | undefined;
   common: CommonMessageData | undefined;
   createContent: LinkerCreateContent | undefined;
@@ -601,6 +633,7 @@ export interface WebcastLinkMicArmies {
   giftId: string;
   hasTeamMatchMvpSfx: boolean;
   logId: string;
+  multiplierType: number;
   repeatCount: number;
   sendGiftSuccessTime: string;
   teamArmies: BattleTeamUserArmies[];
@@ -633,6 +666,7 @@ export interface WebcastLinkMicBattle {
   battleSettings: BattleSetting | undefined;
   bubbleText: string;
   common: CommonMessageData | undefined;
+  crossRoomLayout: LayoutData | undefined;
   enigmaBattleSetting: EnigmaBattleSetting | undefined;
   fuzzyDisplayConfig: BattleDisplayConfig | undefined;
   fuzzyDisplayConfigV2: HighScoreControlCfg | undefined;
@@ -645,11 +679,15 @@ export interface WebcastLinkMicBattle {
     [key: string]: LeagueScoreInfo;
   };
   matchPunishExtraInfo: MatchPunishExtraInfo | undefined;
+  matchThemeDisplayResource: MatchThemeDisplayResource | undefined;
   supportedActions: SupportedActionsWrapper[];
   teamArmies: BattleTeamUserArmies[];
   teamBattleResult: BattleTeamResult[];
   teamMatchCampaign: TeamMatchCampaign | undefined;
   teamMember: TeamUsersInfo[];
+  trackingExtra: {
+    [key: string]: string;
+  };
 }
 export interface WebcastLinkMicBattle_BattleResultEntry {
   key: string;
@@ -671,16 +709,27 @@ export interface WebcastLinkMicBattle_AnchorMatchSettingsEntry {
   key: string;
   value: AnchorMatchSettings | undefined;
 }
+export interface WebcastLinkMicBattle_TrackingExtraEntry {
+  key: string;
+  value: string;
+}
 export interface WebcastLinkMicBattleItemCard {
+  anchorLeftCardRefundNotice: AnchorLeftCardRefundNotice | undefined;
   awardCardNotice: AwardCardNotice | undefined;
   awardReason: number;
   battleId: string;
   cardObtainGuide: CardObtainGuide | undefined;
+  cardQueueMap: {
+    [key: string]: EffectingCardQueue;
+  };
   common: CommonMessageData | undefined;
   msgType: BattleCardMsgType;
+  musicAwardNotice: MusicAwardNotice | undefined;
+  musicEffectNotice: MusicEffectNotice | undefined;
   specialEffectNotice: SpecialEffectNotice | undefined;
   useCriticalStrikeCard: UseCriticalStrikeCard | undefined;
   useExtraTimeCard: UseExtraTimeCard | undefined;
+  useMusicCard: UseMusicCard | undefined;
   usePotionCard: UsePotionCard | undefined;
   useSmokeCard: UseSmokeCard | undefined;
   useSpecialEffectCard: UseSpecialEffectCard | undefined;
@@ -688,6 +737,10 @@ export interface WebcastLinkMicBattleItemCard {
   useTop3Card: UseTop3Card | undefined;
   useVaultGloveCard: UseVaultGloveCard | undefined;
   useWaveCard: UseWaveCard | undefined;
+}
+export interface WebcastLinkMicBattleItemCard_CardQueueMapEntry {
+  key: string;
+  value: EffectingCardQueue | undefined;
 }
 export interface WebcastLinkMicBattlePunishFinish {
   battleId: string;
@@ -752,6 +805,7 @@ export interface WebcastMemberMessage {
   clientLiveReason: string;
   common: CommonMessageData | undefined;
   displayStyle: DisplayStyle;
+  drawerLiveType: string;
   ecStreamerKey: string;
   effectConfig: Uint8Array;
   enterEffectConfig: EffectConfigBean | undefined;
@@ -784,6 +838,12 @@ export interface WebcastMiddleTouchMessage {
   common: CommonMessageData | undefined;
   extra: MiddleTouchExtra | undefined;
 }
+export interface WebcastMinuteGameUpdateMessage {
+  common: CommonMessageData | undefined;
+  gameplay: MinuteGameGameplay | undefined;
+  timedPropData: TimedPropData | undefined;
+  updateType: number;
+}
 export interface WebcastPartnershipDropsUpdateMessage {
   anchorUid: string;
   changeMode: PartnershipDropsUpdateMessageChangeMode;
@@ -815,6 +875,7 @@ export interface WebcastRankTextMessage {
   otherGetBadgeMsg: Text | undefined;
   ownerIdxAfterUpdate: string;
   ownerIdxBeforeUpdate: string;
+  publicAreaMsgCommon: PublicAreaMessageCommon | undefined;
   rankType: ProfitRankType;
   scene: RankTextMessageRankTestMessageScene;
   selfGetBadgeMsg: Text | undefined;

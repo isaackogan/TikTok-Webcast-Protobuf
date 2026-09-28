@@ -9,7 +9,7 @@ import type { MultiLiveAnchorPanelSettings } from "../chatroom/model/multilive.j
 import type { AnchorLayoutSetting } from "../linkmic/common.js";
 import type { ImageModel } from "./base/messages.js";
 import type { AllLinkedUserData, FeedCard, MGEnterActionInfo, RoomMultiGuestLinkmicInfo } from "./data/merged.js";
-import type { AnchorSettingInfo, CardTag, GuestApplicationInfo, GuestInvitedInfo, LinkmicGuestUser, MultiGuestLayoutInfo, MultiGuestPlayInfo, RandomMatchInfo } from "./data/messages.js";
+import type { AnchorSettingInfo, CardTag, GuestApplicationInfo, GuestInvitedInfo, LinkmicGuestUser, MultiGuestLayoutInfo, MultiGuestPlayInfo, MultiGuestShareRevenueSettingInfo, RandomMatchInfo } from "./data/messages.js";
 import type { MultiGuestPermissionInfo, RoomHostMultiGuestPermissionInfo } from "./live_interact/multilive_model.js";
 export const protobufPackage = "webcast.model.linksetting";
 export interface CoHost {
@@ -45,6 +45,7 @@ export interface MultiLiveUserApplyPermission {
   multiGuestAllowRequestFromFriends: string;
   multiGuestAllowRequestFromOthers: string;
   multiGuestApplyAutoApprove: string;
+  multiGuestDisableGuestOpenCamera: string;
   multiGuestDisableVideoLinkmic: string;
   multiGuestResetPointAfterLeave: string;
   multiLiveApplyPermission: number;
@@ -67,10 +68,13 @@ export interface MultiLiveUserApplySettings {
   hostMultiGuestDevMode: string;
   hostSendGiftsToAllEnum: string;
   isEligibleForApplyAutoApprove: boolean;
+  isMultiGuestHighActiveAnchor: boolean;
   linkmicServiceVersion: number;
   mgEnterActionInfo: MGEnterActionInfo | undefined;
+  multiGuestEnableRevenueRatio: string;
   multiGuestLayoutInfo: MultiGuestLayoutInfo | undefined;
   multiGuestPlayInfo: MultiGuestPlayInfo | undefined;
+  multiGuestShareRevenueSettingInfo: MultiGuestShareRevenueSettingInfo | undefined;
   playLabelTag: CardTag | undefined;
   randomMatchInfo: RandomMatchInfo | undefined;
   roomAudienceMultiGuestPermissionInfo: RoomAudienceMultiGuestPermissionInfo | undefined;

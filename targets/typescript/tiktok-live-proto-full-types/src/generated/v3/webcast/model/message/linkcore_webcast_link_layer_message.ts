@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import type { BusinessContent } from "../../chatroom/model/multiguestv3.js";
-import type { CancelJoinGroupContent, GroupChangeContent, JoinGroupContent, JoinGroupDirectContent, JoinRoomDirectContent, LeaveJoinGroupContent, LinkLayerMessageType, P2PGroupChangeContent, PermitJoinGroupContent } from "../../im.js";
+import type { CancelJoinGroupContent, GroupChangeContent, JoinGroupContent, JoinGroupDirectContent, JoinRoomDirectContent, LeaveJoinGroupContent, LinkEnvelopeContent, LinkLayerMessageType, P2PGroupChangeContent, PermitJoinGroupContent } from "../../im.js";
 import type { LinkerMode, Scene } from "../../linkmic/common.js";
 import type { CommonMessageData } from "../../shared/message.js";
 import type { ApplyContent, CancelApplyContent, CancelInviteContent, CreateChannelContent, FinishChannelContent, InviteContent, JoinDirectContent, KickOutContent, LeaveContent, LinkListChangeContent, PermitApplyContent, ReplyInviteContent } from "./linkcore.js";
@@ -31,6 +31,7 @@ export interface WebcastLinkLayerMessage {
   kickOutContent: KickOutContent | undefined;
   leaveContent: LeaveContent | undefined;
   leaveGroupContent: LeaveJoinGroupContent | undefined;
+  linkEnvelopeContent: LinkEnvelopeContent | undefined;
   linkerMode: LinkerMode;
   listChangeContent: LinkListChangeContent | undefined;
   messageType: LinkLayerMessageType;

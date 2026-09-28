@@ -12,6 +12,10 @@ export const protobufPackage = "webcast.model.base.user";
 export interface ArrowConfig {
   icon: ImageModel | undefined;
 }
+export interface AvatarHashInfo {
+  avatarHash: string;
+  avatarHashType: number;
+}
 export interface BadgeStruct {
   combine: CombineBadgeStruct | undefined;
   display: boolean;
@@ -64,6 +68,30 @@ export interface ComboBadgeInfo {
   comboCount: string;
   icon: ImageModel | undefined;
 }
+export interface CreatorScoreDisplayInfo {
+  ecommerceEntranceLabel: CreatorScoreLabelInfo | undefined;
+  scoreLevel: number;
+}
+export interface CreatorScoreLabelInfo {
+  labelText: string;
+  labelTextColorDark: string;
+  labelTextColorLight: string;
+  logoDark: ImageModel | undefined;
+  logoLight: ImageModel | undefined;
+  popUpInfo: PopUpInfo | undefined;
+}
+export interface CreatorScoreProfile {
+  countryCode: string;
+  displayInfo: CreatorScoreDisplayInfo | undefined;
+  finalScore: number;
+  scoreInfoExtra: {
+    [key: string]: string;
+  };
+}
+export interface CreatorScoreProfile_ScoreInfoExtraEntry {
+  key: string;
+  value: string;
+}
 export interface EnigmaInfo {
   isEnigmaMaskOn: boolean;
 }
@@ -113,6 +141,10 @@ export interface PaddingInfo {
   rightPadding: number;
   useSpecific: boolean;
   verticalPaddingRule: VerticalPaddingRule;
+}
+export interface PopUpInfo {
+  description: string;
+  title: string;
 }
 export interface PrivilegeLogExtra {
   dataVersion: string;

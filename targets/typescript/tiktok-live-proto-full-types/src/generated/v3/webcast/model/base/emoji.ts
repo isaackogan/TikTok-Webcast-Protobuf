@@ -5,7 +5,7 @@
 // source: webcast/model/base/emoji.proto
 
 /* eslint-disable */
-import type { EmoteModelAuditInfo } from "../../chatroom/api_audit_info.js";
+import type { EmoteModelAuditInfo } from "../../chatroom/api_audit_info_2.js";
 import type { EmoteUploadInfo } from "../../chatroom/api_emote_upload_info.js";
 import type { AuditStatus, ContentSource, EmotePrivateType, EmoteScene, EmoteType, RewardCondition } from "../data/messages.js";
 import type { ImageModel } from "./messages.js";

@@ -51,8 +51,22 @@ export interface ShortItemRefreshEntity {
 }
 export interface TraceInfo {
   arrivalTime: string;
+  daInfo: {
+    [key: string]: string;
+  };
   operateTime: string;
   sendTime: string;
+  traceTimeMap: {
+    [key: string]: string;
+  };
+}
+export interface TraceInfo_TraceTimeMapEntry {
+  key: string;
+  value: string;
+}
+export interface TraceInfo_DaInfoEntry {
+  key: string;
+  value: string;
 }
 export interface WebcastEcDrawMessage {
   common: CommonMessageData | undefined;
@@ -85,6 +99,7 @@ export interface WebcastOecLiveShoppingMessage {
   hotTags: HotTag[];
   livePermissionInfo: LivePermissionInfo | undefined;
   liveProductNumber: number;
+  messageInfo: string;
   oecLiveShoppingMessageV2: OecLiveShoppingMessageV2 | undefined;
   pinCardDelayTime: string;
   popProduct: PopProduct | undefined;

@@ -97,6 +97,7 @@ export interface BattleUserArmy {
   avatarThumb: ImageModel | undefined;
   diamondScore: string;
   enigmaScore: string;
+  isEnigma: boolean;
   nickname: string;
   score: string;
   userId: string;

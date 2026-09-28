@@ -12,6 +12,24 @@ export interface ControlChaosInfo {
   commandType: number;
   hotKeys: HotKey[];
 }
+export interface GameInteractionEffectInfo {
+  effectId: string;
+  effectMode: string;
+  effectModeName: GameInteractionText | undefined;
+  effectType: number;
+  effectTypeName: GameInteractionText | undefined;
+  effectVersion: string;
+  giftId: string;
+  instruction: string;
+  instructionDesc: GameInteractionText | undefined;
+  instructionIconUrl: string;
+  instructionName: GameInteractionText | undefined;
+  protocolVersion: number;
+}
+export interface GameInteractionText {
+  defaultPattern: string;
+  key: string;
+}
 export interface GameTricksShortcut {
   hotKeys: HotKey[];
 }
@@ -34,9 +52,15 @@ export interface GiftPickExtraGameInteraction {
   external: GiftPickExtraGameInteractionExternal | undefined;
   storage: GiftPickExtraGameInteractionStorage | undefined;
 }
-export interface GiftPickExtraGameInteractionExternal {}
+export interface GiftPickExtraGameInteractionExternal {
+  effectInfo: GameInteractionEffectInfo | undefined;
+}
 export interface GiftPickExtraGameInteractionStorage {
+  effectId: string;
+  effectVersion: string;
   instruction: string;
+  instructionDescKey: string;
+  protocolVersion: number;
 }
 export interface GiftPickExtraGameTricks {
   external: GiftPickExtraGameTricksExternal | undefined;
@@ -79,6 +103,8 @@ export interface ProfileExtraGameInteractionExternal {
 }
 export interface ProfileExtraGameInteractionStorage {
   gameId: string;
+  mode: string;
+  templateId: string;
 }
 export interface ProfileExtraGameTricks {
   external: ProfileExtraGameTricksExternal | undefined;

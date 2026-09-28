@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import type { ImageModel } from "./model/base/messages.js";
+import type { CreatorScoreProfile } from "./model/base/user.js";
 import type { DisplayControlHorizontalOnclickTriggerType, GrantGroup, ResourceLocation, UserEcommerceEntranceCreatorType, UserEcommerceEntranceEntranceType, UserEcommerceEntranceSellingPointLiveSellingPointType, UserEcommerceEntranceShopEntranceInfoStoreLabelShopIdentityLabelType, UserEcommerceEntranceShopEntranceInfoStoreLabelStoreBrandLabelType, UserEcommerceEntranceViewVersion } from "./model/data/messages.js";
 import type { ShopLabelImage } from "./shared/anchor_info.js";
 export const protobufPackage = "webcast.message.proto";
@@ -26,6 +27,8 @@ export interface DisplayControl_TargetGroupShowRstEntry {
   value: ShowResult | undefined;
 }
 export interface EcommerceEntrance {
+  avatarBackgroundColor: string;
+  avatarStyleVersion: number;
   creatorType: UserEcommerceEntranceCreatorType;
   entranceType: UserEcommerceEntranceEntranceType;
   schema: string;
@@ -74,11 +77,21 @@ export interface ShopEntranceInfo {
   showRateNotApplicable: boolean;
   soldCount: string;
   storeLabel: StoreLabel | undefined;
+  topRatedInfo: TopRatedInfo | undefined;
+}
+export interface ShopThemeColor {
+  dark: string;
+  light: string;
+}
+export interface ShopThemedImage {
+  dark: ShopLabelImage | undefined;
+  light: ShopLabelImage | undefined;
 }
 export interface ShowResult {
   banned: boolean;
 }
 export interface ShowcaseEntranceInfo {
+  creatorScoreProfile: CreatorScoreProfile | undefined;
   formatSoldCount: string;
   sellingPoint: SellingPoint[];
   showcaseName: string;
@@ -92,6 +105,7 @@ export interface StarCommentConfig {
   starCommentSwitch: boolean;
 }
 export interface StoreIdentityLabel {
+  identityImageLogo: ShopThemedImage | undefined;
   identityLabelBgColorDark: string;
   identityLabelBgColorLight: string;
   identityLabelText: string;
@@ -116,4 +130,17 @@ export interface StoreOfficialLabel {
 }
 export interface ToolBarManagement {
   mergingmorepriority: number[];
+}
+export interface TopRatedInfo {
+  isTopRated: boolean;
+  schema: string;
+  topRatedStyle: TopRatedStyle | undefined;
+}
+export interface TopRatedStyle {
+  backgroundColor: ShopThemeColor | undefined;
+  longText: string;
+  overlayBackgroundColor: ShopThemeColor | undefined;
+  overlayTextColor: ShopThemeColor | undefined;
+  text: string;
+  textColor: ShopThemeColor | undefined;
 }

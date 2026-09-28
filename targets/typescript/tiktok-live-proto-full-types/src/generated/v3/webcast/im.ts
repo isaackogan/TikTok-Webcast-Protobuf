@@ -6,13 +6,13 @@
 
 /* eslint-disable */
 import type { Tag } from "./chatroom/interact_model.js";
-import type { CohostABInfo, CohostTopic, GamePlayContent, GiftGalleryBadgeInfo, OptPairInfo, RandomMatchContent, RivalsGameTag, TagV2, TopHostInfo, VirtualWaitingUser } from "./chatroom/model/interact_messages.js";
-import type { AgreeStatus, BackGroundImageState, CohostUserInfo, ContentPosition, GroupPlayer, GuestUserInfo, JoinType, LayoutState, LinkerMediaChangeOperator, LinkMicUserAdminType, LinkUserState, MigrationDetails, PosIdentity, ReplyStatus, Scene, SourceType, SpotInfo, StateType } from "./linkmic/common.js";
+import type { ActivityBadgeInfo, CohostABInfo, CohostTopic, GamePlayContent, GiftGalleryBadgeInfo, OptPairInfo, RandomMatchContent, RivalsGameTag, TagV2, TopHostInfo, VirtualWaitingUser } from "./chatroom/model/interact_messages.js";
+import type { AgreeStatus, BackGroundImageState, CohostUserInfo, ContentPosition, GroupPlayer, GuestUserInfo, JoinType, LayoutData, LayoutState, LinkEnvelopeMessagePayload, LinkerMediaChangeOperator, LinkMicUserAdminType, LinkStateMultiGuestBizExtra, LinkUserIdentity, LinkUserState, MigrationDetails, PosIdentity, ReplyStatus, Scene, SourceType, SpotInfo, StateType } from "./linkmic/common.js";
 import type { GroupChannelAllUser } from "./linkmic/common_group_channel_all_user.js";
 import type { ImageModel } from "./model/base/messages.js";
 import type { User } from "./model/base/user_2.js";
 import type { CohostLayoutMode, CohostNudgeInfo } from "./model/data/messages.js";
-import type { CountdownContent, CountdownForAllContent, GuestShowdownConfigChange, GuestShowdownContent, NoticeboardContent, PlaybookGroup, ShowContent, TextHeaderPlayContent, TopGuestMetaContent, WallpaperContent } from "./model/data/multi_guest_play.js";
+import type { CountdownContent, CountdownForAllContent, ExecutorDispatchBatch, GuestShowdownConfigChange, GuestShowdownContent, NoticeboardContent, PlaybookGroup, PlaySnapshot, ShowContent, TextHeaderPlayContent, TopGuestMetaContent, WallpaperContent } from "./model/data/multi_guest_play.js";
 import type { Avatar } from "./model/data/multi_guest_social_data.js";
 import type { RTCExtraInfo } from "./model/message/linkcore.js";
 import type { Player } from "./model/message/linkcore_player.js";
@@ -580,6 +580,8 @@ export interface JoinGroupBizContent {
   fromTag: Tag | undefined;
   gameTag: RivalsGameTag | undefined;
   joinGroupMsgExtra: JoinGroupMessageExtra | undefined;
+  joinSessionId: string;
+  matchedPreferenceTag: number;
   newUserEducation: string;
   punishInfo: PunishEventInfo | undefined;
   tag: TagV2 | undefined;
@@ -598,9 +600,11 @@ export interface JoinGroupContent {
 export interface JoinGroupDirectBizContent {
   gameplayContent: GamePlayContent | undefined;
   randomMatchContent: RandomMatchContent | undefined;
+  skipCancelMatch: boolean;
 }
 export interface JoinGroupDirectContent {
   contentPos: ContentPosition[];
+  crossRoomLayout: LayoutData | undefined;
   groupExtInfo: RTCExtraInfo[];
   groupUser: GroupChannelAllUser | undefined;
   migrationDetails: MigrationDetails | undefined;
@@ -626,6 +630,7 @@ export interface JoinRoomDirectBizContent {
 export interface JoinRoomDirectContent {
   joiner: Player | undefined;
   joinerExtInfo: RTCExtraInfo | undefined;
+  joinerLinkerSessionId: string;
   joinerLinkMicId: string;
   layout: LayoutState | undefined;
   spotList: SpotInfo[];
@@ -645,6 +650,11 @@ export interface LeaveJoinGroupContent {
   leaveSource: string;
   linkedUserUiPositions: string[];
   operator: GroupPlayer | undefined;
+}
+export interface LinkEnvelopeContent {
+  messagePayload: LinkEnvelopeMessagePayload | undefined;
+  receiver: LinkUserIdentity | undefined;
+  sender: LinkUserIdentity | undefined;
 }
 export interface ListChangeBizContent {
   abInfos: {
@@ -680,17 +690,30 @@ export interface MultiGuestBizSpotExtra {
 }
 export interface P2PGroupChangeContent {
   contentPos: ContentPosition[];
+  crossRoomLayout: LayoutData | undefined;
   groupExtInfo: RTCExtraInfo[];
   groupUser: GroupChannelAllUser | undefined;
   migrationDetails: MigrationDetails | undefined;
 }
 export interface PermitJoinGroupBizContent {
+  inviteeTrace: {
+    [key: string]: string;
+  };
+  joinSessionId: string;
+  matchedPreferenceTag: number;
+  quickCohostInviteeUserInfo: QuickCohostInviteeUserInfo | undefined;
   replyStatus: ReplyStatus;
+  skipCancelMatch: boolean;
   sourceType: SourceType;
+}
+export interface PermitJoinGroupBizContent_InviteeTraceEntry {
+  key: string;
+  value: string;
 }
 export interface PermitJoinGroupContent {
   agreeStatus: AgreeStatus;
   approver: GroupPlayer | undefined;
+  crossRoomLayout: LayoutData | undefined;
   groupExtInfo: RTCExtraInfo[];
   groupUser: GroupChannelAllUser | undefined;
   linkedUserUiPositions: string[];
@@ -698,7 +721,12 @@ export interface PermitJoinGroupContent {
   permitGroupType: number;
   type: JoinType;
 }
+export interface QuickCohostInviteeUserInfo {
+  avatarThumb: ImageModel | undefined;
+  nickname: string;
+}
 export interface RivalExtra {
+  activityBadgeInfo: ActivityBadgeInfo | undefined;
   authenticationInfo: AuthenticationInfo | undefined;
   avatarThumb: ImageModel | undefined;
   displayId: string;
@@ -746,6 +774,16 @@ export interface TopGuestUserInfo {
   rank: string;
   userId: string;
 }
+export interface WebcastAIGCBackgroundReviewMessage {
+  aiPicUrl: string;
+  backgroundId: string;
+  channelId: string;
+  common: CommonMessageData | undefined;
+  detailReason: number;
+  reviewResult: boolean;
+  roomId: string;
+  toast: string;
+}
 export interface WebcastAvatarGenerateResultMessage {
   avatar: Avatar | undefined;
   common: CommonMessageData | undefined;
@@ -777,12 +815,17 @@ export interface WebcastCountdownMessage {
   messageType: number;
   operatorUserInfo: LinkerMediaChangeOperator | undefined;
 }
+export interface WebcastExecutorDispatchMessage {
+  common: CommonMessageData | undefined;
+  executorDispatchBatch: ExecutorDispatchBatch | undefined;
+}
 export interface WebcastGuestInviteGuideMessage {
   common: CommonMessageData | undefined;
   guestInviteClickAction: number;
   guestInviteDisplayType: number;
   inviteeAvatar: ImageModel[];
   inviteUser: User | undefined;
+  linkerSessionId: string;
   triggerType: string;
 }
 export interface WebcastGuestInviteMessage {
@@ -790,6 +833,7 @@ export interface WebcastGuestInviteMessage {
   inviterAvatar: ImageModel | undefined;
   inviterNickname: string;
   inviterUserId: string;
+  linkerSessionId: string;
   roomId: string;
 }
 export interface WebcastGuestShowdownMessage {
@@ -817,6 +861,7 @@ export interface WebcastLinkStateMessage {
   common: CommonMessageData | undefined;
   layout: LayoutState | undefined;
   linkerMode: number;
+  multiGuestBizInfo: LinkStateMultiGuestBizExtra | undefined;
   needAck: number;
   scene: Scene;
   spotList: SpotInfo[];
@@ -863,6 +908,13 @@ export interface WebcastPermitOutsideApplyMessage {
   permitText: string;
   permitTime: string;
   roomId: string;
+}
+export interface WebcastPlaySnapshotSyncMessage {
+  common: CommonMessageData | undefined;
+  executorDispatchBatch: ExecutorDispatchBatch | undefined;
+  messageType: number;
+  roomId: string;
+  snapshot: PlaySnapshot | undefined;
 }
 export interface WebcastPlaybookMessage {
   bizReason: string;

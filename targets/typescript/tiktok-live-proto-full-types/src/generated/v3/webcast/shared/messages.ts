@@ -33,6 +33,17 @@ export interface EmoteWithIndex {
   emote: EmoteModel | undefined;
   index: string;
 }
+export interface EnhancementText {
+  placeholderInfo: PlaceholderInfo[];
+  type: number;
+}
+export interface EnhancementTextInfo {
+  enhancementTexts: EnhancementText[];
+}
+export interface PlaceholderInfo {
+  placeholder: string;
+  value: string;
+}
 export interface RightLabel {
   backgroundColor: string;
   content: Text | undefined;

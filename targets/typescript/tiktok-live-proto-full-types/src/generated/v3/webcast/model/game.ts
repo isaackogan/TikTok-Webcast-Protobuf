@@ -59,6 +59,7 @@ export interface GameEmotesTab {
 export interface GameLiveFragment {
   autocutLogInfo: AutocutLogInfo | undefined;
   autocutRelationInfo: AutocutRelationInfo | undefined;
+  businessExtra: string;
   coverUrl: string;
   createTime: string;
   downloadUrl: string;
@@ -211,10 +212,16 @@ export interface LiveGoalReward {
   auditStatus: number;
   condition: LiveGoalRewardCondition | undefined;
   endTime: string;
+  finishStatus: number;
   goalId: string;
+  goalIdStr: string;
+  isHitOptAb: boolean;
   rewardContent: string;
+  rewardDirectMessage: string;
   rewardUsers: LiveStreamGoalContributor[];
+  source: number;
   startTime: string;
+  templateId: string;
 }
 export interface LiveGoalRewardCondition {
   topN: string;
@@ -301,6 +308,7 @@ export interface WebcastAccessRecallMessage {
   content: Text | undefined;
   duration: string;
   endTime: string;
+  endTimeV2: string;
   notice: Text | undefined;
   punishInfo: PunishEventInfo | undefined;
   scene: string;

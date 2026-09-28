@@ -10,6 +10,15 @@ import type { BattleABTestType, EffectStruct, IceShowdownSetting } from "../data
 import type { BattleUserArmies } from "../message/battle.js";
 import type { Text } from "../message/common.js";
 export const protobufPackage = "webcast.model.live.match";
+export interface AnchorGiftModeMetaMap {
+  anchorGiftModeMetas: {
+    [key: string]: GiftModeMetaList;
+  };
+}
+export interface AnchorGiftModeMetaMap_AnchorGiftModeMetasEntry {
+  key: string;
+  value: GiftModeMetaList | undefined;
+}
 export interface AnchorMatchSettings {
   enableAiCommentary: boolean;
 }
@@ -93,8 +102,8 @@ export interface BattleRivalTag {
   iconImage: ImageModel | undefined;
 }
 export interface BattleTask {
+  battleBonusConfig: BattleBonusConfig | undefined;
   battleBonusStatus: BattleBonusStatus | undefined;
-  config: BattleBonusConfig | undefined;
 }
 export interface BattleTaskGiftAmountGuide {
   disappearDuration: number;
@@ -165,6 +174,28 @@ export interface CommonCardInfo {
   toAnchorId: string;
   toAnchorIdStr: string;
 }
+export interface CommunityActiveDecoration {
+  decorationId: string;
+  images: {
+    [key: number]: ImageModel;
+  };
+  slotType: number;
+}
+export interface CommunityActiveDecoration_ImagesEntry {
+  key: number;
+  value: ImageModel | undefined;
+}
+export interface CommunityHeartMeInfo {
+  anchorCommunityLevel: string;
+  slots: {
+    [key: number]: CommunityActiveDecoration;
+  };
+  thrownItemImage: ImageModel | undefined;
+}
+export interface CommunityHeartMeInfo_SlotsEntry {
+  key: number;
+  value: CommunityActiveDecoration | undefined;
+}
 export interface CriticalStrikeCardInfo {
   cardImage: ImageModel | undefined;
   cardNameKey: string;
@@ -181,8 +212,12 @@ export interface CriticalStrikeCardInfo {
   toAnchorIdStr: string;
 }
 export interface EffectingCard {
+  cardQueueMap: {
+    [key: string]: EffectingCardQueue;
+  };
   criticalStrikeCards: CriticalStrikeCardInfo[];
   extraTimeCards: ExtraTimeCardInfo[];
+  musicCards: MusicCardInfo[];
   potionCards: PotionCardInfo[];
   smokeCards: SmokeCardInfo[];
   specialEffectCards: SpecialEffectCardInfo[];
@@ -191,6 +226,28 @@ export interface EffectingCard {
   vaultGlovesCards: VaultGloveCardInfo[];
   waveCards: WaveCardInfo[];
 }
+export interface EffectingCard_CardQueueMapEntry {
+  key: string;
+  value: EffectingCardQueue | undefined;
+}
+export interface EffectingCardQueue {
+  cardQueue: EffectingCardQueueItem[];
+  queueType: number;
+  queueVersion: string;
+  validCardTypes: number[];
+}
+export interface EffectingCardQueueItem {
+  criticalStrikeCards: CriticalStrikeCardInfo | undefined;
+  extraTimeCards: ExtraTimeCardInfo | undefined;
+  musicCards: MusicCardInfo | undefined;
+  potionCards: PotionCardInfo | undefined;
+  smokeCards: SmokeCardInfo | undefined;
+  specialEffectCards: SpecialEffectCardInfo | undefined;
+  top2Cards: Top2CardInfo | undefined;
+  top3Cards: Top3CardInfo | undefined;
+  vaultGlovesCards: VaultGloveCardInfo | undefined;
+  waveCards: WaveCardInfo | undefined;
+}
 export interface EnigmaBattleExtraInfo {
   hasStarted: boolean;
   isGiftFromEnigma: boolean;
@@ -198,6 +255,8 @@ export interface EnigmaBattleExtraInfo {
 export interface EnigmaBattleSetting {
   enigmaBattleCampaignEnd: string;
   enigmaBattleCampaignStart: string;
+  enigmaScoreRevealCountdownSec: string[];
+  enigmaScoreRevealDurationSec: string;
   isStartable: boolean;
 }
 export interface ExtraTimeCardInfo {
@@ -218,6 +277,22 @@ export interface GiftModeMeta {
   giftModeDesc: Text | undefined;
   giftNameKey: string;
 }
+export interface GiftModeMetaList {
+  giftModeMeta: GiftModeMeta[];
+}
+export interface GiftModeMetaV2 {
+  anchorGiftModeMetaByType: {
+    [key: string]: AnchorGiftModeMetaMap;
+  };
+}
+export interface GiftModeMetaV2_AnchorGiftModeMetaByTypeEntry {
+  key: string;
+  value: AnchorGiftModeMetaMap | undefined;
+}
+export interface GoofyEffectInfo {
+  isRandomEffect: boolean;
+  specificResourceId: string;
+}
 export interface HighScoreControlCfg {
   normalControlApplied: boolean;
   originDisplayToUserList: string[];
@@ -235,6 +310,21 @@ export interface LeagueScoreInfo {
   estimatedScore: string;
   isActivityPeriod: boolean;
   isOptOut: boolean;
+  leftIcon: ImageModel | undefined;
+  matchTheme: number;
+  rightIcon: ImageModel | undefined;
+  rightSchemaJumpLink: string;
+}
+export interface MatchInvitePanelConfig {
+  descIcon: ImageModel | undefined;
+  descIconDarkMode: ImageModel | undefined;
+  descText: Text | undefined;
+  descTextDarkMode: Text | undefined;
+  headerText: Text | undefined;
+  headerTextDarkMode: Text | undefined;
+}
+export interface MatchOpeningAnimationConfig {
+  startAnimationRule: string;
 }
 export interface MatchPunishEffectInfo {
   effectToEffectStructMap: {
@@ -256,6 +346,30 @@ export interface MatchPunishExtraInfo {
   cohostContentGuideInfo: CohostContentGuideInfo | undefined;
   matchPunishEffectInfo: MatchPunishEffectInfo | undefined;
   recommendedPlaybookInfo: RecommendedPlaybookInfo | undefined;
+}
+export interface MatchThemeDisplayResource {
+  matchInvitePanelConfig: MatchInvitePanelConfig | undefined;
+  matchOpeningAnimationConfig: MatchOpeningAnimationConfig | undefined;
+  matchTheme: number;
+  matchTitleBarConfig: MatchTitleBarConfig | undefined;
+}
+export interface MatchTitleBarConfig {
+  displayRules: MatchTitleBarDisplayRule[];
+}
+export interface MatchTitleBarDisplayRule {
+  displayResource: TitleBarDisplayResource | undefined;
+  trigger: MatchTitleBarTrigger | undefined;
+}
+export interface MatchTitleBarTrigger {
+  type: number;
+}
+export interface MusicCardInfo {
+  awardStartTimeSec: string;
+  common: CommonCardInfo | undefined;
+  criticalStrikeRateHigh: string;
+  criticalStrikeRateLow: string;
+  detectionResult: number;
+  multiple: string;
 }
 export interface PlaybookBizExtra {
   customAtomicCapabilities: {
@@ -340,6 +454,13 @@ export interface TeamMatchCampaign {
   hasTeamMatchMvpSfx: boolean;
   startSfxTeamId: string[];
 }
+export interface TitleBarDisplayResource {
+  contentText: Text | undefined;
+  durationMs: string;
+  leftIcon: ImageModel | undefined;
+  rightIcon: ImageModel | undefined;
+  rightIconSchemaUrl: string;
+}
 export interface Top2CardInfo {
   common: CommonCardInfo | undefined;
 }
@@ -353,6 +474,21 @@ export interface VaultGloveCardInfo {
   giftNameKey: string;
   multiple: string;
   multipleOther: string;
+}
+export interface VirtualTicketEnvelopeInfo {
+  crossRoomGuide: Text | undefined;
+  displaySeconds: string;
+  envelopeIcon: ImageModel | undefined;
+  envelopeId: string;
+  nameKey: string;
+  rushSeconds: string;
+  sendTimeSec: string;
+  ticketCount: string;
+  toAnchorId: string;
+  toRoomId: string;
+}
+export interface VirtualTicketEnvelopeInfoList {
+  envelopes: VirtualTicketEnvelopeInfo[];
 }
 export interface WaveCardInfo {
   cardImage: ImageModel | undefined;

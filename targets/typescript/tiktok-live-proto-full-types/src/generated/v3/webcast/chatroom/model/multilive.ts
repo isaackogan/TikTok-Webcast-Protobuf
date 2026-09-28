@@ -15,6 +15,7 @@ export interface MultiLiveAnchorPanelSettings {
   allowRequestFromUser: LinkmicUserSettingShowAction;
   applierSortGiftScoreThreshold: string;
   applierSortSetting: LinkmicApplierSortSetting;
+  disableGuestOpenCamera: number;
   disableVideoLinkmic: LinkmicUserSettingDisableVideoLinkmic;
   enableShowMultiGuestLayout: LinkmicUserSettingShowAction;
   fixMicNum: LinkmicUserSettingShowAction;

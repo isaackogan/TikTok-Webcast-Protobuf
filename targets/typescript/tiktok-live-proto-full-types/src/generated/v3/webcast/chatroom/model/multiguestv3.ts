@@ -9,6 +9,7 @@ import type { CohostContent, ContentInviteSource, JoinRoomDirectBizContent, Kick
 import type { LinkMicUserAdminType } from "../../linkmic/common.js";
 import type { User } from "../../model/base/user_2.js";
 import type { LinkmicShareRevenueSetting, LinkUserType, MultiGuestOutsideRoomInviteSource } from "../../model/data/messages.js";
+import type { LinkmicShareRevenueSettingStruct } from "./interact_messages.js";
 import type { MultiLiveAnchorPanelSettings } from "./multilive.js";
 export const protobufPackage = "webcast.chatroom.model.multiguestv3";
 export interface ApplyBizContent {
@@ -26,9 +27,11 @@ export interface InviteBizContent {
   operatorLinkAdminType: LinkMicUserAdminType;
   operatorUserInfo: User | undefined;
   shareRevenueSetting: LinkmicShareRevenueSetting;
+  shareRevenueSettingStruct: LinkmicShareRevenueSettingStruct | undefined;
 }
 export interface JoinDirectBizContent {
   isFullPositionPreApproved: boolean;
+  mgSourceRole: number;
   outsideRoomInviteSource: MultiGuestOutsideRoomInviteSource;
   replyImMsgId: string;
 }
@@ -47,8 +50,10 @@ export interface PermitBizContent {
   isApplyAutoApproved: boolean;
   isFullPositionPreApproved: boolean;
   isQuickCallAutoApproved: boolean;
+  linkedSubReason: number;
   linkTypePermission: string;
   linkUserType: LinkUserType;
+  mgMatchType: number;
   operatorLinkAdminType: LinkMicUserAdminType;
   operatorUserInfo: User | undefined;
 }

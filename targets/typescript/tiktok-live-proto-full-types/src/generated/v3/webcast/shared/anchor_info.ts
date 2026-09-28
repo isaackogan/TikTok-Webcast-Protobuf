@@ -23,3 +23,11 @@ export interface ShopLabelImage {
   urlList: string[];
   width: number;
 }
+export interface TPSize {
+  height: number;
+  width: number;
+}
+export interface TPTuxImage {
+  protocol: string;
+  size: TPSize | undefined;
+}

@@ -5,14 +5,13 @@
 // source: webcast/model/merged.proto
 
 /* eslint-disable */
-import type { CommonMessageData } from "../shared/message.js";
 import type { EmoteModel } from "./base/emoji.js";
 import type { ImageModel } from "./base/messages.js";
 import type { User } from "./base/user_2.js";
 import type { GiftColorInfo, GiftPanelBeaconBubble, GiftResource } from "./gift/model.js";
 import type { ShowInfo } from "./live/show_info.js";
 import type { Text } from "./message/common.js";
-import type { AccompanimentStruct, AudioStruct, BatchGiftInfo, CrossScreenEffectInfo, GiftBoxInfo, GiftLockInfo, GiftRandomEffectInfo, GiftSeriesInfo, GiftSkin, GiftSkinToGiftTextsInfo, GiftSponsorInfo, GiftText, LynxCrossScreenEffectInfo, LyricStruct, PortalInfo, PortalTransTarget, SchemeInfo, UGGiftStructInfo } from "./messages.js";
+import type { AccompanimentStruct, AudioStruct, BatchGiftInfo, ColorPickerInfo, CrossScreenEffectInfo, GiftBoxInfo, GiftLockInfo, GiftRandomEffectInfo, GiftSeriesInfo, GiftSkin, GiftSkinToGiftTextsInfo, GiftSponsorInfo, GiftText, LynxCrossScreenEffectInfo, LyricStruct, MusicGiftInfo, SchemeInfo, UGGiftStructInfo } from "./messages.js";
 export const protobufPackage = "webcast.model";
 export interface Gift {
   batchGiftInfo: BatchGiftInfo | undefined;
@@ -22,6 +21,7 @@ export interface Gift {
   };
   canPutInGiftBox: boolean;
   colorInfos: GiftColorInfo[];
+  colorPickerInfo: ColorPickerInfo | undefined;
   combo: boolean;
   crossScreenEffectInfo: CrossScreenEffectInfo | undefined;
   describe: string;
@@ -30,6 +30,7 @@ export interface Gift {
   duration: number;
   expirationTimestamp: string;
   forLinkmic: boolean;
+  giftBottomRightLabelIcon: ImageModel | undefined;
   giftBoxInfo: GiftBoxInfo | undefined;
   giftLabelIcon: ImageModel | undefined;
   giftLabelType: number;
@@ -59,6 +60,7 @@ export interface Gift {
   isRandomGift: boolean;
   lockInfo: GiftLockInfo | undefined;
   lynxCrossScreenEffectInfo: LynxCrossScreenEffectInfo | undefined;
+  musicInfo: MusicGiftInfo | undefined;
   name: string;
   previewImage: ImageModel | undefined;
   primaryEffectId: string;
@@ -180,14 +182,9 @@ export interface TopFanTicket {
 export interface TopFrameSummary {
   id: string;
   idStr: string;
+  isPreRecorded: boolean;
+  preRecordedBadgeText: string;
   schema: string;
   showList: ShowInfo[];
   title: string;
-}
-export interface WebcastEnvelopePortalMessage {
-  common: CommonMessageData | undefined;
-  portalDisplay: number;
-  portalInfo: PortalInfo | undefined;
-  portalTransTarget: PortalTransTarget | undefined;
-  portalView: number;
 }

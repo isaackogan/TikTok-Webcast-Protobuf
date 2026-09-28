@@ -5,12 +5,12 @@
 // source: webcast/model/messages.proto
 
 /* eslint-disable */
-import type { EnvelopeEnigmaInfo } from "../envelope.js";
 import type { ToolBarManagement } from "../message_proto.js";
 import type { ImageModel } from "./base/messages.js";
 import type { PrivilegeLogExtra } from "./base/user.js";
 import type { BannerImageBackground, BannerImageContent, EventUserInfo, ExtendImage, GameTagGameTagType, GameTagRatingSystemType, GiftStructSchemeGiftType, HashtagNamespace, LiveEventInfoEventPayMethod, PaidEventPreview, PollVoteLimitType, RechargeCustomError, UserFansClubFansClubDataUserFansClubStatus } from "./data/messages.js";
 import type { AssetsModel } from "./gift/assets.js";
+import type { GiftColorInfo } from "./gift/model.js";
 import type { AnchorLevelPermission } from "./live/messages.js";
 export const protobufPackage = "webcast.model";
 export interface AccompanimentStruct {
@@ -41,6 +41,11 @@ export interface AnchorLevel {
   taskStartExperience: string;
   taskStartTime: string;
   taskTargetExperience: string;
+}
+export interface AudioResource {
+  audioUrl: string;
+  lyricsUrl: string;
+  snippetId: string;
 }
 export interface AudioStruct {
   audioFormat: number;
@@ -108,7 +113,9 @@ export interface BatchGiftInfo {
 }
 export interface Board {
   boardItemList: BoardItem[];
+  dslVersion: string;
   id: string;
+  minCompatibleDslVersion: string;
   previewBgColor: string;
   previewImage: ImageModel | undefined;
   previewImageList: ImageModel[];
@@ -128,11 +135,15 @@ export interface BoardItem {
   boardItemLayout: BoardItemLayout | undefined;
   boardItemTemplateList: BoardItemTemplate[];
   boardItemType: number;
+  canvasItemLayout: BoardItemLayout | undefined;
+  canvasPosition: BoardItemPosition | undefined;
   draggable: boolean;
+  editorMode: number;
   fullyCustomizedContent: string;
   fullyCustomizedSetting: FullyCustomizedSetting | undefined;
   id: string;
   matting: boolean;
+  overlayImage: ImageContent | undefined;
   position: BoardItemPosition | undefined;
   richTextContent: RichTextContent | undefined;
   sceneryContent: SceneryContent | undefined;
@@ -160,6 +171,7 @@ export interface BoardItemLayout {
 export interface BoardItemPosition {
   percentageX: string;
   percentageY: string;
+  renderOrder: number;
   x: string;
   y: string;
 }
@@ -191,6 +203,7 @@ export interface BorderInfo {
   description: string;
   descStarlingKey: string;
   icon: ImageModel | undefined;
+  isTallerAvatarBackground: boolean;
   level: string;
   name: string;
   nameStarlingKey: string;
@@ -202,6 +215,14 @@ export interface ColorBackground {
   color: string;
   padding: EdgeInsets | undefined;
   radius: number;
+  radiusV2: MeasureSpec | undefined;
+}
+export interface ColorGroup {
+  colorInfos: GiftColorInfo[];
+  groupName: string;
+}
+export interface ColorPickerInfo {
+  groups: ColorGroup[];
 }
 export interface Creator {
   continueScene: number;
@@ -253,6 +274,7 @@ export interface DonationSticker {
 export interface EdgeInsets {
   bottom: number;
   left: number;
+  mode: number;
   right: number;
   top: number;
 }
@@ -278,10 +300,12 @@ export interface FlowSpec {
   direction: number;
   height: SizeSpec | undefined;
   interItemSpacing: number;
+  interItemSpacingV2: MeasureSpec | undefined;
   overflow: boolean;
   rowAlignX: number;
   rowAlignY: number;
   rowSpacing: number;
+  rowSpacingV2: MeasureSpec | undefined;
   width: SizeSpec | undefined;
 }
 export interface FullyCustomizedSetting {
@@ -339,9 +363,14 @@ export interface GiftRandomEffectInfo {
   randomGiftPanelBanner: RandomGiftPanelBanner | undefined;
 }
 export interface GiftSeriesInfo {
+  containerBackground: ImageModel | undefined;
   enabled: boolean;
+  endTimeSec: string;
   giftIds: string[];
+  pointingBackTriColor: string;
+  sendGiftButtonColor: string;
   seriesName: string;
+  seriesNameColor: string;
 }
 export interface GiftSkin {
   animatedImage: ImageModel | undefined;
@@ -448,6 +477,13 @@ export interface MeasureSpec {
   mode: number;
   value: number;
 }
+export interface MusicGiftInfo {
+  artistName: string;
+  moodId: string;
+  resource: AudioResource | undefined;
+  songId: string;
+  songName: string;
+}
 export interface OrganizationModel {
   desc: string;
   donationLink: string;
@@ -459,7 +495,10 @@ export interface OrganizationModel {
 export interface Paragraph {
   editable: boolean;
   maxCharLimit: string;
+  notEditable: boolean;
   paragraphId: string;
+  placeholder: string;
+  rowIndex: number;
   spans: TextSpan[];
   styleRef: string;
 }
@@ -475,20 +514,6 @@ export interface ParagraphLayout {
 export interface PollVoteLimit {
   limitType: PollVoteLimitType;
   voteCountLimit: string;
-}
-export interface PortalInfo {
-  ddlSecond: number;
-  envelopeDiamonds: number;
-  id: string;
-  idc: string;
-  portalDiamonds: number;
-  sendAtSecond: number;
-  senderAvatar: ImageModel | undefined;
-  senderDisplayId: string;
-  senderEnigmaInfo: EnvelopeEnigmaInfo | undefined;
-  senderId: string;
-  touchCount: number;
-  transCount: number;
 }
 export interface PortalTransTarget {
   anchorAvatar: ImageModel | undefined;
@@ -529,6 +554,8 @@ export interface RecommendReason {
   title: string;
 }
 export interface RichTextContent {
+  artTextStyleId: string;
+  colorThemeId: string;
   itemStyleRef: string;
   paragraphs: Paragraph[];
   styles: RichTextStyle[];
@@ -542,11 +569,13 @@ export interface RichTextStyle {
   fontSize: number;
   imageBackground: ImageBackground | undefined;
   inlineBackground: ColorBackground | undefined;
+  letterSpacing: number;
   lineHeight: number;
   lineSpacing: number;
   name: string;
   padding: EdgeInsets | undefined;
   paragraphLayout: ParagraphLayout | undefined;
+  placeholderColor: string;
   stroke: StrokeStyle | undefined;
   textStyle: number;
   type: number;
@@ -595,6 +624,7 @@ export interface RoomAuthStatus {
   enigmawhisper: string;
   eventpromotion: number;
   explore: boolean;
+  friendrankswitch: number;
   gameGuessPermission: boolean;
   gamerankingswitch: number;
   gift: boolean;
@@ -608,6 +638,7 @@ export interface RoomAuthStatus {
   landscapechat: string;
   luckmoney: boolean;
   multienablereserve: boolean;
+  musicgiftentrance: string;
   offreason: RoomAuthOffReasons | undefined;
   pictionary: string;
   pictionarybubble: string;
@@ -748,6 +779,7 @@ export interface SizeSpec {
 }
 export interface SourcePB {
   aigcModelVersion: string;
+  generateVersion: string;
   industryId: string;
   industryName: string;
   promptVersion: string;

@@ -10,5 +10,5 @@ import type { BattleBonusConfig } from "../live/match.js";
 export const protobufPackage = "webcast.model.message.battle";
 
 export interface BattleTaskStart {
-  config: BattleBonusConfig | undefined;
+  battleBonusConfig: BattleBonusConfig | undefined;
 }

@@ -5,14 +5,16 @@
 // source: webcast/model/message/messages.proto
 
 /* eslint-disable */
+import type { ActionButton as ActionButton2, LiveGoalParam, UserParam } from "../../../tikcast_api_creator_succ.js";
 import type { SubInfo, SubQueue, SubTimerSticker, SubWaveImMsg } from "../../chatroom/api.js";
 import type { RivalExtraInfo } from "../../chatroom/interact_model.js";
-import type { CohostListUser, CohostTopic, TopicSessionStatus } from "../../chatroom/model/interact_messages.js";
-import type { GroupPlayer, LinkerMediaChangeOperator, LinkMicAdContent, PosIdentity } from "../../linkmic/common.js";
+import type { CohostListUser, CohostTopic, GiftGalleryBadgeSection, SubtitleSettings, TopicSessionStatus } from "../../chatroom/model/interact_messages.js";
+import type { GroupPlayer, LayoutData, LinkerMediaChangeOperator, LinkMicAdContent, PosIdentity } from "../../linkmic/common.js";
 import type { AnchorActivityTaskProgress, DisplayControl, PerceptionFeedbackOption, ResourceAttr } from "../../message_proto.js";
 import type { PerceptionSheetInfo } from "../../message_proto_perception_sheet_info.js";
+import type { TPTuxImage } from "../../shared/anchor_info.js";
 import type { CommonMessageData } from "../../shared/message.js";
-import type { EmoteWithIndex, RightLabel } from "../../shared/messages.js";
+import type { EmoteWithIndex, EnhancementTextInfo, RightLabel } from "../../shared/messages.js";
 import type { ControlAction } from "../../synthetic_enums.js";
 import type { QuizAnswerInfo, QuizCallUpWebview, QuizFinalResult, QuizQuestionInfo, QuizRulesIntroduction, QuizUserIdentityInfo } from "../activity_quiz.js";
 import type { EmoteModel } from "../base/emoji.js";
@@ -21,13 +23,13 @@ import type { BadgeStruct, PrivilegeLogExtra } from "../base/user.js";
 import type { User } from "../base/user_2.js";
 import type { MultiHostBoard } from "../data/host_board.js";
 import type { EventCard, RealtimeReminderWordInfoMsg, ReqSong } from "../data/merged.js";
-import type { ActionButtonType, AffiliatedInfoStickerShowScene, AILiveSummary, AnchorGrowLevelImMsg, AnchorGrowLevelImMsgV2, ColdStartStatData, EnlargeScreenScene, EventUserInfo, FansTaskType, GiftTrayStyle, GuestMicCameraChangeScene, GuestMicCameraManageOp, LinkmicReplyType, LiveJourneyImMessage, MsgFilter, PerceptionDialogIconType, PlayTogetherPermitType, PollAppealStatus, PollEndType, PollKind, PollTemplateStatus, ProfitRankType, PromoteCoupon, PunishTypeId, RealtimeLiveCenterBaseData, RealtimeLiveCenterLopInfo, RealtimeLiveCenterShopData, RealtimeLiveCenterTips, RealtimeLiveCenterTrafficToolInfoIM, RealtimeLiveCenterWhiteBoxIM, RealtimeLiveCenterWhiteBoxPreviewIM, StarCommentOption, TagType, TakeTheStageStatus, UserIdentity, UserSetting, WhiteBoxData } from "../data/messages.js";
+import type { ActionButtonType, AffiliatedInfoStickerShowScene, AIBeautySugContent, AiCoachImMessageData, AILiveSummary, AnchorGrowLevelImMsg, AnchorGrowLevelImMsgV2, ColdStartStatData, EnlargeScreenScene, EntryData, EventUserInfo, FansTaskType, GiftTrayStyle, GuestMicCameraChangeScene, GuestMicCameraManageOp, LinkmicReplyType, LiveJourneyImMessage, MsgFilter, PerceptionDialogIconType, PlayTogetherPermitType, PollAppealStatus, PollEndType, PollKind, PollTemplateStatus, ProfitRankType, PromoteCoupon, PunishTypeId, RealtimeLiveCenterBaseData, RealtimeLiveCenterLopInfo, RealtimeLiveCenterShopData, RealtimeLiveCenterTips, RealtimeLiveCenterTrafficToolInfoIM, RealtimeLiveCenterWhiteBoxIM, RealtimeLiveCenterWhiteBoxPreviewIM, StarCommentOption, TagType, TakeTheStageStatus, TPText, UserIdentity, UserSetting, WhiteBoxData } from "../data/messages.js";
 import type { PlayScene, PlayUserTag } from "../data/multi_guest_play.js";
 import type { AssetsModel } from "../gift/assets.js";
 import type { DynamicRestriction, GiftNotice, LiveStreamGoal, LiveStreamGoalIndicator } from "../gift/model.js";
 import type { GiftRecommendInfo } from "../gift/model_gift_recommend_info.js";
 import type { GalleryMiddleTouchInfo } from "../goal.js";
-import type { BattleComboInfo, BattleEffectInfos, BattleUserInfo, CriticalStrikeCardInfo, EnigmaBattleExtraInfo, ExtraTimeCardInfo, IceShowdownInfo, PotionCardInfo, SmokeCardInfo, SpecialEffectCardInfo, Top2CardInfo, Top3CardInfo, VaultGloveCardInfo, WaveCardInfo } from "../live/match.js";
+import type { BattleComboInfo, BattleEffectInfos, BattleUserInfo, CommunityHeartMeInfo, CriticalStrikeCardInfo, EnigmaBattleExtraInfo, ExtraTimeCardInfo, IceShowdownInfo, MusicCardInfo, PotionCardInfo, SmokeCardInfo, SpecialEffectCardInfo, Top2CardInfo, Top3CardInfo, VaultGloveCardInfo, VirtualTicketEnvelopeInfo, WaveCardInfo } from "../live/match.js";
 import type { SMBInfo } from "../live/messages.js";
 import type { CompetitionContributorInfo, CompetitionInitiateInfo as CompetitionInitiateInfo1, CompetitionResultsTeamInfo, MemberRankInfo, TakeTheStageOrderInfo } from "../live_interact/competition_model.js";
 import type { Gift, KaraokeSong, Portal } from "../merged.js";
@@ -113,12 +115,16 @@ export interface AnchorInfo {
   numberComments: string;
   version: string;
 }
+export interface AnchorLeftCardRefundNotice {
+  anchorId: string;
+}
 export interface AnchorPair {
   sourceAnchorId: string;
   targetAnchorId: string;
 }
 export interface AnchorReminderWordInfoMsg {
   content: string;
+  excludedDisplayScenes: number[];
   messageKey: string;
   scene: string;
   suggestionId: string;
@@ -328,6 +334,25 @@ export interface BarrageTypeUserGradeParam {
   user: User | undefined;
   userId: string;
 }
+export interface BattleArtifact {
+  artifactType: number;
+  useVirtualTicket: BattleArtifactUseVirtualTicketInfo | undefined;
+  virtualTicketEnvelopeRushOutNotice: VirtualTicketEnvelopeRushOutNotice | undefined;
+  virtualTicketEnvelopeSendNotice: VirtualTicketEnvelopeInfo | undefined;
+}
+export interface BattleArtifactUseVirtualTicketInfo {
+  comboCount: string;
+  comboEnd: boolean;
+  comboScore: string;
+  count: string;
+  fromUserId: string;
+  itemId: string;
+  publicMessage: Text | undefined;
+  score: string;
+  ticketIcon: ImageModel | undefined;
+  toRoomId: string;
+  toUserId: string;
+}
 export interface BattleInviteeGiftPermission {
   giftPermissionType: number;
   userId: string;
@@ -383,9 +408,11 @@ export interface BigSaleConfig {
   width: number;
 }
 export interface Billboard {
+  auctionConfig: GroupConfig | undefined;
   authorId: string;
   bigSaleConfig: BigSaleConfig | undefined;
   billboardTypeInt: number;
+  cSchema: string;
   desc: string;
   id: string;
   imageConfig: BillboardImageConfig | undefined;
@@ -395,7 +422,9 @@ export interface Billboard {
   schema: string;
   sizeGuidanceConfig: BillboardSizeGuidanceConfig | undefined;
   status: number;
+  supportAutoSet: boolean;
   title: string;
+  triggerSource: number;
   type: number;
   uiType: number;
 }
@@ -462,6 +491,7 @@ export interface BubbleDecoration {
   decorationType: number;
   image: ImageModel | undefined;
   text: Text | undefined;
+  tpText: TPText | undefined;
 }
 export interface CampaignBannerDisplay {
   billboardVersion: number;
@@ -486,6 +516,7 @@ export interface CapsuleBizParamsAnchorPinPerk {
   templateId: string;
 }
 export interface CapsuleBizParamsCohost {
+  anchorClassLabel: GiftGalleryBadgeSection | undefined;
   availableFriendNumber: string;
   inviteeInnerChannelId: string;
   inviteeModelPredictionData: UserModelPredictionData | undefined;
@@ -493,6 +524,7 @@ export interface CapsuleBizParamsCohost {
   inviteeUserInfo: User | undefined;
   isFollowedByRival: boolean;
   isFriend: boolean;
+  rivalClassLabel: GiftGalleryBadgeSection | undefined;
   rivalUser: User | undefined;
   rivalVoteCount: string;
   subType: string;
@@ -580,11 +612,71 @@ export interface CohostInviteInfo_InviteeInfosEntry {
   key: string;
   value: string;
 }
+export interface CohostInviteStateNotifyContent {
+  groupChannelId: string;
+  reason: number;
+  rivalRoomId: string;
+  rivalUserId: string;
+}
 export interface CohostListChangeContent {
   users: CohostListUser[];
 }
 export interface CohostWithdrawInfo {
   anchorList: GroupPlayer[];
+}
+export interface CollabGiftActiveInfo {
+  contributors: string[];
+  currentScore: string;
+  currentStage: string;
+  currentTime: string;
+  expireTime: string;
+  maxScore: string;
+  maxStage: string;
+  startTime: string;
+}
+export interface CollabGiftBaseInfo {
+  appId: string;
+  collabSessionId: string;
+  fuelGiftId: string;
+  liveId: string;
+  roomId: string;
+  triggerGiftId: string;
+  triggerReceiverId: string;
+  triggerSenderId: string;
+}
+export interface CollabGiftContributor {
+  avatarUrl: string;
+  nickname: string;
+}
+export interface CollabGiftFinishInfo {
+  finishReason: number;
+}
+export interface CollabGiftFullInfo {
+  stages: {
+    [key: string]: CollabGiftStage;
+  };
+  userInfo: {
+    [key: string]: CollabGiftContributor;
+  };
+}
+export interface CollabGiftFullInfo_StagesEntry {
+  key: string;
+  value: CollabGiftStage | undefined;
+}
+export interface CollabGiftFullInfo_UserInfoEntry {
+  key: string;
+  value: CollabGiftContributor | undefined;
+}
+export interface CollabGiftStage {
+  campaignBonusScore: string;
+  contributors: string[];
+  maxScore: string;
+  score: string;
+}
+export interface CollabGiftUpdateInfo {
+  previousStage: string;
+  receiverId: string;
+  senderId: string;
 }
 export interface CommentLabelScore {
   labelName: string;
@@ -640,6 +732,23 @@ export interface Contributor {
   score: string;
   user: User | undefined;
 }
+export interface CueMessageItem {
+  itemText: Text | undefined;
+  richParams: CueMessageRichParam[];
+}
+export interface CueMessageRichParam {
+  badge: BadgeStruct | undefined;
+  image: ImageModel | undefined;
+  intervalDay: string;
+  intervalTime: string;
+  paramText: Text | undefined;
+  type: number;
+  user: User | undefined;
+}
+export interface CuesMessage {
+  items: CueMessageItem[];
+  topText: Text | undefined;
+}
 export interface CustomActivityLiveRoomInfo {
   roomId: string;
   roomTitle: string;
@@ -654,11 +763,20 @@ export interface CustomActivityUserInfo {
   roomInfo: CustomActivityLiveRoomInfo | undefined;
 }
 export interface CustomPayload {
+  giveawayData: GiveawayShortTouchData | undefined;
   pollData: ShortTouchPollData | undefined;
 }
 export interface DelayParam {
   maxDelayMs: string;
   minDelayMs: string;
+}
+export interface Denomination {
+  amount: string;
+  amountDelimited: string;
+  amountFormatted: string;
+  amountKmbFormatted: string;
+  currencyCode: string;
+  currencySymbol: string;
 }
 export interface Detail {
   background: ImageModel | undefined;
@@ -750,6 +868,12 @@ export interface Extra {
   title: Text | undefined;
   violationReason: Text | undefined;
 }
+export interface FansCommunityEventData {
+  homelandInteractData: HomelandInteractData | undefined;
+  homelandUnlockData: HomelandUnlockData | undefined;
+  redeemData: RedeemData | undefined;
+  upgradeData: UpgradeData | undefined;
+}
 export interface FeatureMeta {
   currentInterval: number;
   featureFeId: string;
@@ -764,6 +888,8 @@ export interface FlareBoostedUsers {
 }
 export interface FlashSaleAtmosphere {
   endTime: string;
+  enhancementInfo: FlashSaleEnhancementInfo | undefined;
+  pdpViewerCount: number;
   preheatTime: string;
   startTime: string;
   status: number;
@@ -777,10 +903,16 @@ export interface FlashSaleAtmosphereInfo {
   pinnedProduct: boolean;
   productId: string;
 }
+export interface FlashSaleEnhancementInfo {
+  buyerInfos: UserInfo[];
+  enhancementTextInfo: EnhancementTextInfo | undefined;
+  stockShowStatus: number;
+}
 export interface FlashSaleStock {
   activityStock: number;
   activityStockStatus: number;
   activityStockText: string;
+  totalStock: number;
 }
 export interface FlexImageModel {
   flexSetting: string[];
@@ -827,11 +959,20 @@ export interface GalleryMiddleTouchMessage {
 export interface GameAiScriptAction {
   actionType: number;
 }
+export interface GameEffectModeChangeEvent {
+  gameId: string;
+  mode: string;
+  modeNameKey: string;
+  playId: string;
+  status: number;
+  version: string;
+}
 export interface GameInteractionEvent {
   count: number;
   instruction: string;
   interactionId: string;
   playId: string;
+  sourceType: number;
   timestamp: string;
   triggerAvatarUrl: string;
   triggerEncryptedId: string;
@@ -839,7 +980,36 @@ export interface GameInteractionEvent {
 }
 export interface GameInteractionMessageContent {
   interactionEvent: GameInteractionEvent | undefined;
+  modeChangeEvent: GameEffectModeChangeEvent | undefined;
+  statusEvent: GameStatusEvent | undefined;
   userId: string;
+}
+export interface GameInteractionMultiSourceEvent {
+  count: number;
+  instruction: string;
+  interactionId: string;
+  playId: string;
+  sourceType: number;
+  timestamp: string;
+  triggerAvatarUrl: string;
+  triggerEncryptedId: string;
+  triggerNickName: string;
+}
+export interface GameInteractionMultiSourceMessageContent {
+  interactionEvent: GameInteractionMultiSourceEvent | undefined;
+  userId: string;
+}
+export interface GameLiveGoalRewardMessageContent {
+  anchorId: string;
+  goalId: string;
+  rewardContent: string;
+  roomId: string;
+  userId: string;
+}
+export interface GameStatusEvent {
+  gameId: string;
+  playId: string;
+  status: number;
 }
 export interface GameTricksGiftInfo {
   fromUserIdStr: string;
@@ -896,6 +1066,18 @@ export interface GiveawayInfo {
   product: Product | undefined;
   winner: User | undefined;
 }
+export interface GiveawayShortTouchData {
+  claimMethod: number;
+  claimSchema: string;
+  endStatus: number;
+  eventIdStr: string;
+  previewWinners: User[];
+  prizeName: string;
+  rewardType: number;
+  validEndTime: string;
+  vgeo: number;
+  winnerUserIdList: string[];
+}
 export interface GoalData {
   goalProgress: {
     [key: string]: Progress;
@@ -912,6 +1094,74 @@ export interface GoodsOrder {
   orderMoney: string;
   orderNum: string;
 }
+export interface GroupBuyConfig {
+  activityDurationMs: string;
+  currencyregion: string;
+  formattedGroupBuyPrice: string;
+  groupBuyPrice: string;
+  instanceId: string;
+  requiredMemberCount: number;
+  title: string;
+  totalStock: string;
+}
+export interface GroupBuyData {
+  groupBuyInstance: GroupBuyInstance | undefined;
+}
+export interface GroupBuyInstance {
+  configEligible: boolean;
+  currentGroupId: string;
+  currentGroupSummary: GroupSummary | undefined;
+  currentRoundGroupCount: string;
+  currentSuccessGroupCount: string;
+  endTimeMs: string;
+  groupBuyConfig: GroupBuyConfig | undefined;
+  groupSummaryList: GroupSummary[];
+  historyGroupSummaryList: GroupSummary[];
+  instanceId: string;
+  isPinned: boolean;
+  itemSoldCount: string;
+  promotionId: string;
+  promotionStatus: number;
+  remainingStock: string;
+  startTimeMs: string;
+}
+export interface GroupBuyMember {
+  isCurrentUser: boolean;
+  userHandle: string;
+  userId: string;
+  userNickname: string;
+  userProfileImageUrl: string;
+}
+export interface GroupConfig {
+  groupOneList: GroupLevelOne[];
+}
+export interface GroupLevelOne {
+  groupTwoList: GroupLevelTwo[];
+  title: string;
+  type: number;
+}
+export interface GroupLevelThree {
+  chosen: boolean;
+  desc: string;
+  title: string;
+  type: number;
+}
+export interface GroupLevelTwo {
+  chosen: boolean;
+  desc: string;
+  groupThreeList: GroupLevelThree[];
+  title: string;
+  type: number;
+}
+export interface GroupSummary {
+  currentCount: number;
+  endTimeMs: string;
+  groupId: string;
+  instanceId: string;
+  members: GroupBuyMember[];
+  requiredMemberCount: number;
+  status: number;
+}
 export interface GuestApplyInfo {
   applyStatus: number;
   applyTime: string;
@@ -922,10 +1172,17 @@ export interface GuestApplyInfo {
   preLinkmicId: string;
   roomId: string;
 }
+export interface GuideMessageFrequencyRule {
+  dayShowCount: string;
+  roomShowCount: string;
+}
 export interface GuidePageResource {
+  actionType: string;
   animations: ImageModel[];
   badges: BadgeStruct[];
+  buttonTexts: Text[];
   icons: ImageModel[];
+  iconStyleId: string;
   texts: Text[];
 }
 export interface GuideTarget {
@@ -938,6 +1195,14 @@ export interface HeatUpdateContent {
   fromUserId: string;
   updatedHeat: string;
   updateSource: number;
+}
+export interface HomelandInteractData {
+  fromUser: User | undefined;
+  interactType: number;
+}
+export interface HomelandUnlockData {
+  level: string;
+  unlockSize: number;
 }
 export interface HostFeatureData {
   eventTimeMs: string;
@@ -995,6 +1260,7 @@ export interface LinkMicAudienceInviteGuide {
   buttonContent: LinkMicAudienceNoticeText | undefined;
   content: LinkMicAudienceNoticeText | undefined;
   displayStrategy: number;
+  linkerSessionId: string;
   linkmicAudienceInviteNoticeReason: string;
   user: User | undefined;
 }
@@ -1054,6 +1320,7 @@ export interface LinkmicAudienceApplyGuide {
   content: LinkMicAudienceNoticeText | undefined;
   displayPosition: string;
   displayStrategy: number;
+  linkerSessionId: string;
   linkmicAudienceApplyNoticeReason: string;
   linkmicId: string;
   requestId: string;
@@ -1151,6 +1418,18 @@ export interface MultiLangContent {
   content: string;
   language: string;
 }
+export interface MusicAwardNotice {
+  displayContent: Text | undefined;
+  isRewarded: boolean;
+  toAnchorId: string;
+}
+export interface MusicEffectNotice {
+  effectTier: number;
+  fromUserId: string;
+  giftId: string;
+  giftPrice: string;
+  toAnchorId: string;
+}
 export interface NewAnchorEffectParams {
   categoryId: string;
   effectPanel: string;
@@ -1190,11 +1469,22 @@ export interface OecLiveCreatorAction {
 }
 export interface OecLiveCreatorMessageData {
   auctionConfig: AuctionConfigV2 | undefined;
+  groupBuyData: GroupBuyData | undefined;
+  slashData: SlashData | undefined;
 }
 export interface OecLiveCreatorMessageMeta {
   reason: string;
   serverSendNs: string;
+  serverSendNsStr: string;
   sourceOperateNs: string;
+  sourceOperateNsStr: string;
+  traceInfoMap: {
+    [key: string]: string;
+  };
+}
+export interface OecLiveCreatorMessageMeta_TraceInfoMapEntry {
+  key: string;
+  value: string;
 }
 export interface OperationInfo {
   failureState: OperationState | undefined;
@@ -1279,6 +1569,7 @@ export interface PlayTogetherPermitNoticeContent {
   serviceTime: string;
 }
 export interface PollBasicInfo {
+  businessScene: number;
   gift: Gift | undefined;
   giftId: string;
   isSuggestedQuestion: boolean;
@@ -1395,6 +1686,7 @@ export interface PublicAreaCommon {
 export interface PunishEventInfo {
   duration: string;
   endTime: string;
+  endTimeV2: string;
   punishId: string;
   punishPerceptionCode: string;
   punishReason: string;
@@ -1478,6 +1770,20 @@ export interface RecommendComment {
   priority: string;
   recommendText: Text | undefined;
   tipsType: string;
+}
+export interface RecommendInfo {
+  clickConversionRate: number;
+  clickRate: number;
+  userCloseRate: number;
+}
+export interface RedeemData {
+  decorationId: string;
+  systemMessageDecorationKey: string;
+  systemMessageDefaultPattern: string;
+  systemMessageTextKey: string;
+  systemMessageUserName: string;
+  triggerAnimation: boolean;
+  triggerSystemMessage: boolean;
 }
 export interface RefreshLiveBagInfo {
   refreshLiveBagTypes: number[];
@@ -1566,8 +1872,45 @@ export interface Sku {
   skuId: string;
   title: string;
 }
+export interface SlashConfig {
+  slashConfigId: string;
+}
+export interface SlashData {
+  extra: string;
+  slashConfig: SlashConfig | undefined;
+  slashSession: SlashSession | undefined;
+}
+export interface SlashParticipant {
+  afterPrice: Denomination | undefined;
+  avatarUrl: string;
+  beforePrice: Denomination | undefined;
+  deductionAmount: Denomination | undefined;
+  oecUserId: string;
+  userHandle: string;
+  userId: string;
+  userNickName: string;
+  versionTimestamp: string;
+}
+export interface SlashSession {
+  currentPrice: Denomination | undefined;
+  endTimeMs: string;
+  nextDeductionAmount: Denomination | undefined;
+  participantCount: number;
+  participantList: SlashParticipant[];
+  slashedAmount: Denomination | undefined;
+  slashId: string;
+  slashStatus: number;
+  slashType: number;
+  startPrice: Denomination | undefined;
+  targetPrice: Denomination | undefined;
+  unlockFloorPrice: boolean;
+  version: string;
+}
 export interface SpecialEffectNotice {
   affectedAnchorPairs: AnchorPair[];
+  communityHeartMeInfo: CommunityHeartMeInfo | undefined;
+  communityHeartMeInfoStr: string;
+  effectType: number;
   fromUserId: string;
   score: string;
   toAnchorId: string;
@@ -1626,14 +1969,18 @@ export interface StrokeConfig {
 export interface StyleDictateParams {
   animated: boolean;
   backgroundColor: string;
+  bubbleContentId: string;
   bubbleDecorationList: BubbleDecoration[];
   businessType: string;
   duration: number;
+  entryData: EntryData | undefined;
   maxLine: string;
   maxWidth: string;
   onclickSchema: string;
+  pointingTargetType: string;
   preselectedGiftId: string;
   preselectedMatchItemId: string;
+  showTrailingArrow: boolean;
   tapDismissArea: number;
 }
 export interface SubGoalData {
@@ -1661,6 +2008,19 @@ export interface SubscriptionInfo {
   totalSubscribers: number;
   user: User | undefined;
 }
+export interface SuggestionUIInfo {
+  buttonClickActionType: number;
+  content: string;
+  countdown: string;
+  ctaName: string;
+  detailContent: string;
+  detailTitle: string;
+  icon: string;
+  suggestType: string;
+  title: string;
+  viewData: string;
+  viewDuration: string;
+}
 export interface SurpriseSet {
   status: number;
   surpriseSetExtra: SurpriseSetExtra | undefined;
@@ -1680,17 +2040,21 @@ export interface SurpriseSetProperties {
   status: number;
   totalProductQuantity: number;
 }
-export interface TPSize {
-  height: number;
-  width: number;
-}
-export interface TPTuxImage {
-  protocol: string;
-  size: TPSize | undefined;
-}
 export interface TagItem {
+  bizName: string;
+  disableCountFrequencyControl: boolean;
+  disableCrmClick: boolean;
+  displayLocation: number;
+  eventTrackingFields: {
+    [key: string]: string;
+  };
   tagText: Text | undefined;
   tagType: TagType;
+  tagValue: string;
+}
+export interface TagItem_EventTrackingFieldsEntry {
+  key: string;
+  value: string;
 }
 export interface TaskCompleteData {
   isClearToday: boolean;
@@ -1752,6 +2116,16 @@ export interface UpdateShareRevenueContent {
   value: string;
   version: string;
 }
+export interface UpdateShareRevenueStructContent {
+  shareRevenueRatio: string;
+  shareRevenueValue: string;
+  version: string;
+}
+export interface UpgradeData {
+  eventTime: string;
+  level: string;
+  score: string;
+}
 export interface UseCriticalStrikeCard {
   anchorId: string;
   cardInfo: CriticalStrikeCardInfo | undefined;
@@ -1760,6 +2134,11 @@ export interface UseCriticalStrikeCard {
 export interface UseExtraTimeCard {
   anchorId: string;
   cardInfo: ExtraTimeCardInfo | undefined;
+  displayContent: Text | undefined;
+}
+export interface UseMusicCard {
+  anchorId: string;
+  cardInfo: MusicCardInfo | undefined;
   displayContent: Text | undefined;
 }
 export interface UsePotionCard {
@@ -1776,7 +2155,10 @@ export interface UseSpecialEffectCard {
   affectedAnchorPairs: AnchorPair[];
   anchorId: string;
   cardInfo: SpecialEffectCardInfo | undefined;
+  communityHeartMeInfo: CommunityHeartMeInfo | undefined;
+  communityHeartMeInfoStr: string;
   displayContent: Text | undefined;
+  effectType: number;
 }
 export interface UseTop2Card {
   anchorId: string;
@@ -1810,6 +2192,11 @@ export interface UserAvatar {
   urlList: string[];
   width: number;
 }
+export interface UserBadge {
+  badgeDetailText: string;
+  badgeText: string;
+  type: number;
+}
 export interface UserCountdownInfo {
   completionProgressPercent: number;
   countdownId: string;
@@ -1828,6 +2215,10 @@ export interface UserFanTicket {
   ticketUiStyle: string;
   ticketUiStyleV2: string;
   topGuestRank: number;
+  userId: string;
+}
+export interface UserInfo {
+  avatar: ImageModel | undefined;
   userId: string;
 }
 export interface UserInteractionInfo {
@@ -1870,6 +2261,7 @@ export interface UserOptOutState {
 }
 export interface UserPlayInfo {
   playId: string;
+  playRoundId: string;
   playScene: PlayScene;
   rank: number;
   score: string;
@@ -1922,6 +2314,10 @@ export interface ValidRanks {
 export interface ViolationInfo {
   violationType: number;
 }
+export interface VirtualTicketEnvelopeRushOutNotice {
+  actualEndTimeSec: string;
+  envelopeId: string;
+}
 export interface Voucher {
   creatorOperationUniqueId: string;
   liveVoucherType: number;
@@ -1941,6 +2337,12 @@ export interface WaveAlgorithmData {
   isFollow: boolean;
   isRewatch: boolean;
   predictScore: string;
+}
+export interface WebcastAIBeautyResultMessage {
+  common: CommonMessageData | undefined;
+  content: AIBeautySugContent | undefined;
+  errorCode: string;
+  status: number;
 }
 export interface WebcastAILiveSummaryMessage {
   aiLiveSummary: AILiveSummary | undefined;
@@ -1978,6 +2380,11 @@ export interface WebcastAgreeApplyGuideMessage {
   requestId: string;
   triggerType: string;
   user: User | undefined;
+}
+export interface WebcastAnchorAiCoachMessage {
+  common: CommonMessageData | undefined;
+  messageData: AiCoachImMessageData | undefined;
+  messageType: number;
 }
 export interface WebcastAnchorGetSubQuotaMessage {
   common: CommonMessageData | undefined;
@@ -2089,6 +2496,11 @@ export interface WebcastCaptionMessage {
   sequenceId: string;
   timestampMs: string;
 }
+export interface WebcastCohostLayoutUpdateMessage {
+  common: CommonMessageData | undefined;
+  crossRoomLayout: LayoutData | undefined;
+  toastDisplayText: Text | undefined;
+}
 export interface WebcastCohostPlatformMessage {
   actionType: number;
   common: CommonMessageData | undefined;
@@ -2113,6 +2525,15 @@ export interface WebcastCohostSettingsUpdateMessage_AnchorSettingsEntry {
   key: string;
   value: boolean;
 }
+export interface WebcastCohostSubtitleBanMessage {
+  common: CommonMessageData | undefined;
+  subtitleBanType: number;
+  toastText: Text | undefined;
+}
+export interface WebcastCohostSubtitleSettingMessage {
+  common: CommonMessageData | undefined;
+  settings: SubtitleSettings | undefined;
+}
 export interface WebcastCohostTopicMessage {
   action: number;
   common: CommonMessageData | undefined;
@@ -2121,12 +2542,27 @@ export interface WebcastCohostTopicMessage {
   topic: CohostTopic | undefined;
   topicSetContent: TopicSetContent | undefined;
 }
+export interface WebcastCohostTranslatePopUpMessage {
+  common: CommonMessageData | undefined;
+  content: Text | undefined;
+  title: Text | undefined;
+}
 export interface WebcastColdStartMessage {
   common: CommonMessageData | undefined;
   msgType: number;
   status: number;
   totalCount: string;
   viewerCount: string;
+}
+export interface WebcastCollabGiftMessage {
+  activeInfo: CollabGiftActiveInfo | undefined;
+  baseInfo: CollabGiftBaseInfo | undefined;
+  common: CommonMessageData | undefined;
+  effect: AssetsModel | undefined;
+  finishInfo: CollabGiftFinishInfo | undefined;
+  fullInfo: CollabGiftFullInfo | undefined;
+  type: number;
+  updateInfo: CollabGiftUpdateInfo | undefined;
 }
 export interface WebcastCommentTrayMessage {
   chatTime: string;
@@ -2288,6 +2724,31 @@ export interface WebcastEventMessage {
   card: EventCard | undefined;
   common: CommonMessageData | undefined;
 }
+export interface WebcastFansCommunityMessage {
+  anchor: User | undefined;
+  common: CommonMessageData | undefined;
+  data: FansCommunityEventData | undefined;
+  eventTrackParams: {
+    [key: string]: string;
+  };
+  eventType: number;
+  guidanceKey: string;
+  guidanceType: number;
+  icon: ImageModel | undefined;
+  interactionParams: {
+    [key: string]: string;
+  };
+  text: Text | undefined;
+  user: User | undefined;
+}
+export interface WebcastFansCommunityMessage_InteractionParamsEntry {
+  key: string;
+  value: string;
+}
+export interface WebcastFansCommunityMessage_EventTrackParamsEntry {
+  key: string;
+  value: string;
+}
 export interface WebcastFeatureGuideMessage {
   common: CommonMessageData | undefined;
   featureGuideType: number;
@@ -2321,6 +2782,8 @@ export interface WebcastGameAiScriptMessage {
   bizId: string;
   buttonText: Text | undefined;
   common: CommonMessageData | undefined;
+  cueMessage: CuesMessage | undefined;
+  isShowCues: boolean;
   priority: string;
   ruleId: string;
   showDurationInapp: string;
@@ -2347,6 +2810,16 @@ export interface WebcastGameGuessToastMessage {
 export interface WebcastGameInteractionMessage {
   common: CommonMessageData | undefined;
   content: GameInteractionMessageContent | undefined;
+  messageType: number;
+}
+export interface WebcastGameInteractionMultiSourceMessage {
+  common: CommonMessageData | undefined;
+  content: GameInteractionMultiSourceMessageContent | undefined;
+  messageType: number;
+}
+export interface WebcastGameLiveGoalRewardNotifyMessage {
+  common: CommonMessageData | undefined;
+  content: GameLiveGoalRewardMessageContent | undefined;
   messageType: number;
 }
 export interface WebcastGameOCRPingMessage {
@@ -2398,16 +2871,6 @@ export interface WebcastGiftDynamicRestrictionMessage {
   common: CommonMessageData | undefined;
   dynamicRestriction: DynamicRestriction | undefined;
 }
-export interface WebcastGiftGalleryMessage {
-  allSponsored: boolean;
-  common: CommonMessageData | undefined;
-  giftInfo: GiftGalleryMessageGiftInfo | undefined;
-  logId: string;
-  msgType: number;
-  priority: GiftIMPriority | undefined;
-  toUser: User | undefined;
-  user: User | undefined;
-}
 export interface WebcastGiftGuideMessage {
   biz: string;
   common: CommonMessageData | undefined;
@@ -2415,14 +2878,18 @@ export interface WebcastGiftGuideMessage {
   displaySeconds: string;
   giftId: string;
   giftIds: string[];
+  guideMessageType: number;
   guidePageResources: GuidePageResource[];
   guideTarget: GuideTarget | undefined;
   guideType: string;
   hasSentBefore: boolean;
+  popUrl: string;
+  recommendInfo: RecommendInfo | undefined;
   schemaUrl: string;
   shouldUseConfig: boolean;
   styleDictate: boolean;
   styleDictateParams: StyleDictateParams | undefined;
+  styleId: string;
   subTriggerName: string;
   tags: string[];
   templateType: string;
@@ -2500,9 +2967,11 @@ export interface WebcastGuideMessage {
   description: string;
   displayStyle: string;
   duration: string;
+  frequencyRule: GuideMessageFrequencyRule | undefined;
   giftId: string;
   guideType: string;
   scene: string;
+  streamTime: string;
 }
 export interface WebcastGuideTaskMessage {
   bizName: string;
@@ -2553,14 +3022,19 @@ export interface WebcastInRoomBannerRefreshMessage {
   onlyAnchor: boolean;
 }
 export interface WebcastInteractionHubGoalMessage {
+  actionButton: ActionButton2 | undefined;
   common: CommonMessageData | undefined;
+  frequencyControlKey: string;
+  hasButton: boolean;
   hasNewGift: boolean;
   interactionGoal: Text | undefined;
   interactionGoalSource: number;
   interactionGoalType: number;
   interactionTips: Text | undefined;
+  liveGoalParam: LiveGoalParam | undefined;
   newGiftInfo: Gift | undefined;
   taskProgress: AnchorActivityTaskProgress | undefined;
+  userParam: UserParam | undefined;
 }
 export interface WebcastInteractiveEffectMessage {
   common: CommonMessageData | undefined;
@@ -2633,6 +3107,11 @@ export interface WebcastLinkMicAnchorGuideMessage {
   reserveInfo: ReserveInfo | undefined;
   user: User | undefined;
   userModelPredictionData: UserModelPredictionData[];
+}
+export interface WebcastLinkMicBattleArtifactMessage {
+  artifacts: BattleArtifact[];
+  battleId: string;
+  common: CommonMessageData | undefined;
 }
 export interface WebcastLinkMicBattleVictoryLap {
   anchorRegion: string;
@@ -2725,6 +3204,7 @@ export interface WebcastLinkmicAudienceNoticeMessage {
   applyGuide: LinkmicAudienceApplyGuide | undefined;
   common: CommonMessageData | undefined;
   groupChatMemberInviteGuide: LinkmicAudienceInviteGroupChatMemberGuide | undefined;
+  mgMatchType: number;
   noticeGuide: LinkMicAudienceInviteGuide | undefined;
   noticeType: number;
   turnOnGuide: LinkMicAudienceTurnOnGuide | undefined;
@@ -2812,6 +3292,7 @@ export interface WebcastMultiGuestBubbleMessage {
 export interface WebcastMultiGuestGuideMessage {
   common: CommonMessageData | undefined;
   displayPosition: string;
+  linkerSessionId: string;
   linkmicId: string;
   messageType: number;
   requestId: string;
@@ -2836,6 +3317,7 @@ export interface WebcastMultiGuestPreApproveMessage {
 export interface WebcastMultiGuestRandomMatchMessage {
   authorUser: User | undefined;
   common: CommonMessageData | undefined;
+  linkerSessionId: string;
   matchStatus: number;
   roomId: string;
 }
@@ -2899,8 +3381,15 @@ export interface WebcastOChannelUserMessage {
 export interface WebcastOECAuctionActionMessage {
   actionType: number;
   auctionConfig: AuctionConfig | undefined;
+  auctionTrace: {
+    [key: string]: string;
+  };
   common: CommonMessageData | undefined;
   timestamp: string;
+}
+export interface WebcastOECAuctionActionMessage_AuctionTraceEntry {
+  key: string;
+  value: string;
 }
 export interface WebcastOECAuctionPaymentFailureMessage {
   common: CommonMessageData | undefined;
@@ -2999,6 +3488,7 @@ export interface WebcastOecLiveManagerMessage {
   messageType: number;
   purchaseProductInfo: PurchaseProductInfo | undefined;
   subscriptionInfo: SubscriptionInfo | undefined;
+  userBadges: UserBadge[];
   violationInfo: ViolationInfo | undefined;
 }
 export interface WebcastOecLiveRankMessage {
@@ -3223,6 +3713,23 @@ export interface WebcastRealtimeLiveCenterUpdateMessage {
   common: CommonMessageData | undefined;
   list: RealtimeLiveCenterDataUpdateMessageItemInfo[];
 }
+export interface WebcastRealtimeUnifiedEntranceMessage {
+  common: CommonMessageData | undefined;
+  context: string;
+  ctaSchema: string;
+  ctaText: string;
+  excludedDisplayScenes: number[];
+  icon: string;
+  messageKey: string;
+  scene: string;
+  subtitle: string;
+  suggestionId: string;
+  suggestionTemplateId: string;
+  suggestionUiInfo: SuggestionUIInfo | undefined;
+  targetModule: string;
+  title: string;
+  tuxIconName: string;
+}
 export interface WebcastRoomBottomMessage {
   actionContent: string;
   actionIcon: ImageModel | undefined;
@@ -3296,6 +3803,11 @@ export interface WebcastSMBStateSync {
   common: CommonMessageData | undefined;
   smbInfo: SMBInfo | undefined;
 }
+export interface WebcastScorePerceptionMessage {
+  common: CommonMessageData | undefined;
+  revokedPermissionCount: string;
+  scoreNow: string;
+}
 export interface WebcastScreenChatMessage {
   backgroundImage: ImageModel | undefined;
   backgroundImageV2: ImageModel | undefined;
@@ -3333,6 +3845,13 @@ export interface WebcastSpecialPushMessage {
   icon: ImageModel | undefined;
   pushMessageDisplayTime: string;
   traceid: string;
+}
+export interface WebcastStageReactionMessage {
+  common: CommonMessageData | undefined;
+  reactionId: string[];
+  senderUserId: string;
+  showTimeMs: string;
+  toUserId: string[];
 }
 export interface WebcastStarCommentPushMessage {
   common: CommonMessageData | undefined;
@@ -3399,6 +3918,7 @@ export interface WebcastUpdateShareRevenueNoticeMessage {
   common: CommonMessageData | undefined;
   roomId: string;
   updateShanreRevenueContent: UpdateShareRevenueContent | undefined;
+  updateShareRevenueStructContent: UpdateShareRevenueStructContent | undefined;
 }
 export interface WebcastUpgradeMessage {
   common: CommonMessageData | undefined;

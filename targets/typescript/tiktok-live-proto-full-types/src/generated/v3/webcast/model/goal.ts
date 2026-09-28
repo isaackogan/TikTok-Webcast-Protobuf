@@ -18,6 +18,7 @@ export interface GalleryMiddleTouchInfo {
   galleryPeriod: string;
   periodEndTime: string;
   region: string;
+  roomEnterParams: RoomEnterParams | undefined;
   showGalleryMidTouch: boolean;
   singleLitUpInfo: SingleGiftLitUpInfo | undefined;
   sponsorshipChangeInfo: SponsorshipChangeInfo | undefined;
@@ -41,7 +42,11 @@ export interface GoalPinInfo {
 export interface GoalReward {
   auditStatus: number;
   hasSticker: boolean;
+  isHitOptAb: boolean;
   rewardContent: string;
+  rewardDirectMessage: string;
+  rewardSource: number;
+  rewardTemplateId: string;
   topN: number;
 }
 export interface GoalStats {
@@ -49,6 +54,9 @@ export interface GoalStats {
   totalCoins: string;
   totalContributor: string;
   totalNewFans: string;
+}
+export interface RoomEnterParams {
+  sentGiftToGalleryLast6Months: boolean;
 }
 export interface SingleGiftLitUpInfo {
   litUpGift: GiftInfo | undefined;

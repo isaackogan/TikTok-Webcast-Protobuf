@@ -8,12 +8,16 @@
 import type { Text } from "../model/message/common.js";
 export const protobufPackage = "webcast.shared.message";
 export interface BaseProtoMessage {
+  groupKey: string;
+  groupScene: string;
   isHistory: boolean;
   method: string;
+  methodId: number;
   msgId: string;
   msgType: number;
   offset: string;
   payload: Uint8Array;
+  sampleFlag: number;
 }
 export interface CommonMessageData {
   anchorFoldType: string;

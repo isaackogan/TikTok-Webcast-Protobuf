@@ -5,9 +5,9 @@
 // source: webcast/chatroom/api_audit_info.proto
 
 /* eslint-disable */
-import type { AuditTaskType } from "../model/data/messages.js";
+import type { TimerDetailAuditTaskType } from "../model/data/messages.js";
 export const protobufPackage = "webcast.chatroom.api";
-export interface EmoteModelAuditInfo {
-  taskType: AuditTaskType;
+export interface TimerDetailAuditInfo {
+  taskType: TimerDetailAuditTaskType;
   violationId: string;
 }

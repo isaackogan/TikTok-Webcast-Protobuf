@@ -6,11 +6,12 @@
 
 /* eslint-disable */
 import type { AssetsModel } from "./assets.js";
-import type { PrefabBundle } from "./model.js";
+import type { GiftEffectStreamSpec, PrefabBundle } from "./model.js";
 
 export const protobufPackage = "webcast.model.gift.model";
 
 export interface AssetBundle {
   assets: AssetsModel[];
   prefabBundle: PrefabBundle | undefined;
+  streamEffectSpec: GiftEffectStreamSpec | undefined;
 }

@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import type { BattleInviteType, BattleScene, BattleSettingsBattleStatus, BattleType, IceShowdownSetting, MatchGameplayOption } from "../data/messages.js";
-import type { GiftModeMeta } from "../live/match.js";
+import type { GiftModeMeta, GiftModeMetaV2, GoofyEffectInfo } from "../live/match.js";
 export const protobufPackage = "webcast.model.message.battle";
 export interface BattleSetting {
   battleId: string;
@@ -17,6 +17,8 @@ export interface BattleSetting {
   extraDurationSecond: string;
   gameplayOption: MatchGameplayOption;
   giftModeMeta: GiftModeMeta | undefined;
+  giftModeMetaV2: GiftModeMetaV2 | undefined;
+  goofyEffectInfo: GoofyEffectInfo | undefined;
   iceShowdownSetting: IceShowdownSetting;
   inviteType: BattleInviteType;
   scene: BattleScene;

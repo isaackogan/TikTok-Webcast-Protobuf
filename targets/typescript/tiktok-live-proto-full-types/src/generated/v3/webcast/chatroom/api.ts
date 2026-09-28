@@ -124,6 +124,7 @@ export interface SubPinCard {
   id: string;
   image: ImageModel | undefined;
   lastPinTimestamp: string;
+  pinSource: number;
   templateId: string;
   timeToLive: string;
   title: Text | undefined;

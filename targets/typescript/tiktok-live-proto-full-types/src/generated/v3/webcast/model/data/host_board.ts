@@ -22,6 +22,11 @@ export interface BoardCell {
   textStyle: TextStyle | undefined;
   type: string;
 }
+export interface BoardInfo {
+  boardDeleteSubtitle: string;
+  boardDeleteTitle: string;
+  boardName: string;
+}
 export interface ClickAction {
   navigateToAppRoute: NavigateToAppRoute | undefined;
 }
@@ -33,6 +38,7 @@ export interface HostBoard {
   bizTemplateId: string;
   bizType: string;
   boardId: string;
+  boardInfo: BoardInfo | undefined;
   cellList: BoardCell[];
   clickAction: ClickAction | undefined;
   nonClippable: boolean;
