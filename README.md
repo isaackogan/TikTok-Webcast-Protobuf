@@ -54,6 +54,7 @@ Only `src/**/*.proto` is hand-edited. Generated bindings live under each target 
 |------------|------------------------------------------------------------|-----------|
 | TypeScript | [`tiktok-live-proto`](https://www.npmjs.com/package/tiktok-live-proto) on npm | ✅ Supported |
 | Python     | [`TikTokLiveProto`](targets/python/TikTokLiveProto) | ✅ Supported |
+| C#         | [`TikTokLiveProto`](targets/csharp/TikTokLiveProto) on NuGet | ✅ Supported |
 | Go         | —                                                          | Planned   |
 | Rust       | —                                                          | Planned   |
 | Kotlin       | —                                                          | Planned   |
@@ -62,6 +63,10 @@ Only `src/**/*.proto` is hand-edited. Generated bindings live under each target 
 The Python target uses `betterproto2` with Pydantic-backed generated
 dataclasses, versioned directly under `v1` and `v2`, and imported as
 `TikTokLiveProto.v1` and `TikTokLiveProto.v2`.
+
+The C# target uses `Google.Protobuf` with all versions (v1, v2, v3) in a
+single assembly, namespaced as `TikTokLiveProto.V1`, `TikTokLiveProto.V2`,
+and `TikTokLiveProto.V3.*`. Targets `netstandard2.0` through `net10.0`.
 
 ## Contributing a New Target
 

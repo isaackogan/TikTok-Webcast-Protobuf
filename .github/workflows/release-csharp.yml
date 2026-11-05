@@ -1,0 +1,95 @@
+name: "Release (C#): Build & Publish to NuGet"
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+
+permissions:
+  contents: write
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Release must be triggered from the main branch, got ${{ github.ref }}"
+          exit 1
+
+  release:
+    needs: check-branch
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: targets/csharp/TikTokLiveProto
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Read current version
+        id: current
+        run: |
+          VERSION=$(grep -oP '(?<=<Version>)[^<]+' Directory.Build.props)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: version
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          case "${{ inputs.bump }}" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+          NEW="$MAJOR.$MINOR.$PATCH"
+          sed -i "s|<Version>$CURRENT</Version>|<Version>$NEW</Version>|" Directory.Build.props
+          echo "version=$NEW" >> $GITHUB_OUTPUT
+
+      - name: Build & Pack
+        run: dotnet pack TikTokLiveProto.slnx -c Release
+
+      - name: Publish to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "bin/Release/TikTokLiveProto.${{ steps.version.outputs.version }}.nupkg" \
+            --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Commit version bump
+        working-directory: ${{ github.workspace }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add targets/csharp/TikTokLiveProto/Directory.Build.props
+          git commit -m "chore: release TikTokLiveProto v${{ steps.version.outputs.version }} [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase
+            if git push; then exit 0; fi
+            echo "Push attempt $i failed, retrying..."
+            sleep $((RANDOM % 4 + 1))
+          done
+          exit 1
+
+      - name: Create git tag
+        working-directory: ${{ github.workspace }}
+        run: |
+          git tag "csharp/v${{ steps.version.outputs.version }}"
+          git push origin "csharp/v${{ steps.version.outputs.version }}"
+
+      - name: Summary
+        run: echo "### Published TikTokLiveProto@${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
