@@ -1,0 +1,70 @@
+name: Generate C# from Proto
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/slim/**/*.proto'
+      - 'targets/csharp/TikTokLiveProto/scripts/**'
+      - 'targets/csharp/TikTokLiveProto/TikTokLiveProto.csproj'
+      - 'targets/csharp/TikTokLiveProto/Directory.Build.props'
+      - '.github/workflows/generate-csharp.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: generate-csharp-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: targets/csharp/TikTokLiveProto
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Generate C# bindings
+        run: python scripts/generate.py
+
+      - name: Build
+        run: dotnet build TikTokLiveProto.slnx -c Release
+
+      - name: Check for drift
+        id: diff
+        run: |
+          if [ -z "$(git status --porcelain -- src)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: ${{ github.workspace }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add targets/csharp/TikTokLiveProto/src
+          git commit -m "chore(proto): regenerate C# from proto sources
+
+          Source: ${{ github.sha }}"
+          for i in 1 2 3 4 5; do
+            git pull --rebase
+            if git push; then exit 0; fi
+            echo "Push attempt $i failed, retrying..."
+            sleep $((RANDOM % 4 + 1))
+          done
+          exit 1
