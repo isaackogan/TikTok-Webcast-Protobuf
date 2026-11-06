@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   check-branch:
@@ -62,11 +63,9 @@ jobs:
         run: dotnet pack TikTokLiveProto.slnx -c Release
 
       - name: Publish to NuGet
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           dotnet nuget push "bin/Release/TikTokLiveProto.${{ steps.version.outputs.version }}.nupkg" \
-            --api-key "$NUGET_API_KEY" \
+            --api-key oidc \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 
